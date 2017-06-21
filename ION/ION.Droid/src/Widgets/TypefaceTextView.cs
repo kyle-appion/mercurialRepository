@@ -1,4 +1,4 @@
-﻿namespace ION.Droid.Widgets {
+﻿﻿namespace ION.Droid.Widgets {
 
   using System;
   using System.Collections.Generic;
@@ -107,41 +107,51 @@
 
         ta.Recycle();
       }
+
+      // Implemented this instead of OnTextChanged.
+      // This is because the OnTextChanged(ICharSequence, int, int, int) caused the view to crash
+      TextChanged += (sender, e) => {
+        needsResize = true;
+        ResetTextSize();
+      };
     }
 
+/*
     protected override void OnTextChanged(Java.Lang.ICharSequence text, int start, int lengthBefore, int lengthAfter) {
 //      base.OnTextChanged(text, start, lengthBefore, lengthAfter);
-      needsResize = true;
-      ResetTextSize();
+//      needsResize = true;
+//      ResetTextSize();
     }
+*/
 
-    protected override void OnSizeChanged(int w, int h, int oldw, int oldh) {
-//      base.OnSizeChanged(w, h, oldw, oldh);
-      if (w != oldw || h != oldh) {
-        needsResize = true;
-      }
-    }
+		protected override void OnSizeChanged(int w, int h, int oldw, int oldh) {
+	//      base.OnSizeChanged(w, h, oldw, oldh);
+		  if (w != oldw || h != oldh) {
+  			needsResize = true;
+		  }
+		}
 
-    public override void SetTextSize(ComplexUnitType unit, float size) {
-      base.SetTextSize(unit, size);
-    }
+		public override void SetTextSize(ComplexUnitType unit, float size) {
+		  base.SetTextSize(unit, size);
+		}
 
-    public override void SetLineSpacing(float add, float mult) {
-      base.SetLineSpacing(add, mult);
-      spacingMultiplier = mult;
-      spacingAdd = add;
-    }
+		public override void SetLineSpacing(float add, float mult) {
+		  base.SetLineSpacing(add, mult);
+		  spacingMultiplier = mult;
+		  spacingAdd = add;
+		}
 
-    protected override void OnLayout(bool changed, int left, int top, int right, int bottom) {
-      if (changed || needsResize) {
-        var widthLimit = (right - left) - CompoundPaddingLeft - CompoundPaddingRight;
-        var heightLimit = (bottom - top) - CompoundPaddingBottom - CompoundPaddingTop;
-        ResizeText(widthLimit, heightLimit);
-      }
-      base.OnLayout(changed, left, top, right, bottom);
-    }
+		protected override void OnLayout(bool changed, int left, int top, int right, int bottom) {
+      if (autoTextSize && (changed || needsResize)) {
+				var widthLimit = (right - left) - CompoundPaddingLeft - CompoundPaddingRight;
+				var heightLimit = (bottom - top) - CompoundPaddingBottom - CompoundPaddingTop;
+        Appion.Commons.Util.Log.D(this, "HeightLimit {" + Tag + "}: " + heightLimit);
+				ResizeText(widthLimit, heightLimit);
+		  }
+		  base.OnLayout(changed, left, top, right, bottom);
+		}
 
-    public void ResetTextSize() {
+		public void ResetTextSize() {
       if (autoTextSize && TextSize > 0) {
         base.SetTextSize(ComplexUnitType.Px, TextSize);
         maxTextSize = TextSize;
@@ -200,7 +210,7 @@
 
       // Until we either fit within out text view or we have reached our min text size, incrementally try smaller sizes
       while (textHeight > height && targetTextSize > minTextSize) {
-        targetTextSize = Math.Max(targetTextSize - 1, minTextSize);
+        targetTextSize = Math.Max(targetTextSize - 2, minTextSize);
         textHeight = GetTextHeight(Text, paint, width, targetTextSize);
       }
 /*
@@ -241,8 +251,9 @@ WE DONT USE ELLIPSES
       // Some devices try to auto adjust line spacing, so force default line spacing and invalidate the layout as a side effect
       SetTextSize(ComplexUnitType.Px, targetTextSize);
       SetLineSpacing(spacingAdd, spacingMultiplier);
+			Appion.Commons.Util.Log.D(this, "{" + Tag + "} TextSize: " + TextSize + " Height: " + height);
 
-      needsResize = false;
+			needsResize = false;
     }
 
     /// <summary>

@@ -177,8 +177,7 @@
           NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
 					lastNotify = DateTime.Now;
         }
-      } catch (Exception e) {
-        //Log.D(this, "Cannot resolve packet " + serialNumber + ": unresolved exception {packet=> " + packet?.ToByteString() + "}", e);
+      } catch (Exception) {
 				NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
       }
     }

@@ -50,9 +50,9 @@
 
 		private BitmapCache cache;
 
-		private TextView title;
-		private TextView measurement;
+		private TextView name;
 		private TextView status;
+		private TextView measurement;
 		private TextView unit;
 
     private View alarm;
@@ -65,19 +65,20 @@
 
 		private int lastBattery;
 
-		public ManifoldViewHolder(SwipeRecyclerView parent, BitmapCache cache, Workbench workbench) : base(parent, Resource.Layout.viewer_large, Resource.Layout.list_item_button) {
+		public ManifoldViewHolder(SwipeRecyclerView parent, BitmapCache cache, Workbench workbench) : base(parent, Resource.Layout.list_item_viewer, Resource.Layout.list_item_button) {
 			this.cache = cache;
 
-			title = foreground.FindViewById<TextView>(Resource.Id.name);
-			measurement = foreground.FindViewById<TextView>(Resource.Id.measurement);
+      name = foreground.FindViewById<TextView>(Resource.Id.name);
 			status = foreground.FindViewById<TextView>(Resource.Id.status);
+			measurement = foreground.FindViewById<TextView>(Resource.Id.measurement);
+      measurement.Tag = new Java.Lang.String("Measurement");
 			unit = foreground.FindViewById<TextView>(Resource.Id.unit);
 
       alarm = foreground.FindViewById(Resource.Id.alarm);
 
+			icon = foreground.FindViewById<ImageView>(Resource.Id.icon);
 			battery = foreground.FindViewById<ImageView>(Resource.Id.battery);
 			connection = foreground.FindViewById<ImageView>(Resource.Id.connection);
-			icon = foreground.FindViewById<ImageView>(Resource.Id.icon);
 
 			progress = foreground.FindViewById<ProgressBar>(Resource.Id.progress);
 
@@ -121,7 +122,7 @@
 			}
 
 			if (d != null) {
-				title.Text = d.serialNumber.deviceModel.GetTypeString() + ": " + s.name;
+				name.Text = d.serialNumber.deviceModel.GetTypeString() + ": " + s.name;
 
 				progress.Visibility = ViewStates.Invisible;
 				connection.Visibility = ViewStates.Visible;
@@ -169,7 +170,7 @@
 				status.Visibility = ViewStates.Visible;
 				icon.Visibility = ViewStates.Visible;
 			} else {
-				title.Text = s.type.GetSensorTypeName() + ": " + s.name;
+				name.Text = s.type.GetSensorTypeName() + ": " + s.name;
 
 				status.Visibility = ViewStates.Invisible;
 				connection.Visibility = ViewStates.Invisible;
