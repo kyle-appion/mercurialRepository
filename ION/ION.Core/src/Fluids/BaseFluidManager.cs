@@ -12,7 +12,6 @@
   using ION.Core.App;
   using ION.Core.Fluids.Parser;
   using ION.Core.IO;
-  using ION.Core.IO.Preferences;
 
   /// <summary>
   /// A simple cross-platform implementation of a fluid manager.

@@ -11,7 +11,6 @@
 
   using ION.Core.App;
   using ION.Core.Database;
-  using ION.Core.Content;
 
   public class DataLogManagerEvent {
     public EType type { get; private set; }
@@ -102,33 +101,31 @@
     /// <summary>
     /// Informs the DataLogManager that is should begin a new recording session.
     /// </summary>
-    public Task<bool> BeginRecording(TimeSpan interval, JobRow job = null) {
-      return Task.Factory.StartNew(() => {
-        if (currentSession != null) {
-          return false;
-        }
+    public async Task<bool> BeginRecording(TimeSpan interval, JobRow job = null) {
+      if (currentSession != null) {
+        return false;
+      }
 
-        var db = ion.database;
+      var db = ion.database;
 
-        var id = job != null ? job.JID : 0;
+      var id = job != null ? job.JID : 0;
 
-        var session = new SessionRow() {
-          frn_JID = id,
-          sessionStart = DateTime.Now,
-          sessionEnd = DateTime.Now,
-        };
+      var session = new SessionRow() {
+        frn_JID = id,
+        sessionStart = DateTime.Now,
+        sessionEnd = DateTime.Now,
+      };
 
-        if (!db.SaveAsync<SessionRow>(session).Result) {
-          return false;
-        }
+      if (!await db.SaveAsync<SessionRow>(session)) {
+        return false;
+      }
 
-        currentSession = new LoggingSession(ion, session, interval);
+      currentSession = new LoggingSession(ion, session, interval);
 
-        recordingInterval = interval;
-        NotifyEvent(DataLogManagerEvent.EType.RecordingStarted);
+      recordingInterval = interval;
+      NotifyEvent(DataLogManagerEvent.EType.RecordingStarted);
 
-        return true;      
-      });
+      return true;      
     }
 
     /// <summary>
@@ -136,37 +133,35 @@
     /// </summary>
     /// <returns>True if a session was saved, false otherwise. Note: we will return false if the manager was not
     /// currently recording.</returns>
-    public Task<bool> StopRecording() {
-      return Task.Factory.StartNew(() => {
-        Log.D(this, "Stopping Recording");
-        if (currentSession == null) {
-          return false;
-        }
+    public async Task<bool> StopRecording() {
+      Log.D(this, "Stopping Recording");
+      if (currentSession == null) {
+        return false;
+      }
 
-        Log.D(this, "Cancelling current logging session.");
+      Log.D(this, "Cancelling current logging session.");
 
-        currentSession.session.sessionEnd = DateTime.Now;
+      currentSession.session.sessionEnd = DateTime.Now;
 
-        //if (!ion.database.SaveAsync<SessionRow>(currentSession.session).Result) {
-        //  Log.E(this, "Failed to update session end time.");
-        //}
-        
-        Log.D(this, "Saving session: " + currentSession.session);
+      //if (!ion.database.SaveAsync<SessionRow>(currentSession.session).Result) {
+      //  Log.E(this, "Failed to update session end time.");
+      //}
+      
+      Log.D(this, "Saving session: " + currentSession.session);
 
-      	var ret = ion.database.SaveAsync(currentSession.session).Result;
+    	var ret = await ion.database.SaveAsync(currentSession.session);
 
-				Log.D(this, "about to cancel timer");
-        currentSession.Cancel();
-			
+			Log.D(this, "about to cancel timer");
+      currentSession.Cancel();
+		
 //        ion.database.Update(ret);
-				Log.D(this, "Disposing current session");
-      	currentSession.Dispose();
-      	currentSession = null;
+			Log.D(this, "Disposing current session");
+    	currentSession.Dispose();
+    	currentSession = null;
 
-        NotifyEvent(DataLogManagerEvent.EType.RecordingEnded);
+      NotifyEvent(DataLogManagerEvent.EType.RecordingEnded);
 
-      	return ret;
-      });
+    	return ret;
     }
 
     /// <summary>
