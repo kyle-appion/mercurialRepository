@@ -27,6 +27,7 @@
 
 		public ManifoldRecord(Manifold manifold) {
 			this.manifold = manifold;
+      this.isExpanded = true;
 		}
 	}
 
@@ -49,46 +50,39 @@
 
 		private BitmapCache cache;
 
-		private TextView title;
-		private TextView measurement;
-		private TextView alarm;
+		private TextView name;
 		private TextView status;
+		private TextView measurement;
 		private TextView unit;
-		private TextView serialNumber;
+
+    private View alarm;
 
 		private ImageView battery;
 		private ImageView connection;
 		private ImageView icon;
-		private ImageView arrow;
 
 		private ProgressBar progress;
 
 		private int lastBattery;
 
-		public ManifoldViewHolder(SwipeRecyclerView parent, BitmapCache cache, Workbench workbench) : base(parent, Resource.Layout.viewer_large, Resource.Layout.list_item_button) {
+		public ManifoldViewHolder(SwipeRecyclerView parent, BitmapCache cache, Workbench workbench) : base(parent, Resource.Layout.list_item_viewer, Resource.Layout.list_item_button) {
 			this.cache = cache;
 
-			title = foreground.FindViewById<TextView>(Resource.Id.name);
-			measurement = foreground.FindViewById<TextView>(Resource.Id.measurement);
-			alarm = foreground.FindViewById<TextView>(Resource.Id.alarm);
+      name = foreground.FindViewById<TextView>(Resource.Id.name);
 			status = foreground.FindViewById<TextView>(Resource.Id.status);
+			measurement = foreground.FindViewById<TextView>(Resource.Id.measurement);
+      measurement.Tag = new Java.Lang.String("Measurement");
 			unit = foreground.FindViewById<TextView>(Resource.Id.unit);
-			serialNumber = foreground.FindViewById<TextView>(Resource.Id.device_serial_number);
 
+      alarm = foreground.FindViewById(Resource.Id.alarm);
+
+			icon = foreground.FindViewById<ImageView>(Resource.Id.icon);
 			battery = foreground.FindViewById<ImageView>(Resource.Id.battery);
 			connection = foreground.FindViewById<ImageView>(Resource.Id.connection);
-			icon = foreground.FindViewById<ImageView>(Resource.Id.icon);
-			arrow = foreground.FindViewById<ImageView>(Resource.Id.arrow);
 
 			progress = foreground.FindViewById<ProgressBar>(Resource.Id.progress);
 
 			lastBattery = -1;
-
-			serialNumber.SetOnClickListener(new ViewClickAction((view) => {
-				if (onSerialNumberClicked != null) {
-					onSerialNumberClicked(record);
-				}
-			}));
 
 			var button = background as TextView;
 			button.SetText(Resource.String.remove);
@@ -128,10 +122,7 @@
 			}
 
 			if (d != null) {
-				title.Text = d.serialNumber.deviceModel.GetTypeString() + ": " + s.name;
-				if (serialNumber != null) {
-					serialNumber.Text = gds.device.serialNumber.ToString();
-				}
+				name.Text = d.serialNumber.deviceModel.GetTypeString() + ": " + s.name;
 
 				progress.Visibility = ViewStates.Invisible;
 				connection.Visibility = ViewStates.Visible;
@@ -179,7 +170,7 @@
 				status.Visibility = ViewStates.Visible;
 				icon.Visibility = ViewStates.Visible;
 			} else {
-				title.Text = s.type.GetSensorTypeName() + ": " + s.name;
+				name.Text = s.type.GetSensorTypeName() + ": " + s.name;
 
 				status.Visibility = ViewStates.Invisible;
 				connection.Visibility = ViewStates.Invisible;
@@ -187,33 +178,7 @@
 				progress.Visibility = ViewStates.Invisible;
 			}
 
-			if (serialNumber != null) {
-				if (gds != null) {
-					serialNumber.Text = gds.device.name + "'s Subviews";
-				} else {
-					serialNumber.Text = record.manifold.primarySensor.name + "'s Subviews";
-				}
-
-				if (this.record.manifold.secondarySensor != null) {
-					serialNumber.Text +=  " (" + c.GetString(Resource.String.workbench_linked) + ")";
-				}
-			}
-
 			InvalidateBattery(d);
-			MarkAsExpanded(record.isExpanded);
-		}
-
-		public void MarkAsExpanded(bool expanded) {
-			if (record.manifold.sensorPropertyCount <= 0) {
-				arrow.Visibility = ViewStates.Invisible;
-			} else {
-				arrow.Visibility = ViewStates.Visible;
-				if (expanded) {
-					arrow.SetImageResource(Resource.Drawable.ic_arrow_upwhite);
-				} else {
-					arrow.SetImageResource(Resource.Drawable.ic_arrow_downwhite);
-				}
-			}
 		}
 
 		private void InvalidateBattery(GaugeDevice device) {

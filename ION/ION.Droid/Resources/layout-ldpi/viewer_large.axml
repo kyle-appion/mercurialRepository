@@ -67,7 +67,7 @@
                 android:layout_height="@dimen/viewer_device_icon_size"
                 android:src="@drawable/ic_logo_appiondefault" />
             <ION.Droid.Widgets.TypefaceTextView
-                ion:typeface="fonts/DroidSans-Bold.ttf"
+                ion:typeface="droidsans"
                 android:id="@id/measurement"
                 android:textColor="@color/black"
                 android:includeFontPadding="false"

@@ -43,8 +43,6 @@
     <Compile Include="src\Fluids\Parser\IFluidParser.cs" />
     <Compile Include="src\Fluids\Parser\BinaryFluidParser.cs" />
     <Compile Include="src\IO\IFile.cs" />
-    <Compile Include="src\IO\Preferences\IPreferences.cs" />
-    <Compile Include="src\IO\Preferences\BasePreferences.cs" />
     <Compile Include="src\Devices\SerialNumber.cs" />
     <Compile Include="src\Sensors\Sensor.cs" />
     <Compile Include="src\App\ION.cs" />
