@@ -42,7 +42,6 @@
             android:layout_height="@dimen/workbench_viewer_device_icon_height" />
         <ION.Droid.Widgets.TypefaceTextView
             ion:typeface="droidsans_bold"
-            android:background="@color/blue"
             android:hint="XXXXXXX"
             android:id="@id/measurement"
             android:layout_width="0dp"

@@ -39,7 +39,6 @@
 				var mr = new ManifoldRecord(manifold);
 				records.Add(mr);
 				ExpandManifold(mr);
-				records.Add(new SpaceRecord());
 			}
 
       if (!hideAdd) {
@@ -92,9 +91,6 @@
 			var rv = recyclerView as SwipeRecyclerView;
 
 			switch ((EViewType)viewType) {
-				case EViewType.Space: {
-					return new SpaceViewHolder(parent);
-				} // EViewType.Space
 				case EViewType.Add: {
 					return new AddViewerViewHolder(parent);
 				} // EViewType.Add
@@ -324,13 +320,11 @@
 						var i = 0;
 						var mr = new ManifoldRecord(e.manifold);
 						if (e.index == 0) {
-							records.Insert(i, new SpaceRecord());
 							records.Insert(i, mr);
 							NotifyItemRangeInserted(i, 2);
 						} else {
 							i = AdapterIndexForManifold(workbench[e.index - 1]);
 							i += AdapterSizeForManifold(records[i] as ManifoldRecord);
-							records.Insert(i, new SpaceRecord());
 							records.Insert(i, mr);
 							NotifyItemRangeInserted(i, 2);
 						}
@@ -396,12 +390,6 @@
 					var i1 = mi + e.index;
 					var i2 = mi + e.otherIndex;
 					SwapRecords(i1, i2);
-/*
-					var vh1 = recyclerView.FindViewHolderForAdapterPosition(i1) as SensorPropertyViewHolder;
-					var vh2 = recyclerView.FindViewHolderForAdapterPosition(i2) as SensorPropertyViewHolder;
-					vh1.Invalidate();
-					vh2.Invalidate();
-*/
 				} break; // ManifoldEvent.EType.SensorPropertySwapped
 			}
 		}
@@ -419,8 +407,6 @@
 		}
 
 		public enum EViewType {
-			Space,
-
 			Add,
 			Manifold,
 

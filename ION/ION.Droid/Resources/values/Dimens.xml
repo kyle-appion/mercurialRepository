@@ -200,4 +200,9 @@
   <!-- The text size for the unit view in the viewer's footer. -->
   <dimen name="viewer_text_size">24sp</dimen>
 
+  <!-- The radius applied to the corners of xml shapes. -->
+	<dimen name="xml_radius">5dp</dimen>
+	<!-- The thickness of the border stroke applied to xml shapes. -->
+	<dimen name="xml_border_stroke">2dp</dimen>
+
 </resources>

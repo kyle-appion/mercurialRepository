@@ -27,7 +27,7 @@
 
 		public ManifoldRecord(Manifold manifold) {
 			this.manifold = manifold;
-      this.isExpanded = true;
+      this.isExpanded = false;
 		}
 	}
 

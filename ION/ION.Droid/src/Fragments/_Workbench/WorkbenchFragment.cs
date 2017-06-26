@@ -84,7 +84,6 @@ namespace ION.Droid.Fragments._Workbench {
       var ret = inflater.Inflate(Resource.Layout.fragment_workbench, container, false);
 
       list = ret.FindViewById<RecyclerView>(Resource.Id.list);
-      list.SetLayoutManager(new LinearLayoutManager(Activity));
 
       return ret;
     }
@@ -244,70 +243,10 @@ namespace ION.Droid.Fragments._Workbench {
 			if (!workbench.isEditable) {
 				return;
 			}
-      var ldb = new ListDialogBuilder(Activity);
-      ldb.SetTitle(string.Format(GetString(Resource.String.devices_actions_1arg), manifold.primarySensor.name));
 
-      var dgs = manifold.primarySensor as GaugeDeviceSensor;
-      var connectionState = dgs.device.connection.connectionState;
-
-      if (dgs != null && connectionState == EConnectionState.Disconnected || connectionState == EConnectionState.Broadcasting) {
-				ldb.AddItem(Resource.String.reconnect, () => {
-					dgs.device.connection.Connect();
-				});
-			}
-
-      if (dgs != null && (connectionState != EConnectionState.Disconnected && connectionState != EConnectionState.Broadcasting)) {
-				ldb.AddItem(Resource.String.disconnect, () => {
-					dgs.device.connection.Disconnect();
-				});
-			}
-
-      ldb.AddItem(Resource.String.rename, () => {
-				if (manifold.primarySensor is GaugeDeviceSensor) {
-					var gds = manifold.primarySensor as GaugeDeviceSensor;
-					new RenameDialog(gds.device).Show(Activity);
-				} else {
-					new RenameDialog(manifold.primarySensor).Show(Activity);
-				}
-      });
-
-      if (dgs.device.isConnected) {
-				ldb.AddItem(GetString(Resource.String.remote_change_unit), () => {
-					var device = dgs.device;
-
-					if (device.sensorCount > 1) {
-						var d = new ListDialogBuilder(Activity);
-						d.SetTitle(Resource.String.select_a_sensor);
-
-						for (int i = 0; i < device.sensorCount; i++) {
-							var sensor = device[i];
-							d.AddItem(i + ": " + sensor.type.GetTypeString(), () => {
-								ShowChangeUnitDialog(sensor);
-							});
-						}
-
-						d.Show();
-					} else {
-						ShowChangeUnitDialog(device.sensors[0]);
-					}
-				});
-			}
-
-      ldb.AddItem(Resource.String.workbench_add_viewer_sub, () => {
-        ShowAddSubviewDialog(manifold);
-      });
-
-      ldb.AddItem(Resource.String.alarm, () => {
-        var i = new Intent(Activity, typeof(SensorAlarmActivity));
-        i.PutExtra(SensorAlarmActivity.EXTRA_SENSOR, manifold.primarySensor.ToParcelable());
-        StartActivity(i);
-      });
-
-      ldb.AddItem(Resource.String.workbench_remove, () => {
-        workbench.Remove(manifold);
-      });
-
-      ldb.Show();
+      new ManifoldContextDialog.Builder(Activity, ion, manifold)
+                               .AddCustomAction(Resource.String.workbench_remove, () => { ion.currentWorkbench.Remove(manifold); })
+                               .Build().Show();
     }
 
 		private void ShowChangeUnitDialog(GaugeDeviceSensor sensor) {
@@ -326,134 +265,6 @@ namespace ION.Droid.Fragments._Workbench {
 
 			ldb.Show();
 		}
-
-    /// <summary>
-    /// Shows the add subview dialog.
-    /// </summary>
-    /// <param name="manifold">Manifold.</param>
-    private void ShowAddSubviewDialog(Manifold manifold) {
-      Func<int, int, string> format = delegate (int full, int abrv) {
-        return GetString(full) + " (" + GetString(abrv) + ")";
-      };
-
-      var ldb = new ListDialogBuilder(Activity);
-      ldb.SetTitle(GetString(Resource.String.manifold_add_subview));
-			ldb.SetTitle(Resource.String.pick_unit);
-
-			if ((manifold.primarySensor.type == ESensorType.Pressure ||
-			    manifold.primarySensor.type == ESensorType.Temperature) && manifold.secondarySensor != null) {
-				if (!manifold.HasSensorPropertyOfType(typeof(SecondarySensorProperty))) {
-					var t = manifold.secondarySensor.type;
-					var type = t.GetTypeString();
-					var abrv = t.GetTypeAbreviationString();
-					ldb.AddItem(String.Format(GetString(Resource.String.workbench_linked_sensor_2sarg), type, abrv), () => {
-						manifold.AddSensorProperty(new SecondarySensorProperty(manifold));
-					});
-				}
-			}
-
-      if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
-        ldb.AddItem(format(Resource.String.workbench_alt, Resource.String.workbench_alt_abrv), () => {
-          manifold.AddSensorProperty(new AlternateUnitSensorProperty(manifold));
-        });
-      }
-
-      if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
-        ldb.AddItem(format(Resource.String.workbench_roc, Resource.String.workbench_roc_abrv), () => {
-          manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold, ion.preferences.device.trendInterval));
-        });
-      }
-
-      if (!manifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {
-        ldb.AddItem(format(Resource.String.workbench_min, Resource.String.workbench_min_abrv), () => {
-          manifold.AddSensorProperty(new MinSensorProperty(manifold));
-        });
-      }
-
-      if (!manifold.HasSensorPropertyOfType(typeof(MaxSensorProperty))) {
-        ldb.AddItem(format(Resource.String.workbench_max, Resource.String.workbench_max_abrv), () => {
-          manifold.AddSensorProperty(new MaxSensorProperty(manifold));
-        });
-      }
-
-      if (!manifold.HasSensorPropertyOfType(typeof(HoldSensorProperty))) {
-        ldb.AddItem(format(Resource.String.workbench_hold, Resource.String.workbench_hold_abrv), () => {
-          manifold.AddSensorProperty(new HoldSensorProperty(manifold));
-        });
-      }
-
-      if (!manifold.HasSensorPropertyOfType(typeof(TimerSensorProperty))) {
-        ldb.AddItem(format(Resource.String.workbench_timer, Resource.String.workbench_timer_abrv), () => {
-          manifold.AddSensorProperty(new TimerSensorProperty(manifold));
-        });
-      }
-
-      if (ESensorType.Pressure == manifold.primarySensor.type || ESensorType.Temperature == manifold.primarySensor.type) {
-        if (!manifold.HasSensorPropertyOfType(typeof(PTChartSensorProperty))) {
-          ldb.AddItem(format(Resource.String.workbench_ptchart, Resource.String.fluid_pt_abrv), () => {
-            manifold.AddSensorProperty(new PTChartSensorProperty(manifold));
-          });
-        }
-
-        if (!manifold.HasSensorPropertyOfType(typeof(SuperheatSubcoolSensorProperty))) {
-          ldb.AddItem(format(Resource.String.workbench_shsc, Resource.String.workbench_shsc_abrv), () => {
-            manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(manifold));
-          });
-        }
-      }
-
-			ldb.AddItem(Resource.String.workbench_add_all, () => {
-        AddAllSubviews(manifold);
-      });
-
-      ldb.Show();
-    }
-
-    /// <summary>
-    /// Attempts to add all of the subviews to the manifold, as long as they aren't already present.
-    /// </summary>
-    private void AddAllSubviews(Manifold manifold) {
-			if (manifold.primarySensor.type == ESensorType.Pressure || manifold.primarySensor.type == ESensorType.Temperature) {
-				if (!manifold.HasSensorPropertyOfType(typeof(SecondarySensorProperty))) {
-					manifold.AddSensorProperty(new SecondarySensorProperty(manifold));
-				}
-			}
-
-      if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
-        manifold.AddSensorProperty(new AlternateUnitSensorProperty(manifold));
-      }
-
-      if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
-        manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold, ion.preferences.device.trendInterval));
-      }
-
-      if (!manifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {
-        manifold.AddSensorProperty(new MinSensorProperty(manifold));
-      }
-
-      if (!manifold.HasSensorPropertyOfType(typeof(MaxSensorProperty))) {
-        manifold.AddSensorProperty(new MaxSensorProperty(manifold));
-      }
-
-      if (!manifold.HasSensorPropertyOfType(typeof(HoldSensorProperty))) {
-        manifold.AddSensorProperty(new HoldSensorProperty(manifold));
-      }
-
-      if (!manifold.HasSensorPropertyOfType(typeof(TimerSensorProperty))) {
-        manifold.AddSensorProperty(new TimerSensorProperty(manifold));
-      }
-
-      if (ESensorType.Pressure == manifold.primarySensor.type || ESensorType.Temperature == manifold.primarySensor.type) {
-        if (!manifold.HasSensorPropertyOfType(typeof(PTChartSensorProperty))) {
-          manifold.AddSensorProperty(new PTChartSensorProperty(manifold));
-        }
-
-        if (!manifold.HasSensorPropertyOfType(typeof(SuperheatSubcoolSensorProperty))) {
-          manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(manifold));
-        }
-      }
-//			adapter.ExpandManifold(manifold);
-    }
   }
 }
 

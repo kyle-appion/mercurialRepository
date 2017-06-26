@@ -305,7 +305,6 @@
     <Compile Include="src\Activity\Portal\PortalRemoteViewingViewHolder.cs" />
     <Compile Include="src\Activity\Portal\PortalRemoteViewingAdapter.cs" />
     <Compile Include="src\Activity\Portal\PortalRemoteViewingManagerActivity.cs" />
-    <Compile Include="src\Fragments\_Workbench\SpaceViewHolder.cs" />
     <Compile Include="src\Activity\RoCActivity.cs" />
     <Compile Include="src\Content\ManifoldParcelable.cs" />
     <Compile Include="src\Util\AndroidLogger.cs" />
@@ -330,6 +329,9 @@
     <Compile Include="src\Activity\Report\IGraphRenderer.cs" />
     <Compile Include="src\Activity\DeviceGrid\DeviceGridActivity.cs" />
     <Compile Include="src\Dialog\ManifoldContextDialog.cs" />
+    <Compile Include="src\Activity\Report\BuildReportActivity.cs" />
+    <Compile Include="src\Activity\Report\BuildReportGraphAdapter.cs" />
+    <Compile Include="src\Activity\Report\BuildReportValueAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -777,6 +779,11 @@
     <AndroidResource Include="Resources\layout-ldpi\activity_portal_access_code_manager_4_4.axml" />
     <AndroidResource Include="Resources\layout\list_item_viewer.axml" />
     <AndroidResource Include="Resources\drawable\xml_white_in_black.xml" />
+    <AndroidResource Include="Resources\layout\activity_build_report.axml" />
+    <AndroidResource Include="Resources\drawable\selector_button_gold.xml" />
+    <AndroidResource Include="Resources\drawable\xml_rect_gold_black_bordered.xml" />
+    <AndroidResource Include="Resources\drawable\xml_rect_black_gold_bordered.xml" />
+    <AndroidResource Include="Resources\layout\activity_build_report_list_item_graph.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
