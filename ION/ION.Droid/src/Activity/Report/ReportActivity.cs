@@ -95,7 +95,7 @@
 			};
 
 			graphButtonButton.Click += (sender, e) => {
-				var i = new Intent(this, typeof(GraphReportSessionsActivity));
+				var i = new Intent(this, typeof(BuildReportActivity));
         i.PutExtra(GraphReportSessionsActivity.EXTRA_SESSIONS, new List<int>(checkedSessions).ToArray());
 				StartActivityForResult(i, REQUEST_EXPORT);
 			};

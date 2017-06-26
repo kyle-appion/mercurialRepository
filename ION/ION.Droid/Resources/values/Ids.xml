@@ -32,6 +32,7 @@
   <item name="content2" type="id"/>
   <item name="color" type="id"/>
   <item name="coordinates" type="id"/>
+	<item name="count" type="id"/>
   <item name="counter" type="id"/>
   <item name="country" type="id"/>
 	<item name="customer_no" type="id"/>
@@ -67,6 +68,7 @@
 	<item name="logout" type="id"/>
 	<item name="lowest" type="id"/>
   <item name="next" type="id"/>
+	<item name="numeric" type="id"/>
   <!-- lock is a keyword for c# -->
   <item name="padlock" type="id"/>
   <item name="password" type="id"/>

@@ -147,9 +147,9 @@
 				case Android.Resource.Id.Home:
 					SetResult(Result.Canceled);
 					Finish();
-				return true;
+				  return true;
 				default:
-				return base.OnMenuItemSelected(featureId, item);
+				  return base.OnMenuItemSelected(featureId, item);
 			}
 		}
 
