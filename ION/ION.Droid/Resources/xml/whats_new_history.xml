@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
+  <display version="1.0.2">
+    <fixed>Fixed scan bug in Device Manager</fixed>
+    <fixed>Superheat/Subcool bug that prevent use of the calculator</fixed>
+  </display>
 	<display version="1.0.0">
     <new>Added Real Time TREND logging to Rate of Change</new>
     <new>Added optional app analytics (found in settings)</new>
