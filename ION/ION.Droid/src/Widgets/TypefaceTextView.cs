@@ -53,6 +53,9 @@
     /// </summary>
     private float spacingAdd = 0.0f;
 
+    public TypefaceTextView(IntPtr handle, JniHandleOwnership transfer) : base(handle, transfer) {
+    }
+
     
     public TypefaceTextView(Context context) : this(context, null, 0) {
     }

@@ -22,6 +22,7 @@
 	using ION.Core.Content;
 
   // ION.Droid
+  using ION.Droid.Activity.Grid;
 	using ION.Droid.Activity.Tutorial;
 	using ION.Droid.Activity.Portal;
 	using App;
@@ -224,6 +225,10 @@
       GotoFragment(new WorkbenchFragment(), GetColoredDrawable(Resource.Drawable.ic_nav_workbench, Resource.Color.gray));
     }
 
+    public void DisplayGrid() {
+      StartActivity(new Intent(this, typeof(DeviceGridActivity)));
+    }
+
     /// <summary>
     /// Navigates the to the given fragment.
     /// </summary>
@@ -277,6 +282,17 @@
               HideDrawer();
             },
           },
+
+          new NavigationIconItem() {
+            id = Resource.Id.grid,
+            title = "US GRID",
+            icon = Resource.Drawable.xml_circle,
+            action = () => {
+              DisplayGrid();
+              HideDrawer();
+            },
+          }
+
         },
       };
 

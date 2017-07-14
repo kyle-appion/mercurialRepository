@@ -54,7 +54,8 @@
   <item name="footer" type="id"/>
   <item name="forgot" type="id"/>
   <item name="graph" type="id"/>
-  <item name="help" type="id"/>
+  <item name="grid" type="id"/>
+	<item name="help" type="id"/>
 	<item name="highest" type="id"/>
 	<item name="home" type="id"/>
   <item name="icon" type="id"/>

@@ -327,11 +327,15 @@
     <Compile Include="src\Activity\Report\ReportOverlay.cs" />
     <Compile Include="src\Activity\Report\SimpleGraphRenderer.cs" />
     <Compile Include="src\Activity\Report\IGraphRenderer.cs" />
-    <Compile Include="src\Activity\DeviceGrid\DeviceGridActivity.cs" />
     <Compile Include="src\Dialog\ManifoldContextDialog.cs" />
     <Compile Include="src\Activity\Report\BuildReportActivity.cs" />
     <Compile Include="src\Activity\Report\BuildReportGraphAdapter.cs" />
     <Compile Include="src\Activity\Report\BuildReportValueAdapter.cs" />
+    <Compile Include="src\Activity\DeviceGrid\DeviceGridActivity.cs" />
+    <Compile Include="src\Activity\DeviceGrid\GridGaugeDeviceSensorView.cs" />
+    <Compile Include="src\Widgets\AutoResizeTextView.cs" />
+    <Compile Include="src\Activity\DeviceGrid\DeviceGridAdapter.cs" />
+    <Compile Include="src\Activity\DeviceGrid\DeviceViewHolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -784,6 +788,23 @@
     <AndroidResource Include="Resources\drawable\xml_rect_gold_black_bordered.xml" />
     <AndroidResource Include="Resources\drawable\xml_rect_black_gold_bordered.xml" />
     <AndroidResource Include="Resources\layout\activity_build_report_list_item_graph.axml" />
+    <AndroidResource Include="Resources\layout\view_holder_grid_gauge_device_sensor.axml" />
+    <AndroidResource Include="Resources\drawable\xml_rect_white_round.xml" />
+    <AndroidResource Include="Resources\drawable\xml_rect_black_round.xml" />
+    <AndroidResource Include="Resources\drawable\xml_circle.xml" />
+    <AndroidResource Include="Resources\drawable\xml_rect_blue_round.xml" />
+    <AndroidResource Include="Resources\drawable\xml_rect_red_round.xml" />
+    <AndroidResource Include="Resources\drawable\xml_rect_maroon_round.xml" />
+    <AndroidResource Include="Resources\drawable\ic_render_gaugeav760.png" />
+    <AndroidResource Include="Resources\drawable\ic_render_gaugep300.png" />
+    <AndroidResource Include="Resources\drawable\ic_render_gaugep500.png" />
+    <AndroidResource Include="Resources\drawable\ic_render_gaugep800.png" />
+    <AndroidResource Include="Resources\drawable\ic_render_gaugept500.png" />
+    <AndroidResource Include="Resources\drawable\ic_render_gaugept800.png" />
+    <AndroidResource Include="Resources\drawable\ic_bluetooth_broadcast.png" />
+    <AndroidResource Include="Resources\drawable\ic_bluetooth_connected.png" />
+    <AndroidResource Include="Resources\drawable\ic_bluetooth_disconnected.png" />
+    <AndroidResource Include="Resources\layout\activity_device_grid.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -825,9 +846,9 @@
     <Folder Include="src\Net\Portal\" />
     <Folder Include="src\Content\" />
     <Folder Include="src\Activity\Rss\" />
-    <Folder Include="src\Activity\DeviceGrid\" />
     <Folder Include="Resources\layout\" />
     <Folder Include="Resources\drawable\" />
+    <Folder Include="src\Activity\DeviceGrid\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\DroidSans_Bold.ttf" />
