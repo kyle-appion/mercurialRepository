@@ -24,6 +24,11 @@
     /// </summary>
     public Analyzer.ESide side { get; private set; }
     /// <summary>
+    /// The sensor that cause the event.
+    /// </summary>
+    /// <value>The sensor.</value>
+    public Sensor sensor { get; private set; }
+    /// <summary>
     /// The index that is used for almost all sensor events. In the case of a swap event, this is the first sensor.
     /// </summary>
     /// <value>The index.</value>
@@ -44,8 +49,9 @@
     /// </summary>
     /// <param name="type">Type.</param>
     /// <param name="index">Index.</param>
-    public AnalyzerEvent(EType type, int index) {
+    public AnalyzerEvent(EType type, Sensor sensor, int index) {
       this.type = type;
+      this.sensor = sensor;
       this.index = index;
     }
 
@@ -527,7 +533,7 @@
       sensors[index] = sensor;
       //sensor.onSensorStateChangedEvent += OnSensorChangedEvent;
 
-      var ae = new AnalyzerEvent(AnalyzerEvent.EType.Added, index);
+      var ae = new AnalyzerEvent(AnalyzerEvent.EType.Added, sensor, index);
       NotifyOfAnalyzerEvent(ae);
       return true;
     }
@@ -571,7 +577,7 @@
 				}
 			}
 
-      var ae = new AnalyzerEvent(AnalyzerEvent.EType.Removed, index);
+      var ae = new AnalyzerEvent(AnalyzerEvent.EType.Removed, sensor, index);
       NotifyOfAnalyzerEvent(ae);
 
       return true;
@@ -956,7 +962,7 @@
       for (int i = startInclusive; i < endExclusive; i++) {
         if (sensors[i] == null) {
           sensors[i] = sensor;
-          NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.Added, i));
+          NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.Added, sensor, i));
           return true;
         }
       }
@@ -979,7 +985,7 @@
     /// </summary>
     /// <param name="sensor">Sensor.</param>
     private void OnSensorChangedEvent(Sensor sensor) {
-      NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.SensorChanged, IndexOfSensor(sensor)));
+      NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.SensorChanged, sensor, IndexOfSensor(sensor)));
     }
 
     /// <summary>

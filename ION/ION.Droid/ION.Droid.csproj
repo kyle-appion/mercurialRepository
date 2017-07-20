@@ -336,6 +336,8 @@
     <Compile Include="src\Widgets\AutoResizeTextView.cs" />
     <Compile Include="src\Activity\DeviceGrid\DeviceGridAdapter.cs" />
     <Compile Include="src\Activity\DeviceGrid\DeviceViewHolder.cs" />
+    <Compile Include="src\Activity\DeviceGrid\LinkDecorator.cs" />
+    <Compile Include="src\Activity\DeviceGrid\GaugeDeviceControlDialogFragment.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -417,7 +419,6 @@
     <AndroidResource Include="Resources\drawable-ldpi\ic_subview_dropdown.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_trash.png" />
     <AndroidResource Include="Resources\drawable-ldpi\icon_warning.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\img_bgd_carbon.png" />
     <AndroidResource Include="Resources\drawable-ldpi\img_bgd_dialog.9.png" />
     <AndroidResource Include="Resources\drawable-ldpi\img_bgd_list_white.9.png" />
     <AndroidResource Include="Resources\drawable-ldpi\img_bgd_subviewdisplay.9.png" />
@@ -500,12 +501,6 @@
     <AndroidResource Include="Resources\drawable-ldpi\viewer_background.axml" />
     <AndroidResource Include="Resources\layout-ldpi\activity_superheat_subcool.axml" />
     <AndroidResource Include="Resources\layout-ldpi\list_item_space.axml" />
-    <AndroidResource Include="Resources\drawable-ldpi\analyzer_manifold_high_bottom_inactive.axml" />
-    <AndroidResource Include="Resources\drawable-ldpi\analyzer_manifold_high_top.axml" />
-    <AndroidResource Include="Resources\drawable-ldpi\analyzer_manifold_low_top.axml" />
-    <AndroidResource Include="Resources\drawable-ldpi\analyzer_manifold_high_bottom_active.axml" />
-    <AndroidResource Include="Resources\drawable-ldpi\analyzer_manifold_low_bottom_active.axml" />
-    <AndroidResource Include="Resources\drawable-ldpi\analyzer_manifold_low_bottom_inactive.axml" />
     <AndroidResource Include="Resources\anim\enter.xml" />
     <AndroidResource Include="Resources\anim\exit.xml" />
     <AndroidResource Include="Resources\menu\screenshot.xml" />
@@ -690,7 +685,6 @@
     <AndroidResource Include="Resources\drawable-xxhdpi\tab_unselected_focused_ion_action_bar.9.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\tab_unselected_ion_action_bar.9.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\tab_unselected_pressed_ion_action_bar.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ab_background_textured_ion_action_bar.xml" />
     <AndroidResource Include="Resources\drawable-ldpi\btn_cab_done_ion_action_bar.xml" />
     <AndroidResource Include="Resources\drawable-ldpi\progress_horizontal_ion_action_bar.xml" />
     <AndroidResource Include="Resources\drawable-ldpi\selectable_background_ion_action_bar.xml" />
@@ -782,19 +776,9 @@
     <AndroidResource Include="Resources\drawable-ldpi\ic_render_gaugept800.png" />
     <AndroidResource Include="Resources\layout-ldpi\activity_portal_access_code_manager_4_4.axml" />
     <AndroidResource Include="Resources\layout\list_item_viewer.axml" />
-    <AndroidResource Include="Resources\drawable\xml_white_in_black.xml" />
     <AndroidResource Include="Resources\layout\activity_build_report.axml" />
-    <AndroidResource Include="Resources\drawable\selector_button_gold.xml" />
-    <AndroidResource Include="Resources\drawable\xml_rect_gold_black_bordered.xml" />
-    <AndroidResource Include="Resources\drawable\xml_rect_black_gold_bordered.xml" />
     <AndroidResource Include="Resources\layout\activity_build_report_list_item_graph.axml" />
     <AndroidResource Include="Resources\layout\view_holder_grid_gauge_device_sensor.axml" />
-    <AndroidResource Include="Resources\drawable\xml_rect_white_round.xml" />
-    <AndroidResource Include="Resources\drawable\xml_rect_black_round.xml" />
-    <AndroidResource Include="Resources\drawable\xml_circle.xml" />
-    <AndroidResource Include="Resources\drawable\xml_rect_blue_round.xml" />
-    <AndroidResource Include="Resources\drawable\xml_rect_red_round.xml" />
-    <AndroidResource Include="Resources\drawable\xml_rect_maroon_round.xml" />
     <AndroidResource Include="Resources\drawable\ic_render_gaugeav760.png" />
     <AndroidResource Include="Resources\drawable\ic_render_gaugep300.png" />
     <AndroidResource Include="Resources\drawable\ic_render_gaugep500.png" />
@@ -805,6 +789,28 @@
     <AndroidResource Include="Resources\drawable\ic_bluetooth_connected.png" />
     <AndroidResource Include="Resources\drawable\ic_bluetooth_disconnected.png" />
     <AndroidResource Include="Resources\layout\activity_device_grid.axml" />
+    <AndroidResource Include="Resources\layout\fragment_gauge_dialog_device_control.axml" />
+    <AndroidResource Include="Resources\drawable-ldpi\ic_battery_vert_25.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\ic_battery_vert_50.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\ic_battery_vert_75.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\ic_battery_vert_100.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\ic_battery_vert_empty.png" />
+    <AndroidResource Include="Resources\drawable-nodpi\selector_button_gold.xml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_circle.xml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_rect_black_gold_bordered.xml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_rect_black_round.xml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_rect_blue_round.xml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_rect_gold_black_bordered.xml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_rect_green_black_bordered_round.xml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_rect_light_blue_black_bordered_round.xml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_rect_maroon_round.xml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_rect_red_black_bordered_round.xml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_rect_red_round.xml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_rect_white_black_bordered_round.xml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_rect_white_round.xml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_rect_yellow_black_bordered_round.xml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_white_in_black.xml" />
+    <AndroidResource Include="Resources\drawable\img_bgd_carbon.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -849,6 +855,7 @@
     <Folder Include="Resources\layout\" />
     <Folder Include="Resources\drawable\" />
     <Folder Include="src\Activity\DeviceGrid\" />
+    <Folder Include="Resources\drawable-nodpi\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\DroidSans_Bold.ttf" />

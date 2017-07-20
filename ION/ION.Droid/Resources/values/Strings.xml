@@ -322,6 +322,13 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
   <string name="fluid_sh_abrv">SH</string>
 
 	<!--
+  GRID
+  -->
+  <string name="grid_device">Device Grid</string>
+  <string name="grid_dialog_help">For added functionality, add this device to <b>System Analyzer</b> or <b>Workbench</b>.</string>
+  <string name="grid_display_on">Display\nOn</string>
+
+	<!--
 	JOBS
 	-->
 	<string name="job">Job</string>
@@ -513,7 +520,8 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
   WORKBENCH
   -->
   <string name="workbench">Workbench</string>
-  <string name="workbench_remove">Remove from Workbench</string>
+  <string name="workbench_error_already_contains_sensor">The workbench already contains the given sensor.</string>
+  <string name="workbench_remove">Remove from Workbench?</string>
   <string name="workbench_remove_sensor">You are about to remove a Viewer from the Workbench. Removing the viewer will also remove all of its subviews from the workbench. Do you wish to remove the Viewer?</string>
 
 	<string name="workbench_add_all">Add all Subviews</string>

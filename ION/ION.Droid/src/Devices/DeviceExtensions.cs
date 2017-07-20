@@ -31,6 +31,44 @@ namespace ION.Droid.Devices {
     }
 
     /// <summary>
+    /// Queries the vertical icon used to represent that device's current battery level.
+    /// </summary>
+    /// <returns>The battery icon vert.</returns>
+    /// <param name="device">Device.</param>
+    public static int GetBatteryIconVert(this IDevice device) {
+      if (device.battery > 75) {
+        return Resource.Drawable.ic_battery_vert_100;
+			} else if (device.battery > 50) {
+				return Resource.Drawable.ic_battery_vert_75;
+			} else if (device.battery > 25) {
+				return Resource.Drawable.ic_battery_vert_50;
+			} else if (device.battery > 5) {
+				return Resource.Drawable.ic_battery_vert_25;
+      } else {
+        return Resource.Drawable.ic_battery_vert_empty;
+			}
+    }
+
+		/// <summary>
+		/// Queries the horizontal icon used to represent that device's current battery level.
+		/// </summary>
+		/// <returns>The battery icon vert.</returns>
+		/// <param name="device">Device.</param>
+		public static int GetBatteryIconHoriz(this IDevice device) {
+			if (device.battery > 75) {
+				return Resource.Drawable.ic_battery_horiz_100;
+			} else if (device.battery > 50) {
+				return Resource.Drawable.ic_battery_horiz_75;
+			} else if (device.battery > 25) {
+				return Resource.Drawable.ic_battery_horiz_50;
+			} else if (device.battery > 5) {
+				return Resource.Drawable.ic_battery_horiz_25;
+			} else {
+				return Resource.Drawable.ic_battery_horiz_empty;
+			}
+		}
+
+    /// <summary>
     /// Queries the Android drawable resource icon for the given gauge type.
     /// </summary>
     /// <param name="type"></param>

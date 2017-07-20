@@ -252,6 +252,15 @@
     }
 
     /// <summary>
+    /// Creates a new manifold with the given sensors as the primary and sencondary sensors.
+    /// </summary>
+    /// <param name="primarySensor">Primary sensor.</param>
+    /// <param name="secondarySensor">Secondary sensor.</param>
+    public Manifold(Sensor primarySensor, Sensor secondarySensor) : this(primarySensor) {
+      this.secondarySensor = secondarySensor;
+    }
+
+    /// <summary>
     /// Returns a <see cref="System.String"/> that represents the current <see cref="ION.Core.Content.Manifold"/>.
     /// </summary>
     /// <returns>A <see cref="System.String"/> that represents the current <see cref="ION.Core.Content.Manifold"/>.</returns>

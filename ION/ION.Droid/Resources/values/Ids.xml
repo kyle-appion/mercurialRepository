@@ -27,9 +27,13 @@
   <item name="cloud" type="id"/>
   <item name="close" type="id"/>
   <item name="connect" type="id"/>
+	<item name="connected" type="id"/>
   <item name="connection" type="id"/>
+  <item name="container" type="id"/>
   <item name="content" type="id"/>
   <item name="content2" type="id"/>
+  <item name="control" type="id"/>
+  <item name="control2" type="id"/>
   <item name="color" type="id"/>
   <item name="coordinates" type="id"/>
 	<item name="count" type="id"/>
@@ -37,7 +41,9 @@
   <item name="country" type="id"/>
 	<item name="customer_no" type="id"/>
   <item name="date" type="id"/>
+  <item name="disconnected" type="id"/>
 	<item name="dispatch_no" type="id"/>
+  <item name="divider" type="id"/>
   <item name="down" type="id"/>
   <item name="download" type="id"/>
   <item name="edit" type="id"/>

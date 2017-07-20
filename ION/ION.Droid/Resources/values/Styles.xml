@@ -45,6 +45,16 @@
     <item name="android:buttonStyle">@style/IONButton</item>    
   </style>
 
+  <style name="ComplicatedDialogTheme" parent="@android:style/Theme.Dialog">
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowFullscreen">false</item>
+    <item name="android:windowIsFloating">true</item>
+    <item name="android:windowContentOverlay">@null</item>
+    <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+    <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+    <item name="android:windowBackground">@android:color/transparent</item>
+  </style>
+
   <style name="IONButton" parent="android:Widget.Button">
     <item name="android:background">@drawable/selector_button_gold_black</item>
     <item name="android:gravity">center</item>
