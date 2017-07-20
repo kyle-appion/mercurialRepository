@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="@dimen/padding"
+    android:background="@drawable/xml_rect_white_black_bordered_round"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<!-- Header -->
+    <LinearLayout
+        android:padding="@dimen/padding"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@id/settings"
+            android:src="@drawable/ic_settings"
+            android:layout_width="@dimen/icon_medium"
+            android:layout_height="@dimen/icon_medium" />
+        <Space
+            android:layout_width="@dimen/padding"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@id/name"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_large"
+            android:textColor="@color/black"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <FrameLayout
+            android:layout_width="@dimen/icon_medium"
+            android:layout_height="@dimen/icon_medium">
+            <ProgressBar
+                android:id="@id/progress"
+                android:indeterminate="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <ImageView
+                android:id="@id/connection"
+                android:background="@drawable/xml_rect_red_black_bordered_round"
+                android:src="@drawable/ic_bluetooth_disconnected"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
+    </LinearLayout>
+<!-- Divider -->
+    <View
+        android:background="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="2dp" />
+<!-- Measurements -->
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TableRow>
+        <!-- Icons -->
+            <LinearLayout
+                android:padding="@dimen/padding"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@id/icon"
+                    android:src="@drawable/ic_render_gaugeav760"
+                    android:layout_width="@dimen/icon_large"
+                    android:layout_height="@dimen/icon_large" />
+                <ImageView
+                    android:id="@id/battery"
+                    android:src="@drawable/ic_battery_vert_100"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/icon_large" />
+            </LinearLayout>
+        <!-- Measurement 1 -->
+            <LinearLayout
+                android:id="@id/content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@id/title"
+                    android:textSize="@dimen/text_size_large"
+                    android:textStyle="bold"
+                    android:gravity="right"
+                    android:textColor="@color/black"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@id/measurement"
+                    android:gravity="right"
+                    android:textSize="@dimen/text_size_title"
+                    android:textStyle="bold"
+                    android:hint="- - - -"
+                    android:textColor="@color/black"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <LinearLayout
+                    android:padding="@dimen/padding"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@id/state"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <Space
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@id/unit"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        <!-- Divider -->
+            <View
+                android:id="@id/divider"
+                android:padding="@dimen/padding"
+                android:background="@color/black"
+                android:layout_width="2dp"
+                android:layout_height="match_parent" />
+        <!-- Measurement 2 -->
+            <LinearLayout
+                android:id="@id/content2"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@id/title"
+                    android:textSize="@dimen/text_size_large"
+                    android:textStyle="bold"
+                    android:gravity="right"
+                    android:textColor="@color/black"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@id/measurement"
+                    android:gravity="right"
+                    android:textSize="@dimen/text_size_title"
+                    android:textStyle="bold"
+                    android:hint="- - - -"
+                    android:textColor="@color/black"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <LinearLayout
+                    android:padding="@dimen/padding"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@id/state"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <Space
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@id/unit"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </TableRow>
+    <!-- Divider -->
+        <View
+            android:background="@color/black"
+            android:layout_width="match_parent"
+            android:layout_height="2dp" />
+        <TableRow>
+            <TextView
+                android:text="@string/grid_display_on"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        <!-- Measurement 1 Location Controls -->
+            <LinearLayout
+                android:id="@id/control"
+                android:orientation="horizontal"
+                android:gravity="right"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@id/analyzer"
+                    android:drawable="@drawable/xml_rect_gold_black_bordered"
+                    android:src="@drawable/ic_devices_add_to_analyzer"
+                    android:layout_width="@dimen/icon_large"
+                    android:layout_height="@dimen/icon_large" />
+                <ImageView
+                    android:id="@id/workbench"
+                    android:drawable="@drawable/xml_rect_gold_black_bordered"
+                    android:src="@drawable/ic_devices_add_to_workbench"
+                    android:layout_width="@dimen/icon_large"
+                    android:layout_height="@dimen/icon_large" />
+            </LinearLayout>
+        <!-- Space -->
+            <Space
+                android:padding="@dimen/padding"
+                android:layout_width="2dp"
+                android:layout_height="wrap_content" />
+        <!-- Measurement 2 Location Controls -->
+            <LinearLayout
+                android:id="@id/control2"
+                android:orientation="horizontal"
+                android:gravity="right"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@id/analyzer"
+                    android:drawable="@drawable/xml_rect_gold_black_bordered"
+                    android:src="@drawable/ic_devices_add_to_analyzer"
+                    android:layout_width="@dimen/icon_large"
+                    android:layout_height="@dimen/icon_large" />
+                <ImageView
+                    android:id="@id/workbench"
+                    android:drawable="@drawable/xml_rect_gold_black_bordered"
+                    android:src="@drawable/ic_devices_add_to_workbench"
+                    android:layout_width="@dimen/icon_large"
+                    android:layout_height="@dimen/icon_large" />
+            </LinearLayout>
+        </TableRow>
+    </TableLayout>
+<!-- Divider -->
+    <View
+        android:background="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="2dp" />
+    <TextView
+        android:gravity="center"
+        android:text="@string/grid_dialog_help"
+        android:textColor="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
