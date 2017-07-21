@@ -85,14 +85,6 @@
     /// The value that indicates that an activity action/result was for the selection of a fluid.
     /// </summary>
     public const int REQUEST_FLUID = 1;
-    /// <summary>
-    /// The value that indicates that we are requesting a pressure sensor.
-    /// </summary>
-    public const int REQUEST_PRESSURE_SENSOR = 2;
-    /// <summary>
-    /// The value that indicates that we are requesting a temperature sensor.
-    /// </summary>
-    public const int REQUEST_TEMPERATURE_SENSOR = 3;
 
     /// <summary>
     /// The view that will hold the fluid color for the ptchart.
@@ -500,11 +492,7 @@
       MenuInflater.Inflate(Resource.Menu.help, menu);
 
       var item = menu.FindItem(Resource.Id.help);
-      var view = item.ActionView as Button;
-      view.Text = GetString(Resource.String.help);
-      view.SetOnClickListener(new ViewClickAction((v) => {
-        OnMenuItemSelected(Resource.Id.help, menu.FindItem(Resource.Id.help));
-      }));
+	    item.Icon.SetTint(Resource.Color.light_blue.AsResourceColor(this).ToArgb());
 
       return true;
     }
@@ -673,13 +661,9 @@
 
       pressureAddView.SetOnClickListener(new ViewClickAction((view) => {
         if (!isPressureLocked) {
-			  Toast.MakeText(this, "DEVICE MANAGER WAS REMOVED! IMPLEMENT DEVICE SELECTION LIST", ToastLength.Short).Show();
-/*
-			  var i = new Intent(this, typeof(DeviceManagerActivity));
-          i.SetAction(Intent.ActionPick);
-          i.PutExtra(DeviceManagerActivity.EXTRA_DEVICE_FILTER, (int)EDeviceFilter.Pressure);
-          StartActivityForResult(i, REQUEST_PRESSURE_SENSOR);
-*/
+	        new GaugeDeviceSensorSelectDialog(this, ion, ESensorType.Pressure, (sensor) => {
+		        pressureSensor = sensor;
+	        }).Show();
         }
       }));
 
@@ -751,12 +735,9 @@
 
       temperatureAddView.SetOnClickListener(new ViewClickAction((view) => {
         if (!isTemperatureLocked) {
-/*
-          var i = new Intent(this, typeof(DeviceManagerActivity));
-          i.SetAction(Intent.ActionPick);
-          i.PutExtra(DeviceManagerActivity.EXTRA_DEVICE_FILTER, (int)EDeviceFilter.Temperature);
-          StartActivityForResult(i, REQUEST_TEMPERATURE_SENSOR);
-*/
+	        new GaugeDeviceSensorSelectDialog(this, ion, ESensorType.Temperature, (sensor) => {
+		        temperatureSensor = sensor;
+	        }).Show();
         }
       }));
 
@@ -833,11 +814,11 @@
 			switch (ptChart.state) {
 				case Fluid.EState.Bubble:
 					fluidStateTextView.Text = GetString(Resource.String.fluid_sc);
-					fluidStateTextView.SetBackgroundColor(new Color(GetColor(Resource.Color.red)));
+          fluidStateTextView.SetBackgroundColor(Resource.Color.red.AsResourceColor(this));
 					break;
 				case Fluid.EState.Dew:
 					fluidStateTextView.Text = GetString(Resource.String.fluid_sh);
-					fluidStateTextView.SetBackgroundColor(new Color(GetColor(Resource.Color.blue)));
+          fluidStateTextView.SetBackgroundColor(Resource.Color.blue.AsResourceColor(this));
 					break;
 			}
 

@@ -159,6 +159,7 @@
   <ItemGroup>
     <Compile Include="src\Activity\MainActivity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Dialog\GaugeDeviceSensorSelectDialog.cs" />
     <Compile Include="src\Dialog\IONAlertDialog.cs" />
     <Compile Include="src\Dialog\ListDialogBuilder.cs" />
     <Compile Include="src\Util\BitmapCache.cs" />

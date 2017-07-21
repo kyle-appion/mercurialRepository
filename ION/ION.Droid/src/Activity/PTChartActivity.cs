@@ -74,14 +74,6 @@
 		/// The value that indicates that an activity action/result was for the selection of a fluid.
 		/// </summary>
 		public const int REQUEST_FLUID = 1;
-		/// <summary>
-		/// The value that indicates that we are requesting a pressure sensor.
-		/// </summary>
-		public const int REQUEST_PRESSURE_SENSOR = 2;
-		/// <summary>
-		/// The value that indicates that we are requesting a temperature sensor.
-		/// </summary>
-		public const int REQUEST_TEMPERATURE_SENSOR = 3;
 
 		/// <summary>
 		/// The pt chart that will perform the calculations for the fluid.
@@ -112,8 +104,8 @@
 				if (initialManifold != null) {
 					initialManifold.ptChart = __ptChart;
 				}
-				if (sensor != null) {
-					OnSensorChanged(sensor);
+				if (_sensor != null) {
+					OnSensorChanged(_sensor);
 				} else {
           var pressure = Units.Pressure.PSIG.OfScalar(0);
 					slider.ScrollToPressure(pressure, true);
@@ -244,7 +236,7 @@
 		/// The non-manual sensor that the activity is using to calculate pt measurements.
 		/// </summary>
 		/// <value>The sensor.</value>
-		private Sensor sensor {
+		private Sensor _sensor {
 			get {
 				return __sensor;
 			}
@@ -291,19 +283,19 @@
 
 		private bool hasPressureSensor {
 			get {
-				return sensor != null && ESensorType.Pressure == sensor.type;
+				return _sensor != null && ESensorType.Pressure == _sensor.type;
 			}
 		}
 
 		private bool hasTemperatureSensor {
 			get {
-				return sensor != null && ESensorType.Temperature == sensor.type;
+				return _sensor != null && ESensorType.Temperature == _sensor.type;
 			}
 		}
 
 		private Unit pressureUnit {
 			get {
-				return (__sensor != null && ESensorType.Pressure == __sensor.type) ? sensor.unit : __pressureUnit;
+				return (__sensor != null && ESensorType.Pressure == __sensor.type) ? _sensor.unit : __pressureUnit;
 			}
 			set {
 				__pressureUnit = value;
@@ -394,7 +386,7 @@
 				var sp = (SensorParcelable)Intent.GetParcelableExtra(EXTRA_SENSOR);
 				var s = sp.Get(ion);
 				if (ESensorType.Pressure == s?.type || ESensorType.Temperature == s?.type) {
-					sensor = s;
+					_sensor = s;
 					sensorLocked = true;
 				} else {
 					Error(string.Format(GetString(Resource.String.ptchart_error_cannot_start_activity_1sarg), s?.type.GetTypeString()));
@@ -488,22 +480,6 @@
             ptChart = fluid.GetPtChart(state);
 					}
 				break;
-
-/*
-				case REQUEST_PRESSURE_SENSOR:
-					if (data != null && data.HasExtra(DeviceManagerActivity.EXTRA_SENSOR)) {
-						var psp = (SensorParcelable)data.GetParcelableExtra(DeviceManagerActivity.EXTRA_SENSOR);
-						sensor = psp.Get(ion);
-					}
-				break;
-
-				case REQUEST_TEMPERATURE_SENSOR:
-					if (data != null && data.HasExtra(DeviceManagerActivity.EXTRA_SENSOR)) {
-						var tsp = (SensorParcelable)data?.GetParcelableExtra(DeviceManagerActivity.EXTRA_SENSOR);
-						sensor = tsp.Get(ion);
-					}
-				break;
-*/
 			}
 
 			Refresh();
@@ -535,7 +511,7 @@
 
 			switch (manifold.primarySensor.type) {
 				case ESensorType.Pressure:
-					sensor = manifold.primarySensor;
+					_sensor = manifold.primarySensor;
 					pressureUnit = manifold.primarySensor.unit;
 					if (manifold.secondarySensor?.type == ESensorType.Temperature) {
 						temperatureUnit = manifold.secondarySensor.unit;
@@ -547,7 +523,7 @@
 					}
 				break;
 				case ESensorType.Temperature:
-					sensor = manifold.primarySensor;
+					_sensor = manifold.primarySensor;
 					temperatureUnit = manifold.primarySensor.unit;
 					if (manifold.secondarySensor?.type == ESensorType.Pressure) {
 						pressureUnit = manifold.secondarySensor.unit;
@@ -616,7 +592,7 @@
 			pressureTextWatcher = new Watcher((editable) => {
 				var text = editable.ToString();
 				try {
-					if (!"".Equals(text) && sensor == null) {
+					if (!"".Equals(text) && _sensor == null) {
 						var amount = double.Parse(text);
 						var ps = pressureUnit.OfScalar(amount);
             var temp = ptChart.GetTemperature(ps, true).ConvertTo(temperatureUnit);
@@ -632,19 +608,15 @@
 
 			pressureAddView.SetOnClickListener(new ViewClickAction((view) => {
 				if (!sensorLocked && !hasTemperatureSensor) {
-          Toast.MakeText(this, "DEVICE MANAGER WAS REMOVED! IMPLEMENT DEVICE SELECTION LIST", ToastLength.Short).Show();
-/*
-					var i = new Intent(this, typeof(DeviceManagerActivity));
-					i.SetAction(Intent.ActionPick);
-					i.PutExtra(DeviceManagerActivity.EXTRA_DEVICE_FILTER, (int)EDeviceFilter.Pressure);
-					StartActivityForResult(i, REQUEST_PRESSURE_SENSOR);
-*/
+					new GaugeDeviceSensorSelectDialog(this, ion, ESensorType.Pressure, (sensor) => {
+						_sensor = sensor;
+					}).Show();
 				}
 			}));
 
 			pressureAddView.SetOnLongClickListener(new ViewLongClickAction((view) => {
 				if (!sensorLocked) {
-					sensor = null;
+					_sensor = null;
 					slider.ScrollToPressure(pressureUnit.OfScalar(0), true);
 				}
 			}));
@@ -655,7 +627,7 @@
 
 			pressureUnitView.Text = pressureUnit.ToString();
 			pressureUnitView.SetOnClickListener(new ViewClickAction((v) => {
-				if (sensor == null || ESensorType.Temperature == sensor.type) {
+				if (_sensor == null || ESensorType.Temperature == _sensor.type) {
 					UnitDialog.Create(this, SensorUtils.DEFAULT_PRESSURE_UNITS, (obj, unit) => {
 						if (initialManifold != null && initialManifold.primarySensor.type == ESensorType.Temperature) {
 							UpdateManifold(unit);
@@ -666,7 +638,7 @@
 						pressureUnit = unit;
 
 						try {
-							if (!"".Equals(text) && sensor == null) {
+							if (!"".Equals(text) && _sensor == null) {
 								var amount = double.Parse(text);
 								var ps = oldUnit.OfScalar(amount).ConvertTo(pressureUnit);
 								SetPressureInputQuietly(SensorUtils.ToFormattedString(ps));
@@ -715,19 +687,15 @@
 
 			temperatureAddView.SetOnClickListener(new ViewClickAction((view) => {
 				if (!sensorLocked && !hasPressureSensor) {
-					Toast.MakeText(this, "DEVICE MANAGER WAS REMOVED! IMPLEMENT DEVICE SELECTION LIST", ToastLength.Short).Show();
-/*
-					var i = new Intent(this, typeof(DeviceManagerActivity));
-					i.SetAction(Intent.ActionPick);
-					i.PutExtra(DeviceManagerActivity.EXTRA_DEVICE_FILTER, (int)EDeviceFilter.Temperature);
-					StartActivityForResult(i, REQUEST_TEMPERATURE_SENSOR);
-*/
+					new GaugeDeviceSensorSelectDialog(this, ion, ESensorType.Temperature, (sensor) => {
+						_sensor = sensor;
+					}).Show();
 				}
 			}));
 
 			temperatureAddView.SetOnLongClickListener(new ViewLongClickAction((view) => {
 				if (!sensorLocked) {
-					sensor = null;
+					_sensor = null;
 					slider.ScrollToTemperature(temperatureUnit.OfScalar(0), true);
 				}
 			}));
@@ -738,7 +706,7 @@
 
 			temperatureUnitView.Text = temperatureUnit.ToString();
 			temperatureUnitView.SetOnClickListener(new ViewClickAction((v) => {
-				if (sensor == null || ESensorType.Pressure == sensor.type) {
+				if (_sensor == null || ESensorType.Pressure == _sensor.type) {
 					UnitDialog.Create(this, SensorUtils.DEFAULT_TEMPERATURE_UNITS, (obj, unit) => {
 						if (initialManifold != null && initialManifold.primarySensor.type == ESensorType.Pressure) {
 							UpdateManifold(unit);
@@ -749,7 +717,7 @@
 						temperatureUnit = unit;
 
 						try {
-							if (!"".Equals(text) && sensor == null) {
+							if (!"".Equals(text) && _sensor == null) {
 								var amount = double.Parse(text);
 								var ts = oldUnit.OfScalar(amount).ConvertTo(temperatureUnit);
 								SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ts));
@@ -793,8 +761,8 @@
 		/// Refresh this instance.
 		/// </summary>
 		private void Refresh() {
-			if (sensor != null) {
-				OnSensorChanged(sensor);
+			if (_sensor != null) {
+				OnSensorChanged(_sensor);
 				pressureEntryView.Enabled = false;
 				temperatureEntryView.Enabled = false;
 				slider.Visibility = ViewStates.Invisible;
