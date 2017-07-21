@@ -29,7 +29,7 @@
 					break;
 			}
 
-			return context.Resources.GetColor(color);
+			return color.AsResourceColor(context);
 		}
 	}
 }

@@ -249,7 +249,7 @@
         android:layout_height="wrap_content">
         <Button
             android:id="@id/reset"
-            android:background="@drawable/np_rounded_rect_red"
+            android:background="@drawable/xml_rect_red_black_bordered_round"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -259,7 +259,7 @@
             android:text="@string/reset" />
         <Button
             android:id="@id/export"
-            android:background="@drawable/np_rounded_rect_green"
+            android:background="@drawable/xml_rect_green_black_bordered_round"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"

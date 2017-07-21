@@ -43,7 +43,7 @@
           colorView.SetBackgroundColor(new Color(ion.fluidManager.GetFluidColor(__selectedFluid)));
           fluidNameView.Text = __selectedFluid;
         } else {
-          colorView.SetBackgroundColor(new Color(Resources.GetColor(Resource.Color.white)));
+          colorView.SetBackgroundColor(Resource.Color.white.AsResourceColor(this));
           fluidNameView.Text = GetString(Resource.String.fluid_nothing_selected);
         }
 

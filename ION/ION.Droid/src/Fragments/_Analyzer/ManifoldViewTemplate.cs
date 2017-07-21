@@ -78,7 +78,7 @@
     /// Binds the view template to the given data.
     /// </summary>
     /// <param name="t">T.</param>
-    protected override void OnBind(Manifold m) {
+    protected override void OnBind(Manifold t) {
       item.onManifoldEvent += OnManifoldEvent;
       Invalidate();
 		}
@@ -126,28 +126,28 @@
         connection.Visibility = ViewStates.Visible;
         switch (d.connection.connectionState) {
           case EConnectionState.Connected:
-            measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.black)));
-            unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.black)));
+            measurement.SetTextColor(Resource.Color.black.AsResourceColor(c));
+            unit.SetTextColor(Resource.Color.black.AsResourceColor(c));
 
             connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_connected));
             status.Text = c.GetString(Resource.String.connected);
-            status.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.green)));
+            status.SetTextColor(Resource.Color.green.AsResourceColor(c));
             break;
           case EConnectionState.Broadcasting:
-            measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
-            unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
+            measurement.SetTextColor(Resource.Color.light_blue.AsResourceColor(c));
+            unit.SetTextColor(Resource.Color.light_blue.AsResourceColor(c));
 
-            connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_c3_broadcast));
+            connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_broadcast));
             status.Text = c.GetString(Resource.String.disconnected);
-            status.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
+            status.SetTextColor(Resource.Color.light_blue.AsResourceColor(c));
             break;
           case EConnectionState.Disconnected:
-            measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.gray)));
-            unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.gray)));
+            measurement.SetTextColor(Resource.Color.gray.AsResourceColor(c));
+            unit.SetTextColor(Resource.Color.gray.AsResourceColor(c));
 
             connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_disconnected));
             status.Text = c.GetString(Resource.String.disconnected);
-            status.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.red)));
+            status.SetTextColor(Resource.Color.red.AsResourceColor(c));
             break;
           case EConnectionState.Connecting:
             goto case EConnectionState.Resolving;
@@ -196,7 +196,7 @@
 
       if (device != null) {
         var bat = device.battery;
-        if (device.isConnected) {
+        if (device.isConnected && lastBattery != bat) {
 					battery.Visibility = ViewStates.Visible;
           if (bat >= 100) {
             battery.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_battery_horiz_100));
@@ -209,6 +209,7 @@
           } else {
             battery.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_battery_horiz_empty));
           }
+          lastBattery = bat;
         } else {
           battery.Visibility = ViewStates.Invisible;
           lastBattery = -1;

@@ -22,7 +22,6 @@
   using ION.Core.Sensors;
 
   // Using ION.Droid
-  using DeviceManager;
   using Devices;
   using Dialog;
   using Sensors;
@@ -559,7 +558,7 @@
             ptChart = fluid.GetPtChart(state);
           }
           break;
-
+/*
         case REQUEST_PRESSURE_SENSOR:
           if (data != null && data.HasExtra(DeviceManagerActivity.EXTRA_SENSOR)) {
             var psp = (SensorParcelable)data.GetParcelableExtra(DeviceManagerActivity.EXTRA_SENSOR);
@@ -573,6 +572,7 @@
             temperatureSensor = tsp.Get(ion);
           }
           break;
+*/
       }
     }
 
@@ -673,10 +673,13 @@
 
       pressureAddView.SetOnClickListener(new ViewClickAction((view) => {
         if (!isPressureLocked) {
-          var i = new Intent(this, typeof(DeviceManagerActivity));
+			  Toast.MakeText(this, "DEVICE MANAGER WAS REMOVED! IMPLEMENT DEVICE SELECTION LIST", ToastLength.Short).Show();
+/*
+			  var i = new Intent(this, typeof(DeviceManagerActivity));
           i.SetAction(Intent.ActionPick);
           i.PutExtra(DeviceManagerActivity.EXTRA_DEVICE_FILTER, (int)EDeviceFilter.Pressure);
           StartActivityForResult(i, REQUEST_PRESSURE_SENSOR);
+*/
         }
       }));
 
@@ -748,10 +751,12 @@
 
       temperatureAddView.SetOnClickListener(new ViewClickAction((view) => {
         if (!isTemperatureLocked) {
+/*
           var i = new Intent(this, typeof(DeviceManagerActivity));
           i.SetAction(Intent.ActionPick);
           i.PutExtra(DeviceManagerActivity.EXTRA_DEVICE_FILTER, (int)EDeviceFilter.Temperature);
           StartActivityForResult(i, REQUEST_TEMPERATURE_SENSOR);
+*/
         }
       }));
 

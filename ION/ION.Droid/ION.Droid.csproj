@@ -217,11 +217,6 @@
     <Compile Include="src\Widgets\TypefaceTextView.cs" />
     <Compile Include="src\Activity\Report\ReportActivity.cs" />
     <Compile Include="src\Activity\Job\JobActivity.cs" />
-    <Compile Include="src\Activity\DeviceManager\DeviceManagerActivity.cs" />
-    <Compile Include="src\Activity\DeviceManager\DeviceManagerRecycleAdapter.cs" />
-    <Compile Include="src\Activity\DeviceManager\SectionViewHolder.cs" />
-    <Compile Include="src\Activity\DeviceManager\DeviceViewHolder.cs" />
-    <Compile Include="src\Activity\DeviceManager\SensorViewHolder.cs" />
     <Compile Include="src\Activity\Job\EditJobActivity.cs" />
     <Compile Include="src\Activity\Job\EditJobFragment.cs" />
     <Compile Include="src\Activity\Job\EditJobSessionsFragment.cs" />
@@ -284,7 +279,6 @@
     <Compile Include="src\Fragments\_Analyzer\CompactManifoldViewTemplate.cs" />
     <Compile Include="src\Fragments\_Analyzer\ViewTemplate.cs" />
     <Compile Include="src\Fragments\_Analyzer\ManifoldViewTemplate.cs" />
-    <Compile Include="src\Activity\DeviceManager\SpaceViewHolder.cs" />
     <Compile Include="src\Activity\Job\JobAdapter.cs" />
     <Compile Include="src\Activity\Job\JobViewHolder.cs" />
     <Compile Include="src\Activity\Job\EViewType.cs" />
@@ -338,6 +332,7 @@
     <Compile Include="src\Activity\DeviceGrid\DeviceViewHolder.cs" />
     <Compile Include="src\Activity\DeviceGrid\LinkDecorator.cs" />
     <Compile Include="src\Activity\DeviceGrid\GaugeDeviceControlDialogFragment.cs" />
+    <Compile Include="src\_AndroidExtensions\GraphicsExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -345,11 +340,6 @@
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="Assets\AboutAssets.txt" />
     <AndroidResource Include="Resources\values\Colors.xml" />
-    <AndroidResource Include="Resources\layout-ldpi\list_item_device_manager_group.axml">
-      <SubType>AndroidResource</SubType>
-    </AndroidResource>
-    <AndroidResource Include="Resources\layout-ldpi\list_item_device_manager_device.axml" />
-    <AndroidResource Include="Resources\layout-ldpi\list_item_device_manager_sensor.axml" />
     <AndroidResource Include="Resources\layout-ldpi\button_scan.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
@@ -379,13 +369,9 @@
     <AndroidResource Include="Resources\drawable-ldpi\ic_battery_horiz_50.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_battery_horiz_75.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_battery_horiz_empty.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_bluetooth_c3_broadcast.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_bluetooth_c3_disconnected.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_bluetooth_c3_paired.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_bluetooth_connected.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\ic_bluetooth_broadcast.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_bluetooth_disconnected.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_bluetooth_nearby.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_bluetooth_unknown.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\ic_bluetooth_paired.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_bookmark.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_compressor.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_devices_add.png" />
@@ -396,7 +382,6 @@
     <AndroidResource Include="Resources\drawable-ldpi\ic_document.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_drawer.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_expansionchamber.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_folder.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_gears.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_link.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_logo_appiondefault.png" />
@@ -428,45 +413,6 @@
     <AndroidResource Include="Resources\drawable-ldpi\img_button_whiteclosex.png" />
     <AndroidResource Include="Resources\drawable-ldpi\img_handle_left.9.png" />
     <AndroidResource Include="Resources\drawable-ldpi\img_handle_right.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_analyzer_slot.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_blue_left_curve_corner.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_blue_right_curve_corner.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_blue_tab.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_bordered_gray_square.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_bordered_green_square.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_bordered_light_blue_square.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_bordered_light_gray_square.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_bordered_padding_square.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_bordered_red_square.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_bordered_transparent_square.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_bordered_white_square.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_bordered_yellow_square.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_empty_viewer_curve_left.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_empty_viewer_curve_right.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_half_rounded_square_lower_white.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_half_rounded_square_upper_blue.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_half_rounded_square_upper_red.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_half_rounded_square_upper_white.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_left_side_handle.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_rect_white_black_border.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_red_left_curve_corner.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_red_right_curve_corner.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_red_tab.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_right_side_handle.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_rounded_rect_blue.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_rounded_rect_gold.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_rounded_rect_green.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_rounded_rect_light_blue.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_rounded_rect_red.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_rounded_rect_white.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_rounded_square_middle.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_selection_bottom_gold.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_square_black_border_white_background.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_viewer_curve_left_background.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_viewer_curve_right_background.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_viewer_sub_bot.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_viewer_sub_handle.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\np_viewer_sub_mid.9.png" />
     <AndroidResource Include="Resources\drawable-ldpi\selector_button_close_x.xml" />
     <AndroidResource Include="Resources\drawable-ldpi\selector_button_gold_black.xml" />
     <AndroidResource Include="Resources\drawable-ldpi\selector_group_indicator_black.xml" />
@@ -492,11 +438,6 @@
     <AndroidResource Include="Resources\layout-ldpi\fragment_fluid_list.axml" />
     <AndroidResource Include="Resources\menu\save.xml" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_lock.png" />
-    <AndroidResource Include="Resources\layout-ldpi\device_manager_group.axml" />
-    <AndroidResource Include="Resources\layout-ldpi\device_manager_device.axml" />
-    <AndroidResource Include="Resources\layout-ldpi\device_manager_serial.axml" />
-    <AndroidResource Include="Resources\layout-ldpi\device_manager_sensor.axml" />
-    <AndroidResource Include="Resources\layout-ldpi\activity_device_manager.axml" />
     <AndroidResource Include="Resources\layout-ldpi\list_item_add.axml" />
     <AndroidResource Include="Resources\drawable-ldpi\viewer_background.axml" />
     <AndroidResource Include="Resources\layout-ldpi\activity_superheat_subcool.axml" />
@@ -529,7 +470,7 @@
     <AndroidResource Include="Resources\drawable-ldpi\selector_fluid_state.xml" />
     <AndroidResource Include="Resources\layout-ldpi\activity_sensor_alarm.axml" />
     <AndroidResource Include="Resources\layout-ldpi\activity_alarm_popup.axml" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_folder_black.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\ic_folder.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_help.png" />
     <AndroidResource Include="Resources\values\Preference_Keys.xml" />
     <AndroidResource Include="Resources\xml\preferences_help.xml" />
@@ -552,7 +493,6 @@
     <AndroidResource Include="Resources\drawable-ldpi\ic_nav_certificates.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_scroll.png" />
     <AndroidResource Include="Resources\values\Styleable.xml" />
-    <AndroidResource Include="Resources\layout-ldpi\viewer_large.axml" />
     <AndroidResource Include="Resources\layout-ldpi\list_item_list_section_header.axml" />
     <AndroidResource Include="Resources\layout-ldpi\button_save.axml">
       <SubType>AndroidResource</SubType>
@@ -811,6 +751,7 @@
     <AndroidResource Include="Resources\drawable-nodpi\xml_rect_yellow_black_bordered_round.xml" />
     <AndroidResource Include="Resources\drawable-nodpi\xml_white_in_black.xml" />
     <AndroidResource Include="Resources\drawable\img_bgd_carbon.png" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_rect_white_black_bordered.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -838,7 +779,6 @@
     <Folder Include="Resources\values-sw700dp\" />
     <Folder Include="src\Activity\Report\" />
     <Folder Include="src\Activity\Job\" />
-    <Folder Include="src\Activity\DeviceManager\" />
     <Folder Include="src\Report\" />
     <Folder Include="Resources\drawable-hdpi\" />
     <Folder Include="Resources\drawable-mdpi\" />
@@ -856,6 +796,7 @@
     <Folder Include="Resources\drawable\" />
     <Folder Include="src\Activity\DeviceGrid\" />
     <Folder Include="Resources\drawable-nodpi\" />
+    <Folder Include="src\_AndroidExtensions\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\DroidSans_Bold.ttf" />

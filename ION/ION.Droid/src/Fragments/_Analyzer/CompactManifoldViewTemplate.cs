@@ -3,7 +3,7 @@
   using Android.Views;
   using Android.Widget;
 
-	using Appion.Commons.Util;
+  using Appion.Commons.Util;
 
   using ION.Core.App;
   using ION.Core.Connections;
@@ -50,8 +50,8 @@
     public ProgressBar progress { get; private set; }
 
     private int lastBattery;
-    
-		public CompactManifoldViewTemplate(View view, BitmapCache cache) : base(view) {
+
+    public CompactManifoldViewTemplate(View view, BitmapCache cache) : base(view) {
       this.cache = cache;
 
       toggle = view.FindViewById(Resource.Id.toggle);
@@ -77,11 +77,11 @@
     /// </summary>
     /// <param name="t">T.</param>
     protected override void OnBind(Manifold t) {
-			OnUnbind();
+      OnUnbind();
       item.onManifoldEvent += OnManifoldEvent;
 
       Invalidate();
-		}
+    }
 
     /// <summary>
     /// Informs the view template that it should unbind itself from its data source.
@@ -126,20 +126,20 @@
         connection.Visibility = ViewStates.Visible;
         switch (d.connection.connectionState) {
           case EConnectionState.Connected:
-            measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.black)));
-            unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.black)));
+            measurement.SetTextColor(Resource.Color.black.AsResourceColor(c));
+            unit.SetTextColor(Resource.Color.black.AsResourceColor(c));
 
             connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_connected));
             break;
           case EConnectionState.Broadcasting:
-            measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
-            unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
+            measurement.SetTextColor(Resource.Color.light_blue.AsResourceColor(c));
+            unit.SetTextColor(Resource.Color.light_blue.AsResourceColor(c));
 
-            connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_c3_broadcast));
+            connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_broadcast));
             break;
           case EConnectionState.Disconnected:
-            measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.gray)));
-            unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.gray)));
+            measurement.SetTextColor(Resource.Color.gray.AsResourceColor(c));
+            unit.SetTextColor(Resource.Color.gray.AsResourceColor(c));
 
             connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_disconnected));
             break;
@@ -162,9 +162,9 @@
         progress.Visibility = ViewStates.Invisible;
       }
 
-			if (serialNumber != null) {
-				serialNumber.SetText(Resource.String.manifold_subviews);
-			}
+      if (serialNumber != null) {
+        serialNumber.SetText(Resource.String.manifold_subviews);
+      }
 
       InvalidateBattery(d);
     }
@@ -185,7 +185,7 @@
       if (device != null) {
         var bat = device.battery;
         if (device.isConnected) {
-					battery.Visibility = ViewStates.Visible;
+          battery.Visibility = ViewStates.Visible;
           if (bat >= 100) {
             battery.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_battery_horiz_100));
           } else if (bat >= 75) {
@@ -219,7 +219,7 @@
           break;
         default:
           Log.E(this, "Cannot handle manifold event: " + manifoldEvent.type);
-					break;
+          break;
       }
     }
   }

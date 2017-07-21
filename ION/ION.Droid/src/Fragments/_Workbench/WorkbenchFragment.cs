@@ -13,14 +13,12 @@ namespace ION.Droid.Fragments._Workbench {
 	using Appion.Commons.Util;
 
   using ION.Core.Content;
-  using ION.Core.Connections;
   using ION.Core.Devices;
 	using ION.Core.Devices.Protocols;
-  using ION.Core.Sensors;
   using ION.Core.Sensors.Properties;
 
   using Activity;
-  using Activity.DeviceManager;
+  using Activity.Grid;
 	using App;
   using ION.Droid.Content;
   using Dialog;
@@ -32,7 +30,6 @@ namespace ION.Droid.Fragments._Workbench {
     /// The activity request code that will tell us when we return from the device
     /// manager activity.
     /// </summary>
-    private const int REQUEST_SENSOR = 1;
     private const int REQUEST_SHOW_PTCHART = 2;
     private const int REQUEST_SHOW_SUPERHEAT_SUBCOOL = 3;
 
@@ -149,13 +146,6 @@ namespace ION.Droid.Fragments._Workbench {
 				return;
 			}
       switch (requestCode) {
-        case REQUEST_SENSOR:
-          if (data != null && data.HasExtra(DeviceManagerActivity.EXTRA_SENSOR)) {
-            var sp = (SensorParcelable)data.GetParcelableExtra(DeviceManagerActivity.EXTRA_SENSOR);
-            var sensor = sp.Get(ion);
-            workbench.AddSensor(sensor);
-          }
-          break;
         case REQUEST_SHOW_PTCHART:
           if (data != null && data.HasExtra(PTChartActivity.EXTRA_SENSOR)) {
             var u = data.GetIntExtra(PTChartActivity.EXTRA_RETURN_UNIT, -1);
@@ -190,9 +180,8 @@ namespace ION.Droid.Fragments._Workbench {
     /// Called when the adapter's footer is called.
     /// </summary>
     private void OnAddViewer() {
-      var i = new Intent(Activity, typeof(DeviceManagerActivity));
-			i.SetAction(Intent.ActionPick);
-			StartActivityForResult(i, REQUEST_SENSOR);
+      var i = new Intent(Activity, typeof(DeviceGridActivity));
+			StartActivity(i);
     }
 
 		private void OnOnSensorPropertyClicked(Manifold manifold, ISensorProperty sensorProperty) {

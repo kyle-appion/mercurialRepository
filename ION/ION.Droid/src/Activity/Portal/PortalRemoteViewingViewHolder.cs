@@ -47,13 +47,13 @@
 
 			if (record.isBeingDownloaded) {
 				status.SetText(Resource.String.portal_viewing);
-				status.SetTextColor(c.Resources.GetColor(Resource.Color.blue));
+				status.SetTextColor(Resource.Color.blue.AsResourceColor(c));
 			} else if (record.data.isUserOnline) {
 				status.SetText(Resource.String.portal_viewable);
-				status.SetTextColor(c.Resources.GetColor(Resource.Color.green));
+				status.SetTextColor(Resource.Color.green.AsResourceColor(c));
 			} else {
 				status.SetText(Resource.String.portal_offline);
-				status.SetTextColor(c.Resources.GetColor(Resource.Color.red));
+				status.SetTextColor(Resource.Color.red.AsResourceColor(c));
 			}
 
 			check.Checked = record.isChecked;

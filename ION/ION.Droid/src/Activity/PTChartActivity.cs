@@ -22,7 +22,6 @@
 	using ION.Core.Sensors.Properties;
 
 	// Using ION.Droid
-	using DeviceManager;
 	using Devices;
 	using Dialog;
 	using Sensors;
@@ -324,8 +323,8 @@
 		} Unit __temperatureUnit;
 
 		// Overridden from IONActivity
-		protected override void OnCreate(Bundle bundle) {
-			base.OnCreate(bundle);
+		protected override void OnCreate(Bundle savedInstanceState) {
+			base.OnCreate(savedInstanceState);
 
 			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_ptconversion, Resource.Color.gray));
 			ActionBar.SetDisplayHomeAsUpEnabled(true);
@@ -490,6 +489,7 @@
 					}
 				break;
 
+/*
 				case REQUEST_PRESSURE_SENSOR:
 					if (data != null && data.HasExtra(DeviceManagerActivity.EXTRA_SENSOR)) {
 						var psp = (SensorParcelable)data.GetParcelableExtra(DeviceManagerActivity.EXTRA_SENSOR);
@@ -503,6 +503,7 @@
 						sensor = tsp.Get(ion);
 					}
 				break;
+*/
 			}
 
 			Refresh();
@@ -565,15 +566,15 @@
 
 		private void OnSliderScroll(FluidSliderView slider, bool touching, Scalar pressure, Scalar temperature) {
 			if (touching) {
-				SetPressureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Pressure, pressure.ConvertTo(pressureUnit)));
-				SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Temperature, temperature.ConvertTo(temperatureUnit)));
+				SetPressureInputQuietly(SensorUtils.ToFormattedString(pressure.ConvertTo(pressureUnit)));
+				SetTemperatureInputQuietly(SensorUtils.ToFormattedString(temperature.ConvertTo(temperatureUnit)));
 			} else {
 				if (!pressureEntryView.HasFocus) {
-					SetPressureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Pressure, pressure.ConvertTo(pressureUnit)));
+					SetPressureInputQuietly(SensorUtils.ToFormattedString(pressure.ConvertTo(pressureUnit)));
 				}
 
 				if (!temperatureEntryView.HasFocus) {
-					SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Temperature, temperature.ConvertTo(temperatureUnit)));
+					SetTemperatureInputQuietly(SensorUtils.ToFormattedString(temperature.ConvertTo(temperatureUnit)));
 				}
 			}
 		}
@@ -624,16 +625,20 @@
 					} else {
 						ClearInput();
 					}
-				} catch (System.Exception) {
+				} catch (Exception) {
+          return;
 				}
 			});
 
 			pressureAddView.SetOnClickListener(new ViewClickAction((view) => {
 				if (!sensorLocked && !hasTemperatureSensor) {
+          Toast.MakeText(this, "DEVICE MANAGER WAS REMOVED! IMPLEMENT DEVICE SELECTION LIST", ToastLength.Short).Show();
+/*
 					var i = new Intent(this, typeof(DeviceManagerActivity));
 					i.SetAction(Intent.ActionPick);
 					i.PutExtra(DeviceManagerActivity.EXTRA_DEVICE_FILTER, (int)EDeviceFilter.Pressure);
 					StartActivityForResult(i, REQUEST_PRESSURE_SENSOR);
+*/
 				}
 			}));
 
@@ -664,7 +669,7 @@
 							if (!"".Equals(text) && sensor == null) {
 								var amount = double.Parse(text);
 								var ps = oldUnit.OfScalar(amount).ConvertTo(pressureUnit);
-								SetPressureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Pressure, ps));
+								SetPressureInputQuietly(SensorUtils.ToFormattedString(ps));
 							} else {
 								ClearInput();
 							}
@@ -710,10 +715,13 @@
 
 			temperatureAddView.SetOnClickListener(new ViewClickAction((view) => {
 				if (!sensorLocked && !hasPressureSensor) {
+					Toast.MakeText(this, "DEVICE MANAGER WAS REMOVED! IMPLEMENT DEVICE SELECTION LIST", ToastLength.Short).Show();
+/*
 					var i = new Intent(this, typeof(DeviceManagerActivity));
 					i.SetAction(Intent.ActionPick);
 					i.PutExtra(DeviceManagerActivity.EXTRA_DEVICE_FILTER, (int)EDeviceFilter.Temperature);
 					StartActivityForResult(i, REQUEST_TEMPERATURE_SENSOR);
+*/
 				}
 			}));
 
@@ -744,11 +752,12 @@
 							if (!"".Equals(text) && sensor == null) {
 								var amount = double.Parse(text);
 								var ts = oldUnit.OfScalar(amount).ConvertTo(temperatureUnit);
-								SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Temperature, ts));
+								SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ts));
 							} else {
 								ClearInput();
 							}
-						} catch (System.Exception) {
+						} catch (Exception) {
+              return;
 						}
 
 						Refresh();

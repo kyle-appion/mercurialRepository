@@ -59,10 +59,10 @@
 
 			switch (record.sp.sensor.type) {
 				case ESensorType.Pressure:
-					measurement.Text = SensorUtils.ToFormattedString(ESensorType.Pressure, record.sp.modifiedMeasurement);
+					measurement.Text = SensorUtils.ToFormattedString(record.sp.modifiedMeasurement);
 				break;
 				case ESensorType.Temperature:
-					measurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, record.sp.modifiedMeasurement);
+					measurement.Text = SensorUtils.ToFormattedString(record.sp.modifiedMeasurement);
 				break;
 			}
 

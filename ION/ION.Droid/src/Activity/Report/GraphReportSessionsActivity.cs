@@ -383,7 +383,7 @@
 			dlr.reportName = GetString(Resource.String.report_data_logging_title);
 
 			try {
-				var drawable = Resources.GetDrawable(Resource.Drawable.img_logo_appionblack) as BitmapDrawable;
+        var drawable = Resource.Drawable.img_logo_appionblack.AsResourceDrawable(this) as BitmapDrawable;
 
 				using (var ms = new MemoryStream(512)) {
 					drawable.Bitmap.Compress(Bitmap.CompressFormat.Png, 100, ms);

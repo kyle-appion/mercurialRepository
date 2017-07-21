@@ -19,7 +19,7 @@
         <ION.Droid.Widgets.RecyclerViews.SwipeRecyclerView
             android:id="@id/list"
             android:layout_margin="@dimen/padding"
-            android:background="@drawable/np_rect_white_black_border"
+            android:background="@drawable/xml_rect_white_black_bordered"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
@@ -59,7 +59,7 @@
         <ION.Droid.Widgets.RecyclerViews.SwipeRecyclerView
             android:id="@id/list"
             android:layout_margin="@dimen/padding"
-            android:background="@drawable/np_rect_white_black_border"
+            android:background="@drawable/xml_rect_white_black_bordered"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />

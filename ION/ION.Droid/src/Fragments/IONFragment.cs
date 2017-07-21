@@ -107,7 +107,7 @@ namespace ION.Droid.Fragments {
 
       var ss = menu.FindItem(Resource.Id.screenshot);
       var icon = ss.Icon;
-      icon.Mutate().SetColorFilter(GetColor(Resource.Color.gray), PorterDuff.Mode.SrcIn);
+      icon.Mutate().SetColorFilter(Resource.Color.gray.AsResourceColor(Activity), PorterDuff.Mode.SrcIn);
       ss.SetIcon(icon);
     }
 
@@ -167,17 +167,8 @@ namespace ION.Droid.Fragments {
     /// <param name="drawableRes">Drawable res.</param>
     public Drawable GetColoredDrawable(int drawableRes, int colorRes) {
       var ret = new BitmapDrawable(cache.GetBitmap(drawableRes));
-      ret.SetColorFilter(new Color(Resources.GetColor(colorRes)), PorterDuff.Mode.SrcAtop);
+      ret.SetColorFilter(colorRes.AsResourceColor(Activity), PorterDuff.Mode.SrcAtop);
       return ret;
-    }
-
-    /// <summary>
-    /// Queries the color for the given resource.
-    /// </summary>
-    /// <returns>The color.</returns>
-    /// <param name="colorRes">Color res.</param>
-    public Color GetColor(int colorRes) {
-      return new Color(Resources.GetColor(colorRes));
     }
 
 		/// <summary>
