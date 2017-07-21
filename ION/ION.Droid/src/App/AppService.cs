@@ -146,13 +146,12 @@
 			}
 			var total = ion.deviceManager.devices.Count;
 
-			var ic = Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop ? Resource.Drawable.ic_nav_analyzer : Resource.Drawable.ic_nav_analyzer_white;
-			var bitmap = Android.Graphics.BitmapFactory.DecodeResource(Resources, ic);
+			var bitmap = Android.Graphics.BitmapFactory.DecodeResource(Resources, Resource.Drawable.ic_nav_analyzer);
 
 			var note = new NotificationCompat.Builder(this)
 			                                 .SetColor(Resource.Color.gold)
 			                                 .SetLargeIcon(bitmap)
-			                                 .SetSmallIcon(ic)
+			                                 .SetSmallIcon(Resource.Drawable.ic_nav_analyzer_white)
 			                                 .SetContentTitle(GetString(Resource.String.app_name))
 			                                 .SetContentText(string.Format(GetString(Resource.String.devices_connected_2arg), connected, total))
 			                                 .SetContentIntent(pi)
