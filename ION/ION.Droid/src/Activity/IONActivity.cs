@@ -132,6 +132,16 @@
 			}
 		}
 
+		public void StartDialogFragment(Android.App.DialogFragment fragment, string tag) {
+			var ft = FragmentManager.BeginTransaction();
+			var prev = FragmentManager.FindFragmentByTag(tag);
+			if (prev != null) {
+				ft.Remove(prev);
+			}
+			ft.AddToBackStack(null);
+			fragment.Show(ft, tag);
+		}
+
 
 		// Implemented from IServiceConnection
 		public void OnServiceConnected(ComponentName name, IBinder service) {

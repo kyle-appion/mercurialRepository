@@ -34,9 +34,11 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Devices\Device.cs" />
+    <Compile Include="src\Devices\DeviceExtensions.cs" />
     <Compile Include="src\Devices\DeviceManager.cs" />
     <Compile Include="src\Devices\Protocols\BleV1Protocol.cs" />
     <Compile Include="src\Devices\Protocols\Protocol.cs" />
+    <Compile Include="src\Devices\Sorters\GeneralSensorSorter.cs" />
     <Compile Include="src\Fluids\BaseFluidManager.cs" />
     <Compile Include="src\Fluids\Fluid.cs" />
     <Compile Include="src\Fluids\IFluidManager.cs" />
