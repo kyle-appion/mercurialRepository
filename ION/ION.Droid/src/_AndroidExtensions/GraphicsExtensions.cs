@@ -36,5 +36,21 @@
       
       return ret;
     }
+
+    /// <summary>
+    /// Creates a new bitmap tinted with the given color.
+    /// </summary>
+    /// <param name="bitmap"></param>
+    /// <param name="context"></param>
+    /// <param name="colorResource"></param>
+    /// <returns></returns>
+    public static Bitmap AsTintedBitmap(this Bitmap bitmap, Context context, int colorResource) {
+      var p = new Paint();
+      p.SetColorFilter(new PorterDuffColorFilter(colorResource.AsResourceColor(context), PorterDuff.Mode.SrcIn));
+      var ret = Bitmap.CreateBitmap(bitmap.Width, bitmap.Height, Bitmap.Config.Argb8888);
+      var canvas = new Canvas(ret);
+      canvas.DrawBitmap(bitmap, 0, 0, p);
+      return ret;
+    }
   }
 }
