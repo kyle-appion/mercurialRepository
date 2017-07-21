@@ -38,18 +38,18 @@ namespace ION.Droid.Dialog {
       switch (side) {
         case Analyzer.ESide.High:
           state.SetText(Resource.String.analyzer_side_high);
-          state.SetBackgroundColor(r.GetColor(Resource.Color.red));
-          state.SetTextColor(r.GetColor(Resource.Color.white));
+          state.SetBackgroundColor(Resource.Color.red.AsResourceColor(context));
+          state.SetTextColor(Resource.Color.white.AsResourceColor(context));
           break;
         case Analyzer.ESide.Low:
           state.SetText(Resource.String.analyzer_side_low);
-          state.SetBackgroundColor(r.GetColor(Resource.Color.blue));
-          state.SetTextColor(r.GetColor(Resource.Color.white));
+          state.SetBackgroundColor(Resource.Color.blue.AsResourceColor(context));
+          state.SetTextColor(Resource.Color.white.AsResourceColor(context));
           break;
         default:
           state.SetText(Resource.String.analyzer_side_none);
-          state.SetBackgroundColor(r.GetColor(Resource.Color.white));
-          state.SetTextColor(r.GetColor(Resource.Color.black));
+          state.SetBackgroundColor(Resource.Color.white.AsResourceColor(context));
+          state.SetTextColor(Resource.Color.black.AsResourceColor(context));
           break;
       }
 

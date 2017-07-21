@@ -14,7 +14,7 @@
         android:layout_height="match_parent" />
     <LinearLayout
         android:orientation="horizontal"
-        android:background="@drawable/np_square_black_border_white_background"
+        android:background="@drawable/xml_rect_white_black_bordered"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="@dimen/viewer_subview_large">

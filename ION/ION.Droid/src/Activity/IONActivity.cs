@@ -91,12 +91,8 @@
 		protected AppPrefs prefs { get; private set; }
 
 
-    /// <summary>
-    /// Raises the create event.
-    /// </summary>
-    /// <param name="state">State.</param>
-    protected override void OnCreate(Bundle state) {
-      base.OnCreate(state);
+    protected override void OnCreate(Bundle savedInstanceState) {
+      base.OnCreate(savedInstanceState);
 
       cache = new BitmapCache(Resources);
 			prefs = AppPrefs.Get(this);
@@ -109,9 +105,9 @@
 			base.OnResume();
 			SetWakeLock(prefs.isWakeLocked);
 			if (ion is RemoteION) {
-				ActionBar.SetBackgroundDrawable(new ColorDrawable(Resources.GetColor(Resource.Color.red)));
+        ActionBar.SetBackgroundDrawable(new ColorDrawable(Resource.Color.red.AsResourceColor(this)));
 			} else {
-				ActionBar.SetBackgroundDrawable(new ColorDrawable(Resources.GetColor(Android.Resource.Color.BackgroundDark)));
+        ActionBar.SetBackgroundDrawable(new ColorDrawable(Android.Resource.Color.BackgroundDark.AsResourceColor(this)));
 			}
 		}
 
@@ -136,25 +132,6 @@
 			}
 		}
 
-		/// <summary>
-		/// Called by the system when we get a permission result.
-		/// </summary>
-		/// <param name="requestCode">Request code.</param>
-		/// <param name="permissions">Permissions.</param>
-		/// <param name="grantResults">Grant results.</param>
-		public virtual void OnRequestPermissionsResult(int requestCode, String[] permissions, Permission[] grantResults) {
-/*
-			switch (requestCode) {
-				case REQUEST_LOCATION_PERMISSIONS: {
-						if (grantResults[0] == Permission.Granted) {
-							EnsureBluetoothPermissions();
-						} else {
-							ShowMissingPermissionsDialog(GetString(Resource.String.location));
-						}
-				} break;
-			}
-*/
-		}
 
 		// Implemented from IServiceConnection
 		public void OnServiceConnected(ComponentName name, IBinder service) {
@@ -174,17 +151,8 @@
     /// <param name="drawableRes">Drawable res.</param>
     public Drawable GetColoredDrawable(int drawableRes, int colorRes) {
       var ret = new BitmapDrawable(cache.GetBitmap(drawableRes));
-      ret.SetColorFilter(new Color(Resources.GetColor(colorRes)), PorterDuff.Mode.SrcAtop);
+      ret.SetColorFilter(colorRes.AsResourceColor(this), PorterDuff.Mode.SrcAtop);
       return ret;
-    }
-
-    /// <summary>
-    /// Queries the color for the given resource.
-    /// </summary>
-    /// <returns>The color.</returns>
-    /// <param name="colorRes">Color res.</param>
-    public Color GetColor(int colorRes) {
-      return new Color(Resources.GetColor(colorRes));
     }
 
     /// <summary>

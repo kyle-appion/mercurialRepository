@@ -46,7 +46,6 @@
     <Compile Include="src\Util\Filter.cs" />
     <Compile Include="src\Util\IReleasable.cs" />
     <Compile Include="src\Util\Log.cs" />
-    <Compile Include="src\Util\Timer.cs" />
     <Compile Include="src\Math\Regression.cs" />
     <Compile Include="src\Math\Matrix.cs" />
     <Compile Include="src\Collections\RingBuffer.cs" />

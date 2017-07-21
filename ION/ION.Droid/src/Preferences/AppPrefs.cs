@@ -614,7 +614,7 @@
       try {
         var ret = UnitLookup.GetUnit(int.Parse(prefs.GetString(key, null)));
         return ret;
-      } catch (Exception e) {
+      } catch (Exception) {
         AssertUnitSet(preferenceKey, backup.quantity, backup);
         return backup;
       }

@@ -42,8 +42,8 @@
     protected EFlags flags { get; private set; }
 
     // Overridden form IONActivity
-    protected override void OnCreate(Bundle bundle) {
-      base.OnCreate(bundle);
+    protected override void OnCreate(Bundle savedInstanceState) {
+      base.OnCreate(savedInstanceState);
 
       cache = new BitmapCache(Resources);
 
@@ -68,17 +68,8 @@
     /// <param name="drawableRes">Drawable res.</param>
     public Drawable GetColoredDrawable(int drawableRes, int colorRes) {
       var ret = new BitmapDrawable(cache.GetBitmap(drawableRes));
-      ret.SetColorFilter(new Color(Resources.GetColor(colorRes)), PorterDuff.Mode.SrcAtop);
+      ret.SetColorFilter(colorRes.AsResourceColor(this), PorterDuff.Mode.SrcAtop);
       return ret;
-    }
-
-    /// <summary>
-    /// Queries the color for the given resource.
-    /// </summary>
-    /// <returns>The color.</returns>
-    /// <param name="colorRes">Color res.</param>
-    public Color GetColor(int colorRes) {
-      return new Color(Resources.GetColor(colorRes));
     }
 
     /// <summary>

@@ -23,7 +23,7 @@
             android:layout_height="wrap_content">
             <LinearLayout
                 android:orientation="horizontal"
-                android:background="@drawable/np_square_black_border_white_background"
+                android:background="@drawable/xml_rect_white_black_bordered"
                 android:padding="2dp"
                 android:gravity="center_vertical"
                 android:layout_width="match_parent"
@@ -72,7 +72,7 @@
             </LinearLayout>
         </LinearLayout>
         <FrameLayout
-            android:background="@drawable/np_square_black_border_white_background"
+            android:background="@drawable/xml_rect_white_black_bordered"
             android:layout_width="match_parent"
             android:layout_height="@dimen/viewer_subview_large">
             <OxyPlot.Xamarin.Android.PlotView

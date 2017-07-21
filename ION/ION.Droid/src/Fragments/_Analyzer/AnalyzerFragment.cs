@@ -19,7 +19,7 @@ namespace ION.Droid.Fragments._Analyzer {
 
   // Using ION.Droid
   using Activity;
-  using Activity.DeviceManager;
+  using Activity.Grid;
 	using App;
   using Content;
   using Dialog;
@@ -42,7 +42,6 @@ namespace ION.Droid.Fragments._Analyzer {
     /// The constant value indicating that the fragment requested a sensor for a sensor mount. The first byte of this
     /// request will be the index of the sensor.
     /// </summary>
-    private const int REQUEST_SENSOR_MOUNT_SENSOR = unchecked((int)0x01000000);
     private const int REQUEST_SHOW_PTCHART = unchecked((int)0x02000000);
     private const int REQUEST_SHOW_SUPERHEAT_SUBCOOL = unchecked((int)0x03000000);
     private const int REQUEST_MANIFOLD_ON_SIDE = unchecked((int)0x04000000);
@@ -121,12 +120,6 @@ namespace ION.Droid.Fragments._Analyzer {
       var request = requestCode & MASK_REQUEST;
 
       switch (request) {
-				case REQUEST_SENSOR_MOUNT_SENSOR: {
-						var index = requestCode & MASK_REQUEST_PAYLOAD;
-						var sp = (SensorParcelable)data.GetParcelableExtra(DeviceManagerActivity.EXTRA_SENSOR);
-						analyzer.PutSensor(index, sp.Get(ion));
-				} break;
-
 				case REQUEST_SHOW_SUPERHEAT_SUBCOOL: {
 					var side = (Analyzer.ESide)unchecked((requestCode & MASK_SIDE) >> 8);
 
@@ -169,11 +162,14 @@ namespace ION.Droid.Fragments._Analyzer {
 				} break;
 
 				case REQUEST_MANIFOLD_ON_SIDE: {
-          var mside = (Analyzer.ESide)unchecked((requestCode & MASK_SIDE) >> 8);
+					Toast.MakeText(Activity, "DEVICE MANAGER WAS REMOVED! IMPLEMENT DEVICE SELECTION LIST", ToastLength.Short).Show();
+/*
+					var mside = (Analyzer.ESide)unchecked((requestCode & MASK_SIDE) >> 8);
           var msp = data.GetParcelableExtra(DeviceManagerActivity.EXTRA_SENSOR) as SensorParcelable;
           var s = msp.Get(ion);
 
           TrySetManifold(mside, s);
+*/
 				} break;
         default:
           L.D(this, "Unknown request: " + request);
@@ -198,7 +194,7 @@ namespace ION.Droid.Fragments._Analyzer {
     /// <returns>The sensor mount request.</returns>
     /// <param name="sensorMountIndex">Sensor mount index.</param>
     private int EncodeSensorMountRequest(int sensorMountIndex) {
-      return REQUEST_SENSOR_MOUNT_SENSOR | (MASK_REQUEST_PAYLOAD & sensorMountIndex);
+      return (MASK_REQUEST_PAYLOAD & sensorMountIndex);
     }
 
     /// <summary>
@@ -467,9 +463,12 @@ namespace ION.Droid.Fragments._Analyzer {
       var ldb = new ListDialogBuilder(Activity);
       ldb.SetTitle(Resource.String.analyzer_add_from);
       ldb.AddItem(Resource.String.device_manager, () => {
-        var i = new Intent(Activity, typeof(DeviceManagerActivity));
+  		  Toast.MakeText(Activity, "DEVICE MANAGER WAS REMOVED! IMPLEMENT DEVICE SELECTION LIST", ToastLength.Short).Show();
+/*
+		    var i = new Intent(Activity, typeof(DeviceManagerActivity));
         i.SetAction(Intent.ActionPick);
         StartActivityForResult(i, EncodeSensorMountRequest(index));
+*/
       });
 			ldb.AddItem(Resource.String.sensor_create_manual_entry, () => {
 				var d = new ManualSensorCreateDialog(Activity, SensorUtils.GetSensorTypeUnitMapping()).Show((sensor) => {
@@ -488,9 +487,13 @@ namespace ION.Droid.Fragments._Analyzer {
 			var ldb = new ListDialogBuilder(Activity);
 			ldb.SetTitle(Resource.String.analyzer_add_from);
 			ldb.AddItem(Resource.String.device_manager, () => {
+				Toast.MakeText(Activity, "DEVICE MANAGER WAS REMOVED! IMPLEMENT DEVICE SELECTION LIST", ToastLength.Short).Show();
+
+/*
 				var i = new Intent(Activity, typeof(DeviceManagerActivity));
 				i.SetAction(Intent.ActionPick);
 				StartActivityForResult(i, EncodeManifoldSideRequest(side));
+*/
 			});
 			ldb.AddItem(Resource.String.sensor_create_manual_entry, () => {
 				if (analyzer.IsSideFull(side)) {

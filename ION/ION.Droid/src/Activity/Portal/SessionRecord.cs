@@ -52,9 +52,9 @@
 			var dateString = record.data.sessionStart.ToLocalTime().ToShortDateString() + " " + record.data.sessionStart.ToLocalTime().ToShortTimeString();
 
 			if (record.job == null || record.data.frn_JID == 0 || record.job._id == record.data.frn_JID) {
-				date.SetTextColor(date.Context.Resources.GetColor(Resource.Color.black));
+        date.SetTextColor(Resource.Color.black.AsResourceColor(date.Context));
 			} else {
-				date.SetTextColor(date.Context.Resources.GetColor(Resource.Color.red));
+				date.SetTextColor(Resource.Color.red.AsResourceColor(date.Context));
 			}
 
 			date.Text = dateString;
