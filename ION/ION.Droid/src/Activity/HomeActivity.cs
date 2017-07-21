@@ -285,14 +285,13 @@
 
           new NavigationIconItem() {
             id = Resource.Id.grid,
-            title = "US GRID",
-            icon = Resource.Drawable.xml_circle,
+            title = GetString(Resource.String.grid_device),
+            icon = Resource.Drawable.ic_nav_devmanager,
             action = () => {
               DisplayGrid();
               HideDrawer();
             },
           }
-
         },
       };
 

@@ -755,6 +755,7 @@
     <AndroidResource Include="Resources\drawable-nodpi\xml_white_in_black.xml" />
     <AndroidResource Include="Resources\drawable\img_bgd_carbon.png" />
     <AndroidResource Include="Resources\drawable-nodpi\xml_rect_white_black_bordered.xml" />
+    <AndroidResource Include="Resources\menu\folder.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
