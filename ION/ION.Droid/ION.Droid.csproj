@@ -18,10 +18,11 @@
     <AssemblyName>ION.Droid</AssemblyName>
     <TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
-    <AndroidTlsProvider></AndroidTlsProvider>
+    <AndroidTlsProvider>
+    </AndroidTlsProvider>
     <JavaMaximumHeapSize>8G</JavaMaximumHeapSize>
     <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
-<!--    <AndroidLintEnabled>true</AndroidLintEnabled> -->
+    <!--    <AndroidLintEnabled>true</AndroidLintEnabled> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,7 +44,8 @@
     <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType></DebugType>
+    <DebugType>
+    </DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
@@ -54,7 +56,8 @@
     <AndroidSigningStorePass>B62zHJZfAZkPRVy:6n4Y</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>appion keystore</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>AppionPublicKey</AndroidSigningKeyPass>
-    <AndroidKeyStore></AndroidKeyStore>
+    <AndroidKeyStore>
+    </AndroidKeyStore>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -339,6 +342,16 @@
     <None Include="Resources\AboutResources.txt" />
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="Assets\AboutAssets.txt" />
+    <AndroidResource Include="Resources\drawable\ic_battery_horiz_100.png" />
+    <AndroidResource Include="Resources\drawable\ic_battery_horiz_25.png" />
+    <AndroidResource Include="Resources\drawable\ic_battery_horiz_50.png" />
+    <AndroidResource Include="Resources\drawable\ic_battery_horiz_75.png" />
+    <AndroidResource Include="Resources\drawable\ic_battery_horiz_empty.png" />
+    <AndroidResource Include="Resources\drawable\ic_battery_vert_100.png" />
+    <AndroidResource Include="Resources\drawable\ic_battery_vert_25.png" />
+    <AndroidResource Include="Resources\drawable\ic_battery_vert_50.png" />
+    <AndroidResource Include="Resources\drawable\ic_battery_vert_75.png" />
+    <AndroidResource Include="Resources\drawable\ic_battery_vert_empty.png" />
     <AndroidResource Include="Resources\values\Colors.xml" />
     <AndroidResource Include="Resources\layout-ldpi\button_scan.axml">
       <SubType>AndroidResource</SubType>
@@ -364,11 +377,6 @@
     <AndroidResource Include="Resources\drawable-ldpi\ic_arrow_upwhite.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_association.9.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_association_linked.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_battery_horiz_100.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_battery_horiz_25.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_battery_horiz_50.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_battery_horiz_75.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_battery_horiz_empty.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_bluetooth_broadcast.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_bluetooth_disconnected.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_bluetooth_paired.png" />
@@ -730,11 +738,6 @@
     <AndroidResource Include="Resources\drawable\ic_bluetooth_disconnected.png" />
     <AndroidResource Include="Resources\layout\activity_device_grid.axml" />
     <AndroidResource Include="Resources\layout\fragment_gauge_dialog_device_control.axml" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_battery_vert_25.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_battery_vert_50.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_battery_vert_75.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_battery_vert_100.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_battery_vert_empty.png" />
     <AndroidResource Include="Resources\drawable-nodpi\selector_button_gold.xml" />
     <AndroidResource Include="Resources\drawable-nodpi\xml_circle.xml" />
     <AndroidResource Include="Resources\drawable-nodpi\xml_rect_black_gold_bordered.xml" />
