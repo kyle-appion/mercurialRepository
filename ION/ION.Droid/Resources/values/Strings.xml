@@ -51,6 +51,7 @@
   <string name="exit_ion">Exit ION</string>
 	<string name="export">Export</string>
   <string name="favorites">Favorites</string>
+  <string name="filter">Filter</string>
 	<string name="finish">Finish</string>
 	<string name="firstName">First Name</string>
   <string name="_fixed">Fixed</string>
@@ -325,8 +326,12 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
   GRID
   -->
   <string name="grid_device">Device Grid</string>
+  <string name="grid_available_devices">Available Devices</string>
+  <string name="grid_disconnected_devices">Disconnected Devices</string>
+  <string name="grid_device">Device Grid</string>
   <string name="grid_dialog_help">For added functionality, add this device to <b>System Analyzer</b> or <b>Workbench</b>.</string>
   <string name="grid_display_on">Display\nOn</string>
+  <string name="grid_help">This is where we will put the help stuff. Right now, this isn\'t too helpful because I apparently lack the creative imagination to politely inform people that they suck at using this app.</string>
 
 	<!--
 	JOBS

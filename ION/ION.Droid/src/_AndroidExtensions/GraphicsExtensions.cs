@@ -19,8 +19,22 @@
       return new Color(ContextCompat.GetColor(context, colorResource));
     }
 
-    public static Drawable AsResourceDrawable(this int drawableResource, Context context) {
-      return ContextCompat.GetDrawable(context, drawableResource);
+    /// <summary>
+    /// Queries the given drawable from resources. If colorResource is not 0, then we will apply the color to the
+    /// drawable.
+    /// </summary>
+    /// <param name="drawableResource"></param>
+    /// <param name="context"></param>
+    /// <param name="colorResource"></param>
+    /// <returns></returns>
+    public static Drawable AsResourceDrawable(this int drawableResource, Context context, int colorResource = 0) {
+      var ret = ContextCompat.GetDrawable(context, drawableResource);
+      
+      if (colorResource != 0) {
+        ret.SetTint(colorResource.AsResourceColor(context).ToArgb());
+      }
+      
+      return ret;
     }
   }
 }

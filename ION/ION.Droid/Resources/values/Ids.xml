@@ -55,6 +55,7 @@
 	<item name="entry" type="id"/>
   <item name="exit" type="id"/>
 	<item name="export" type="id"/>
+  <item name="filter" type="id"/>
 	<item name="firstName" type="id"/>
   <item name="fluid" type="id"/>
   <item name="footer" type="id"/>

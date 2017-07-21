@@ -104,7 +104,8 @@
 					}
 					break;
 			}
-
+	    
+			usage.Visibility = ViewStates.Gone;
       type.Text = sensor.name;//sensor.device.serialNumber.deviceModel.GetTypeString();
 			measurement.Text = sensor.ToFormattedString(false);
 			unit.Text = sensor.unit.ToString();
