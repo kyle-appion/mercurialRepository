@@ -1,22 +1,26 @@
-﻿namespace ION.Droid.Activity.Grid {
+﻿using System;
+using System.Collections.Generic;
 
-  using System;
-  using System.Collections.Generic;
+using Android.App;
+using Android.Content;
+using Android.Support.V7.Widget;
+using Android.OS;
+using Android.Views;
+using Android.Widget;
 
-  using Android.App;
-  using Android.Content;
-  using Android.Support.V7.Widget;
-  using Android.OS;
-  using Android.Views;
-  using Android.Widget;
+using Appion.Commons.Util;
 
-  using ION.Core.App;
-  using ION.Core.Content;
-  using ION.Core.Devices;
-  using ION.Core.Sensors;
+using ION.Core.App;
+using ION.Core.Content;
+using ION.Core.Devices;
+using ION.Core.Devices.Sorters;
+using ION.Core.Sensors;
 
-  using ION.Droid.Widgets.RecyclerViews;
-  using ION.Droid.Views;
+using ION.Droid.Widgets.RecyclerViews;
+using ION.Droid.Views;
+
+
+namespace ION.Droid.Activity.Grid {
 
   public class DeviceGridAdapter : RecyclerView.Adapter {
 
@@ -165,7 +169,7 @@
 
         NotifyItemRangeRemoved(i, gd.sensorCount);
 
-        CleanLayout(i);
+        CleanLayout();
       }
     }
 
@@ -190,22 +194,20 @@
 				  knownDevices.Add(device);
 			  }
 
-			  var index = FindInsertionIndex(device);
+        var index = FindInsertionIndex(device);
 
-			  if (index > sensors.Count) {
-				  for (int i = 0; i < device.sensorCount; i++) {
-					  sensors.Add(device.sensors[i]);
-				  }
-			  } else {
-				  for (int i = device.sensorCount - 1; i >= 0; i--) {
-					  sensors.Insert(index, device.sensors[i]);
-				  }
-			  }
-
-			  NotifyItemRangeInserted(index, device.sensorCount);
-
-			  CleanLayout(index + device.sensorCount);
-		  }
+        if (index > sensors.Count) {
+          foreach (var sensor in device.sensors) {
+            sensors.Add(sensor);
+          }
+        } else {
+          for (int i = device.sensorCount - 1; i >= 0; i--) {
+            sensors.Insert(index, device.sensors[i]);
+          }
+        }
+        
+        NotifyItemRangeInserted(index, device.sensorCount);
+      }
     }
 
     /// <summary>
@@ -214,31 +216,71 @@
     /// <returns>The insertion index.</returns>
     /// <param name="device">Device.</param>
     private int FindInsertionIndex(GaugeDevice device) {
-      int start = 0, end = sensors.Count;
+      var comparer = new GeneralSensorSorter();
+      
+      int start = 0, end = sensors.Count - 1;
       int i = 0;
 
       var type = device.serialNumber.deviceModel;
       while (start < end) {
 				i = (end + start) / 2;
+        Log.D(this, "i: " + i);
 
         if (sensors[i] == null) {
-          // Check if we fit in the row. 
-          if ((i + device.sensorCount) / colSize >= colSize) {
-            // We don't and need to shift down by a row.
-            start = i + (colSize - i % colSize);
-            continue;
+          // First, let's see if we are properly sorted.
+          // Look left first.
+          var left = i - 1;
+          while (left >= start && sensors[left] == null) left--;
+          
+          // Now that we have a right index, let's look right.
+          var right = i + 1;
+          while (right <= end && sensors[right] == null) right++;
+
+          if (sensors[left] == null && sensors[right] == null) {
+            // This should never happen; the adapter should never be left with just null items.
+            Appion.Commons.Util.Log.E(this, "Adapter of size [" + sensors.Count + "] contains only null items");
+          } else if (sensors[left] == null) {
+            // Ok, so let's compare this incoming sensor with the right sensor. If the result is < 0, then we can place
+            // at left, otherwise, we go after end.
+            if (comparer.Compare(device.sensors[0], sensors[right]) < 0) {
+              return left;
+            } else {
+              return end;
+            }
+          } else if (sensors[right] == null) {
+            // Ok, so this is the flip side of sensors[left] == null. Compare the incoming sensor with the left sensor.
+            // If the result is < 0, then we return left, otherwise, return i.
+            // Note: WE ARE NOT RETURNING END AS THAT IS A BUNCH OF NULLS. We want to put the sensor as close to the
+            // rest as possible.
+            if (comparer.Compare(device.sensors[0], sensors[left]) < 0) {
+              return left;
+            } else {
+              return i;
+            }
           } else {
-            return i;
+            if (comparer.Compare(device.sensors[0], sensors[left]) < 0) {
+              end = left;
+            } else {
+              start = i;
+            }
           }
-          // Normal binary search increments
-        } else if (device.serialNumber.deviceModel.CompareTo(sensors[i].device.serialNumber.deviceModel) < 0) {
-					end = i;
 				} else {
-          start = i + device.sensorCount;
+					// Ok, so we didn't land on a null sensor, so let's narrow down our search parameters. If dir < 0, then we
+					// need to move our search window more left, otherwise, move the window right. If we land a 0, then we can
+					// simply place the gauge right here, although that should never happen as we compare on the sensor's index
+					// within it's host gauge device.
+					var dir = comparer.Compare(device.sensors[0], sensors[i]);
+					if (dir == 0) {
+						return i;
+					} else if (dir < 0) {
+						end = i - 1;
+					} else {
+						start = i + 1;
+					}
 				}
 			}
 
-      return end;
+      return start;
     }
 
     /// <summary>
@@ -246,8 +288,10 @@
     /// not all the same length, whenever we insert a new device, we will have to ensure that the insertion did not
     /// screw with the layout 
     /// </summary>
-    private void CleanLayout(int startIndex) {
-      var i = startIndex;
+    private void CleanLayout() {
+      var needsRefresh = false;
+      
+      var i = 0;
       while (i < sensors.Count) {
         var row = i / colSize;
         var col = i % colSize;
@@ -270,7 +314,9 @@
         }
       }
 
-      NotifyItemRangeChanged(startIndex, sensors.Count - startIndex);
+      if (needsRefresh) {
+//        NotifyItemRangeChanged(startIndex, sensors.Count - startIndex);
+      }
     }
 
     private void InvalidateDevice(GaugeDevice gd) {
