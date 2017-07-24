@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-  <display version="1.0.3">
-    <fixed>Fixed a graphical bug in Superheat/Subcool calculator</fixed>
+  <display version="1.0.4">
+    <fixed>Fixed a rendering bug in workbench</fixed>
   </display>
 </whatsnew>
