@@ -10,12 +10,13 @@
   using ION.Core.IO;
 
   using ION.Droid.Widgets.RecyclerViews;
+  using ION.Droid.Util;
 
-  public class FeedItemRecord : RecordAdapter.Record<FeedItem> {
+  public class FeedItemRecord : RecordAdapter.Record<RssItem> {
     // Overridden from RecordAdapter.Record
     public override int viewType { get { return 0; } }
 
-    public FeedItemRecord(FeedItem rss) : base(rss) {
+    public FeedItemRecord(RssItem rss) : base(rss) {
     }
   }
 
@@ -34,7 +35,7 @@
       base.Invalidate();
 
       title.Text = record.data.title;
-      date.Text = record.data.publishDate;
+      date.Text = record.data.publishDate.ToFullShortString();
       content.Text = Html.FromHtml(record.data.description).ToString();
     }
   }

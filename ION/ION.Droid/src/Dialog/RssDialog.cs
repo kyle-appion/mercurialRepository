@@ -23,7 +23,7 @@
     }
 
     public Dialog Show() {
-      var item = rss.channelFeed.items[rss.channelFeed.items.Count - 1];
+      var item = rss.channels[0].items[rss.channels[0].items.Count - 1];
 
       var view = LayoutInflater.From(context).Inflate(Resource.Layout.dialog_rss, null);
 
