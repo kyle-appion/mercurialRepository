@@ -102,10 +102,12 @@
 		// Overridden from RecyclerView.Adapter
 		public override void OnViewDetachedFromWindow(Java.Lang.Object holder) {
 			base.OnViewDetachedFromWindow(holder);
+/*
 			var vh = holder as SwipeRecyclerView.ViewHolder;
 			if (vh != null) {
 				vh.Unbind();
 			}
+*/
 		}
 
 		// Overridden from RecyclerView.Adapter
