@@ -52,6 +52,9 @@
 		/// <param name="packet">The packet to parse.</param>
 		/// <returns></returns>
 		public override GaugePacket ParsePacket(byte[] packet) {
+      if (packet.Length < 18 || packet.Length > 20) {
+        throw new Exception("Packet too short");
+      }
 			using (BinaryReader r = new BinaryReader(new MemoryStream(packet))) {
 				var version = (EProtocolVersion)r.ReadByte();
 				var battery = (int)r.ReadByte();
