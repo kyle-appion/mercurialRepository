@@ -20,6 +20,7 @@
 
   using ION.Core.App;
 	using ION.Core.Content;
+  using ION.Core.IO;
 
   // ION.Droid
   using ION.Droid.Activity.Grid;
@@ -152,22 +153,32 @@
       }
 			ion.preferences.lastKnownAppVersion = ion.version;
 
-			// Show the rss feed.
-			Task.Factory.StartNew(async () => {
-        try {
-          var rss = await ion.portal.DownloadRssOrThrowAsync();
+      // Show the rss feed.
+      Task.Factory.StartNew(ion.portal.DownloadRssOrThrowAsync)
+          .ContinueWith((args) => {
+            var rss = args.Result.Result;
+					  try {
+						  var items = new List<RssItem>();
+						  for (int j = 0; j < rss.channels[0].items.Count; j++) {
+							  var item = rss.channels[0].items[j];
+							  if (item.publishDate.CompareTo(ion.appPrefs.lastRssDate) >= 0 && DateTime.Now.CompareTo(item.expireDate) <= 0) {
+								  items.Add(item);
+							  }
+						  }
 
-          var usDate = rss.channelFeed.items[0].publishDate;
-          if (!ion.appPrefs.lastRssDate.Equals(usDate)) {
-						ion.PostToMain(() => {
-							new RssDialog(this, rss).Show();
-              ion.appPrefs.lastRssDate = usDate;
-						});            
-          }
-        } catch (Exception e) {
-          Log.E(this, "Failed to download rss feed", e);
-        }
-      });
+						  if (items.Count > 0) {
+							  ion.PostToMain(() => {
+								  new RssDialog(this, rss).Show();
+								  ion.appPrefs.lastRssDate = DateTime.Now;
+							  });
+						  }
+					  } catch (Exception e) {
+						  Log.E(this, "Failed to download rss feed", e);
+					  }
+         }, TaskScheduler.FromCurrentSynchronizationContext());
+
+         
+
 		}
 
 		protected override void OnResume() {

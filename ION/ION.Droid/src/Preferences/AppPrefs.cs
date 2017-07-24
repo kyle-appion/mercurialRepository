@@ -1,4 +1,6 @@
-﻿namespace ION.Droid.Preferences {
+﻿using ION.Droid.Util;
+
+namespace ION.Droid.Preferences {
 
   using System;
 
@@ -156,18 +158,20 @@
     /// The date of the last most recent read rss item.
     /// </summary>
     /// <value><c>true</c> if last rss date; otherwise, <c>false</c>.</value>
-    public string lastRssDate {
+    public DateTime lastRssDate {
       get {
         var usDate = prefs.GetString(context.GetString(Resource.String.pkey_rss_last_check_date), null);
-        if (usDate == null) {
-          return DateTime.Now.ToString();
-        } else {
-          return usDate;
+        DateTime ret;
+
+        if (!DateTime.TryParse(usDate, out ret)) {
+          return new DateTime(2017, 01, 01);
         }
+
+        return ret;
       }
       set {
         var e = prefs.Edit();
-        e.PutString(context.GetString(Resource.String.pkey_rss_last_check_date), value);
+        e.PutString(context.GetString(Resource.String.pkey_rss_last_check_date), value.ToFullShortString());
         e.Commit();
       }
     }
