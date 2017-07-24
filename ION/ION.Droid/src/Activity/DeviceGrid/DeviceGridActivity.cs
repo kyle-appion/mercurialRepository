@@ -81,7 +81,7 @@
       _disconnectedAdapter = new DeviceGridAdapter(ion, COL_SIZE, (gd) => {
         return !gd.isConnected && !gd.isNearby;
       });
-      _disconnectedList.SetAdapter(_disconnectedAdapter);
+//      _disconnectedList.SetAdapter(_disconnectedAdapter);
 			_availableAdapter.onSensorClicked = OnSensorClicked;
 
 			_connectionManager = ion.deviceManager.connectionManager;
