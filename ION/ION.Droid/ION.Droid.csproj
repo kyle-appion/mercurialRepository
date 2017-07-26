@@ -157,6 +157,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\Activity\DeviceGrid\DeviceGridAdapter.cs" />
     <Compile Include="src\Activity\MainActivity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Dialog\GaugeDeviceSensorSelectDialog.cs" />
@@ -332,7 +333,6 @@
     <Compile Include="src\Activity\DeviceGrid\DeviceGridActivity.cs" />
     <Compile Include="src\Activity\DeviceGrid\GridGaugeDeviceSensorView.cs" />
     <Compile Include="src\Widgets\AutoResizeTextView.cs" />
-    <Compile Include="src\Activity\DeviceGrid\DeviceGridAdapter.cs" />
     <Compile Include="src\Activity\DeviceGrid\DeviceViewHolder.cs" />
     <Compile Include="src\Activity\DeviceGrid\LinkDecorator.cs" />
     <Compile Include="src\Activity\DeviceGrid\GaugeDeviceControlDialogFragment.cs" />

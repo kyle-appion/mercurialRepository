@@ -320,7 +320,6 @@ __FOUND_INDEX__:
     /// removed from the adapter. This method will call NotifyDataSetChanged().
     /// </summary>
     private void CrushContent() {
-/*  
       for (var index = 0; index < sensors.Count; index += colSize) {
         // Eat up the row until we find a null item (if at all).
         var k = 0;
@@ -388,7 +387,6 @@ __FOUND_INDEX__:
       }
 
       NotifyDataSetChanged();
-*/
     }
 
     /// <summary>
