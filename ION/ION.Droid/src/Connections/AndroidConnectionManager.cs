@@ -65,21 +65,10 @@
     public BluetoothManager bm { get; private set; }
 
 		/// <summary>
-		/// The collection of every found appion device.
-		/// Note: this does not necessarily need to match up with the device manager and may, indeed, contain more devices
-		/// than the device manager maintains.
-		/// </summary>
-		private Dictionary<string, BluetoothDevice> connectionLookup = new Dictionary<string, BluetoothDevice>();
-
-		/// <summary>
 		/// The object that we will synchronize.
 		/// </summary>
 		internal object locker = new object();
 
-    /// <summary>
-    /// The receiver that will resolve found devices during the scan operation.
-    /// </summary>
-    private ScanReceiver receiver;
     /// <summary>
     /// The scan method that is used for exlussively finding bluetooth le devices and used in broadcast scanning. 
     /// </summary>
@@ -89,8 +78,6 @@
       this.ion = ion;
       this.context = ion.context;
       this.bm = context.GetSystemService(Context.BluetoothService) as BluetoothManager;
-
-      receiver = new ScanReceiver(this);
 
 			// Resolve the scan methods that we will need to perform scanning.
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
@@ -102,27 +89,19 @@
 			} else {
 				bleScanMethod = new Api18BleScanMethod(this);
 			}
-
-      var filter = new IntentFilter();
-      filter.AddAction(BluetoothAdapter.ActionDiscoveryStarted);
-      filter.AddAction(BluetoothAdapter.ActionDiscoveryFinished);
-			filter.AddAction(BluetoothDevice.ActionFound);
-      context.RegisterReceiver(receiver, filter);
     }
 
-    public void Dispose() {
+    public void Release() {
       StopScan();
-      try {
-        context.UnregisterReceiver(receiver);
-      } catch (Exception e) {
-      }
     }
 
     // Implemented for IConnectionManager
     public bool StartScan() {
       lock (locker) {
         if (!isScanning) {
-          return bm.Adapter.StartDiscovery();
+          var ret = bleScanMethod.StartScan();
+          isScanning = ret;
+          return ret;
         } else {
           return false;
         }
@@ -144,7 +123,8 @@
     public void StopScan() {
       lock (locker) {
         if (isScanning) {
-          bm.Adapter.CancelDiscovery();
+          bleScanMethod.StopScan();
+          isScanning = false;
         }
       }
     }
@@ -180,6 +160,7 @@
 
 		// Implemented for OnSharedPreferenceChangeListener
 		public void OnSharedPreferenceChanged(ISharedPreferences prefs, string key) {
+      // todo ahodder@appioninc.com: how does this work with classic scanning in device manager and the switching between contexts?
 			if (context.GetString(Resource.String.pkey_device_long_range).Equals(key)) {
 				if (ion.preferences.device.allowLongRangeMode) {
 					StartBroadcastScan();
@@ -188,19 +169,6 @@
 				}
 			}
 		}
-
-		/// <summary>
-		/// Queries whether or not the connection manager has a connection for the given address.
-		/// </summary>
-		/// <returns><c>true</c>, if connection for address was hased, <c>false</c> otherwise.</returns>
-		/// <param name="address">Address.</param>
-		public bool HasConnectionForAddress(string address) {
-			return connectionLookup.ContainsKey(address);
-		}
-
-    internal void OnDeviceFound(BluetoothDevice device) {
-      OnDeviceFound(device, null);
-    }
 
 		internal void OnDeviceFound(BluetoothDevice device, byte[] scanRecord) {
 			ISerialNumber sn = null;
@@ -235,12 +203,6 @@
 					// perform the broadcast update.
 					idevice.connection.lastPacket = scanRecord;
 				}
-			}
-		}
-
-		private void OnClassicDeviceFound(ISerialNumber sn, BluetoothDevice device) {
-			if (onDeviceFound != null) {
-				onDeviceFound(this, sn, device.Address, null, EProtocolVersion.Classic);
 			}
 		}
 
@@ -296,69 +258,5 @@
 				}
 			}
 		}
-
-    /// <summary>
-    /// The receiver that will listen for bluetooth callbacks.
-    /// </summary>
-    private class ScanReceiver : BroadcastReceiver {
-      private AndroidConnectionManager cm;
-
-      public ScanReceiver(AndroidConnectionManager cm) {
-        this.cm = cm;
-      }
-
-      public override void OnReceive(Context context, Intent intent) {
-        switch (intent.Action) {
-          case BluetoothAdapter.ActionDiscoveryStarted:
-            this.cm.isScanning = true;
-            break;
-					case BluetoothAdapter.ActionDiscoveryFinished:
-            this.cm.isScanning = false;
-            break;
-					case BluetoothDevice.ActionFound:
-            ResolveFoundDevice(intent);
-            break;
-        }
-      }
-
-      private void ResolveFoundDevice(Intent intent) {
-        var device = intent.GetParcelableExtra(BluetoothDevice.ExtraDevice) as BluetoothDevice;
-				Log.D(this, "Found device: " + device);
-
-				if (device != null) {
-          switch (device.Type) {
-            case BluetoothDeviceType.Classic:
-              VerifyClassicDevice(device);
-              break;
-            case BluetoothDeviceType.Le:
-            case BluetoothDeviceType.Dual:
-              cm.OnDeviceFound(device);
-              break;
-          }
-        } else {
-          Log.D(this, "Claimed to have found a device, but the intent was empty");
-          return;
-        }
-      }
-
-			/// <summary>
-			/// Attempts to resolve the device if it is an appion device.
-			/// </summary>
-			/// <param name="device">Device.</param>
-			private void VerifyClassicDevice(BluetoothDevice device) {
-				lock (cm.locker) {
-					if (!cm.HasConnectionForAddress(device.Address)) {
-						if (Protocol.APPION_CLASSIC_DEVICE_NAME.Equals(device.Name)) {
-							Task.Factory.StartNew(async () => {
-								var sn = await ClassicConnection.ResolveSerialNumber(device);
-								if (sn != null) {
-									cm.OnClassicDeviceFound(sn, device);
-								}
-							});
-						}
-					}
-				}
-			}
-    }
   }
 }

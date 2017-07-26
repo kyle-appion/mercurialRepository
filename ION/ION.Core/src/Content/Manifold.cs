@@ -227,6 +227,9 @@
     /// </summary>
     public PTChart ptChart {
       get {
+        if (__ptChart == null) {
+          __ptChart = new PTChart(AppState.context.fluidManager.lastUsedFluid, Fluid.EState.Dew);
+        }
         return __ptChart;
       }
       set {

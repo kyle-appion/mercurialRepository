@@ -22,7 +22,7 @@
 		}
 
 		// Implemented from IConnectionHelper
-		public void Dispose() {
+		public void Release() {
 		}
 
     // Implemented for IConnectionHelper

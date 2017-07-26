@@ -15,12 +15,7 @@ namespace ION.Core.Devices.Sorters {
       var ret = o1.device.serialNumber.deviceModel.CompareTo(o2.device.serialNumber.deviceModel);
 
       if (ret == 0) {
-        ret = o1.device.serialNumber.CompareTo(o2.device.serialNumber);
-        if (ret == 0) {
-          return o1.index.CompareTo(o2.index);
-        } else {
-          return ret;
-        }
+        return o1.device.serialNumber.CompareTo(o2.device.serialNumber);
       } else {
         return ret;
       }

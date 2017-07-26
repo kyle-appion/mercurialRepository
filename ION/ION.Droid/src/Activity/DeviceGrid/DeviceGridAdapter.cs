@@ -3,16 +3,14 @@
   using System;
   using System.Collections.Generic;
 
-  using Android.App;
-  using Android.Content;
   using Android.Support.V7.Widget;
   using Android.OS;
   using Android.Views;
-  using Android.Widget;
 
   using ION.Core.App;
   using ION.Core.Content;
   using ION.Core.Devices;
+  using ION.Core.Devices.Sorters;
   using ION.Core.Sensors;
 
   using ION.Droid.Widgets.RecyclerViews;
@@ -20,10 +18,10 @@
 
   public class DeviceGridAdapter : RecyclerView.Adapter {
 
-		public delegate bool AcceptDeviceFilterDelegate(GaugeDevice device);
+    public delegate bool AcceptDeviceFilterDelegate(GaugeDevice device);
     public delegate void OnSensorClicked(GaugeDeviceSensor sensor, int index);
 
-		public override int ItemCount {
+    public override int ItemCount {
       get {
         return sensors.Count;
       }
@@ -41,8 +39,8 @@
 
     public OnSensorClicked onSensorClicked { get; set; }
 
-		private HashSet<GaugeDevice> knownDevices = new HashSet<GaugeDevice>();
-		private List<GaugeDeviceSensor> sensors = new List<GaugeDeviceSensor>();
+    private HashSet<GaugeDevice> knownDevices = new HashSet<GaugeDevice>();
+    private List<GaugeDeviceSensor> sensors = new List<GaugeDeviceSensor>();
 
     private LinkDecorator links;
     private AcceptDeviceFilterDelegate filter;
@@ -75,10 +73,10 @@
       links.Release();
 
       sensors.Clear();
-			dm.onDeviceManagerEvent -= OnDeviceManagerEvent;
-			ion.currentWorkbench.onWorkbenchEvent -= OnWorkbenchEvent;
-			ion.currentAnalyzer.onAnalyzerEvent -= OnAnalyzerEvent;
-		}
+      dm.onDeviceManagerEvent -= OnDeviceManagerEvent;
+      ion.currentWorkbench.onWorkbenchEvent -= OnWorkbenchEvent;
+      ion.currentAnalyzer.onAnalyzerEvent -= OnAnalyzerEvent;
+    }
 
     public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
       return new DeviceViewHolder(parent);
@@ -165,112 +163,248 @@
 
         NotifyItemRangeRemoved(i, gd.sensorCount);
 
-        CleanLayout(i);
+        CrushContent();
       }
     }
 
     private void RefreshContent() {
       sensors.Clear();
 
-			foreach (var device in dm.devices) {
-				var gd = device as GaugeDevice;
+      foreach (var device in dm.devices) {
+        var gd = device as GaugeDevice;
         if (gd != null && filter(gd)) {
-          AddDevice(gd);          
-				}
-			}
+          InsertGaugeDevice(gd);
+        }
+      }
 
       NotifyDataSetChanged();
     }
 
-    private void AddDevice(GaugeDevice device) {
+		/// <summary>
+		/// Inserts the device's sensor into the backing array. 
+		/// </summary>
+		/// <returns>The insertion index.</returns>
+		/// <param name="device">Device.</param>
+		private void InsertGaugeDevice(GaugeDevice device) {
       lock (locker) {
-			  if (knownDevices.Contains(device)) {
-				  return;
-			  } else {
-				  knownDevices.Add(device);
-			  }
-
-			  var index = FindInsertionIndex(device);
-
-			  if (index > sensors.Count) {
-				  for (int i = 0; i < device.sensorCount; i++) {
-					  sensors.Add(device.sensors[i]);
-				  }
-			  } else {
-				  for (int i = device.sensorCount - 1; i >= 0; i--) {
-					  sensors.Insert(index, device.sensors[i]);
-				  }
-			  }
-
-			  NotifyItemRangeInserted(index, device.sensorCount);
-
-			  CleanLayout(index + device.sensorCount);
-		  }
-    }
-
-    /// <summary>
-    /// Finds the index were the device should be inserted
-    /// </summary>
-    /// <returns>The insertion index.</returns>
-    /// <param name="device">Device.</param>
-    private int FindInsertionIndex(GaugeDevice device) {
-      int start = 0, end = sensors.Count;
-      int i = 0;
-
-      var type = device.serialNumber.deviceModel;
-      while (start < end) {
-				i = (end + start) / 2;
-
-        if (sensors[i] == null) {
-          // Check if we fit in the row. 
-          if ((i + device.sensorCount) / colSize >= colSize) {
-            // We don't and need to shift down by a row.
-            start = i + (colSize - i % colSize);
-            continue;
-          } else {
-            return i;
-          }
-          // Normal binary search increments
-        } else if (device.serialNumber.deviceModel.CompareTo(sensors[i].device.serialNumber.deviceModel) < 0) {
-					end = i;
-				} else {
-          start = i + device.sensorCount;
-				}
-			}
-
-      return end;
-    }
-
-    /// <summary>
-    /// This is called after we insert a gauge to clean the layout of any hanging sensors. Because the sensor links are
-    /// not all the same length, whenever we insert a new device, we will have to ensure that the insertion did not
-    /// screw with the layout 
-    /// </summary>
-    private void CleanLayout(int startIndex) {
-      var i = startIndex;
-      while (i < sensors.Count) {
-        var row = i / colSize;
-        var col = i % colSize;
-
-        if (sensors[i] == null) {
-          var j = i;
-          while (sensors[j] == null && j < sensors.Count) j++;
-          sensors.RemoveRange(i, j - i);
-          NotifyItemRangeRemoved(i, j - i);
-        } else if (col + (sensors[i].device.sensorCount) > colSize) {
-          var cnt = (sensors[i].device.sensorCount);
-          // We need to shift the devices down or the will split the row
-          for (int j = colSize - col; j > 0; j--) {
-            // Insert some dead space.
-            sensors.Insert(i, null);
-          }
-          i += (colSize - col) + cnt;
+        if (knownDevices.Contains(device)) {
+          return;
         } else {
-          i += sensors[i].device.sensorCount;
+          knownDevices.Add(device);
+        }
+
+        var comparer = new GeneralSensorSorter();
+        var size = device.sensorCount;
+
+        var index = 0;
+        var k = 0;
+
+        for (; index < sensors.Count; index += colSize) {
+          if (sensors[index] == null) {
+            // If the sensor is null, then we have a problem, the adapter was not crushed before a new device was added.
+            // Try crushing the content in hopes that we can fix whatever happened.
+            CrushContent();
+            if (sensors[index] == null) {
+              // The sensor is still null. We have an issue with the algorithm and we need to resolve it. Hopefully this
+              // will happen in test code, otherwise, we will just rape to adapter to prevent any bad things from happening.
+#if DEBUG
+              throw new Exception("Found null index {" + index + "}: expected an item");
+#else
+	          Log.E(this, "Unexpected issue with inserting sensor into DeviceGridAdapter: found a null item at first index");
+	          // At this point, the adapter is broken, and we can't really fix it without a shit ton of effort. Just append
+	          // the sensor to the end of the list and wait until the user exits activity and comes back.
+	          return sensors.Count;
+#endif
+            }
+          }
+
+          for (k = 0; k < colSize - device.sensorCount + 1 && index + k < sensors.Count; k++) {
+            if (sensors[index + k] != null) {
+              var dir = comparer.Compare(device.sensors[0], sensors[index + k]);
+              if (dir >= 0) {
+                continue;
+              }
+
+              // We found the insert index. Let's figure out what needs to happen here.
+              goto __FOUND_INDEX__;
+            }
+          }
+        }
+
+__FOUND_INDEX__:
+        if (index + k > sensors.Count) {
+          var oldCnt = sensors.Count;
+          // If our insertion index is past the sensors count, then we can simply add the items to the end of the list
+          // First though, check if we fit on the row.
+          if (device.sensorCount + k > colSize) {
+            // Fill out the row with empties, and then add the device
+            for (int j = 0; j < colSize - k; j++) {
+              sensors.Add(null);
+            }
+          }
+          // Now we can add the gauges.
+          var i = sensors.Count;
+          foreach (var sensor in device.sensors) {
+            sensors.Add(sensor);
+          }
+
+          NotifyItemRangeInserted(i, sensors.Count - oldCnt);
+					return;
+        } else {
+          // Otherwise, we need to insert the item.
+          if (index + k + device.sensorCount > index + colSize) {
+            // Adding the sensor to the given index will split rows. So, add the sensors to the next row
+            // However, we do need to fill this row with empties
+            for (int i = colSize - 1; i >= k; i--) {
+              sensors.Insert(index + k, null);
+            }
+            index += colSize;
+            k = 0;
+          }
+
+          // Insert the device into the array.
+          for (int i = device.sensorCount - 1; i >= 0; i--) {
+            sensors.Insert(index + k, device.sensors[i]);
+          }
+
+          if (FixRows(index)) {
+            NotifyDataSetChanged();
+          } else {
+            NotifyItemRangeInserted(index + k, device.sensorCount);
+          }
+        }
+      }
+    }
+
+    private bool FixRows(int index) {
+      var @fixed = false;
+
+      // Trim the trailing empties
+      for (int i = sensors.Count - 1; i >= 0 && sensors[i] == null; i--) {
+        sensors.RemoveAt(i);
+      }
+
+      for (int row = index / colSize; row < sensors.Count; row += colSize) {
+        // Eat the leadings empties
+        for (int i = 0; i < colSize && sensors[row] == null; i++) {
+          sensors.Insert(row - 1, null);
+          sensors.RemoveAt(row);
+        }
+
+        // Walk through the row seeing if any device's are cut into two rows
+        for (int col = 0; col < colSize; col++) {
+          var i = row * colSize + col;
+          if (i >= sensors.Count) {
+            break;
+          } else if (sensors[i] == null) {
+            continue;
+          } else if (col + sensors[i].device.sensorCount > colSize) {
+            // We found a sensor that needs to be pushed to the next row. Add empties until the row is full.
+            for (int j = col; j < colSize; j++) {
+              sensors.Insert(i, null);
+            }
+
+            @fixed = true;
+          } else {
+            col += sensors[i].device.sensorCount - 1;
+          }
         }
       }
 
-      NotifyItemRangeChanged(startIndex, sensors.Count - startIndex);
+      return @fixed;
+    }
+
+
+    /// <summary>
+    /// Attempts to ensure that the content is as compressed as possible. This should be called whenever an item is
+    /// removed from the adapter. This method will call NotifyDataSetChanged().
+    /// </summary>
+    private void CrushContent() {
+/*  
+      for (var index = 0; index < sensors.Count; index += colSize) {
+        // Eat up the row until we find a null item (if at all).
+        var k = 0;
+        while (index + k < sensors.Count && k < colSize && sensors[index + k] != null) k++;
+
+        if (k >= colSize) {
+          // The row is valid so we don't need to do anything
+          continue;
+        }
+
+        // Our current index;
+        var i = index + k;
+
+        // We have a null in the row, so a couple of things can happen here.
+        // Note: option 1 is optional (may or may not be true), however, regardless, option 2 will always occur.
+        //    1) the row has a hole (null followed by an item) making it fragmented, and we need to collapse it
+        //    2) there are emtpies at the end of the row. to fix this, we must attempt to bring down items from the next
+        //        row into this row (if able).
+
+        // Let's see if the row is fragmented. To be considered fragmented, the number of consecutive empties must be
+        // less than the remaining slots in the row. If the number of empties is equal to the number of remaining slots,
+        // then we can simply pull down the next row's sensors.
+        var empties = CountConsecutiveEmpties(i);
+        var isFragmented = empties > colSize - k; // Account for how far into the row we are.
+
+        if (isFragmented) {
+          // We are fragmented, so collapse the row.
+          for (int j = 0; j < empties; j++) {
+            sensors[i] = sensors[i + empties];
+            sensors[i + empties] = null;
+          }
+          i += empties; // Advance i by the number of sensors we just moved over.
+        }
+
+        // Now we need to determine if we can even try to bring anything from the next row down into this row.
+        if (index + colSize > sensors.Count) {
+          // Nope, this was the last row.
+          continue;
+        }
+
+        // TODO ahodder@appioninc.com: I think this algorithm will leave null items at the end of the adapter.
+        // This will need to be discovered and resolved at some point
+
+				// Attempt to bring some things from the next row down.
+
+
+				// Find the index first sensor on the next row.
+				var nri = index + colSize;
+        while (nri < sensors.Count && nri < index + 2 * colSize && sensors[nri] == null) nri++;
+
+        var ds = sensors[nri].device.sensorCount; // The number of sensors that the device has. 
+
+        // Check if we can fit the device into this row. If not, then we are done and this row is finished.
+        if (i - index + ds < colSize) {
+          // We can add the device into this row
+          for (int j = 0; j < ds; j++) {
+            sensors[i] = sensors[nri + j];
+            sensors[nri + j] = null;
+          }
+          i += ds; // Advance i by the number of sensors we just moved down
+        }
+
+        // At this point we have collapsed all of the sensor to the left and pulled down any sensors that we can for
+        // this row. We are good to move on to the next row.
+      }
+
+      NotifyDataSetChanged();
+*/
+    }
+
+    /// <summary>
+    /// Counts the number of empty indices until the edge of the adapter row.
+    /// </summary>
+    /// <returns>The consecutive empties.</returns>
+    /// <param name="index">Index.</param>
+    private int CountConsecutiveEmpties(int index) {
+      // Find the index that completes the row, and compare it to the number of items in the sensor list.
+      var endIndex = Math.Min(((index / colSize) + 1) * colSize, sensors.Count);
+      var ret = 0;
+
+      // While our index is less than our end index, let's see how many consecutive empties there are.
+      for (; index < endIndex && sensors[index] == null; index++) ret++;
+
+      return ret;
     }
 
     private void InvalidateDevice(GaugeDevice gd) {
@@ -304,7 +438,7 @@
               if (knownDevices.Contains(gd)) {
                 InvalidateDevice(gd);
               } else {
-                AddDevice(gd);
+                InsertGaugeDevice(gd);
               }
             } else {
               RemoveDevice(gd);

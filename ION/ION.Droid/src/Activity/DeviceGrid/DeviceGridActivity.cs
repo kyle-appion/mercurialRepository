@@ -1,8 +1,11 @@
 ﻿namespace ION.Droid.Activity.Grid {
 
   using System;
+  using System.Threading.Tasks;
 
   using Android.App;
+  using Android.Bluetooth;
+  using Android.Content;
   using Android.Content.PM;
   using Android.OS;
 	using Android.Support.V4.Widget;
@@ -10,10 +13,15 @@
   using Android.Views;
   using Android.Widget;
 
+  using Appion.Commons.Util;
+
   using ION.Core.Connections;
   using ION.Core.Devices;
+  using ION.Core.Devices.Protocols;
 
-  using ION.Droid.Dialog;
+  using ION.Droid.Connections;
+  using ION.Droid.Devices;
+	using ION.Droid.Dialog;
   using ION.Droid.Views;
 
   [Activity(Label="@string/grid_device", Theme="@style/AppTheme", LaunchMode=LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
@@ -31,7 +39,10 @@
     private DeviceGridAdapter _availableAdapter;
     private DeviceGridAdapter _disconnectedAdapter;
 
-    private IConnectionManager _connectionManager;
+    private Handler _handler;
+    private bool _paused;
+
+    private CombinedScanReceiver _receiver;
 
     /// <summary>
     /// Whether or not the activity should filter out the disconnected devices.
@@ -69,6 +80,8 @@
       _availableList = FindViewById<RecyclerView>(Resource.Id.connected);
 			_disconnectedList = FindViewById<RecyclerView>(Resource.Id.disconnected);
 
+      _handler = new Handler();
+
 			_swiper.SetOnRefreshListener(this);
       _availableList.SetLayoutManager(new GridLayoutManager(this, COL_SIZE));
       _availableAdapter = new DeviceGridAdapter(ion, COL_SIZE, (gd) => {
@@ -79,25 +92,31 @@
 
       _disconnectedList.SetLayoutManager(new GridLayoutManager(this, COL_SIZE));
       _disconnectedAdapter = new DeviceGridAdapter(ion, COL_SIZE, (gd) => {
-        return !gd.isConnected && !gd.isNearby;
+        return gd.connection.connectionState == EConnectionState.Disconnected && !gd.isNearby;
       });
-//      _disconnectedList.SetAdapter(_disconnectedAdapter);
+      _disconnectedList.SetAdapter(_disconnectedAdapter);
 			_availableAdapter.onSensorClicked = OnSensorClicked;
 
-			_connectionManager = ion.deviceManager.connectionManager;
+      _receiver = new CombinedScanReceiver(this, ion.deviceManager);
     }
 
     protected override void OnResume() {
       base.OnResume();
+      _paused = false;
 
-      _connectionManager.onScanStateChanged += OnScanStateChanged;
+      ion.deviceManager.connectionManager.onScanStateChanged += OnScanStateChanged;
+      ion.deviceManager.connectionManager.StartScan();
     }
 
     protected override void OnPause() {
       base.OnPause();
+			_paused = true;
 
-      _connectionManager.onScanStateChanged -= OnScanStateChanged;
-    }
+
+			ion.deviceManager.connectionManager.onScanStateChanged -= OnScanStateChanged;
+      ion.deviceManager.ForgetFoundDevices();
+			ion.deviceManager.connectionManager.StopScan();
+		}
 
     public override bool OnCreateOptionsMenu(IMenu menu) {
       base.OnCreateOptionsMenu(menu);
@@ -115,14 +134,14 @@
       var scan = menu.FindItem(Resource.Id.scan);
       var scanView = (TextView)scan.ActionView;
       scanView.SetOnClickListener(new ViewClickAction((view) => {
-        if (_connectionManager.isScanning) {
-          _connectionManager.StopScan();
+        if (_receiver.isScanning) {
+          StopScan();
         } else {
-          _connectionManager.StartScan();
+          StartScan();
         }
       }));
 
-      if (_connectionManager.isScanning) {
+      if (_receiver.isScanning) {
         scanView.SetText(Resource.String.scanning);
       } else {
         scanView.SetText(Resource.String.scan);
@@ -162,11 +181,35 @@
     }
 
     public void OnRefresh() {
-			if (!_connectionManager.isScanning) {
-				_connectionManager.StartScan();
+      if (!_receiver.isScanning) {
+        StartScan();
 			}
 
-			_swiper.Refreshing = _connectionManager.isScanning;
+      _swiper.Refreshing = _receiver.isScanning;
+    }
+
+    /// <summary>
+    /// Starts the classic scan, stop the ble scan.
+    /// </summary>
+    private void StartScan() {
+			_receiver.StartScan();
+			_handler.Post(() => {
+				if (!_paused) {
+					ion.deviceManager.connectionManager.StopScan();
+				}
+			});
+    }
+
+    /// <summary>
+    /// Stops the classic scan, starts the ble scan/
+    /// </summary>
+    private void StopScan() {
+			_receiver.StopScan();
+			_handler.Post(() => {
+				if (!_paused) {
+					ion.deviceManager.connectionManager.StartScan();
+				}
+			});
     }
 
     private void OnSensorClicked(GaugeDeviceSensor sensor, int position) {
@@ -194,7 +237,85 @@
 
     private void OnScanStateChanged(IConnectionManager cm) {
       InvalidateOptionsMenu();
-      _swiper.Refreshing = _connectionManager.isScanning;
+      _swiper.Refreshing = _receiver.isScanning;
+    }
+
+    private class CombinedScanReceiver : BroadcastReceiver {
+      public bool isScanning { get; private set; }
+
+      private IDeviceManager _deviceManager;
+      private Context _context;
+      private BluetoothManager _bm;
+      private readonly object locker = new object();
+
+      public CombinedScanReceiver(Context context, IDeviceManager deviceManager) {
+        _context = context;
+        _deviceManager = deviceManager;
+			  _bm = _context.GetSystemService(Context.BluetoothService) as BluetoothManager;
+			}
+
+      public override void OnReceive(Context context, Intent intent) {
+        switch (intent.Action) {
+          case BluetoothAdapter.ActionDiscoveryStarted:
+            isScanning = true;
+            break;
+
+          case BluetoothAdapter.ActionDiscoveryFinished:
+            isScanning = false;
+            break;
+
+          case BluetoothDevice.ActionFound:
+            ResolveFoundDevice(intent);
+            break;
+        }
+      }
+
+      public void StartScan() {
+        _bm.Adapter.StartDiscovery();
+      }
+
+      public void StopScan() {
+        _bm.Adapter.CancelDiscovery();
+      }
+
+      private void ResolveFoundDevice(Intent intent) {
+        var device = intent.GetParcelableExtra(BluetoothDevice.ExtraDevice) as BluetoothDevice;
+
+        if (device != null) {
+          switch (device.Type) {
+            case BluetoothDeviceType.Classic:
+              VerifyClassicDevice(device);
+              break;
+            case BluetoothDeviceType.Le:
+            case BluetoothDeviceType.Dual:
+              try {
+                _deviceManager.CreateBleDeviceOrThrow(device, null);
+              } catch (Exception e) {
+                Log.E(this, "Failed to create ble device in classic scan mode", e);
+              }
+              break;
+          }
+        }
+      }
+
+			/// <summary>
+			/// Attempts to resolve the device if it is an appion device.
+			/// </summary>
+			/// <param name="device">Device.</param>
+			private void VerifyClassicDevice(BluetoothDevice device) {
+				lock (locker) {
+					if (!_deviceManager.HasDeviceForAddress(device.Address)) {
+						if (Protocol.APPION_CLASSIC_DEVICE_NAME.Equals(device.Name)) {
+							Task.Factory.StartNew(async () => {
+								var sn = await ClassicConnection.ResolveSerialNumber(device);
+								if (sn != null) {
+                  _deviceManager.CreateDevice(sn, device.Address, EProtocolVersion.Classic);
+								}
+							});
+						}
+					}
+				}
+			}
     }
   }
 }
