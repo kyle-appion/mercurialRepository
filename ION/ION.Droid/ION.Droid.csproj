@@ -337,6 +337,8 @@
     <Compile Include="src\Activity\DeviceGrid\LinkDecorator.cs" />
     <Compile Include="src\Activity\DeviceGrid\GaugeDeviceControlDialogFragment.cs" />
     <Compile Include="src\_AndroidExtensions\GraphicsExtensions.cs" />
+    <Compile Include="src\Devices\DeviceManagerExtensions.cs" />
+    <Compile Include="src\App\GenerateFluidTables.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

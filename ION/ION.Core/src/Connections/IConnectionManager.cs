@@ -18,7 +18,7 @@
   public delegate void OnDeviceFound(IConnectionManager connectionManager, ISerialNumber serialNumber, string address, byte[] packet, EProtocolVersion protocolVersion);
 
 
-  public interface IConnectionManager : IDisposable {
+  public interface IConnectionManager {
     /// <summary>
     /// The event pool that is notified when the connection helper state changes.
     /// </summary>
@@ -43,6 +43,11 @@
     /// </summary>
     /// <value><c>true</c> if is broadcast scanning; otherwise, <c>false</c>.</value>
     bool isBroadcastScanning { get; }
+
+    /// <summary>
+    /// Releases any pending actions and resources that the connection manager was holding.
+    /// </summary>
+    void Release();
 
     /// <summary>
     /// Starts an asynchronous scan for new devices.
