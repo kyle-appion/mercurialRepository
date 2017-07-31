@@ -331,13 +331,14 @@
     <Compile Include="src\Activity\Report\BuildReportValueAdapter.cs" />
     <Compile Include="src\Activity\DeviceGrid\DeviceGridActivity.cs" />
     <Compile Include="src\Widgets\AutoResizeTextView.cs" />
-    <Compile Include="src\Activity\DeviceGrid\GaugeDeviceSensorViewHolder.cs" />
     <Compile Include="src\Activity\DeviceGrid\LinkDecorator.cs" />
     <Compile Include="src\Activity\DeviceGrid\GaugeDeviceControlDialogFragment.cs" />
     <Compile Include="src\_AndroidExtensions\GraphicsExtensions.cs" />
     <Compile Include="src\Devices\DeviceManagerExtensions.cs" />
     <Compile Include="src\App\GenerateFluidTables.cs" />
-    <Compile Include="src\Fragments\DeviceGridAdapter.cs" />
+    <Compile Include="src\Activity\DeviceGrid\DeviceGridAdapter.cs" />
+    <Compile Include="src\Activity\DeviceGrid\GaugeDeviceSensorViewHolder.cs" />
+    <Compile Include="src\Activity\DeviceGrid\GridGaugeDeviceSensorView.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -758,9 +759,9 @@
     <AndroidResource Include="Resources\drawable\img_bgd_carbon.png" />
     <AndroidResource Include="Resources\drawable-nodpi\xml_rect_white_black_bordered.xml" />
     <AndroidResource Include="Resources\menu\folder.xml" />
-    <AndroidResource Include="Resources\drawable-nodpi\xml_rect_gold_black_bordered_round.xml" />
     <AndroidResource Include="Resources\drawable-nodpi\selector_button_gold_round.xml" />
     <AndroidResource Include="Resources\drawable-nodpi\xml_rect_black_gold_bordered_round.xml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_rect_gold_black_bordered_round.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

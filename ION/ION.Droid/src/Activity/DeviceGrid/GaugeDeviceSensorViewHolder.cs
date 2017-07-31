@@ -23,7 +23,7 @@
 	using ION.Droid.Views;
 	using ION.Droid.Widgets.RecyclerViews;
 
-  public class DeviceViewHolder : RecyclerView.ViewHolder {
+  public class GaugeDeviceSensorViewHolder : RecyclerView.ViewHolder {
 
     public IION ion { get; private set; }
     public GaugeDeviceSensor sensor { get; private set; }
@@ -42,7 +42,7 @@
 
     private View bluetooth;
 
-    public DeviceViewHolder(ViewGroup parent) : base(CreateViewFrom(parent)) {
+    public GaugeDeviceSensorViewHolder(ViewGroup parent) : base(CreateViewFrom(parent)) {
       type = ItemView.FindViewById<TextView>(Resource.Id.type);
 			measurement = ItemView.FindViewById<TextView>(Resource.Id.measurement);
 			usage = ItemView.FindViewById<TextView>(Resource.Id.text);

@@ -79,11 +79,11 @@
     }
 
     public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
-      return new DeviceViewHolder(parent);
+      return new GaugeDeviceSensorViewHolder(parent);
     }
 
     public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-      var vh = holder as DeviceViewHolder;
+      var vh = holder as GaugeDeviceSensorViewHolder;
       vh.Bind(ion, this[position]);
       vh.ItemView.SetOnClickListener(new ViewClickAction((v) => {
         if (onSensorClicked != null) {
