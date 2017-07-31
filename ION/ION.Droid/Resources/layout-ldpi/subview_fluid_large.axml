@@ -4,20 +4,18 @@
     android:gravity="center_vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <Space
-        android:layout_width="@dimen/padding"
-        android:layout_height="wrap_content" />
     <View
         android:id="@id/association"
         android:background="@drawable/ic_association_linked"
         android:layout_width="@dimen/viewer_association_width"
         android:layout_height="match_parent" />
     <LinearLayout
-        android:orientation="horizontal"
-        android:background="@drawable/xml_rect_white_black_bordered"
-        android:gravity="center_vertical"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/viewer_subview_large">
+      android:orientation="horizontal"
+      android:background="@drawable/xml_rect_white_black_bordered"
+      android:padding="2dp"
+      android:gravity="center_vertical"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/viewer_subview_large">
         <TextView
             android:id="@id/title"
             android:gravity="center"

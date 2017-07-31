@@ -241,7 +241,7 @@
 		/// <returns>The size for manifold.</returns>
 		/// <param name="manifold">Manifold.</param>
 		private int AdapterSizeForManifold(ManifoldRecord mr) {
-			return 1 + (mr.isExpanded ? mr.manifold.sensorPropertyCount : 0) + 1;
+			return 1 + (mr.isExpanded ? mr.manifold.sensorPropertyCount : 0);
 		}
 
 		private IRecord CreateSensorPropertyRecord(Manifold manifold, ISensorProperty sp) {

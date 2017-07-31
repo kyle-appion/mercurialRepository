@@ -153,7 +153,7 @@
         }
       }
 
-      if (device.isConnected || device.isNearby) {
+      if (device.isConnected || device.connection.connectionState == EConnectionState.Broadcasting) {
         batteryView.Visibility = ViewStates.Visible;
         if (lastBatteryLevel != device.battery) {
           batteryView.SetImageResource(device.GetBatteryIconVert());
@@ -188,6 +188,7 @@
 
       if (ion.currentWorkbench.ContainsSensor(sensor)) {
         wb.SetBackgroundResource(0);
+        wb.SetImageResource(Resource.Drawable.ic_devices_on_workbench);
         wb.SetOnClickListener(new ViewClickAction((v) => {
           var adb = new IONAlertDialog(Activity);
           adb.SetTitle(Resource.String.workbench_remove);
@@ -200,13 +201,15 @@
         }));
       } else {
         wb.SetBackgroundResource(Resource.Drawable.xml_rect_gold_black_bordered);
-        wb.SetOnClickListener(new ViewClickAction((v) => {
+				wb.SetImageResource(Resource.Drawable.ic_devices_add_to_workbench);
+				wb.SetOnClickListener(new ViewClickAction((v) => {
           AddSensorToWorkbench(sensor);
         }));
       }
 
       if (ion.currentAnalyzer.HasSensor(sensor)) {
         anal.SetBackgroundResource(0);
+        anal.SetImageResource(Resource.Drawable.ic_devices_on_analyzer);
         anal.SetOnClickListener(new ViewClickAction((c) => {
           var adb = new IONAlertDialog(Activity);
           adb.SetTitle(Resource.String.analyzer_remove_sensor);
@@ -219,6 +222,7 @@
         }));
       } else {
         anal.SetBackgroundResource(Resource.Drawable.xml_rect_gold_black_bordered);
+        anal.SetImageResource(Resource.Drawable.ic_devices_add_to_analyzer);
         anal.SetOnClickListener(new ViewClickAction((c) => {
           AddSensorToAnalyzer(sensor);
         }));
@@ -271,6 +275,7 @@
         var deviceType = device.serialNumber.deviceModel;
 
         if (deviceType == EDeviceModel.PT500 || deviceType == EDeviceModel.PT800) {
+          /// TODO make fixed add temp to workbench
           var manifold = new Manifold(device.sensors[0], device.sensors[1]);
           manifold.AddSensorProperty(new SecondarySensorProperty(manifold));
           manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(manifold));
