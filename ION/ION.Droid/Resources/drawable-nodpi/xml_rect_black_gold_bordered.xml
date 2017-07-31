@@ -13,12 +13,6 @@
       android:bottom="@dimen/xml_radius"/>
     <solid
       android:color="@color/black"/>
-    <corners
-      android:radius="@dimen/xml_radius"
-      android:topLeftRadius="@dimen/xml_radius"
-      android:topRightRadius="@dimen/xml_radius"
-      android:bottomLeftRadius="@dimen/xml_radius"
-      android:bottomRightRadius="@dimen/xml_radius"/>
   </shape>
   </item>
 </layer-list>

@@ -95,7 +95,7 @@
         return gd.connection.connectionState == EConnectionState.Disconnected && !gd.isNearby;
       });
       _disconnectedList.SetAdapter(_disconnectedAdapter);
-			_availableAdapter.onSensorClicked = OnSensorClicked;
+			_disconnectedAdapter.onSensorClicked = OnSensorClicked;
 
       _receiver = new CombinedScanReceiver(this, ion.deviceManager);
     }

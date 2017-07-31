@@ -57,28 +57,30 @@
         <!-- Icons -->
             <LinearLayout
                 android:padding="@dimen/padding"
-                android:gravity="center"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <ImageView
                     android:id="@id/icon"
                     android:src="@drawable/ic_render_gaugeav760"
-                    android:layout_width="@dimen/icon_large"
-                    android:layout_height="@dimen/icon_large" />
+                    android:adjustViewBounds="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp" />
                 <ImageView
                     android:id="@id/battery"
                     android:src="@drawable/ic_battery_vert_100"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/icon_large" />
+                    android:layout_height="80dp" />
             </LinearLayout>
         <!-- Measurement 1 -->
             <LinearLayout
                 android:id="@id/content"
                 android:orientation="vertical"
+                android:padding="2dp"
                 android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
                 <TextView
                     android:id="@id/title"
                     android:textSize="@dimen/text_size_large"
@@ -94,8 +96,9 @@
                     android:textStyle="bold"
                     android:hint="- - - -"
                     android:textColor="@color/black"
+                    android:layout_weight="1"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="0dp" />
                 <LinearLayout
                     android:padding="@dimen/padding"
                     android:orientation="horizontal"
@@ -129,10 +132,11 @@
         <!-- Measurement 2 -->
             <LinearLayout
                 android:id="@id/content2"
+                android:padding="2dp"
                 android:orientation="vertical"
                 android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
                 <TextView
                     android:id="@id/title"
                     android:textSize="@dimen/text_size_large"
@@ -148,8 +152,9 @@
                     android:textStyle="bold"
                     android:hint="- - - -"
                     android:textColor="@color/black"
+                    android:layout_weight="1"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="0dp" />
                 <LinearLayout
                     android:padding="@dimen/padding"
                     android:orientation="horizontal"
@@ -184,27 +189,28 @@
                 android:text="@string/grid_display_on"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:gravity="center"
+                android:gravity="center_vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent" />
         <!-- Measurement 1 Location Controls -->
             <LinearLayout
                 android:id="@id/control"
                 android:orientation="horizontal"
+                android:padding="2dp"
                 android:gravity="right"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content">
                 <ImageView
-                    android:id="@id/analyzer"
-                    android:drawable="@drawable/xml_rect_gold_black_bordered"
-                    android:src="@drawable/ic_devices_add_to_analyzer"
+                    android:id="@id/workbench"
+                    android:background="@drawable/xml_rect_gold_black_bordered"
+                    android:src="@drawable/ic_devices_add_to_workbench"
                     android:layout_width="@dimen/icon_large"
                     android:layout_height="@dimen/icon_large" />
                 <ImageView
-                    android:id="@id/workbench"
-                    android:drawable="@drawable/xml_rect_gold_black_bordered"
-                    android:src="@drawable/ic_devices_add_to_workbench"
+                    android:id="@id/analyzer"
+                    android:background="@drawable/xml_rect_gold_black_bordered"
+                    android:src="@drawable/ic_devices_add_to_analyzer"
                     android:layout_width="@dimen/icon_large"
                     android:layout_height="@dimen/icon_large" />
             </LinearLayout>
@@ -217,20 +223,21 @@
             <LinearLayout
                 android:id="@id/control2"
                 android:orientation="horizontal"
+                android:padding="2dp"
                 android:gravity="right"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content">
                 <ImageView
-                    android:id="@id/analyzer"
-                    android:drawable="@drawable/xml_rect_gold_black_bordered"
-                    android:src="@drawable/ic_devices_add_to_analyzer"
+                    android:id="@id/workbench"
+                    android:background="@drawable/xml_rect_gold_black_bordered"
+                    android:src="@drawable/ic_devices_add_to_workbench"
                     android:layout_width="@dimen/icon_large"
                     android:layout_height="@dimen/icon_large" />
                 <ImageView
-                    android:id="@id/workbench"
-                    android:drawable="@drawable/xml_rect_gold_black_bordered"
-                    android:src="@drawable/ic_devices_add_to_workbench"
+                    android:id="@id/analyzer"
+                    android:background="@drawable/xml_rect_gold_black_bordered"
+                    android:src="@drawable/ic_devices_add_to_analyzer"
                     android:layout_width="@dimen/icon_large"
                     android:layout_height="@dimen/icon_large" />
             </LinearLayout>
