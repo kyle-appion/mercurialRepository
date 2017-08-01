@@ -32,7 +32,7 @@
 	}
 
 	public class ManifoldViewHolder : SwipeRecyclerView.ViewHolder {
-		public ManifoldRecord record { 
+		public ManifoldRecord record {
 			get {
 				return __record;
 			}
@@ -137,7 +137,7 @@
 					  break;
           } // EConnectionState.Connected
           case EConnectionState.Broadcasting: {
-              measurement.SetTextColor(Resource.Color.black.AsResourceColor(c));
+            measurement.SetTextColor(Resource.Color.black.AsResourceColor(c));
 
             connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_disconnected));
             status.Text = c.GetString(Resource.String.long_range_mode);
@@ -180,10 +180,6 @@
 		}
 
 		private void InvalidateBattery(GaugeDevice device) {
-			if (battery == null) {
-				return;
-			}
-
 			if (device != null) {
 				var bat = device.battery;
         if (device.isConnected && bat != lastBattery) {
@@ -216,7 +212,6 @@
 					break;
 				case ManifoldEvent.EType.SensorPropertyAdded:
 				case ManifoldEvent.EType.SensorPropertyRemoved:
-//					Invalidate();
 					break;
 			}
 		}

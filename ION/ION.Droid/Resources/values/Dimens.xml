@@ -96,9 +96,13 @@
   <!-- The icon height for the battery icon within the manifold for the analyzer. -->
   <dimen name="analyzer_battery_icon_height">24dp</dimen>
   <!-- The icon size for the device icon in the manifold within the anlyzer. -->
-  <dimen name="analyzer_icon_size">24dp</dimen>
-  <!-- The icon size for the device icon in the manifold within the anlyzer. -->
   <dimen name="analyzer_device_icon_size">32dp</dimen>
+  <!-- The icon size for the device icon in the manifold within the anlyzer. -->
+  <dimen name="analyzer_icon_size">24dp</dimen>
+  <!-- The text size for the measurement text view in the sensor mount header within the analyzer. -->
+  <dimen name="analyzer_sensor_mount_header">22dp</dimen>
+  <!-- The text size for the measurement text view in the sensor mount measurement within the analyzer. -->
+  <dimen name="analyzer_sensor_mount_measurement">28dp</dimen>
   <!-- The text size for the measurement text view in the manifold within the analyzer. -->
   <dimen name="analyzer_viewer_text_size">18sp</dimen>
   <!-- The text size for the measurement text view in the manifold within the analyzer. -->
@@ -192,9 +196,9 @@
   <!-- The text size for the measurement view in the viewer's content. -->
   <dimen name="viewer_measurement_text_size">64sp</dimen>
   <!-- The size of the icons in the large subview list item. -->
-  <dimen name="viewer_subview_large">48dp</dimen>
+  <dimen name="viewer_subview_large">40dp</dimen>
   <!-- The size of the icons in the large subview list item. -->
-  <dimen name="viewer_subview_huge">90dp</dimen>
+  <dimen name="viewer_subview_huge">80dp</dimen>
   <!-- The size of the icons in the large subview list item. -->
   <dimen name="viewer_subview_large_icon_size">32dp</dimen>
   <!-- The text size for the unit view in the viewer's footer. -->

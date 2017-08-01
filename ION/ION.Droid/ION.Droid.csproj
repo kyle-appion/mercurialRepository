@@ -651,8 +651,6 @@
     <AndroidResource Include="Resources\drawable-ldpi\ic_nav_analyzer_white.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_drag_arrow_left.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_drag_arrow_right.png" />
-    <AndroidResource Include="Resources\values-sw320dp\Dimens_320.xml" />
-    <AndroidResource Include="Resources\values-sw480dp\Dimens_480.xml" />
     <AndroidResource Include="Resources\drawable-ldpi\shape_circle_red.xml" />
     <AndroidResource Include="Resources\layout-ldpi\activity_tutorial.axml" />
     <AndroidResource Include="Resources\drawable-ldpi\shape_tab_circle_selected.xml" />
@@ -670,8 +668,6 @@
     <AndroidResource Include="Resources\drawable-ldpi\tutorial_workbench_subviews.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_arrow_red.png" />
     <AndroidResource Include="Resources\drawable-ldpi\img_logo_appionblack.png" />
-    <AndroidResource Include="Resources\values-sw600dp\Dimens_600.xml" />
-    <AndroidResource Include="Resources\values-sw700dp\Dimens_700.xml" />
     <AndroidResource Include="Resources\layout-ldpi\activity_portal_login.axml" />
     <AndroidResource Include="Resources\layout-ldpi\activity_portal.xml" />
     <AndroidResource Include="Resources\layout-ldpi\activity_portal_sessions_view.axml" />
@@ -784,16 +780,12 @@
     <AndroidResource Include="Resources\menu\scan.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\values-sw320dp\" />
-    <Folder Include="Resources\values-sw600dp\" />
-    <Folder Include="Resources\values-sw700dp\" />
     <Folder Include="src\Activity\Report\" />
     <Folder Include="src\Activity\Job\" />
     <Folder Include="src\Report\" />
     <Folder Include="Resources\drawable-hdpi\" />
     <Folder Include="Resources\drawable-mdpi\" />
     <Folder Include="Resources\drawable-xxhdpi\" />
-    <Folder Include="Resources\values-sw480dp\" />
     <Folder Include="src\Activity\Tutorial\" />
     <Folder Include="src\Activity\Portal\" />
     <Folder Include="src\Fragments\_Workbench\" />

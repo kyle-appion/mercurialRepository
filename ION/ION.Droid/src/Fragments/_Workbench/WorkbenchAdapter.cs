@@ -262,7 +262,7 @@
 		}
 
 		private void BeginDrag(RecyclerView.ViewHolder vh) {
-			if (vh is ManifoldViewHolder) {
+      if (vh is ManifoldViewHolder) {
 				for (int i = records.Count - 1; i  >= 0; i--) {
 					var mr = records[i] as ManifoldRecord;
 					if (mr != null) {
