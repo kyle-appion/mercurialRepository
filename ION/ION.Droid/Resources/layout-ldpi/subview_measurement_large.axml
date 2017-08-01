@@ -4,6 +4,9 @@
     android:gravity="center_vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+  <Space
+    android:layout_width="@dimen/padding"
+    android:layout_height="wrap_content" />
     <View
         android:id="@id/association"
         android:background="@drawable/ic_association_linked"

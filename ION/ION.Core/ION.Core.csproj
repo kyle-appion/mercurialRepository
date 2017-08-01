@@ -158,6 +158,7 @@
     <Compile Include="src\UI\IonImage.cs" />
     <Compile Include="src\Devices\Protocols\RidgadoV5Protocol.cs" />
     <Compile Include="src\Fluids\PTChart.cs" />
+    <Compile Include="src\Connections\DebugConnection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
