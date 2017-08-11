@@ -48,7 +48,7 @@ namespace ION.Core.Net {
 			}
 		}  bool __downloading;       
 		
-		public DateTime startedViewing;   
+		public DateTime startedViewing;
 		public const string loginUserUrl = "http://portal.appioninc.com/App/applogin.php";
 		public const string uploadSessionUrl = "http://portal.appioninc.com/App/uploadSession.php";
 		public const string downloadSessionUrl = "http://portal.appioninc.com/App/downloadSession.php";
@@ -815,7 +815,7 @@ namespace ION.Core.Net {
 				case 7:
 					if (!manualManifold.HasSensorPropertyOfType(typeof(TimerSensorProperty))) {
 						manualManifold.AddSensorProperty(new TimerSensorProperty(manualManifold));
-					}
+					}  
 					break;
 				case 8:
 		      if (manualManifold.secondarySensor != null) {
