@@ -687,6 +687,23 @@
     <ImageAsset Include="Resources\Images.xcassets\wireless_disconnected.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\wireless_connected.imageset\wifi-256.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\wireless_disconnected.imageset\wifi-1-bar-256.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_0.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_25.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_50.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_75.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_100.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_0.imageset\ic_battery_vert_empty.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_25.imageset\ic_battery_vert_25.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_50.imageset\ic_battery_vert_50.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_75.imageset\ic_battery_vert_75.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_100.imageset\ic_battery_vert_100.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_add_to_analyzer.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_add_to_analyzer.imageset\ic_device_add_to_analyzer.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_add_to_workbench.imageset\ic_device_add_to_workbench.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\gold_arrow_right.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\gold_arrow_left.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\gold_arrow_right.imageset\gold_arrow_right.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\gold_arrow_left.imageset\gold_arrow_left.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -1075,6 +1092,18 @@
     <Compile Include="src\ViewController\RateofChangeSettings\RateofChangeSettingsViewController.designer.cs">
       <DependentUpon>RateofChangeSettingsViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\ViewController\DeviceGrid\DeviceGridViewController.cs" />
+    <Compile Include="src\ViewController\DeviceGrid\DeviceGridViewController.designer.cs">
+      <DependentUpon>DeviceGridViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\DeviceGrid\GridCellConnected.cs" />
+    <Compile Include="src\ViewController\DeviceGrid\DeviceGridSource.cs" />
+    <Compile Include="src\ViewController\DeviceGrid\DeviceGridFlowDelegate.cs" />
+    <Compile Include="src\ViewController\DeviceGrid\SensorStatusPopup.cs" />
+    <Compile Include="src\ViewController\DeviceGrid\GridCellDisconnected.cs" />
+    <Compile Include="src\ViewController\DeviceGrid\GridCellDisconnected.designer.cs">
+      <DependentUpon>GridCellDisconnected.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -1163,6 +1192,15 @@
     <Folder Include="Resources\Images.xcassets\wireless_disconnected.imageset\" />
     <Folder Include="src\ViewController\RateofChangeSettings\" />
     <Folder Include="Resources\Fonts\" />
+    <Folder Include="src\ViewController\DeviceGrid\" />
+    <Folder Include="Resources\Images.xcassets\img_battery_vert_0.imageset\" />
+    <Folder Include="Resources\Images.xcassets\img_battery_vert_25.imageset\" />
+    <Folder Include="Resources\Images.xcassets\img_battery_vert_50.imageset\" />
+    <Folder Include="Resources\Images.xcassets\img_battery_vert_75.imageset\" />
+    <Folder Include="Resources\Images.xcassets\img_battery_vert_100.imageset\" />
+    <Folder Include="Resources\Images.xcassets\ic_device_add_to_analyzer.imageset\" />
+    <Folder Include="Resources\Images.xcassets\gold_arrow_right.imageset\" />
+    <Folder Include="Resources\Images.xcassets\gold_arrow_left.imageset\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -1171,7 +1209,6 @@
     <BundleResource Include="Resources\Images.xcassets\img_battery_50.imageset\img_battery_50.pdf" />
     <BundleResource Include="Resources\Images.xcassets\img_battery_75.imageset\img_battery_75.pdf" />
     <BundleResource Include="Resources\Images.xcassets\img_battery_0.imageset\img_battery_0.pdf" />
-    <BundleResource Include="Resources\Images.xcassets\ic_device_add_to_workbench.imageset\ic_device_add_to_workbench.pdf" />
     <BundleResource Include="Resources\Images.xcassets\ic_menu_overflow.imageset\ic_menu_moreoverflow.png" />
     <BundleResource Include="Resources\Images.xcassets\ic_logo_appiondefault.imageset\ic_logo_appiondefault.png" />
     <BundleResource Include="Resources\en.lproj\Localizable.strings" />

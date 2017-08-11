@@ -35,6 +35,7 @@ namespace ION.IOS.ViewController {
 	using ION.IOS.ViewController.JobManager;
 	using ION.IOS.ViewController.Walkthrough;
 	using ION.IOS.ViewController.RssFeed;
+	using ION.IOS.ViewController.DeviceGrid;
   using ION.IOS.ViewController.RemoteAccess;
   using ION.IOS.ViewController.AccessRequest;   
   using ION.IOS.ViewController.CloudSessions;   
@@ -83,8 +84,8 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_nav_certificate")),
         },
         new Section("Cloud".ToUpper()){
-					new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")),
-				},        
+          new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")),
+        },
         new Section (Strings.Navigation.CONFIGURATION.ToUpper()) {
           new IONElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")),
           new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")),
@@ -92,6 +93,13 @@ namespace ION.IOS.ViewController {
         new Section (Strings.Exit.SHUTDOWN.ToUpper()) {
           new IONElement(Strings.Exit.SHUTDOWN, OnShutdownClicked, UIImage.FromBundle("ic_nav_power")),
         }
+
+
+        #if DEBUG
+        ,new Section ("Grid") {
+				  new IONElement("GRID",UIImage.FromBundle("ic_nav_power")),
+				}
+        #endif
       };
 
       var v = new Section();
@@ -330,7 +338,8 @@ namespace ION.IOS.ViewController {
         null, // Settings navigation
         null, // Help Navigation
         null, // Shutdown process
-      };    
+        new UINavigationController(InflateViewController<DeviceGridViewController>(BaseIONViewController.VC_DEVICE_GRID)),
+      };
 
       return ret;  
     }    
