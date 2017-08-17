@@ -432,10 +432,12 @@
 
       var item = menu.FindItem(Resource.Id.help);
       var view = item.ActionView as Button;
+/*
       view.Text = GetString(Resource.String.help);
       view.SetOnClickListener(new ViewClickAction((v) => {
         OnMenuItemSelected(Resource.Id.help, menu.FindItem(Resource.Id.help));
       }));
+*/
 
       return true;
     }

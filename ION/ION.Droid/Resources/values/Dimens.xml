@@ -109,15 +109,6 @@
   <dimen name="analyzer_viewer_measurement_text_size">24sp</dimen>
 
   <!--
-	Workbench Dimensions
-  -->
-  <dimen name="workbench_viewer_status_icon_width">32dp</dimen>
-  <dimen name="workbench_viewer_status_icon_height">32dp</dimen>
-  <dimen name="workbench_viewer_device_icon_width">64dp</dimen>
-  <dimen name="workbench_viewer_device_icon_height">64dp</dimen>
-	<dimen name="workbench_viewer_header_text_size">18sp</dimen>
-
-  <!--
   Device Manager dimensions
   -->
   <!-- The width and height of the a connect icon in the device manager. -->
@@ -174,7 +165,8 @@
   Report dimensions
 	-->
   <!-- The width of the check area used in report graphing. -->
-  <dimen name="report_check_area_size">64dp</dimen>
+  <dimen name="report_include_width">64dp</dimen>
+  <dimen name="report_include_height">96dp</dimen>
 
   <!--
   Viewer dimensions
@@ -208,5 +200,17 @@
 	<dimen name="xml_radius">5dp</dimen>
 	<!-- The thickness of the border stroke applied to xml shapes. -->
 	<dimen name="xml_border_stroke">2dp</dimen>
+
+  <!--
+  Workbench Dimensions
+  -->
+  <dimen name="workbench_viewer_battery_icon_height">18dp</dimen>
+  <dimen name="workbench_viewer_device_icon_width">64dp</dimen>
+  <dimen name="workbench_viewer_device_icon_height">64dp</dimen>
+  <dimen name="workbench_viewer_header_text_size">18sp</dimen>
+  <dimen name="workbench_viewer_measurement_text_size">64sp</dimen>
+  <dimen name="workbench_viewer_status_icon_width">32dp</dimen>
+  <dimen name="workbench_viewer_status_icon_height">32dp</dimen>
+
 
 </resources>

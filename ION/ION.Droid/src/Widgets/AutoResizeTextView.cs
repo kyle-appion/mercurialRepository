@@ -29,6 +29,29 @@
 		private delegate int SizeTester(int suggestedSize, RectF availableSpace);
 
 		private const int NO_LINE_LIMIT = -1;
+    
+    private RectF mTextRect = new RectF();
+    private RectF mAvailableSpaceRect;
+    private SparseIntArray mTextCachedSizes;
+    private TextPaint mPaint;
+    private float mMaxTextSize;
+    private float mSpacingMult = 1.0f;
+    private float mSpacingAdd = 0.0f;
+    private float mMinTextSize = 20;
+    private int mWidthLimit;
+
+    private bool mEnableSizeCache = true;
+    private bool mInitializedDimens;
+    
+    /// <summary>
+    /// The new width. Used in reducing the text view's ascent and descent.
+    /// </summary>
+    private int _newWidth;
+    /// <summary>
+    /// The new height. Used in reducing the text view's ascent and descent.
+    /// </summary>
+    private int _newHeight;
+    
 
 		public AutoResizeTextView(IntPtr handle, JniHandleOwnership transfer) : base(handle, transfer) {
 		}
@@ -44,20 +67,22 @@
 		public AutoResizeTextView(Context context, IAttributeSet attrs, int defStyleAttr) : base(context, attrs, defStyleAttr) {
 			Initialize();
 		}
-
-
-		private RectF mTextRect = new RectF();
-		private RectF mAvailableSpaceRect;
-		private SparseIntArray mTextCachedSizes;
-		private TextPaint mPaint;
-		private float mMaxTextSize;
-		private float mSpacingMult = 1.0f;
-		private float mSpacingAdd = 0.0f;
-		private float mMinTextSize = 20;
-		private int mWidthLimit;
-
-		private bool mEnableSizeCache = true;
-		private bool mInitializedDimens;
+/*
+    // OVERRIDDEN TO REDUCE THE TEXT VIEW's ASCENT AND DECENT PADDING MAKING THE TEXT CLOSER TO THE BOUNDS OF THE VIEW
+    protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+      if (_newHeight == 0) {
+        var bounds = new Rect();
+        var paint = new Paint();
+        paint.TextSize = TextSize;
+        paint.GetTextBounds(Text, 0, Text.Length, bounds);
+        _newWidth = bounds.Width();
+        _newHeight = (int)(bounds.Height() - 2 * paint.Descent());
+        ScrollY = (int)paint.Descent();
+      }
+      
+      SetMeasuredDimension(_newWidth, _newHeight);
+    }
+*/
 
 		private void Initialize() {
 			mPaint = new TextPaint(Paint);

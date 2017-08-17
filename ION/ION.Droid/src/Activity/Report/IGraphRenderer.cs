@@ -16,14 +16,15 @@
 
 	using ION.Core.App;
 	using ION.Core.Devices;
+  using ION.Core.Report.DataLogs;
 	using ION.Core.Sensors;
 
 	using ION.Droid.Sensors;
 
-  /// <summary>
-  /// Represents an entity that will render a graph to a "floating view" (not added to view heirarchy).
-  /// </summary>
+	/// <summary>
+	/// Represents an entity that will render a graph to a "floating view" (not added to view heirarchy).
+	/// </summary>
 	public interface IGraphRenderer {
-    void Render(Canvas canvas, SensorReportEncapsulation encap);
-  }
+    void Render(Canvas canvas, DateIndexLookup dil, SensorDataLogResults results);
+	}
 }

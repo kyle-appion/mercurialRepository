@@ -159,6 +159,10 @@
     <Compile Include="src\Devices\Protocols\RidgadoV5Protocol.cs" />
     <Compile Include="src\Fluids\PTChart.cs" />
     <Compile Include="src\Connections\DebugConnection.cs" />
+    <Compile Include="src\Report\DataLogs\SensorDataLogResults.cs" />
+    <Compile Include="src\Report\DataLogs\DataLogMeasurement.cs" />
+    <Compile Include="src\Database\SessionLinkedSensors.cs" />
+    <Compile Include="src\Report\DataLogs\DateIndexLookup.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

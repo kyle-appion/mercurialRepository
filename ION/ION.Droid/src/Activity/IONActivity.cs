@@ -362,8 +362,17 @@
       Toast.MakeText(this, message, ToastLength.Long).Show();
     }
 
+		/// <summary>
+		/// Displays an error toast to the user.
+		/// </summary>
+		/// <param name="message">Message.</param>
+		/// <param name="e">E.</param>
+		public void Error(int message, Exception e = null) {
+      Error(GetString(message), e);      
+    }
+
     /// <summary>
-    /// Displays and error toast to the user.
+    /// Displays an error toast to the user.
     /// </summary>
     /// <param name="message">Message.</param>
     public void Error(string message, Exception e = null) {

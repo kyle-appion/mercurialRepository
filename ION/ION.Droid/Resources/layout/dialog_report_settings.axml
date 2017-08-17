@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:textSize="@dimen/text_size_title"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="@string/measurement_units"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/black" />
+    <TableLayout
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TableRow>
+            <TextView
+                android:text="@string/pressure"
+                android:textSize="@dimen/text_size_xlarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <Space
+                android:layout_width="@dimen/padding"
+                android:layout_height="wrap_content" />
+            <ImageView
+                android:src="@drawable/ic_line_chart"
+                android:tint="@color/dark_blue"
+                android:layout_width="60dp"
+                android:layout_height="60dp" />
+            <Space
+                android:layout_width="@dimen/padding"
+                android:layout_height="wrap_content" />
+            <Button
+                android:gravity="center_vertical"
+                android:id="@id/pressure"
+                android:hint="micron"
+                android:textSize="@dimen/text_size_large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:text="@string/temperature"
+                android:textSize="@dimen/text_size_xlarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <Space
+                android:layout_width="@dimen/padding"
+                android:layout_height="wrap_content" />
+            <ImageView
+                android:src="@drawable/ic_line_chart"
+                android:tint="@color/orange"
+                android:layout_width="60dp"
+                android:layout_height="60dp" />
+            <Space
+                android:layout_width="@dimen/padding"
+                android:layout_height="wrap_content" />
+            <Button
+                android:gravity="center_vertical"
+                android:id="@id/temperature"
+                android:hint="micron"
+                android:textSize="@dimen/text_size_large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:text="@string/vacuum"
+                android:textSize="@dimen/text_size_xlarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <Space
+                android:layout_width="@dimen/padding"
+                android:layout_height="wrap_content" />
+            <ImageView
+                android:id="@id/icon"
+                android:tint="@color/maroon"
+                android:src="@drawable/ic_line_chart"
+                android:layout_width="60dp"
+                android:layout_height="60dp" />
+            <Space
+                android:layout_width="@dimen/padding"
+                android:layout_height="wrap_content" />
+            <Button
+                android:gravity="center_vertical"
+                android:id="@id/vacuum"
+                android:hint="micron"
+                android:textSize="@dimen/text_size_large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </TableRow>
+    </TableLayout>
+</LinearLayout>

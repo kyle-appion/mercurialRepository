@@ -51,6 +51,9 @@
     <Compile Include="src\Collections\RingBuffer.cs" />
     <Compile Include="src\Collections\Slice.cs" />
     <Compile Include="src\Math\MathLib.cs" />
+    <Compile Include="src\CSharp\System\MathExtensions.cs" />
+    <Compile Include="src\CSharp\System\GenericExtensions.cs" />
+    <Compile Include="src\Util\DebugExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.md" />
@@ -63,6 +66,8 @@
     <Folder Include="src\Util\" />
     <Folder Include="src\Math\" />
     <Folder Include="src\Collections\" />
+    <Folder Include="src\CSharp\" />
+    <Folder Include="src\CSharp\System\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation">

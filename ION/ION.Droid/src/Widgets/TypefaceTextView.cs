@@ -15,7 +15,7 @@
 	/// <summary>
 	/// A text view that will allow for fonts to be set via xml. Also allows for automatic text resizing. The text resizing
 	/// was stolen from: https://stackoverflow.com/a/5535672/480691
-  /// 
+  ///
   /// To enable auto resizing, the autoresize field must be set to true, and the text view must be single line.
 	/// </summary>
 	[Register("ION.Droid.Widgets.TypeTextView")]
@@ -29,34 +29,9 @@
     /// </summary>
     private const string DEFAULT_TYPEFACE = "fonts/DroidSans.ttf";
 
-    /// <summary>
-    /// The minimum text size that the view will display.
-    /// </summary>
-    private const float MIN_TEXT_SIZE = 8;
-
-    /// <summary>
-    /// Whether or not the text size should automatically adjust to maximize its size.
-    /// </summary>
-    public bool autoTextSize { get; set; }
-
-    /// <summary>
-    /// Whether or not the text view needs to resize the text.
-    /// </summary>
-    private bool needsResize;
-
-    /// <summary>
-    /// The text view line spacing multiplier.
-    /// </summary>
-    private float spacingMultiplier = 1.0f;
-    /// <summary>
-    /// The additional line spacing.
-    /// </summary>
-    private float spacingAdd = 0.0f;
-
     public TypefaceTextView(IntPtr handle, JniHandleOwnership transfer) : base(handle, transfer) {
     }
 
-    
     public TypefaceTextView(Context context) : this(context, null, 0) {
     }
 
@@ -124,4 +99,3 @@
     }
   }
 }
-

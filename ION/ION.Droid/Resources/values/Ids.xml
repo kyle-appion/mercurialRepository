@@ -42,6 +42,7 @@
   <item name="country" type="id"/>
 	<item name="customer_no" type="id"/>
   <item name="date" type="id"/>
+  <item name="delete" type="id"/>
   <item name="disconnected" type="id"/>
 	<item name="dispatch_no" type="id"/>
   <item name="divider" type="id"/>
@@ -207,17 +208,20 @@
   <item name="report_data_logging_highest_measurement" type="id"/>
   <item name="report_data_logging_measurement_count" type="id"/>
   <item name="report_date_created" type="id"/>
-  <item name="report_session_duration" type="id"/>
+  <item name="report_duration" type="id"/>
   <item name="report_devices_used" type="id"/>
   <item name="report_graph" type="id"/>
-  <item name="report_job" type="id"/>
+  <item name="report_handles" type="id"/>
+	<item name="report_job" type="id"/>
   <item name="report_new" type="id"/>
+	<item name="report_numeric" type="id"/>
   <item name="report_pick" type="id"/>
   <item name="report_saved" type="id"/>
   <item name="report_screenshot_archive" type="id"/>
   <item name="report_selection" type="id"/>
-  <item name="report_session_selection" type="id"/>
   <item name="report_sessions" type="id"/>
+  <item name="report_session_duration" type="id"/>
+  <item name="report_session_selection" type="id"/>
 
   <!--
   WORKBENCH

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Xamarin.Build.Download.0.4.5\build\Xamarin.Build.Download.props" Condition="Exists('..\packages\Xamarin.Build.Download.0.4.5\build\Xamarin.Build.Download.props')" />
+  <Import Project="..\packages\Xamarin.Build.Download.0.4.6\build\Xamarin.Build.Download.props" Condition="Exists('..\packages\Xamarin.Build.Download.0.4.6\build\Xamarin.Build.Download.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -98,51 +98,6 @@
       <HintPath>..\packages\Xfinium\XfiniumPdf540PclProCommercial\Xfinium.Pdf.Render.Pcl.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Compression" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\netstandard1.3\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Android.Support.Annotations">
-      <HintPath>..\packages\Xamarin.Android.Support.Annotations.25.3.1\lib\MonoAndroid70\Xamarin.Android.Support.Annotations.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Android.Support.Compat">
-      <HintPath>..\packages\Xamarin.Android.Support.Compat.25.3.1\lib\MonoAndroid70\Xamarin.Android.Support.Compat.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Android.Support.Core.UI">
-      <HintPath>..\packages\Xamarin.Android.Support.Core.UI.25.3.1\lib\MonoAndroid70\Xamarin.Android.Support.Core.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Android.Support.Core.Utils">
-      <HintPath>..\packages\Xamarin.Android.Support.Core.Utils.25.3.1\lib\MonoAndroid70\Xamarin.Android.Support.Core.Utils.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Android.Support.Media.Compat">
-      <HintPath>..\packages\Xamarin.Android.Support.Media.Compat.25.3.1\lib\MonoAndroid70\Xamarin.Android.Support.Media.Compat.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Android.Support.Fragment">
-      <HintPath>..\packages\Xamarin.Android.Support.Fragment.25.3.1\lib\MonoAndroid70\Xamarin.Android.Support.Fragment.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Android.Support.Transition">
-      <HintPath>..\packages\Xamarin.Android.Support.Transition.25.3.1\lib\MonoAndroid70\Xamarin.Android.Support.Transition.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Android.Support.v13">
-      <HintPath>..\packages\Xamarin.Android.Support.v13.25.3.1\lib\MonoAndroid70\Xamarin.Android.Support.v13.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Android.Support.v4">
-      <HintPath>..\packages\Xamarin.Android.Support.v4.25.3.1\lib\MonoAndroid70\Xamarin.Android.Support.v4.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Android.Support.v7.RecyclerView">
-      <HintPath>..\packages\Xamarin.Android.Support.v7.RecyclerView.25.3.1\lib\MonoAndroid70\Xamarin.Android.Support.v7.RecyclerView.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Android.Support.Vector.Drawable">
-      <HintPath>..\packages\Xamarin.Android.Support.Vector.Drawable.25.3.1\lib\MonoAndroid70\Xamarin.Android.Support.Vector.Drawable.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Android.Support.Animated.Vector.Drawable">
-      <HintPath>..\packages\Xamarin.Android.Support.Animated.Vector.Drawable.25.3.1\lib\MonoAndroid70\Xamarin.Android.Support.Animated.Vector.Drawable.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Android.Support.v7.AppCompat">
-      <HintPath>..\packages\Xamarin.Android.Support.v7.AppCompat.25.3.1\lib\MonoAndroid70\Xamarin.Android.Support.v7.AppCompat.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Android.Support.Design">
-      <HintPath>..\packages\Xamarin.Android.Support.Design.25.3.1\lib\MonoAndroid70\Xamarin.Android.Support.Design.dll</HintPath>
-    </Reference>
     <Reference Include="Xamarin.GooglePlayServices.Basement">
       <HintPath>..\packages\Xamarin.GooglePlayServices.Basement.42.1021.1\lib\MonoAndroid70\Xamarin.GooglePlayServices.Basement.dll</HintPath>
     </Reference>
@@ -154,6 +109,51 @@
     </Reference>
     <Reference Include="Xamarin.GooglePlayServices.Location">
       <HintPath>..\packages\Xamarin.GooglePlayServices.Location.42.1021.1\lib\MonoAndroid70\Xamarin.GooglePlayServices.Location.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\netstandard1.3\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Annotations">
+      <HintPath>..\packages\Xamarin.Android.Support.Annotations.25.4.0.1\lib\MonoAndroid70\Xamarin.Android.Support.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Compat">
+      <HintPath>..\packages\Xamarin.Android.Support.Compat.25.4.0.1\lib\MonoAndroid70\Xamarin.Android.Support.Compat.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Core.UI">
+      <HintPath>..\packages\Xamarin.Android.Support.Core.UI.25.4.0.1\lib\MonoAndroid70\Xamarin.Android.Support.Core.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Core.Utils">
+      <HintPath>..\packages\Xamarin.Android.Support.Core.Utils.25.4.0.1\lib\MonoAndroid70\Xamarin.Android.Support.Core.Utils.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Media.Compat">
+      <HintPath>..\packages\Xamarin.Android.Support.Media.Compat.25.4.0.1\lib\MonoAndroid70\Xamarin.Android.Support.Media.Compat.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Fragment">
+      <HintPath>..\packages\Xamarin.Android.Support.Fragment.25.4.0.1\lib\MonoAndroid70\Xamarin.Android.Support.Fragment.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Transition">
+      <HintPath>..\packages\Xamarin.Android.Support.Transition.25.4.0.1\lib\MonoAndroid70\Xamarin.Android.Support.Transition.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.v13">
+      <HintPath>..\packages\Xamarin.Android.Support.v13.25.4.0.1\lib\MonoAndroid70\Xamarin.Android.Support.v13.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.v4">
+      <HintPath>..\packages\Xamarin.Android.Support.v4.25.4.0.1\lib\MonoAndroid70\Xamarin.Android.Support.v4.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.v7.RecyclerView">
+      <HintPath>..\packages\Xamarin.Android.Support.v7.RecyclerView.25.4.0.1\lib\MonoAndroid70\Xamarin.Android.Support.v7.RecyclerView.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Vector.Drawable">
+      <HintPath>..\packages\Xamarin.Android.Support.Vector.Drawable.25.4.0.1\lib\MonoAndroid70\Xamarin.Android.Support.Vector.Drawable.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Animated.Vector.Drawable">
+      <HintPath>..\packages\Xamarin.Android.Support.Animated.Vector.Drawable.25.4.0.1\lib\MonoAndroid70\Xamarin.Android.Support.Animated.Vector.Drawable.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.v7.AppCompat">
+      <HintPath>..\packages\Xamarin.Android.Support.v7.AppCompat.25.4.0.1\lib\MonoAndroid70\Xamarin.Android.Support.v7.AppCompat.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Design">
+      <HintPath>..\packages\Xamarin.Android.Support.Design.25.4.0.1\lib\MonoAndroid70\Xamarin.Android.Support.Design.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -219,28 +219,16 @@
     <Compile Include="src\Dialog\WhatsNewDialog.cs" />
     <Compile Include="src\Location\GpsAltitudeProvider.cs" />
     <Compile Include="src\Widgets\TypefaceTextView.cs" />
-    <Compile Include="src\Activity\Report\ReportActivity.cs" />
     <Compile Include="src\Activity\Job\JobActivity.cs" />
     <Compile Include="src\Activity\Job\EditJobActivity.cs" />
     <Compile Include="src\Activity\Job\EditJobFragment.cs" />
     <Compile Include="src\Activity\Job\EditJobSessionsFragment.cs" />
-    <Compile Include="src\Activity\Report\ByJobFragment.cs" />
-    <Compile Include="src\Activity\Report\BySessionFragment.cs" />
     <Compile Include="src\Connections\RigadoConnection.cs" />
     <Compile Include="src\Connections\LeConnection.cs" />
     <Compile Include="src\Widgets\FluidSliderView.cs" />
     <Compile Include="src\Widgets\RootFragmentLayout.cs" />
-    <Compile Include="src\Activity\Report\Delegates.cs" />
-    <Compile Include="src\Activity\Report\GraphReportSessionsActivity.cs" />
-    <Compile Include="src\Activity\Report\GraphViewHolder.cs" />
-    <Compile Include="src\Activity\Report\EViewType.cs" />
-    <Compile Include="src\Activity\Report\GraphRecordAdapter.cs" />
     <Compile Include="src\Util\DateTimeExtensions.cs" />
-    <Compile Include="src\Activity\Report\DateIndexLookup.cs" />
     <Compile Include="src\Fragments\FileExtensionFilter.cs" />
-    <Compile Include="src\Activity\Report\SensorOverviewViewHolder.cs" />
-    <Compile Include="src\Activity\Report\OverviewAdapter.cs" />
-    <Compile Include="src\Activity\Report\SensorExtensions.cs" />
     <Compile Include="src\Views\ClearFocusListener.cs" />
     <Compile Include="src\Views\ViewExtensions.cs" />
     <Compile Include="src\Activity\Tutorial\TutorialActivity.cs" />
@@ -288,9 +276,6 @@
     <Compile Include="src\Activity\Job\EViewType.cs" />
     <Compile Include="src\Activity\Job\SessionAdapter.cs" />
     <Compile Include="src\Activity\Job\SessionRecord.cs" />
-    <Compile Include="src\Activity\Report\JobViewHolder.cs" />
-    <Compile Include="src\Activity\Report\SessionAdapter.cs" />
-    <Compile Include="src\Activity\Report\SessionViewHolder.cs" />
     <Compile Include="src\Activity\Portal\SessionAdapter.cs" />
     <Compile Include="src\Activity\Portal\SessionRecord.cs" />
     <Compile Include="src\Activity\Portal\EViewType.cs" />
@@ -319,16 +304,7 @@
     <Compile Include="src\Widgets\RocWidgetManager.cs" />
     <Compile Include="src\Activity\Tutorial\TutorialViewHolder.cs" />
     <Compile Include="src\Report\DataLogReportLocalization.cs" />
-    <Compile Include="src\Activity\Report\DetailedGraphRenderer.cs" />
-    <Compile Include="src\Activity\Report\PointSeries.cs" />
-    <Compile Include="src\Activity\Report\SensorReportEncapsulation.cs" />
-    <Compile Include="src\Activity\Report\ReportOverlay.cs" />
-    <Compile Include="src\Activity\Report\SimpleGraphRenderer.cs" />
-    <Compile Include="src\Activity\Report\IGraphRenderer.cs" />
     <Compile Include="src\Dialog\ManifoldContextDialog.cs" />
-    <Compile Include="src\Activity\Report\BuildReportActivity.cs" />
-    <Compile Include="src\Activity\Report\BuildReportGraphAdapter.cs" />
-    <Compile Include="src\Activity\Report\BuildReportValueAdapter.cs" />
     <Compile Include="src\Activity\DeviceGrid\DeviceGridActivity.cs" />
     <Compile Include="src\Widgets\AutoResizeTextView.cs" />
     <Compile Include="src\Activity\DeviceGrid\LinkDecorator.cs" />
@@ -339,6 +315,20 @@
     <Compile Include="src\Activity\DeviceGrid\DeviceGridAdapter.cs" />
     <Compile Include="src\Activity\DeviceGrid\GaugeDeviceSensorViewHolder.cs" />
     <Compile Include="src\Activity\DeviceGrid\GridGaugeDeviceSensorView.cs" />
+    <Compile Include="src\Activity\Report\ReportActivity.cs" />
+    <Compile Include="src\Activity\Report\ReportGraphActivity.cs" />
+    <Compile Include="src\Activity\Report\ReportGraphAdapter.cs" />
+    <Compile Include="src\Activity\Report\ReportGraphRecord.cs" />
+    <Compile Include="src\Activity\Report\ReportArchiveFragment.cs" />
+    <Compile Include="src\Activity\Report\ReportJobHeaderRecord.cs" />
+    <Compile Include="src\Activity\Report\ReportSessionAdapter.cs" />
+    <Compile Include="src\Activity\Report\ReportSessionRecord.cs" />
+    <Compile Include="src\Activity\Report\ReportSessionSelectionFragment.cs" />
+    <Compile Include="src\Activity\Report\IGraphRenderer.cs" />
+    <Compile Include="src\Activity\Report\SimpleGraphRenderer.cs" />
+    <Compile Include="src\Activity\Report\SensorDataLogResultsExtensions.cs" />
+    <Compile Include="src\Activity\Report\DetailedGraphRenderer.cs" />
+    <Compile Include="src\Activity\Report\SensorExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -422,8 +412,6 @@
     <AndroidResource Include="Resources\drawable-ldpi\img_button_down_gold.9.png" />
     <AndroidResource Include="Resources\drawable-ldpi\img_button_up_gold.9.png" />
     <AndroidResource Include="Resources\drawable-ldpi\img_button_whiteclosex.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\img_handle_left.9.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\img_handle_right.9.png" />
     <AndroidResource Include="Resources\drawable-ldpi\selector_button_close_x.xml" />
     <AndroidResource Include="Resources\drawable-ldpi\selector_button_gold_black.xml" />
     <AndroidResource Include="Resources\drawable-ldpi\selector_group_indicator_black.xml" />
@@ -496,8 +484,6 @@
     <AndroidResource Include="Resources\layout-ldpi\list_item_session.axml" />
     <AndroidResource Include="Resources\anim\fade_out.xml" />
     <AndroidResource Include="Resources\anim\fade_in.xml" />
-    <AndroidResource Include="Resources\layout-ldpi\list_item_data_log_graph.axml" />
-    <AndroidResource Include="Resources\layout-ldpi\list_item_data_log_overview.axml" />
     <AndroidResource Include="Resources\layout-ldpi\dialog_date_time.axml" />
     <AndroidResource Include="Resources\layout-ldpi\list_item_ion_recycler_view_holder.axml" />
     <AndroidResource Include="Resources\layout-ldpi\dialog_whats_new.axml" />
@@ -529,7 +515,6 @@
     <AndroidResource Include="Resources\anim\exit_left.xml" />
     <AndroidResource Include="Resources\anim\exit_right.xml" />
     <AndroidResource Include="Resources\anim\enter_right.xml" />
-    <AndroidResource Include="Resources\layout-ldpi\activity_graph_report_sessions.axml" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_slider.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_spreadsheet.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\ab_bottom_solid_ion_action_bar.9.png" />
@@ -641,7 +626,6 @@
     <AndroidResource Include="Resources\drawable-ldpi\selectable_background_ion_action_bar.xml" />
     <AndroidResource Include="Resources\drawable-ldpi\spinner_background_ab_ion_action_bar.xml" />
     <AndroidResource Include="Resources\drawable-ldpi\tab_indicator_ab_ion_action_bar.xml" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_line_chart.png" />
     <AndroidResource Include="Resources\xml\whats_new.xml" />
     <AndroidResource Include="Resources\xml\whats_new_history.xml" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_record.png" />
@@ -649,8 +633,6 @@
     <AndroidResource Include="Resources\drawable-ldpi\ic_job.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_nav_reporting.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_nav_analyzer_white.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_drag_arrow_left.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_drag_arrow_right.png" />
     <AndroidResource Include="Resources\drawable-ldpi\shape_circle_red.xml" />
     <AndroidResource Include="Resources\layout-ldpi\activity_tutorial.axml" />
     <AndroidResource Include="Resources\drawable-ldpi\shape_tab_circle_selected.xml" />
@@ -716,15 +698,12 @@
     <AndroidResource Include="Resources\layout-ldpi\activity_rss.axml" />
     <AndroidResource Include="Resources\layout-ldpi\list_rss_item.axml" />
     <AndroidResource Include="Resources\layout-ldpi\list_item_tutorial.axml" />
-    <AndroidResource Include="Resources\layout-ldpi\dialog_report_export_chooser.axml" />
     <AndroidResource Include="Resources\values\Strings_Report.xml" />
     <AndroidResource Include="Resources\layout-ldpi\dialog_manual_sensor_create_4_4.axml" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_render_gaugept500.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_render_gaugept800.png" />
     <AndroidResource Include="Resources\layout-ldpi\activity_portal_access_code_manager_4_4.axml" />
     <AndroidResource Include="Resources\layout\list_item_viewer.axml" />
-    <AndroidResource Include="Resources\layout\activity_build_report.axml" />
-    <AndroidResource Include="Resources\layout\activity_build_report_list_item_graph.axml" />
     <AndroidResource Include="Resources\layout\view_holder_grid_gauge_device_sensor.axml" />
     <AndroidResource Include="Resources\drawable\ic_render_gaugeav760.png" />
     <AndroidResource Include="Resources\drawable\ic_render_gaugep300.png" />
@@ -758,6 +737,20 @@
     <AndroidResource Include="Resources\drawable-nodpi\selector_button_gold_round.xml" />
     <AndroidResource Include="Resources\drawable-nodpi\xml_rect_black_gold_bordered_round.xml" />
     <AndroidResource Include="Resources\drawable-nodpi\xml_rect_gold_black_bordered_round.xml" />
+    <AndroidResource Include="Resources\layout\fragment_report_archive.axml" />
+    <AndroidResource Include="Resources\layout\fragment_report_session_selection.axml" />
+    <AndroidResource Include="Resources\layout\view_holder_report_session.axml" />
+    <AndroidResource Include="Resources\layout\activity_report_new.axml" />
+    <AndroidResource Include="Resources\layout\view_holder_report_job_header.axml" />
+    <AndroidResource Include="Resources\layout\activity_report_graph_sessions.axml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_tab_gold_white.xml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_tab_gray_black.xml" />
+    <AndroidResource Include="Resources\layout\view_holder_report_graph.axml" />
+    <AndroidResource Include="Resources\drawable\ic_drag_arrow_left.png" />
+    <AndroidResource Include="Resources\drawable\ic_drag_arrow_right.png" />
+    <AndroidResource Include="Resources\layout\dialog_report_export_chooser.axml" />
+    <AndroidResource Include="Resources\layout\dialog_report_settings.axml" />
+    <AndroidResource Include="Resources\drawable\ic_line_chart.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -819,31 +812,28 @@
       <Properties>
         <Policies>
           <TextStylePolicy inheritsSet="null" scope="text/x-csharp" />
-          <CSharpFormattingPolicy IndentBlock="True" IndentBraces="False" IndentSwitchSection="True" IndentSwitchCaseSection="True" SpacingAfterMethodDeclarationName="False" SpaceWithinMethodDeclarationParenthesis="False" SpaceBetweenEmptyMethodDeclarationParentheses="False" SpaceAfterMethodCallName="False" SpaceWithinMethodCallParentheses="False" SpaceBetweenEmptyMethodCallParentheses="False" SpaceAfterControlFlowStatementKeyword="True" SpaceWithinExpressionParentheses="False" SpaceWithinCastParentheses="False" SpaceWithinOtherParentheses="False" SpaceAfterCast="False" SpacesIgnoreAroundVariableDeclaration="False" SpaceBeforeOpenSquareBracket="False" SpaceBetweenEmptySquareBrackets="False" SpaceWithinSquareBrackets="False" SpaceAfterColonInBaseTypeDeclaration="True" SpaceAfterComma="True" SpaceAfterDot="False" SpaceAfterSemicolonsInForStatement="True" SpaceBeforeColonInBaseTypeDeclaration="True" SpaceBeforeComma="False" SpaceBeforeDot="False" SpaceBeforeSemicolonsInForStatement="False" SpacingAroundBinaryOperator="Single" WrappingPreserveSingleLine="True" WrappingKeepStatementsOnSingleLine="True" PlaceSystemDirectiveFirst="True" LabelPositioning="LeftMost" NewLinesForBracesInTypes="False" NewLinesForBracesInMethods="False" NewLinesForBracesInProperties="False" NewLinesForBracesInAccessors="False" NewLinesForBracesInAnonymousMethods="False" NewLinesForBracesInControlBlocks="False" NewLinesForBracesInAnonymousTypes="False" NewLinesForBracesInObjectCollectionArrayInitializers="False" NewLinesForBracesInLambdaExpressionBody="False" NewLineForElse="False" NewLineForCatch="False" NewLineForFinally="False" NewLineForMembersInObjectInit="False" NewLineForMembersInAnonymousTypes="False" NewLineForClausesInQuery="False" scope="text/x-csharp">
-            <inheritsSet />
-            <inheritsScope />
-          </CSharpFormattingPolicy>
+          <CSharpFormattingPolicy IndentBlock="True" IndentBraces="False" IndentSwitchSection="True" IndentSwitchCaseSection="True" SpacingAfterMethodDeclarationName="False" SpaceWithinMethodDeclarationParenthesis="False" SpaceBetweenEmptyMethodDeclarationParentheses="False" SpaceAfterMethodCallName="False" SpaceWithinMethodCallParentheses="False" SpaceBetweenEmptyMethodCallParentheses="False" SpaceAfterControlFlowStatementKeyword="True" SpaceWithinExpressionParentheses="False" SpaceWithinCastParentheses="False" SpaceWithinOtherParentheses="False" SpaceAfterCast="False" SpacesIgnoreAroundVariableDeclaration="False" SpaceBeforeOpenSquareBracket="False" SpaceBetweenEmptySquareBrackets="False" SpaceWithinSquareBrackets="False" SpaceAfterColonInBaseTypeDeclaration="True" SpaceAfterComma="True" SpaceAfterDot="False" SpaceAfterSemicolonsInForStatement="True" SpaceBeforeColonInBaseTypeDeclaration="True" SpaceBeforeComma="False" SpaceBeforeDot="False" SpaceBeforeSemicolonsInForStatement="False" SpacingAroundBinaryOperator="Single" WrappingPreserveSingleLine="True" WrappingKeepStatementsOnSingleLine="True" PlaceSystemDirectiveFirst="True" LabelPositioning="LeftMost" NewLinesForBracesInTypes="False" NewLinesForBracesInMethods="False" NewLinesForBracesInProperties="False" NewLinesForBracesInAccessors="False" NewLinesForBracesInAnonymousMethods="False" NewLinesForBracesInControlBlocks="False" NewLinesForBracesInAnonymousTypes="False" NewLinesForBracesInObjectCollectionArrayInitializers="False" NewLinesForBracesInLambdaExpressionBody="False" NewLineForElse="False" NewLineForCatch="False" NewLineForFinally="False" NewLineForMembersInObjectInit="False" NewLineForMembersInAnonymousTypes="False" NewLineForClausesInQuery="False" scope="text/x-csharp" />
         </Policies>
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
-  <Import Project="..\packages\Xamarin.Build.Download.0.4.5\build\Xamarin.Build.Download.targets" Condition="Exists('..\packages\Xamarin.Build.Download.0.4.5\build\Xamarin.Build.Download.targets')" />
-  <Import Project="..\packages\Xamarin.Android.Support.Annotations.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Annotations.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Annotations.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Annotations.targets')" />
-  <Import Project="..\packages\Xamarin.Android.Support.Compat.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Compat.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Compat.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Compat.targets')" />
-  <Import Project="..\packages\Xamarin.Android.Support.Core.UI.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Core.UI.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Core.UI.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Core.UI.targets')" />
-  <Import Project="..\packages\Xamarin.Android.Support.Core.Utils.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Core.Utils.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Core.Utils.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Core.Utils.targets')" />
-  <Import Project="..\packages\Xamarin.Android.Support.Media.Compat.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Media.Compat.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Media.Compat.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Media.Compat.targets')" />
-  <Import Project="..\packages\Xamarin.Android.Support.Fragment.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Fragment.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Fragment.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Fragment.targets')" />
-  <Import Project="..\packages\Xamarin.Android.Support.Transition.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Transition.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Transition.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Transition.targets')" />
-  <Import Project="..\packages\Xamarin.Android.Support.v13.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.v13.targets" Condition="Exists('..\packages\Xamarin.Android.Support.v13.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.v13.targets')" />
-  <Import Project="..\packages\Xamarin.Android.Support.v4.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.v4.targets" Condition="Exists('..\packages\Xamarin.Android.Support.v4.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.v4.targets')" />
-  <Import Project="..\packages\Xamarin.Android.Support.v7.RecyclerView.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.v7.RecyclerView.targets" Condition="Exists('..\packages\Xamarin.Android.Support.v7.RecyclerView.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.v7.RecyclerView.targets')" />
-  <Import Project="..\packages\Xamarin.Android.Support.Vector.Drawable.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Vector.Drawable.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Vector.Drawable.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Vector.Drawable.targets')" />
-  <Import Project="..\packages\Xamarin.Android.Support.Animated.Vector.Drawable.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Animated.Vector.Drawable.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Animated.Vector.Drawable.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Animated.Vector.Drawable.targets')" />
-  <Import Project="..\packages\Xamarin.Android.Support.v7.AppCompat.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.v7.AppCompat.targets" Condition="Exists('..\packages\Xamarin.Android.Support.v7.AppCompat.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.v7.AppCompat.targets')" />
-  <Import Project="..\packages\Xamarin.Android.Support.Design.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Design.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Design.25.3.1\build\MonoAndroid70\Xamarin.Android.Support.Design.targets')" />
   <Import Project="..\packages\Xamarin.GooglePlayServices.Basement.42.1021.1\build\MonoAndroid70\Xamarin.GooglePlayServices.Basement.targets" Condition="Exists('..\packages\Xamarin.GooglePlayServices.Basement.42.1021.1\build\MonoAndroid70\Xamarin.GooglePlayServices.Basement.targets')" />
   <Import Project="..\packages\Xamarin.GooglePlayServices.Tasks.42.1021.1\build\MonoAndroid70\Xamarin.GooglePlayServices.Tasks.targets" Condition="Exists('..\packages\Xamarin.GooglePlayServices.Tasks.42.1021.1\build\MonoAndroid70\Xamarin.GooglePlayServices.Tasks.targets')" />
   <Import Project="..\packages\Xamarin.GooglePlayServices.Base.42.1021.1\build\MonoAndroid70\Xamarin.GooglePlayServices.Base.targets" Condition="Exists('..\packages\Xamarin.GooglePlayServices.Base.42.1021.1\build\MonoAndroid70\Xamarin.GooglePlayServices.Base.targets')" />
   <Import Project="..\packages\Xamarin.GooglePlayServices.Location.42.1021.1\build\MonoAndroid70\Xamarin.GooglePlayServices.Location.targets" Condition="Exists('..\packages\Xamarin.GooglePlayServices.Location.42.1021.1\build\MonoAndroid70\Xamarin.GooglePlayServices.Location.targets')" />
+  <Import Project="..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets')" />
+  <Import Project="..\packages\Xamarin.Android.Support.Compat.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.Compat.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Compat.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.Compat.targets')" />
+  <Import Project="..\packages\Xamarin.Android.Support.Core.UI.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.Core.UI.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Core.UI.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.Core.UI.targets')" />
+  <Import Project="..\packages\Xamarin.Android.Support.Core.Utils.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.Core.Utils.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Core.Utils.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.Core.Utils.targets')" />
+  <Import Project="..\packages\Xamarin.Android.Support.Media.Compat.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.Media.Compat.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Media.Compat.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.Media.Compat.targets')" />
+  <Import Project="..\packages\Xamarin.Android.Support.Fragment.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.Fragment.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Fragment.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.Fragment.targets')" />
+  <Import Project="..\packages\Xamarin.Android.Support.Transition.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.Transition.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Transition.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.Transition.targets')" />
+  <Import Project="..\packages\Xamarin.Android.Support.v13.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.v13.targets" Condition="Exists('..\packages\Xamarin.Android.Support.v13.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.v13.targets')" />
+  <Import Project="..\packages\Xamarin.Android.Support.v4.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.v4.targets" Condition="Exists('..\packages\Xamarin.Android.Support.v4.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.v4.targets')" />
+  <Import Project="..\packages\Xamarin.Android.Support.v7.RecyclerView.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.v7.RecyclerView.targets" Condition="Exists('..\packages\Xamarin.Android.Support.v7.RecyclerView.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.v7.RecyclerView.targets')" />
+  <Import Project="..\packages\Xamarin.Android.Support.Vector.Drawable.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.Vector.Drawable.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Vector.Drawable.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.Vector.Drawable.targets')" />
+  <Import Project="..\packages\Xamarin.Android.Support.Animated.Vector.Drawable.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.Animated.Vector.Drawable.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Animated.Vector.Drawable.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.Animated.Vector.Drawable.targets')" />
+  <Import Project="..\packages\Xamarin.Android.Support.v7.AppCompat.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.v7.AppCompat.targets" Condition="Exists('..\packages\Xamarin.Android.Support.v7.AppCompat.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.v7.AppCompat.targets')" />
+  <Import Project="..\packages\Xamarin.Android.Support.Design.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.Design.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Design.25.4.0.1\build\MonoAndroid70\Xamarin.Android.Support.Design.targets')" />
+  <Import Project="..\packages\Xamarin.Build.Download.0.4.6\build\Xamarin.Build.Download.targets" Condition="Exists('..\packages\Xamarin.Build.Download.0.4.6\build\Xamarin.Build.Download.targets')" />
 </Project>

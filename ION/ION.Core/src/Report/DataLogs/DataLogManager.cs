@@ -3,6 +3,7 @@
   using System;
   using System.Collections.Generic;
   using System.Linq;
+  using System.Threading;
   using System.Threading.Tasks;
 
   using MoreLinq;
@@ -11,6 +12,7 @@
 
   using ION.Core.App;
   using ION.Core.Database;
+  using ION.Core.Devices;
 
   public class DataLogManagerEvent {
     public EType type { get; private set; }
@@ -34,17 +36,14 @@
     /// </summary>
     public event Action<DataLogManager, DataLogManagerEvent> onDataLogManagerEvent;
 
-    public bool isInitialized { get { return __isInitialized; } } bool __isInitialized;
+    public bool isInitialized { get { return __isInitialized; } }
+    bool __isInitialized;
 
     /// <summary>
     /// Gets a value indicating whether this <see cref="ION.Core.Report.DataLogs.DataLogManager"/> is recording.
     /// </summary>
     /// <value><c>true</c> if is recording; otherwise, <c>false</c>.</value>
-    public bool isRecording {
-      get {
-        return currentSession != null;
-      }
-    }
+    public bool isRecording { get { return recordingTask != null; } }
     /// <summary>
     /// The interval inbetween recording events.
     /// </summary>
@@ -52,20 +51,27 @@
     public TimeSpan recordingInterval { get; private set; }
 
     /// <summary>
+    /// Queries the current recording session id or 0 if not recording.
+    /// </summary>
+    /// <value>The current session identifier.</value>
+    public int currentSessionId { get { return currentSession._id; } }
+
+    /// <summary>
     /// The application context that this manager lives in.
     /// </summary>
     private IION ion;
-
-		/// <summary>
-		/// Queries the current recording session id or 0 if not recording.
-		/// </summary>
-		/// <value>The current session identifier.</value>
-		public int currentSessionId { get { return isRecording ? currentSession.session._id : 0; } }
-
     /// <summary>
-    /// The current logging session. If null, then the application is not currently logging.
+    /// The current session that we are saving to. Null if not recording.
     /// </summary>
-    private LoggingSession currentSession;
+    private SessionRow currentSession;
+    /// <summary>
+    /// The token that is used to cancel the recordingTask.
+    /// </summary>
+    private CancellationTokenSource cancelToken;
+    /// <summary>
+    /// The task that is launched when begin recording is called.
+    /// </summary>
+    private Task recordingTask;
 
     public DataLogManager(IION ion) {
       this.ion = ion;
@@ -92,8 +98,10 @@
     /// so the garbage collector can reclaim the memory that the <see cref="ION.Core.Logs.DataLogManager"/> was occupying.</remarks>
     public void Dispose() {
       lock (this) {
-        if (currentSession != null) {
-          currentSession.Dispose();
+        if (isRecording) {
+          cancelToken.Cancel();
+          recordingTask = null;
+          cancelToken = null;
         }
       }
     }
@@ -102,7 +110,7 @@
     /// Informs the DataLogManager that is should begin a new recording session.
     /// </summary>
     public async Task<bool> BeginRecording(TimeSpan interval, JobRow job = null) {
-      if (currentSession != null) {
+      if (isRecording) {
         return false;
       }
 
@@ -110,22 +118,31 @@
 
       var id = job != null ? job.JID : 0;
 
-      var session = new SessionRow() {
+      currentSession = new SessionRow() {
         frn_JID = id,
         sessionStart = DateTime.Now,
         sessionEnd = DateTime.Now,
       };
 
-      if (!await db.SaveAsync<SessionRow>(session)) {
+      if (!await db.SaveAsync<SessionRow>(currentSession)) {
         return false;
       }
 
-      currentSession = new LoggingSession(ion, session, interval);
+      var devices = new List<GaugeDevice>();
+      foreach (var device in ion.deviceManager.knownDevices) {
+        var gd = device as GaugeDevice;
+        if (gd != null && gd.isConnected) {
+          devices.Add(gd);
+        }
+      }
+
+      cancelToken = new CancellationTokenSource();
+      recordingTask = RecordingTaskAsync(currentSession._id, devices, cancelToken);
 
       recordingInterval = interval;
       NotifyEvent(DataLogManagerEvent.EType.RecordingStarted);
 
-      return true;      
+      return true;
     }
 
     /// <summary>
@@ -133,35 +150,19 @@
     /// </summary>
     /// <returns>True if a session was saved, false otherwise. Note: we will return false if the manager was not
     /// currently recording.</returns>
-    public async Task<bool> StopRecording() {
-      Log.D(this, "Stopping Recording");
-      if (currentSession == null) {
-        return false;
+    public Task<bool> StopRecording() {
+      if (!isRecording) {
+        return Task.FromResult(false);
       }
 
-      Log.D(this, "Cancelling current logging session.");
-
-      currentSession.session.sessionEnd = DateTime.Now;
-
-      //if (!ion.database.SaveAsync<SessionRow>(currentSession.session).Result) {
-      //  Log.E(this, "Failed to update session end time.");
-      //}
-      
-      Log.D(this, "Saving session: " + currentSession.session);
-
-    	var ret = await ion.database.SaveAsync(currentSession.session);
-
-			Log.D(this, "about to cancel timer");
-      currentSession.Cancel();
-		
-//        ion.database.Update(ret);
-			Log.D(this, "Disposing current session");
-    	currentSession.Dispose();
-    	currentSession = null;
+      cancelToken.Cancel();
+      recordingTask = null;
+      cancelToken = null;
+      currentSession = null;
 
       NotifyEvent(DataLogManagerEvent.EType.RecordingEnded);
 
-    	return ret;
+      return Task.FromResult(true);
     }
 
     /// <summary>
@@ -174,12 +175,12 @@
         var db = ion.database;
 
 
-				var identifiers = db.Table<SensorMeasurementRow>()
-				  .Where(smr => smr.frn_SID == sessionId)
+        var identifiers = db.Table<SensorMeasurementRow>()
+          .Where(smr => smr.frn_SID == sessionId)
           .DistinctBy(smr => new { smr.serialNumber, smr.sensorIndex });
 
         var dsl = new List<DeviceSensorLogs>();
-				foreach (var ident in identifiers) {
+        foreach (var ident in identifiers) {
           var query = db.Table<SensorMeasurementRow>()
             .Where(smr => smr.serialNumber == ident.serialNumber)
             .Where(smr => smr.sensorIndex == ident.sensorIndex)
@@ -192,20 +193,20 @@
           var logs = new SensorLog[count];
           int i = 0;
           foreach (var smr in query) {
-						logs[i++] = new SensorLog(smr.measurement, smr.recordedDate);
+            logs[i++] = new SensorLog(smr.measurement, smr.recordedDate);
           }
 
-					dsl.Add(new DeviceSensorLogs(ident.serialNumber, ident.sensorIndex, logs));
+          dsl.Add(new DeviceSensorLogs(ident.serialNumber, ident.sensorIndex, logs));
         }
 
-				var tmp = dsl;
+        var tmp = dsl;
 
-        var start = DateTime.Now;
-        var end = DateTime.FromFileTime(0);
+        var start = DateTime.UtcNow;
+        var end = start;
 
         foreach (var d in tmp) {
           foreach (var log in d.logs) {
-            if (log.recordedDate < start) { 
+            if (log.recordedDate < start) {
               start = log.recordedDate;
             } else if (log.recordedDate > end) {
               end = log.recordedDate;
@@ -222,6 +223,94 @@
       });
     }
 
+    /// <summary>
+    /// Queries a set of SensorDataLogResults using the given collection of sessions ids.
+    /// Note: the sensor is expected to be a GaugeDeviceSensor.
+    /// </summary>
+    /// <returns>The device sensor session results.</returns>
+    public Task<HashSet<SensorDataLogResults>> QuerySensorResultsAsync(List<int> sessionIds) {
+      return Task.Factory.StartNew(() => {
+        // Build the list of serial numbers that are present in all the session Ids.
+        var smrQuery = ion.database.Table<SensorMeasurementRow>()
+           .Where(x => sessionIds.Contains(x.frn_SID))
+           .Select(x => new { x.serialNumber, x.sensorIndex })
+           .Distinct();
+
+        var ret = new HashSet<SensorDataLogResults>();
+        // For every item that we found in our query, inflate the gauge device sensor, and load all of the sessions that
+        // the sensor is found in clamped by the given collection of session ids.
+        foreach (var item in smrQuery) {
+          var device = ion.deviceManager[item.serialNumber.ParseSerialNumber()] as GaugeDevice;
+          var sensor = device[item.sensorIndex];
+          var baseUnit = sensor.unit.standardUnit;
+
+          var results = new Dictionary<int, List<DataLogMeasurement>>();
+
+          foreach (var sid in sessionIds) {
+            var query = ion.database.Table<SensorMeasurementRow>()
+                           .Where(x => x.frn_SID == sid && x.serialNumber.Equals(item.serialNumber))
+                           .OrderBy(x => x.recordedDate);
+
+            var measurements = new List<DataLogMeasurement>();
+            foreach (var smr in query) {
+              measurements.Add(new DataLogMeasurement(baseUnit.OfScalar(smr.measurement), smr.recordedDate));
+            }
+
+            if (measurements.Count > 0) {
+              results[sid] = measurements;
+            }
+          }
+
+          ret.Add(new SensorDataLogResults(sensor, results));
+        }
+
+        return ret;
+      });
+    }
+
+    /// <summary>
+    /// Performs
+    /// </summary>
+    /// <returns>The task async.</returns>
+    /// <param name="devices">Devices.</param>
+    /// <param name="cancelToken">Cancel token.</param>
+    private Task RecordingTaskAsync(int sessionId, List<GaugeDevice> devices, CancellationTokenSource cancelToken) {
+      return Task.Factory.StartNew(async () => {
+        while (!cancelToken.Token.IsCancellationRequested) {
+          await Task.Delay(recordingInterval, cancelToken.Token);
+          if (cancelToken.IsCancellationRequested) {
+            break;
+          }
+
+          // It's time to make a recording. Go through all of the device's and record their measurements.
+          var date = DateTime.UtcNow;
+          var newRows = new List<SensorMeasurementRow>();
+
+          foreach (var device in devices) {
+            for (int i = 0; i < device.sensorCount; i++) {
+              var su = device[i].unit.standardUnit;
+              newRows.Add(new SensorMeasurementRow() {
+                serialNumber = device.serialNumber.ToString(),
+                sensorIndex = i,
+                recordedDate = date,
+                measurement = device[i].measurement.ConvertTo(su).amount,
+                frn_SID = sessionId,
+              });
+            }
+          }
+
+          currentSession.sessionEnd = date;
+          if ((ion.database.Update(currentSession, typeof(SessionRow)) == 1).Assert("Failed to update SessionRow end date")) {
+            var inserted = ion.database.InsertAll(newRows, typeof(SensorMeasurementRow), true);
+
+            if ((inserted != newRows.Count).Assert("Failed to insert all of the measurements")) {
+              // todo ahodder@appioninc.com: revert last changes.
+            }
+          }
+        }
+      }, cancelToken.Token);
+  	}
+
     private void NotifyEvent(DataLogManagerEvent.EType type) {
       if (onDataLogManagerEvent != null) {
         onDataLogManagerEvent(this, new DataLogManagerEvent(type));
@@ -229,4 +318,3 @@
     }
   }
 }
-

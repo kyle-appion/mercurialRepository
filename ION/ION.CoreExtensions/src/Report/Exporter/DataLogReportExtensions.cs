@@ -17,6 +17,7 @@
 	using ION.Core.Devices.Certificates;
 
   public static class DataLogReportExtensions {
+/*
 		/// <summary>
 		/// Calculates the minimum, maximum and average values for the given device.
 		/// </summary>
@@ -29,7 +30,7 @@
       double totalMagnitude = 0;
       int items = 0;
 
-      foreach (var sr in dlr.sessionResults) {
+      foreach (var sr in dlr.results) {
         var dsl = sr.GetDeviceSensorLogsFor(sensor);
         if (dsl != null) {
           foreach (var log in dsl.logs) {
@@ -55,5 +56,6 @@
       }
       return true;
 		}
+*/
   }
 }
