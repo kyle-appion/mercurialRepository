@@ -100,8 +100,6 @@
     Unit pressure { get; set; }
     Unit temperature { get; set; }
     Unit vacuum { get; set; }
-
-    Unit DefaultUnitFor(ESensorType sensorType);
   } // End IUnits
 
   public interface IAlarmPreferences {
@@ -124,5 +122,42 @@
     bool rememberMe { get; set; }
     string username { get; set; }
     string password { get; set; }
+  }
+
+  /// <summary>
+  /// A class that provides extension methods to the IUnitPreferences interface.
+  /// </summary>
+  public static class IUnitPreferenceExtensions {
+    /// <summary>
+    /// Resolves the default unit for the given sensor type.
+    /// </summary>
+    /// <returns>The unit for.</returns>
+    /// <param name="prefs">Prefs.</param>
+    /// <param name="sensorType">Sensor type.</param>
+		public static Unit DefaultUnitFor(this IUnitPreferences prefs, ESensorType sensorType) {
+			switch (sensorType) {
+				case ESensorType.Length:
+				return prefs.length;
+				case ESensorType.Pressure:
+				return prefs.pressure;
+				case ESensorType.Temperature:
+				return prefs.temperature;
+				case ESensorType.Vacuum:
+				return prefs.vacuum;
+				default:
+				return sensorType.GetDefaultUnit();
+			}
+		}
+
+    /// <summary>
+    /// Converts the scalar to the preferred unit for the quantity backing the scalar.
+    /// </summary>
+    /// <returns>The default unit.</returns>
+    /// <param name="prefs">Prefs.</param>
+    /// <param name="scalar">Scalar.</param>
+		public static Scalar ToDefaultUnit(this IUnitPreferences prefs, Scalar scalar) {
+			var unit = prefs.DefaultUnitFor(scalar.unit.quantity.AsSensorType());
+			return scalar.ConvertTo(unit);
+		}
   }
 }

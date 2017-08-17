@@ -32,7 +32,7 @@
     /// The bytes that make up the appion logo.
     /// </summary>
     /// <value>The appion logo png.</value>
-    public byte[] appionLogoPng { get; set; }
+    public IonImage appionLogoPng { get; set; }
 		/// <summary>
 		/// The Dictionary that maps sensors to their exported graph png image. 
 		/// </summary>
@@ -64,23 +64,45 @@
     /// The sorted by start date session results that are making up the current report.
     /// </summary>
     /// <value>The results.</value>
-		public List<SessionResults> sessionResults { get; private set; }
+		public List<SensorDataLogResults> dataLogResults { get; private set; }
 
-		/// <summary>
-		/// Creates a new DataLogReport based on the given jobs and session results.
-		/// </summary>
-		/// <param name="jobs">Jobs.</param>
-		/// <param name="sessionResults">Session results.</param>
-		private DataLogReport(ILocalization local, DateTime start, DateTime end, HashSet<JobRow> jobs, HashSet<IDevice> devices, List<SessionResults> sessionResults) {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="T:ION.Core.Report.DataLogs.DataLogReport"/> class.
+    /// </summary>
+    /// <param name="local">Local.</param>
+    /// <param name="start">Start.</param>
+    /// <param name="end">End.</param>
+    /// <param name="jobs">Jobs.</param>
+    /// <param name="devices">Devices.</param>
+    public DataLogReport(ILocalization local, DateTime start, DateTime end, HashSet<JobRow> jobs, HashSet<IDevice> devices) {
       this.localization = local;
 			this.start = start;
 			this.end = end;
 			this.jobs = jobs;
 			this.devices = devices;
-			this.sessionResults = sessionResults;
 
+      sensors = new HashSet<GaugeDeviceSensor>();
+      dataLogResults = new List<SensorDataLogResults>();
       graphImages = new Dictionary<GaugeDeviceSensor, IonImage>();
 		}
+
+    /// <summary>
+    /// Adds the results to the report.
+    /// </summary>
+    /// <returns>True if the results were added (another report with the same sensor wasn't already added) flase
+    /// otherwise</returns>
+    /// <param name="results">Results.</param>
+    /// <param name="image">The optional image to attach to the report.</param>
+    public bool AddSensorDataLogResults(SensorDataLogResults results, IonImage image = null) {
+      if (!sensors.Contains(results.sensor)) {
+        sensors.Add(results.sensor);
+        dataLogResults.Add(results);
+        graphImages[results.sensor] = image;
+        return true;
+      } else {
+        return false;
+      }
+    }
 
     /// <summary>
     /// Creates a new DataLogReport.
@@ -91,35 +113,38 @@
     /// <param name="end">End.</param>
     /// <param name="sessionResults">Session results.</param>
     public static DataLogReport BuildFromSessionResults(IION ion, ILocalization local, DateTime start, DateTime end, List<SessionResults> sessionResults) {
+/*
       sessionResults.Sort();
 
-			var jobs = new HashSet<JobRow>();
-			var deviceSet = new HashSet<IDevice>();
-			var sensorSet = new HashSet<GaugeDeviceSensor>();
+      var jobs = new HashSet<JobRow>();
+      var deviceSet = new HashSet<IDevice>();
+      var sensorSet = new HashSet<GaugeDeviceSensor>();
 
-			foreach (var results in sessionResults) {
-				foreach (var dsl in results.deviceSensorLogs) {
-					if (SerialNumberExtensions.IsValidSerialNumber(dsl.deviceSerialNumber)) {
-						deviceSet.Add(ion.deviceManager[SerialNumberExtensions.ParseSerialNumber(dsl.deviceSerialNumber)]);
-					}
-				}
+      foreach (var results in sessionResults) {
+        foreach (var dsl in results.deviceSensorLogs) {
+          if (SerialNumberExtensions.IsValidSerialNumber(dsl.deviceSerialNumber)) {
+            deviceSet.Add(ion.deviceManager[SerialNumberExtensions.ParseSerialNumber(dsl.deviceSerialNumber)]);
+          }
+        }
 
-				var row = ion.database.Table<SessionRow>().Where(sr => sr.SID == results.sessionId).FirstOrDefault();
-				if (row != null) {
-					var job = ion.database.Table<JobRow>().Where(jr => jr.JID == row.frn_JID).FirstOrDefault();
-					if (job != null) {
-						jobs.Add(job);
-					}
-				} else {
-					Log.E(typeof(DataLogReport).Name, "Failed to query a session for for export");
-				}
-			}
+        var row = ion.database.Table<SessionRow>().Where(sr => sr.SID == results.sessionId).FirstOrDefault();
+        if (row != null) {
+          var job = ion.database.Table<JobRow>().Where(jr => jr.JID == row.frn_JID).FirstOrDefault();
+          if (job != null) {
+            jobs.Add(job);
+          }
+        } else {
+          Log.E(typeof(DataLogReport).Name, "Failed to query a session for for export");
+        }
+      }
 
       var ret = new DataLogReport(local, start, end, jobs, deviceSet, sessionResults);
 
       ret.sensors = GetUsedSensors(ion, sessionResults);
 
       return ret;
+*/
+      return null;
 		}
 
 		/// <summary>

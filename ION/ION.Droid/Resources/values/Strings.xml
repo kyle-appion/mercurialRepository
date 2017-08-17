@@ -46,6 +46,7 @@
   <string name="enable_bluetooth">Enable Bluetooth</string>
   <string name="enabled">Enabled</string>
 	<string name="end">End</string>
+  <string name="end_colon">End: </string>
   <string name="enter_number">Enter a number</string>
   <string name="exit">Exit</string>
   <string name="exit_ion">Exit ION</string>
@@ -53,6 +54,7 @@
   <string name="favorites">Favorites</string>
   <string name="filter">Filter</string>
 	<string name="finish">Finish</string>
+  <string name="finish_colon">Finish: </string>
 	<string name="firstName">First Name</string>
   <string name="_fixed">Fixed</string>
   <string name="forget">Forget</string>
@@ -127,6 +129,7 @@
 	<string name="spreadsheet">Spreadsheet</string>
   <string name="stable">Stable</string>
 	<string name="start">Start</string>
+  <string name="start_colon">Start: </string>
   <string name="state">State</string>
   <string name="submit">Submit</string>
   <string name="text">Text</string>
@@ -173,7 +176,7 @@
   <string name="analyzer_error_failed_to_get_viewer_side">Failed to get the analyzer side for the Viewer</string>
   <string name="analyzer_error_failed_to_launch_ptchart_missing_manifold">Failed to open P/T Chart activity; the manifold is not present in the Analyzer.</string>
   <string name="analyzer_error_failed_to_launch_shsc_missing_manifold">Failed to open Superheat/Subcool activity; the manifold is not present in the Analyzer.</string>
-  <string name="analyzer_error_failed_to_launch_shsc_analyzer_full_1sarg">We cannot open the Superheat / Subcool activity for the clicked subview.\n\nThe {0} side of the Analyzer is full and cannot accept a sensor that is assigned in the Superheat / Subcool activity. Please remove a sensor from the {0} side of the analyzer to make room.</string> 
+  <string name="analyzer_error_failed_to_launch_shsc_analyzer_full_1sarg">We cannot open the Superheat / Subcool activity for the clicked subview.\n\nThe {0} side of the Analyzer is full and cannot accept a sensor that is assigned in the Superheat / Subcool activity. Please remove a sensor from the {0} side of the analyzer to make room.</string>
   <string name="analyzer_error_invalid_sensor_type">Cannot start Superheat / Subcool activity: {0} is an invalid sensor type</string>
   <string name="analyzer_full">Cannot add sensor to the System Analyzer: the System Analyzer is full.</string>
   <string name="analyzer_remove_sensor">Remove Sensor?</string>
@@ -376,8 +379,8 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
 	<string name="location_state_province_region">State / Province / Region</string>
 	<string name="location_zip_postal_code">ZIP / Postal Code</string>
 	<string name="location_country">Country</string>
-	
-  
+
+
   <!--
   MANIFOLD
   -->
@@ -392,6 +395,7 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
   -->
   <string name="measurement">Measurement</string>
   <string name="measurement_short">MEAS</string>
+  <string name="measurement_units">Measurement Units</string>
   <string name="humidity">Humidity</string>
   <string name="humidity_short">HUM</string>
   <string name="length">Length</string>
@@ -412,7 +416,7 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
   <string name="network_error">Network Error</string>
   <string name="network_no_connection">Unable to reach server. Please check your internet connection.</string>
   <string name="network_help">Help</string>
-	
+
 	<!--
   RSS
 	-->

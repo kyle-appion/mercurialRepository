@@ -590,21 +590,6 @@ namespace ION.Droid.Preferences {
 		public UnitPreferences(AppPrefs prefs) : base(prefs) {
     }
 
-    public Unit DefaultUnitFor(ESensorType sensorType) {
-      switch (sensorType) {
-        case ESensorType.Length:
-          return length;
-        case ESensorType.Pressure:
-          return pressure;
-        case ESensorType.Temperature:
-          return temperature;
-        case ESensorType.Vacuum:
-          return vacuum;
-        default:
-          return sensorType.GetDefaultUnit();
-      }
-    }
-
     /// <summary>
     /// Safely gets the unit for the given key. If the desired unit could not be
     /// fetched, we will return the backup.

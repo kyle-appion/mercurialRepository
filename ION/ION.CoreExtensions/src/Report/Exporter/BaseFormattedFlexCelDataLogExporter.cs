@@ -98,6 +98,7 @@
 		/// <param name="row">The x coordinate to start drawing the section in cells.</param>
 		/// <param name="col">The y coordinate to start drawing the section in cells.</param>
 		protected Tuple<int, int> DrawReportDates(XlsFile file, DataLogReport dlr, int row, int col) {
+/*
 			var l = dlr.localization;
 
 			// Draw the header
@@ -116,7 +117,7 @@
 
 			var offset = 2;
 			// Draw the dates
-			foreach (var sr in dlr.sessionResults) {
+      foreach (var sr in dlr.dataLogResults) {
 				var rowOffset = row + offset;
 				// Merge content cells
 				file.MergeCells(rowOffset, col, rowOffset, col + 3);
@@ -128,8 +129,9 @@
 				}
 				offset++;
 			}
+*/
 
-			return new Tuple<int, int>(2, offset);
+      return new Tuple<int, int>(2, 0);//offset);
 		}
 
 		/// <summary>
@@ -141,6 +143,7 @@
 		/// <param name="row">The x coordinate to start drawing the section in cells.</param>
 		/// <param name="col">The y coordinate to start drawing the section in cells.</param>
 		protected Tuple<int, int> DrawDeviceAverages(XlsFile file, DataLogReport dlr, int row, int col) {
+/*
 			var l = dlr.localization;
 			// Draw header
 			file.SetCellValue(row, col, l.serialNumber, sectionHeaderFormat);
@@ -169,7 +172,8 @@
 
 				offset++;
 			}
-
+*/
+      var offset = 0;
 			return new Tuple<int, int>(4, offset);
 		}
 
@@ -186,6 +190,7 @@
 		/// <param name="row">The x coordinate.</param>
 		/// <param name="col">The y coordinate.</param>
 		protected Tuple<int, int> DrawAllMeasurements(XlsFile file, DataLogReport dlr, int row, int col) {
+/*
 			var l = dlr.localization;
 			var sensors = dlr.sensors;
 			var srs = dlr.sessionResults;
@@ -255,8 +260,9 @@
       }
 
       file.AutofitCol(col, col + mi, false, 1.0);
-
-      return new Tuple<int, int>(1 + mi, 1 + measurements.Count);
+*/
+      var mi = 0;
+      return new Tuple<int, int>(1 + mi, 1);// + measurements.Count);
 		}
 
 		/// <summary>

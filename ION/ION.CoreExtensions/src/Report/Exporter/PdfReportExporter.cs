@@ -136,7 +136,7 @@
 				var image = new TImageProperties();
 				image.Anchor = new TClientAnchor(TFlxAnchorType.MoveAndDontResize, 1, 0, 1, 0, 5, 255, 3, 1024);
 				image.ShapeName = "Logo";
-				file.AddImage(dlr.appionLogoPng, image);
+        file.AddImage(dlr.appionLogoPng.data, image);
 				// Add the header
 				file.MergeCells(4, 4, 5, 6);
 				file.SetCellValue(4, 4, dlr.reportName, titleFormat);

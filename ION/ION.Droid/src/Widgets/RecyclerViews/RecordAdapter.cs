@@ -249,17 +249,6 @@
 		}
 
 		/// <summary>
-		/// The contract for a record that will live in the recycler view.
-		/// </summary>
-		public interface IRecord {
-			/// <summary>
-			/// Queries the view type of the record. This is used for identification and record switching.
-			/// </summary>
-			/// <value>The type of the view.</value>
-			int viewType { get; }
-		}
-
-		/// <summary>
 		/// The observer that is used to perform notification callbacks for the adapter.
 		/// </summary>
 		private class InternalObserver : RecyclerView.AdapterDataObserver {
@@ -325,6 +314,17 @@
 		}
 
 		/// <summary>
+		/// The contract for a record that will live in the recycler view.
+		/// </summary>
+		public interface IRecord {
+			/// <summary>
+			/// Queries the view type of the record. This is used for identification and record switching.
+			/// </summary>
+			/// <value>The type of the view.</value>
+			int viewType { get; }
+		}
+
+		/// <summary>
 		/// A simple implementation of a non-generic record object.
 		/// </summary>
 		public abstract class Record : IRecord {
@@ -349,7 +349,7 @@
 		}
 
 		public class RecordViewHolder : RecyclerView.ViewHolder {
-			public Record data {
+			public IRecord data {
 				get {
 					return __data;
 				}
@@ -364,7 +364,7 @@
 						Invalidate();
 					}
 				}
-			} Record __data;
+			} IRecord __data;
 
 			public RecordViewHolder(View view) : base(view) {
 			}
@@ -386,7 +386,7 @@
 			}
 		}
 
-		public class RecordViewHolder<T> : RecordViewHolder where T : Record {
+		public class RecordViewHolder<T> : RecordViewHolder where T : IRecord {
 			public T record { get { return (T)data; } set { base.data = value; } }
 
 			public RecordViewHolder(View view) : base(view) {
@@ -398,7 +398,7 @@
 
 
 		public class SwipeRecordViewHolder : SwipeRecyclerView.ViewHolder {
-			public Record data {
+			public IRecord data {
 				get {
 					return __data;
 				}
@@ -413,7 +413,7 @@
 						Invalidate();
 					}
 				}
-			} Record __data;
+			} IRecord __data;
 
 			public SwipeRecordViewHolder(SwipeRecyclerView rv, int foregroundLayout, int backgroundLayout) : base(rv, foregroundLayout, backgroundLayout) {
 			}
@@ -425,7 +425,7 @@
 			}
 		}
 
-		public class SwipeRecordViewHolder<T> : SwipeRecordViewHolder where T : Record {
+		public class SwipeRecordViewHolder<T> : SwipeRecordViewHolder where T : IRecord {
 			public T record { get { return (T)data; } set { base.data = value; } }
 
 			public SwipeRecordViewHolder(SwipeRecyclerView rv, int foregroundLayout, int backgroundLayout) : base(rv, foregroundLayout, backgroundLayout) {

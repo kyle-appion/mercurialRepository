@@ -83,7 +83,7 @@ namespace ION.Droid.Activity.Portal {
 			adb.SetView(view);
 			adb.SetCancelable(true);
 
-			var edit = view.FindViewById<TextInputEditText>(Resource.Id.password);
+			var edit = view.FindViewById<EditText>(Resource.Id.password);
 
 			var d = adb.Show();
 
@@ -121,9 +121,9 @@ namespace ION.Droid.Activity.Portal {
 			adb.SetView(view);
 			adb.SetCancelable(true);
 
-			var email = view.FindViewById<TextInputEditText>(Resource.Id.email);
-			var password = view.FindViewById<TextInputEditText>(Resource.Id.password);
-			var passwordConfirm = view.FindViewById<TextInputEditText>(Resource.Id.passwordConfirm);
+			var email = view.FindViewById<EditText>(Resource.Id.email);
+			var password = view.FindViewById<EditText>(Resource.Id.password);
+			var passwordConfirm = view.FindViewById<EditText>(Resource.Id.passwordConfirm);
 			var icon = view.FindViewById<ImageView>(Resource.Id.icon);
 			password.TextChanged += (sender, e) => {
 				if (password.Text.Equals(passwordConfirm.Text) && ion.portal.IsPasswordValid(password.Text)) {

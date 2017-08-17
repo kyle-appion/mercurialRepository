@@ -59,6 +59,16 @@ namespace ION.Core.Sensors {
       }
     }
 
+    public static ESensorType AsSensorType(this Quantity quantity) {
+      switch (quantity) {
+        case Quantity.Pressure: return ESensorType.Pressure;
+        case Quantity.Temperature: return ESensorType.Temperature;
+        case Quantity.Vacuum: return ESensorType.Vacuum;
+        case Quantity.Mass: return ESensorType.Weight;
+        default: return ESensorType.Unknown;
+			}
+    }
+
     /// <summary>
     /// Builds a formatted string of this sensor's measurement.
     /// </summary>

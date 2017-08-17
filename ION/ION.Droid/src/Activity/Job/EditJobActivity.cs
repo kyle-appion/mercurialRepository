@@ -111,12 +111,12 @@
     public void OnPageSelected(int position) {
       switch (position) {
         case 0:
-          info.SetColor(new Color(GetColor(Resource.Color.black)));
-          sessions.SetColor(new Color(GetColor(Resource.Color.gray)));
+          info.SetColor(Resource.Color.black.AsResourceColor(this));
+          sessions.SetColor(Resource.Color.gray.AsResourceColor(this));
            break;
         case 1:
-          info.SetColor(new Color(GetColor(Resource.Color.gray)));
-          sessions.SetColor(new Color(GetColor(Resource.Color.black)));
+          info.SetColor(Resource.Color.gray.AsResourceColor(this));
+          sessions.SetColor(Resource.Color.black.AsResourceColor(this));
 					HideKeyboard();
           break;
       }

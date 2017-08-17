@@ -26,9 +26,9 @@
   using ION.Droid.Activity.Grid;
 	using ION.Droid.Activity.Tutorial;
 	using ION.Droid.Activity.Portal;
+  using ION.Droid.Activity.Report;
 	using App;
   using Job;
-	using Report;
   using Dialog;
 	using Fragments._Analyzer;
 	using Fragments._Workbench;

@@ -11,7 +11,7 @@ namespace ION.Core.Devices.Sorters {
       if (o1 == null || o2 == null) {
         return 0;
       }
-      
+
       var ret = o1.device.serialNumber.deviceModel.CompareTo(o2.device.serialNumber.deviceModel);
 
       if (ret == 0) {
@@ -20,6 +20,5 @@ namespace ION.Core.Devices.Sorters {
         return ret;
       }
     }
-    
   }
 }

@@ -69,9 +69,11 @@
       // Create the database
       CreateTable<JobRow>();
       CreateTable<DeviceRow>();
+      // Create Data Logging Tables
       CreateTable<LoggingDeviceRow>();
       CreateTable<SessionRow>();
       CreateTable<SensorMeasurementRow>();
+      CreateTable<SessionLinkedSensors>();
     }
 
     /// <summary>
