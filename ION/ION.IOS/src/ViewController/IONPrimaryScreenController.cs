@@ -51,7 +51,6 @@ namespace ION.IOS.ViewController {
     /// <value>The navigation.</value>
     public FlyoutNavigationController navigation { get; private set; }
 
-
 		public IONPrimaryScreenController (IntPtr handle) : base (handle) {
       // Nope
 		}
@@ -67,6 +66,7 @@ namespace ION.IOS.ViewController {
       navigation.View.Frame = r;
       View.AddSubview(navigation.View);
       navigation.NavigationTableView.BackgroundColor = new UIColor(Colors.BLACK);
+      navigation.NavigationTableView.AllowsSelection = true;
 
       navigation.NavigationRoot = new RootElement("BS Navigation Menu") {
         new Section (Strings.Navigation.MAIN.ToUpper()) {
