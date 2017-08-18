@@ -4,6 +4,9 @@ using CoreGraphics;
 using UIKit;
 using ION.Core.Devices;
 using ION.Core.App;
+using ION.IOS.Devices;
+using ION.Core.Sensors;
+using ION.IOS.ViewController.DeviceGrid;
 
 namespace ION.IOS.ViewController {
 
@@ -15,10 +18,10 @@ namespace ION.IOS.ViewController {
     public GaugeDeviceSensor sensor;
     public bool shouldOpen = true;
     IION ion;
+    public DeviceGridViewController gridVC;
 
     public SensorStatusPopup(UIView gridView) {
       ion = AppState.context;
-      Console.WriteLine("View Bounds: " + gridView.Bounds);
       popupView = new UIView(new CGRect(.05 * gridView.Bounds.Width,.2 * gridView.Bounds.Height, .9 * gridView.Bounds.Width,.36 * gridView.Bounds.Height));
       popupView.Layer.CornerRadius = 5;
 			popupView.Layer.BorderWidth = 2f;
@@ -148,6 +151,7 @@ namespace ION.IOS.ViewController {
 			popupView.AddSubview(nameLabel);
 			popupView.AddSubview(settingsButton);
 			popupView.AddSubview(bluetoothImage);
+			popupView.AddSubview(connectButton);
 			popupView.AddSubview(divider1);
 			popupView.AddSubview(deviceImage);
 			popupView.AddSubview(batteryImage);
@@ -167,45 +171,123 @@ namespace ION.IOS.ViewController {
 			popupView.AddSubview(divider4);
 			popupView.AddSubview(moreInfoLabel);
       popupView.Hidden = true;
-
-
     }
 
     public void showSensorSettings (object sender, EventArgs e){
       Console.WriteLine("Show the settings for sensor");
     }
+
 		public void connectSensor(object sender, EventArgs e) {
 			Console.WriteLine("Connect or disconnect the sensor");
+      if(sensor.device.isConnected){
+        sensor.device.connection.Disconnect();
+      } else {
+        sensor.device.connection.Connect();
+      }
 		}
+
 		public void addToWorkbench(object sender, EventArgs e) {
-			Console.WriteLine("Add sensor 1 to workbench");
+      Console.WriteLine("Add sensor " + sensor.device.sensors[0].name +" "+sensor.device.sensors[0].type.ToString()+" to workbench" );
+      popupView.Hidden = true;
+      if (ion.currentWorkbench.IndexOf(sensor.device.sensors[0]) == -1) {
+        Console.WriteLine("Adding Manifold to workbench");
+        ion.currentWorkbench.AddSensor(sensor.device.sensors[0]);
+
+				gridVC.inflateWorkbench();
+			} else {
+				Console.WriteLine("Manifold is already on the Workbench");
+			}
 		}
 
 		public void addToWorkbench2(object sender, EventArgs e) {
-			Console.WriteLine("Add sensor 2 to workbench");
+      if(sensor.device.sensorCount == 1){
+        Console.WriteLine("Add sensor " + sensor.device.sensors[0].name + " " + sensor.device.sensors[0].type.ToString() + " to workbench");
+				popupView.Hidden = true;
+				if (ion.currentWorkbench.IndexOf(sensor.device.sensors[0]) == -1) {
+					ion.currentWorkbench.AddSensor(sensor.device.sensors[0]);
+
+					gridVC.inflateWorkbench();
+				} else {
+					Console.WriteLine("Pressure Manifold is already on the Workbench");
+				}
+			} else {
+        Console.WriteLine("Add sensor " + sensor.device.sensors[1].name + " " + sensor.device.sensors[1].type.ToString() + " to workbench");
+				popupView.Hidden = true;
+				if (ion.currentWorkbench.IndexOf(sensor.device.sensors[1]) == -1) {
+					ion.currentWorkbench.AddSensor(sensor.device.sensors[1]);
+
+					gridVC.inflateWorkbench();
+        } else {
+					Console.WriteLine("Temperature Manifold is already on the Workbench");
+				}
+			}
 		}
 
 		public void addToAnalyzer(object sender, EventArgs e) {
-			Console.WriteLine("Add sensor 1 to analyzer");
-		}
+			Console.WriteLine("Add sensor " + sensor.device.sensors[0].name + " " + sensor.device.sensors[0].type.ToString() + " to analyzer");
+			popupView.Hidden = true;
+      if(!ion.currentAnalyzer.sensorList.Contains(sensor.device.sensors[0])){
+        updateAnalyzer(sensor.device.sensors[0]);
+				gridVC.inflateAnalyzer();
+      } else {
+
+				Console.WriteLine("Sensor is already on the Analyzer");
+			}
+		}   
 
 		public void addToAnalyzer2(object sender, EventArgs e) {
-			Console.WriteLine("Add sensor 2 to analyzer");
+			if (sensor.device.sensorCount == 1) {
+				Console.WriteLine("Add sensor " + sensor.device.sensors[0].name + " " + sensor.device.sensors[0].type.ToString() + " to analyzer");
+				popupView.Hidden = true;
+				if (!ion.currentAnalyzer.sensorList.Contains(sensor.device.sensors[0])) {
+					updateAnalyzer(sensor.device.sensors[0]);
+					gridVC.inflateAnalyzer();
+				} else {
+					Console.WriteLine("Pressure sensor is already on the Analyzer");
+				}
+			} else {
+				Console.WriteLine("Add sensor " + sensor.device.sensors[1].name + " " + sensor.device.sensors[1].type.ToString() + " to analyzer");
+				popupView.Hidden = true;
+				if (!ion.currentAnalyzer.sensorList.Contains(sensor.device.sensors[1])) {
+					updateAnalyzer(sensor.device.sensors[1]);
+					gridVC.inflateAnalyzer();
+				} else {
+					Console.WriteLine("Temperature sensor is already on the Analyzer");
+				}
+			}
 		}
+
     public void updatePopup(GaugeDeviceSensor passedSensor){
       sensor = passedSensor;
+			sensor.onSensorStateChangedEvent -= updateSensor;
+			sensor.onSensorStateChangedEvent += updateSensor;
+			nameLabel.Text = sensor.device.serialNumber.deviceModel.GetTypeString() + ":" + sensor.device.serialNumber.rawSerial.ToUpper();
+			deviceImage.Image = Devices.DeviceUtil.GetUIImageFromDeviceModel(sensor.device.serialNumber.deviceModel);
 
-			if(sensor.device.sensorCount == 1){
-				typeLabel1.Hidden = true;
-				measurementLabel1.Hidden = true;
-				unitLabel1.Hidden = true;
-				divider2.Hidden = true;
-				addWorkbench1.Hidden = true;
-				addAnalyzer1.Hidden = true;
+      if (sensor.device.sensorCount == 1) {
+        typeLabel1.Hidden = true;
+        measurementLabel1.Hidden = true;
+        unitLabel1.Hidden = true;
+        divider2.Hidden = true;
+        addWorkbench1.Hidden = true;
+        addAnalyzer1.Hidden = true;
+      } else {
+        typeLabel1.Hidden = false;
+        measurementLabel1.Hidden = false;
+        unitLabel1.Hidden = false;
+        divider2.Hidden = false;
+        addWorkbench1.Hidden = false;
+        addAnalyzer1.Hidden = false;
+      }
+      sensor.NotifySensorStateChanged();
+		}
 
+    public void updateSensor(Sensor sensor){
+      var updateSensor = sensor as GaugeDeviceSensor;
+			if (updateSensor.device.sensorCount == 1) {
 				typeLabel2.Text = sensor.type.ToString();
 
-				if (sensor.device.isConnected) {
+				if (updateSensor.device.isConnected) {
 					bluetoothImage.Image = UIImage.FromBundle("ic_bluetooth_connected");
 					bluetoothImage.BackgroundColor = UIColor.Green;
 					measurementLabel2.Text = sensor.measurement.amount.ToString();
@@ -218,61 +300,146 @@ namespace ION.IOS.ViewController {
 					unitLabel2.Text = "";
 				}
 
-       } else {
-        typeLabel1.Hidden = false;
-				measurementLabel1.Hidden = false;
-				unitLabel1.Hidden = false;
-				divider2.Hidden = false;
-				addWorkbench1.Hidden = false;
-				addAnalyzer1.Hidden = false;
+			} else {
+				typeLabel1.Text = updateSensor.device.sensors[0].type.ToString();
+				typeLabel2.Text = updateSensor.device.sensors[1].type.ToString();
 
-
-				typeLabel1.Text = sensor.device.sensors[1].type.ToString();
-				typeLabel2.Text = sensor.type.ToString();
-
-				if (sensor.device.isConnected) {
+				if (updateSensor.device.isConnected) {
 					bluetoothImage.Image = UIImage.FromBundle("ic_bluetooth_connected");
 					bluetoothImage.BackgroundColor = UIColor.Green;
 
-					measurementLabel2.Text = sensor.measurement.amount.ToString();
-					unitLabel2.Text = sensor.measurement.unit.ToString();
+					measurementLabel1.Text = updateSensor.device.sensors[0].measurement.amount.ToString();
+					unitLabel1.Text = updateSensor.device.sensors[0].unit.ToString();
 
-					measurementLabel1.Text = sensor.device.sensors[1].measurement.amount.ToString();
-					unitLabel1.Text = sensor.device.sensors[1].unit.ToString();
-
+					measurementLabel2.Text = updateSensor.device.sensors[1].measurement.amount.ToString();
+					unitLabel2.Text = updateSensor.device.sensors[1].unit.ToString();
 				} else {
 					bluetoothImage.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
 					bluetoothImage.BackgroundColor = UIColor.Red;
-					measurementLabel2.Text = "----"; 
+					measurementLabel2.Text = "----";
 					unitLabel2.Text = "";
 
 					measurementLabel1.Text = "----";
 					unitLabel1.Text = "";
 				}
-
-
-
-				measurementLabel2.Text = sensor.measurement.amount.ToString();
-				unitLabel2.Text = sensor.measurement.unit.ToString();
-      }
-      nameLabel.Text = sensor.type.ToString().ToUpper() + ":" + sensor.device.serialNumber.rawSerial.ToUpper();
-
-
+			}
 
 			batteryImage.Image = UIImage.FromBundle("img_battery_vert_100");
-			if (sensor.device.battery > 75) {
+			if (updateSensor.device.battery > 75) {
 				batteryImage.Image = UIImage.FromBundle("img_battery_vert_100");
-			} else if (sensor.device.battery > 50) {
+			} else if (updateSensor.device.battery > 50) {
 				batteryImage.Image = UIImage.FromBundle("img_battery_vert_75");
-			} else if (sensor.device.battery > 25) {
+			} else if (updateSensor.device.battery > 25) {
 				batteryImage.Image = UIImage.FromBundle("img_battery_vert_50");
-			} else if (sensor.device.battery > 0) {
+			} else if (updateSensor.device.battery > 0) {
 				batteryImage.Image = UIImage.FromBundle("img_battery_vert_25");
 			} else {
 				batteryImage.Image = UIImage.FromBundle("img_battery_vert_0");
 			}
+    }
 
-			deviceImage.Image = Devices.DeviceUtil.GetUIImageFromDeviceModel(sensor.device.serialNumber.deviceModel);
-		}
+    public void updateAnalyzer(GaugeDeviceSensor sensor){
+			if (!ion.currentAnalyzer.sensorList.Contains(sensor)) {
+				var deviceType = sensor.device.serialNumber.deviceModel;
+        int index;
+				if (deviceType == EDeviceModel.P500 || deviceType == EDeviceModel.PT500) {
+          index = analyzerOpen(Core.Content.Analyzer.ESide.Low);
+          if(index != -1){
+            sensor.analyzerSlot = index;
+            ion.currentAnalyzer.sensorList.Add(sensor);
+          }
+
+          ////CONSOLIDATED DATA STRUCTURE METHOD OF ADDING TO ANALYZER
+          //if(ion.currentAnalyzer.AddSensorToSide(Core.Content.Analyzer.ESide.Low,sensor)){
+            
+          //} else if (ion.currentAnalyzer.AddSensorToSide(Core.Content.Analyzer.ESide.High,sensor)){
+            
+          //} else {
+            
+          //}
+				} else if (deviceType == EDeviceModel.P800 || deviceType == EDeviceModel.PT800) {
+					index = analyzerOpen(Core.Content.Analyzer.ESide.High);
+					if (index != -1) {
+						sensor.analyzerSlot = index;
+						ion.currentAnalyzer.sensorList.Add(sensor);
+					}
+
+					////CONSOLIDATED DATA STRUCTURE METHOD OF ADDING TO ANALYZER
+					//if (ion.currentAnalyzer.AddSensorToSide(Core.Content.Analyzer.ESide.High, sensor)) {
+
+					//} else if (ion.currentAnalyzer.AddSensorToSide(Core.Content.Analyzer.ESide.Low, sensor)) {
+
+					//} else {
+
+					//}
+				} else {
+					index = analyzerOpen(Core.Content.Analyzer.ESide.Low);
+					if (analyzerOpen(Core.Content.Analyzer.ESide.Low) != -1) {
+						sensor.analyzerSlot = index;
+						ion.currentAnalyzer.sensorList.Add(sensor);
+					}
+
+					////CONSOLIDATED DATA STRUCTURE METHOD OF ADDING TO ANALYZER
+					//if (ion.currentAnalyzer.AddSensorToSide(Core.Content.Analyzer.ESide.Low, sensor)) {
+
+					//} else if (ion.currentAnalyzer.AddSensorToSide(Core.Content.Analyzer.ESide.High, sensor)) {
+
+					//} else {
+
+					//}
+				}
+      } else {
+        Console.WriteLine("Sensor is already on the analyzer");
+      }
+    }
+
+    public int analyzerOpen(Core.Content.Analyzer.ESide side){
+			bool[] slots = new bool[8] { true, true, true, true,true, true, true, true };
+
+			foreach (var item in ion.currentAnalyzer.sensorList) {
+				Console.WriteLine("Slot " + item.analyzerSlot + " is taken");
+				if (item.analyzerSlot == 0) {
+					slots[0] = false;
+				} else if (item.analyzerSlot == 1) {
+					slots[1] = false;
+				} else if (item.analyzerSlot == 2) {
+					slots[2] = false;
+				} else if (item.analyzerSlot == 3) {
+					slots[3] = false;
+				} else if (item.analyzerSlot == 4) {
+					slots[4] = false;
+				} else if (item.analyzerSlot == 5) {
+					slots[5] = false;
+				} else if (item.analyzerSlot == 6) {
+					slots[6] = false;
+				} else if (item.analyzerSlot == 7) {
+					slots[7] = false;
+				}
+			}
+      Console.WriteLine("Starting on " + side + " side first");
+			if (side == Core.Content.Analyzer.ESide.Low) {
+        for (int i = 0; i < 8; i++){
+          if(slots[i] == true){
+						Console.WriteLine("Slot " + i + " is free on side when starting on low side");
+						return i;
+          }
+        }
+			} else {
+				for (int i = 4; i < 8; i++) {
+					if (slots[i] == true) {
+            Console.WriteLine("Slot " + i + " is free on high side");
+						return i;
+					}
+				}
+				for (int i = 0; i < 4; i++) {
+					if (slots[i] == true) {
+						Console.WriteLine("Slot " + i + " is free on low side because high side is full");
+						return i;
+					}
+				}
+			}
+
+      return -1;
+    }
   }
 }

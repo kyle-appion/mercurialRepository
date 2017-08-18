@@ -60,6 +60,7 @@ namespace ION.IOS.ViewController.FileManager {
       }
 
       table.Source = source;
+
     }
 
     // TODO ahodder@appioninc.com: MAKE MORE GENERIC CAUSE WE ASSUME PDF

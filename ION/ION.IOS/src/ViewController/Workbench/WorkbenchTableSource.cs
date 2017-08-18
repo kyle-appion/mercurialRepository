@@ -658,6 +658,7 @@ namespace ION.IOS.ViewController.Workbench {
 
       switch (workbenchEvent.type) {
         case WorkbenchEvent.EType.Added:
+        Console.WriteLine("Added a Manifold");
           recordIndex = records.Count - 1;
           indices.Add(recordIndex);
 
@@ -672,6 +673,8 @@ namespace ION.IOS.ViewController.Workbench {
           //records.Insert(recordIndex + 1, new SpaceRecord());
 
           tableView.InsertRows(ToNSIndexPath(indices.ToArray()), UITableViewRowAnimation.Top);
+          tableView.ReloadData();
+          Console.WriteLine("Should have reloaded table data");
           break;
 
         case WorkbenchEvent.EType.ManifoldEvent:
