@@ -1,26 +1,30 @@
 ﻿namespace ION.Droid.Activity.Tutorial {
 
+  using System;
 	using System.Collections.Generic;
 
 	using Android.App;
 	using Android.Content.PM;
 	using Android.OS;
 	using Android.Support.V4.View;
-	using Android.Support.V13.App;
+	using Android.Support.V7.Widget;
 	using Android.Views;
 	using Android.Widget;
+
+  using Appion.Commons.Util;
 
 	using ION.Droid.Net.Portal;
 	using ION.Droid.Util;
 	using ION.Droid.Views;
-
+  using ION.Droid.Widgets.RecyclerViews;
 
 	[Activity(Label = "@string/preferences_help_walkthrough", Theme = "@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]
-	public class TutorialActivity : IONActivity, ViewPager.IOnPageChangeListener {
+  public class TutorialActivity : IONActivity {
 
-		private ViewPager pager;
+    private RecyclerView list;
 		private TextView tabLayout;
 		private Adapter adapter;
+    private OnScroll scroller;
 
 		private View left;
 		private View right;
@@ -34,20 +38,12 @@
 
 			left = FindViewById(Resource.Id.left);
 			left.SetOnClickListener(new ViewClickAction((v) => {
-				if (pager.CurrentItem - 1 < 0) {
-					pager.SetCurrentItem(adapter.Count - 1, true);
-				} else {
-					pager.SetCurrentItem(pager.CurrentItem - 1, true);
-				}	
+        scroller.ScrollLeft();
 			}));
 
 			right = FindViewById(Resource.Id.right);
 			right.SetOnClickListener(new ViewClickAction((v) => {
-				if (pager.CurrentItem + 1 >= adapter.Count) {
-					pager.SetCurrentItem(0, true);
-				} else {
-					pager.SetCurrentItem(pager.CurrentItem + 1, true);
-				}					
+        scroller.ScrollRight();
 			}));
 
 			FindViewById(Resource.Id.button).SetOnClickListener(new ViewClickAction((view) => {
@@ -58,20 +54,10 @@
 				ion.portal.SendAppSupportEmail(ion, this);
 			}));
 
-			pager = FindViewById<ViewPager>(Resource.Id.content);
+      list = FindViewById<RecyclerView>(Resource.Id.list);
 			tabLayout = FindViewById<TextView>(Resource.Id.tab_1);
 
-			adapter = new Adapter(FragmentManager, cache);
-/*
-			// WELCOME
-			adapter.AddPage(new TutorialPage() {
-				titleResource = Resource.String.tutorial_welcome,
-				imageResource = Resource.Drawable.img_logo_appionblack,
-				contentResource = Resource.String.tutorial_introduction,
-				xPercent = -1f,
-				yPercent = -1f,
-			});
-*/
+      adapter = new Adapter();
 
 			// WORKBENCH
 			adapter.AddPage(new TutorialPage() {
@@ -192,14 +178,21 @@
 				yPercent = -1,//0.616034f,
 			});
 
-			pager.Adapter = adapter;
-			pager.AddOnPageChangeListener(this);
-
-			pager.CurrentItem = 0;
+      scroller = new OnScroll(list, UpdatePosition);
+      list.SetLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.Horizontal, false));
+      list.AddOnScrollListener(scroller);
+      var snap = new LinearSnapHelper();
+      snap.AttachToRecyclerView(list);
+      list.SetAdapter(adapter);
 			left.Visibility = ViewStates.Invisible;
 
-			tabLayout.Text = 1 + " / " + adapter.Count;
+      tabLayout.Text = 1 + " / " + adapter.ItemCount;
 		}
+
+    protected override void OnResume() {
+      base.OnResume();
+      UpdatePosition(scroller.currentIndex);
+    }
 
 		// Overridden from Activity
 		protected override void OnPause() {
@@ -220,54 +213,79 @@
 			}
 		}
 
-		public void OnPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-		}
+    private void UpdatePosition(int index) {
+      if (index <= 0) {
+        left.Visibility = ViewStates.Invisible;
+      } else {
+        left.Visibility = ViewStates.Visible;
+      }
 
-		public void OnPageScrollStateChanged(int state) {
-		}
+      if (index >= adapter.ItemCount - 1) {
+        right.Visibility = ViewStates.Invisible;
+      } else {
+        right.Visibility = ViewStates.Visible;
+      }
 
-		public void OnPageSelected(int position) {
-			if (position == 0) {
-				left.FadeOut();
-			} else {
-				if (left.Visibility != ViewStates.Visible) {
-					left.FadeIn();
-				}
-			}
+      tabLayout.Text = (index + 1) + " / " + adapter.ItemCount;
+    }
 
-			if (position == adapter.Count - 1) {
-				right.FadeOut();
-			} else {
-				if (right.Visibility != ViewStates.Visible) {
-					right.FadeIn();
-				}
-			}
+    private class Adapter : RecordAdapter {
+      public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
+        return new TutorialViewHolder(parent);
+      }
 
-			tabLayout.Text = (position + 1) + " / " + adapter.Count;
-		}
+      public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        var vh = holder as TutorialViewHolder;
+        vh.record = records[position] as TutorialRecord;
+      }
 
-		private class Adapter : FragmentPagerAdapter {
-			// Overridden from FragmentPagerAdapter
-			public override int Count { get { return pages.Count; } }
+      public void AddPage(TutorialPage page) {
+        records.Add(new TutorialRecord(page));
+      }
+    }
 
-			private List<TutorialPage> pages;
-			private BitmapCache cache;
+    private class OnScroll : RecyclerView.OnScrollListener {
+      public int currentIndex {
+        get {
+          return __currentIndex;
+        }
+        set {
+          __currentIndex = value;
+          onItemSelected(value);
+        }
+      } int __currentIndex;
 
-			public Adapter(FragmentManager fm, BitmapCache cache) : base(fm) {
-				pages = new List<TutorialPage>();
-				this.cache = cache;
-			}
+      private RecyclerView recyclerView;
+      private Action<int> onItemSelected;
 
-			public void AddPage(TutorialPage page) {
-				pages.Add(page);
-			}
+      public OnScroll(RecyclerView recyclerView, Action<int> onItemSelected) {
+        this.recyclerView = recyclerView;
+        this.onItemSelected = onItemSelected;
+        __currentIndex = 0;
+      }
 
-			public override Fragment GetItem(int position) {
-				var ret = new TutorialFragment();
-				ret.page = pages[position];
-				ret.cache = this.cache;
-				return ret;
-			}
-		}
+      public override void OnScrollStateChanged(RecyclerView recyclerView, int newState) {
+				base.OnScrollStateChanged(recyclerView, newState);
+				Log.D(this, "The current scroll state is: " + newState);
+
+//        if (newState == RecyclerView.ScrollStateIdle) {
+          var lm = recyclerView.GetLayoutManager() as LinearLayoutManager;
+          currentIndex = lm.FindFirstVisibleItemPosition();
+          onItemSelected(currentIndex);
+//        }
+      }
+
+      public void ScrollLeft() {
+        if (currentIndex > 0) {
+          recyclerView.SmoothScrollToPosition(--currentIndex );
+        }
+      }
+
+      public void ScrollRight() {
+        if (currentIndex < recyclerView.GetAdapter().ItemCount - 1) {
+          recyclerView.SmoothScrollToPosition(++currentIndex);
+        }
+      }
+    }
 	}
 }

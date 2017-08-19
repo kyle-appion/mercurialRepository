@@ -22,7 +22,7 @@
 				return false;
 			}
 
-			Log.D(typeof(RigadoBroadcastParser).Name, "Resolving advertising packet for: " + source.ToByteString());
+			//Log.D(typeof(RigadoBroadcastParser).Name, "Resolving advertising packet for: " + source.ToByteString());
 
 			var rawId = source.Subset(2, 4);
 			var manfacId = rawId[0] | rawId[1] << 8;

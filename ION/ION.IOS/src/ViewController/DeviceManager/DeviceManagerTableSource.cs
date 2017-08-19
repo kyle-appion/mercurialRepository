@@ -398,6 +398,7 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// </summary>
     /// <param name="de">De.</param>
     private void OnDeviceManagerEvent(DeviceManagerEvent de) {
+      Log.D(this, "DeviceEvent of type: " + de.type);
       lock (this) {
         if (DeviceManagerEvent.EType.DeviceEvent == de.type) {
           var eventType = de.deviceEvent.type;
@@ -939,7 +940,7 @@ namespace ION.IOS.ViewController.DeviceManager {
         return EDeviceState.New;
       } else if ((ion.deviceManager.IsDeviceKnown(device) && device.isNearby) || EConnectionState.Connecting == connectionState) {
         return EDeviceState.Available;
-      } else {
+      } else { 
         return EDeviceState.Disconnected;
       }
     }

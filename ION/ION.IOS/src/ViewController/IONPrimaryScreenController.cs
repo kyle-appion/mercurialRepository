@@ -35,6 +35,7 @@ namespace ION.IOS.ViewController {
 	using ION.IOS.ViewController.JobManager;
 	using ION.IOS.ViewController.Walkthrough;
 	using ION.IOS.ViewController.RssFeed;
+	using ION.IOS.ViewController.DeviceGrid;
   using ION.IOS.ViewController.RemoteAccess;
   using ION.IOS.ViewController.AccessRequest;   
   using ION.IOS.ViewController.CloudSessions;   
@@ -83,8 +84,8 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_nav_certificate")),
         },
         new Section("Cloud".ToUpper()){
-					new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")),
-				},        
+          new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")),
+        },
         new Section (Strings.Navigation.CONFIGURATION.ToUpper()) {
           new IONElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")),
           new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")),
@@ -92,6 +93,13 @@ namespace ION.IOS.ViewController {
         new Section (Strings.Exit.SHUTDOWN.ToUpper()) {
           new IONElement(Strings.Exit.SHUTDOWN, OnShutdownClicked, UIImage.FromBundle("ic_nav_power")),
         }
+
+
+        #if DEBUG
+        ,new Section ("Grid") {
+				  new IONElement("GRID",UIImage.FromBundle("ic_nav_power")),
+				}
+        #endif
       };
 
       var v = new Section();
@@ -289,11 +297,11 @@ namespace ION.IOS.ViewController {
     		.Link(Util.Strings.Walkthrough.INTRODUCTORY,(object obj, HelpViewController ovc) => {
     			OpenWalkthroughSections();
     		} )
-#if DEBUG 
 
-    //		.Link("RSS Feed", (object obj, HelpViewController ovc) => {
-				//	ShowRSSFeed();
-				//} )
+    		.Link("RSS Feed", (object obj, HelpViewController ovc) => {
+					ShowRSSFeed();
+				} )
+#if DEBUG 
 #endif
         .Link(Strings.Help.SEND_FEEDBACK, (object obj, HelpViewController ovc) => {
 	        if (!MFMailComposeViewController.CanSendMail) {
@@ -330,7 +338,8 @@ namespace ION.IOS.ViewController {
         null, // Settings navigation
         null, // Help Navigation
         null, // Shutdown process
-      };    
+        new UINavigationController(InflateViewController<DeviceGridViewController>(BaseIONViewController.VC_DEVICE_GRID)),
+      };
 
       return ret;  
     }    
@@ -348,21 +357,21 @@ namespace ION.IOS.ViewController {
 			remoteAn.remoteMode = true;
 			var remotePortal = InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING);
 			
-      /////ONLY LET SOMEONE VIEW THE REMOTE DEVICE INFORMATION IF IT IS THEIR ACCOUNT AS WELL. CAN'T JUST BE SHOWING PEOPLES INFORMATION LIKE THAT!
-      if(NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser") == KeychainAccess.ValueForKey("userID")){
-        navigation.ViewControllers[0] = null; /// logging
-        navigation.ViewControllers[1] = null; /// wireless
-        navigation.ViewControllers[2] = null; /// battery
-				navigation.ViewControllers[3] = null; /// memory
-				navigation.ViewControllers[4] = new UINavigationController(remoteWb); /// workbench
-        navigation.ViewControllers[5] = new UINavigationController(remoteAn); /// analyzer
-        navigation.ViewControllers[6] = new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)); /// ptchart
-				navigation.ViewControllers[7] = new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)); /// superheat/subcool
-				navigation.ViewControllers[8] = null; /// settings
-				navigation.ViewControllers[9] = null; /// help
-				navigation.ViewControllers[10] = new UINavigationController(remotePortal); /// appion portal
-				navigation.ViewControllers[11] = null; /// shutdown
-      } else {
+    //  /////ONLY LET SOMEONE VIEW THE REMOTE DEVICE INFORMATION IF IT IS THEIR ACCOUNT AS WELL. CAN'T JUST BE SHOWING PEOPLES INFORMATION LIKE THAT!
+    //  if(NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser") == KeychainAccess.ValueForKey("userID")){
+    //    navigation.ViewControllers[0] = null; /// logging
+    //    navigation.ViewControllers[1] = null; /// wireless
+    //    navigation.ViewControllers[2] = null; /// battery
+				//navigation.ViewControllers[3] = null; /// memory
+				//navigation.ViewControllers[4] = new UINavigationController(remoteWb); /// workbench
+    //    navigation.ViewControllers[5] = new UINavigationController(remoteAn); /// analyzer
+    //    navigation.ViewControllers[6] = new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)); /// ptchart
+				//navigation.ViewControllers[7] = new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)); /// superheat/subcool
+				//navigation.ViewControllers[8] = null; /// settings
+				//navigation.ViewControllers[9] = null; /// help
+				//navigation.ViewControllers[10] = new UINavigationController(remotePortal); /// appion portal
+				//navigation.ViewControllers[11] = null; /// shutdown
+      //} else {
         navigation.ViewControllers[0] = new UINavigationController(remoteWb); /// workbench
         navigation.ViewControllers[1] = new UINavigationController(remoteAn); /// analyzer
         navigation.ViewControllers[2] = new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)); /// ptchart
@@ -371,7 +380,7 @@ namespace ION.IOS.ViewController {
         navigation.ViewControllers[5] = null; /// help
         navigation.ViewControllers[6] = new UINavigationController(remotePortal); /// appion portal
         navigation.ViewControllers[7] = null; /// shutdown
-      }
+      //}
     }
     /// <summary>
     /// Prepares and displays an email resolver such that the user can fire
@@ -404,10 +413,10 @@ namespace ION.IOS.ViewController {
     /// Opens up a list of options for walkthroughs. They are broken up between the main
     /// sections of the app
     /// </summary>
-    //private void ShowRSSFeed() {  
-    //  var wvc = InflateViewController<RssFeedViewController>(BaseIONViewController.VC_RSS_FEED);
-    //  PresentViewControllerFromSelected(wvc);
-    //}
+    private void ShowRSSFeed() {  
+      var wvc = InflateViewController<RssFeedViewController>(BaseIONViewController.VC_RSS_FEED);
+      PresentViewControllerFromSelected(wvc);
+    }
 
     /// <summary>
     /// Presents a new view controller using the current navigation view
@@ -488,17 +497,17 @@ namespace ION.IOS.ViewController {
 			navigation.NavigationRoot.Clear();
       navigation.NavigationTableView.BackgroundColor = UIColor.FromRGB(255,30,30);
       
-      /////ONLY LET SOMEONE VIEW THE REMOTE DEVICE INFORMATION IF IT IS THEIR ACCOUNT AS WELL. CAN'T JUST BE SHOWING PEOPLES INFORMATION LIKE THAT!
-      if(NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser") == KeychainAccess.ValueForKey("userID")){
-  			navigation.NavigationRoot.Add(
-  				new Section ("Remote Device") {
-              new IONElement("logging", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
-  	          new IONElement("wireless", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
-  	          new IONElement("battery", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
-  	          new IONElement("memory", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
-  				}
-  			);
-      }
+     // /////ONLY LET SOMEONE VIEW THE REMOTE DEVICE INFORMATION IF IT IS THEIR ACCOUNT AS WELL. CAN'T JUST BE SHOWING PEOPLES INFORMATION LIKE THAT!
+     // if(NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser") == KeychainAccess.ValueForKey("userID")){
+  			//navigation.NavigationRoot.Add(
+  			//	new Section ("Remote Device") {
+     //         new IONElement("logging", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
+  	  //        new IONElement("wireless", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
+  	  //        new IONElement("battery", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
+  	  //        new IONElement("memory", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
+  			//	}
+  			//);
+      //}
 			navigation.NavigationRoot.Add(
 	        new Section (Strings.Navigation.MAIN.ToUpper()) {
 	          new IONElement(Strings.Workbench.SELF, UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},

@@ -19,15 +19,9 @@ namespace ION.Droid.Activity.Portal {
 
 		public PortalRemoteViewingRecord checkedRecord { get; private set; }
 
-		/// <summary>
-		/// The current ion instance that the adapter is working with.
-		/// </summary>
-//		private BaseAndroidION ion;
-
 		private DividerItemDecoration decor;
 
-		public PortalRemoteViewingAdapter(/*BaseAndroidION ion*/) {
-//			this.ion = ion;
+		public PortalRemoteViewingAdapter() {
 		}
 
 		// Overridden from RecordAdapter
@@ -58,7 +52,7 @@ namespace ION.Droid.Activity.Portal {
 			var r = records[position] as PortalRemoteViewingRecord;
 
 			if (ion != null) {
-        r.isBeingDownloaded = r.data.Equals(ion.connectionData);
+        r.isBeingDownloaded = r.data.id == ion.connectionData.id;
 			} else {
 				r.isBeingDownloaded = false;
 			}
@@ -95,14 +89,8 @@ namespace ION.Droid.Activity.Portal {
 			var ion = AppState.context as BaseAndroidION;
 			var newRecords = new List<IRecord>();
 
-			newRecords.Add(new PortalRemoteViewingRecord(new ConnectionData() {
-				id = int.Parse(ion.portal.loginId),
-				displayName = recyclerView.Context.GetString(Resource.String.portal_remote_your_feed),
-				isUserOnline = ion.portal.isLoggedIn,
-			}));
-
 			foreach (var item in content) {
-				newRecords.Add(new PortalRemoteViewingRecord(item));
+        newRecords.Add(new PortalRemoteViewingRecord(item));
 			}
 
 			Set(newRecords);

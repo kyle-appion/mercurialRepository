@@ -69,14 +69,39 @@
                 android:layout_height="wrap_content"
                 android:singleLine="false"
                 android:hint="@string/job_system" />
-            <EditText
-                android:id="@id/address"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_size_large"
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:singleLine="false"
-                android:hint="@string/address" />
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+                    <EditText
+                        android:id="@id/address"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_large"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:hint="@string/address" />
+                    <TextView
+                        android:id="@id/coordinates"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_large"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/coordinates"
+                        android:singleLine="true" />
+                </LinearLayout>
+                <ImageView
+                    android:id="@id/icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:tint="@color/black"
+                    android:src="@android:drawable/ic_menu_mylocation" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

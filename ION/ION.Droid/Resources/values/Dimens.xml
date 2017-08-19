@@ -135,8 +135,8 @@
 	Portal
 	-->
 	<!-- The height of the banner in the Portal login page. -->
-	<dimen name="portal_landing_button_width">150dp</dimen>
-	<dimen name="portal_landing_button_height">60dp</dimen>
+	<dimen name="portal_landing_button_width">100dp</dimen>
+	<dimen name="portal_landing_button_height">100dp</dimen>
 	<dimen name="portal_landing_text_size">20sp</dimen>
 	<dimen name="portal_title_text">30sp</dimen>
 	<dimen name="portal_icon_size">48dp</dimen>
@@ -177,7 +177,7 @@
   <!-- The text size for the measurement view in the viewer's content. -->
   <dimen name="viewer_measurement_text_size">64sp</dimen>
   <!-- The size of the icons in the large subview list item. -->
-  <dimen name="viewer_subview_large">36dp</dimen>
+  <dimen name="viewer_subview_large">48dp</dimen>
   <!-- The size of the icons in the large subview list item. -->
   <dimen name="viewer_subview_huge">90dp</dimen>
   <!-- The size of the icons in the large subview list item. -->

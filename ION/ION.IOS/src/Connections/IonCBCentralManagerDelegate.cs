@@ -11,6 +11,7 @@
 
   using Appion.Commons.Util;
 
+  using ION.Core.App;
   using ION.Core.Connections;
   using ION.Core.Devices;
   using ION.Core.Devices.Protocols;
@@ -63,7 +64,10 @@
     /// </summary>
     private Task broadcastTask;
 
-    public IonCBCentralManagerDelegate() {
+    private IION ion;
+
+    public IonCBCentralManagerDelegate(IION ion) {
+      this.ion = ion;
       var options = new CBCentralInitOptions();
       options.ShowPowerAlert = false;
 
@@ -155,12 +159,11 @@
       string name = null;
 
       var values = advertisementData.Values;
-      Log.V(this, "" + advertisementData);
 
       var data = advertisementData[CBAdvertisement.DataManufacturerDataKey];
 
       if (!AttemptNameFetch(peripheral, advertisementData, out name)) {
-        Log.E(this, "Failed to resolve peripheral name '" + name + "'. The peripheral will not be presented to the application.");
+//        Log.E(this, "Failed to resolve peripheral name '" + name + "'. The peripheral will not be presented to the application.");
         return;
       }
 
@@ -184,6 +187,7 @@
           NotifyDeviceFound(sn, uuid.ToString(), packet, EProtocolVersion.V4);
         } else {
           // The connection already exists. Give it a new packet.
+          NotifyDeviceFound(sn, uuid.ToString(), null, EProtocolVersion.V4);
           connection.lastPacket = packet;
           connection.lastSeen = DateTime.Now;
         }
@@ -200,6 +204,12 @@
               NotifyDeviceFound(sn, uuid.ToString(), null, p);
             } else {
               // The connection already exists. Update the last time that it was seen.
+              var d = ion.deviceManager[sn];
+              if (d == null) {
+                //Log.E(this, "Failed to get device from device manager");
+                return;
+              }
+              NotifyDeviceFound(sn, uuid.ToString(), null, d.protocol.version);
               connection.lastSeen = DateTime.Now;
             }
           }
@@ -230,8 +240,9 @@
           Log.E(this, "Attempted to disconnect a peripheral that did not exist in the central manager");
         }
 
-        var connection = connectionLookup[uuid];
-        connection.Disconnect(true);
+        if (connectionLookup.ContainsKey(uuid)) {
+          connectionLookup[uuid].Disconnect(true);
+        }
       }
     }
 
@@ -249,6 +260,13 @@
 
     // Overridden from CBCentralManagerDelegate
     public override void UpdatedState(CBCentralManager central) {
+    }
+
+    public void ClearUnusedConnections() {
+      connectionLookup.Clear();
+      foreach (var device in ion.deviceManager.knownDevices) {
+        connectionLookup[CBUUID.FromString(device.connection.address)] = device.connection;
+      }
     }
 
     /// <summary>

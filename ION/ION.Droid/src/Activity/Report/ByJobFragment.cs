@@ -27,7 +27,7 @@
 	public class ByJobFragment : IONFragment {
 		public OnSessionChecked onSessionChecked;
 
-		public List<int> sessions { private get; set; }
+		public HashSet<int> sessions { private get; set; }
 
 		private RecyclerView list;
 		private View empty;

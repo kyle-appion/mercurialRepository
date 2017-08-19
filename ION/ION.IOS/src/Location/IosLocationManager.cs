@@ -11,6 +11,7 @@
   using ION.Core.Location;
 
   using ION.IOS.App;
+  using System;
 
 
   /// <summary>
@@ -66,6 +67,8 @@
         }
       }
     } ILocation __lastKnownLocation;
+		// Implemented for ILocationManager
+		public DateTime lastTimeLocationChanged { get; private set; }
     // Overridden from ILocationManager
     public bool isPolling { get; private set; }
 
@@ -180,30 +183,30 @@
     // Overridden from ILocation
     public Scalar altitude { get; }
     // Overridden from ILocation
-    public Scalar longitude { get; }
+    public double longitude { get; }
     // Overridden from ILocation
-    public Scalar latitude { get; }
+    public double latitude { get; }
 
     public IosLocation() {  
       isValid = false;
       altitude = Units.Length.METER.OfScalar(0);
-      latitude = Units.Angle.DEGREE.OfScalar(0);
-      longitude = Units.Angle.DEGREE.OfScalar(0);
+      latitude = 0;
+      longitude = 0;
     }
 
     public IosLocation(CLLocation location) {
       isValid = true;
       altitude = Units.Length.METER.OfScalar(location.Altitude);
-      latitude = Units.Angle.DEGREE.OfScalar(location.Coordinate.Latitude);
-      longitude = Units.Angle.DEGREE.OfScalar(location.Coordinate.Longitude);
+      latitude = location.Coordinate.Latitude;
+      longitude = location.Coordinate.Longitude;
     }
     
     //REMOTE VIEWING CONSTRUCTOR
     public IosLocation(double remoteAltitude){
       isValid = false;
       altitude = Units.Length.METER.OfScalar(remoteAltitude);
-      latitude = Units.Angle.DEGREE.OfScalar(0);
-      longitude = Units.Angle.DEGREE.OfScalar(0);
+      latitude = 0;
+      longitude = 0;
 		}
 
     // Overridden from Object

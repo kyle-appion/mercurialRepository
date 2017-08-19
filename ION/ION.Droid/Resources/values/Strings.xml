@@ -56,6 +56,7 @@
   <string name="_fixed">Fixed</string>
   <string name="forget">Forget</string>
   <string name="forget_all">Forget All</string>
+  <string name="goto_settings">Goto Settings</string>
 	<string name="graph_information">Graph Information</string>
   <string name="help">Help</string>
 	<string name="highest">Highest</string>
@@ -65,6 +66,7 @@
   <string name="library">Library</string>
   <string name="link">Link</string>
 	<string name="link_none">Not Linked</string>
+	<string name="live_trending">Live Trending</string>
 	<string name="loading">Loading...</string>
 	<string name="location">Location</string>
 	<string name="logout">Log Out</string>
@@ -125,6 +127,7 @@
   <string name="text">Text</string>
 	<string name="time">Time</string>
   <string name="title">Title</string>
+  <string name="trend_update_1arg">Trend updating at {0}</string>
   <string name="undo">Undo</string>
   <string name="unit">Unit</string>
   <string name="update">Update</string>
@@ -237,6 +240,7 @@
 
   <string name="devices_actions_1arg">{0}\'s Actions</string>
   <string name="devices_connected_2arg">{0} of {1} devices connected</string>
+  <string name="devices_error_connect_for_roc">Please connect the device before trying to view Live Trending</string>
   <string name="devices_forget">Forget Device?</string>
   <string name="devices_forget_warning">If you forget a device, the device will permanently be deleted from the application. You will no longer see the device until you scan for it again. The device\'s reports and certificates will not be deleted.</string>
 
@@ -346,7 +350,11 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
 	-->
 	<string name="location_address_1">Address Line 1</string>
 	<string name="location_address_2">Address Line 2</string>
+	<string name="location_determining_address">Determining best address...</string>
 	<string name="location_city">City</string>
+  <string name="location_undetermined">Unable to determine current location.</string>
+  <string name="location_settings_not_enabled">Location Not Enabled</string>
+  <string name="location_settings_enabled_required">Allow GPS must be enabled in settings to perform GPS actions. Would you like to enable GPS Actions? You can change this in settings.</string>
 	<string name="location_state_province_region">State / Province / Region</string>
 	<string name="location_zip_postal_code">ZIP / Postal Code</string>
 	<string name="location_country">Country</string>
@@ -379,7 +387,13 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
   <string name="weight_short">WT.</string>
   <string name="unknown">Unknown</string>
 
-  <!--
+	<!--
+  NETWORK
+  -->
+  <string name="network_error">Network Error</string>
+  <string name="network_no_connection">Unable to reach server. Please check your internet connection.</string>
+
+	<!--
   REPORT
   -->
   <string name="reports">Reports</string>
@@ -442,6 +456,14 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
   <string name="report_sessions_loading">Loading Sessions</string>
   <string name="report_spans_no_jobs">No Jobs Attached To Report</string>
   <string name="report_spans_multiple_jobs">Spans Mulitple Jobs</string>
+
+
+	<!--
+  RSS
+	-->
+  <string name="rss">RSS Update</string>
+	<string name="rss_feed">RSS Feed</string>
+	<string name="rss_error_download_failure">Failed to download RSS feed</string>
 
   <!--
   PORTAL
@@ -568,7 +590,7 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
   <string name="workbench_timer_abrv">TIMER</string>
   <string name="workbench_ptchart">Pressure Temperature Chart</string>
   <string name="workbench_roc">Rate of Change</string>
-  <string name="workbench_roc_abrv">RoC</string>
+  <string name="workbench_roc_abrv">TREND</string>
   <string name="workbench_linked_sensor_2sarg">Linked {0} ({1})</string>
   <string name="workbench_shsc">Superheat / Subcool</string>
   <string name="workbench_shsc_abrv">S/H S/C</string>

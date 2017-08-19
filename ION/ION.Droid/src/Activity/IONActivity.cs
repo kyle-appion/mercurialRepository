@@ -115,6 +115,11 @@
 			}
 		}
 
+    protected override void OnStop() {
+      base.OnStop();
+      cache.Clear();
+    }
+
 		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data) {
 			switch (requestCode) {
 				case REQUEST_BLUETOOTH_ENABLE:

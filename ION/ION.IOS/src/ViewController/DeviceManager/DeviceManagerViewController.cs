@@ -13,6 +13,7 @@ namespace ION.IOS.ViewController.DeviceManager {
   using ION.Core.Devices;
   using ION.Core.Sensors;
 
+  using ION.IOS.Connections;
   using ION.IOS.UI;
   using ION.IOS.Util;
 
@@ -77,15 +78,18 @@ namespace ION.IOS.ViewController.DeviceManager {
       View.BackgroundColor = UIColor.FromPatternImage(UIImage.FromBundle("CarbonBackground"));
       NavigationItem.Title = Strings.Device.Manager.SELF.FromResources();
       NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.Device.Manager.SCAN.FromResources(), UIBarButtonItemStyle.Plain, delegate {
-        if (!ion.deviceManager.connectionManager.isEnabled) {
-          UIAlertView bluetoothWarning = new UIAlertView("Bluetooth Disconnected", "Bluetooth needs to be connected to discover peripherals", null, "Close", "Settings");
-          bluetoothWarning.Clicked += (sender, e) => {
-            if (e.ButtonIndex.Equals(1)) {
-              UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
-            }
-          };
-          bluetoothWarning.Show();
-        } else {
+      if (!ion.deviceManager.connectionManager.isEnabled) {
+			  UIAlertController bluetoothWarning = UIAlertController.Create("Bluetooth Disconnected", "Bluetooth needs to be connected to discover peripherals", UIAlertControllerStyle.Alert);
+
+			  bluetoothWarning.AddAction(UIAlertAction.Create(Util.Strings.SETTINGS, UIAlertActionStyle.Default, (action) => {
+            UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
+        }));
+			  bluetoothWarning.AddAction(UIAlertAction.Create(Util.Strings.CLOSE, UIAlertActionStyle.Default, (action) => {
+
+			  }));
+
+        bluetoothWarning.Show();
+      } else {
           if (ion.deviceManager.connectionManager.isScanning) {
             StopScan();
           } else {
@@ -117,6 +121,7 @@ namespace ION.IOS.ViewController.DeviceManager {
       allowRefresh = true;
       StartScan();
       deviceSource.Reload();
+//      PostUpdate();
     }
 
     public override void ViewWillDisappear(bool animated) {
@@ -124,6 +129,8 @@ namespace ION.IOS.ViewController.DeviceManager {
       allowRefresh = false;
       ion.deviceManager.connectionManager.StopScan();
       deviceSource.Release();
+      var cm = ion.deviceManager.connectionManager as IonCBCentralManagerDelegate;
+      cm.ClearUnusedConnections();
       ion.deviceManager.ForgetFoundDevices();
     }
 

@@ -62,7 +62,7 @@
         <FrameLayout
             android:background="@drawable/np_square_black_border_white_background"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/viewer_subview_huge">
+            android:layout_height="@dimen/viewer_subview_large_icon_size">
             <OxyPlot.Xamarin.Android.PlotView
                 android:id="@id/graph"
                 android:layout_width="match_parent"

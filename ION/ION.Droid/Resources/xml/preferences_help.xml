@@ -21,6 +21,11 @@
       android:data="http://www.appioninc.com/media/videos.html"/>
   </Preference>
 
+	<Preference
+    android:key="@string/pkey_rss_list"
+    android:title="@string/preferences_rss_list_title"
+    android:summary="@string/preferences_rss_list"/>
+
   <PreferenceScreen
     android:title="@string/preferences_about_ion">
     <Preference

@@ -97,7 +97,7 @@ namespace ION.Droid.Activity.Portal {
 						Toast.MakeText(this, Resource.String.portal_password_reset_sent, ToastLength.Long).Show();
 						d.Dismiss();
 					} else {
-						Toast.MakeText(this, response.message, ToastLength.Long).Show();
+						Toast.MakeText(this, Resource.String.portal_error_failed_to_login, ToastLength.Long).Show();
 					}
 
 					pd.Dismiss();

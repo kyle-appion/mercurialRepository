@@ -30,8 +30,11 @@
     // App
     private const string KEY_ANALYTICS = "settings_app_analytics";
     private const string KEY_KEEP_SCREEN_ON = "settings_screen_leave_on";
+    private const string KEY_INITIALIZED = "settings_initialized";
 
 
+    // Implemented for IIONPreferences
+    public event Action onPreferencesChanged;
 
     // Implemented for IIONPreferences
     public string lastKnownAppVersion { get; set; }
@@ -86,6 +89,15 @@
     }
 
 
+    private bool initialized {
+      get {
+        return GetBool(KEY_INITIALIZED);
+      }
+      set {
+        PutBool(KEY_INITIALIZED, value);
+      }
+    }
+
 
     private AppPrefs() {
       _device = new DevicePreferences(this);
@@ -94,10 +106,43 @@
       _units = new UnitPreferences(this);
       _report =  new ReportPreferences(this);
       _portal = new PortalPreferences(this);
+
+      NSNotificationCenter.DefaultCenter.AddObserver(NSUserDefaults.DidChangeNotification, OnSettingsChanged);
+      if (!initialized) {
+        InitDefaults();
+        initialized = true;
+      }
+    }
+
+    // Overridden from BasePreferences
+    public override void InitDefaults() {
+      leaveScreenOn = true;
+
+      _device.InitDefaults();
+      _alarm.InitDefaults();
+      _location.InitDefaults();
+      _units.InitDefaults();
+      _report.InitDefaults();
+      _portal.InitDefaults();
+    }
+
+    private void OnSettingsChanged(NSNotification defaults) {
+      if (onPreferencesChanged != null) {
+        onPreferencesChanged();
+      }      
     }
   }
 
-  public class BasePreferences {
+  public abstract class BasePreferences {
+
+    public abstract void InitDefaults();
+
+    /// <summary>
+    /// Syncs in memory changes with the database.
+    /// </summary>
+    public void Sync() {
+      NSUserDefaults.StandardUserDefaults.Synchronize();
+    }
 
     /// <summary>
     /// Queries the integer setting with the given key.
@@ -115,6 +160,7 @@
     /// <param name="setting">Setting.</param>
     public void PutInt(string key, int setting) {
       NSUserDefaults.StandardUserDefaults.SetInt(setting, key);
+      Sync();
     }
 
     /// <summary>
@@ -133,6 +179,7 @@
     /// <param name="setting">Setting.</param>
     public void PutBool(string key, bool setting) {
       NSUserDefaults.StandardUserDefaults.SetBool(setting, key);
+      Sync();
     }
 
     /// <summary>
@@ -151,7 +198,8 @@
     /// <param name="setting">Setting.</param>
     public void PutFloat(string key, float setting) {
       NSUserDefaults.StandardUserDefaults.SetFloat(setting, key);
-    }
+			Sync();
+		}
 
     /// <summary>
     /// Queries the string setting with the given key.
@@ -160,7 +208,7 @@
     /// <param name="key">Key.</param>
     public string GetString(string key) {
       return NSUserDefaults.StandardUserDefaults.StringForKey(key);
-    }
+		}
 
     /// <summary>
     /// Sets the value for the given setting.
@@ -169,7 +217,8 @@
     /// <param name="setting">Setting.</param>
     public void PutString(string key, string setting) {
       NSUserDefaults.StandardUserDefaults.SetString(setting, key);
-    }
+			Sync();
+		}
 
     /// <summary>
     /// Queries the double setting with the given key.
@@ -187,10 +236,11 @@
     /// <param name="setting">Setting.</param>
     public void PutDouble(string key, double setting) {
       NSUserDefaults.StandardUserDefaults.SetDouble(setting, key);
+      Sync();
     }
   }
 
-  public class DerivedPreferences : BasePreferences {
+  public abstract class DerivedPreferences : BasePreferences {
     protected AppPrefs prefs { get; private set; }
 
     public DerivedPreferences(AppPrefs prefs) {
@@ -201,6 +251,7 @@
   public class DevicePreferences : DerivedPreferences, IDevicePreferences {
     private const string KEY_AUTO_CONNECT = "settings_device_auto_connect";
     private const string KEY_LONG_RANGE = "settings_device_long_range";
+    private const string KEY_TREND_INTERVAL = "settings_default_trending_interval";
 
     // Implemented for IPreferences
     public bool allowDeviceAutoConnect {
@@ -208,24 +259,39 @@
         return GetBool(KEY_AUTO_CONNECT);
       }
       set {
-        PutBool(KEY_LONG_RANGE, value);
+        PutBool(KEY_AUTO_CONNECT, value);
       }
     }
 
     // Implemented for IPreferences
     public bool allowLongRangeMode {
       get {
-        return false;
-//        return GetBool(KEY_LONG_RANGE);
+        return GetBool(KEY_LONG_RANGE);
       }
 
       set {
-//        PutBool(KEY_LONG_RANGE, value);
+        PutBool(KEY_LONG_RANGE, value);
+      }
+    }
+
+    public TimeSpan trendInterval {
+      get {
+        return TimeSpan.FromMilliseconds(GetInt(KEY_TREND_INTERVAL));
+      }
+      set {
+        PutInt(KEY_TREND_INTERVAL, (int)value.TotalMilliseconds);
       }
     }
 
     public DevicePreferences(AppPrefs prefs) : base(prefs) {
     }
+
+		// Overridden from BasePreferences
+		public override void InitDefaults() {
+      allowDeviceAutoConnect = true;
+      allowLongRangeMode = true;
+      trendInterval = TimeSpan.FromMilliseconds(1000);
+		}
   }
 
   /// <summary>
@@ -263,6 +329,12 @@
 
     public AlarmPreferences(AppPrefs prefs) : base(prefs) {
     }
+
+		// Overridden from BasePreferences
+		public override void InitDefaults() {
+      allowsVibrate = true;
+      allowsSounds = true;
+		}
   }
 
   public class LocationPreferences : DerivedPreferences, ILocationPreferences {
@@ -297,6 +369,12 @@
 
     public LocationPreferences(AppPrefs prefs) : base(prefs) {
     }
+
+		// Overridden from BasePreferences
+		public override void InitDefaults() {
+      allowsGps = false;
+      customElevation = Units.Length.METER.OfScalar(0);
+		}
   }
 
   /// <summary>
@@ -362,6 +440,14 @@
     public UnitPreferences(AppPrefs prefs) : base(prefs) {
     }
 
+		// Overridden from BasePreferences
+		public override void InitDefaults() {
+      length = Units.Length.FOOT;
+      pressure = Units.Pressure.PSIG;
+      temperature = Units.Temperature.FAHRENHEIT;
+      vacuum = Units.Vacuum.MICRON;
+		}
+
     public Unit DefaultUnitFor(ESensorType sensorType) {
       switch (sensorType) {
         case ESensorType.Length:
@@ -413,22 +499,31 @@
   }
 
   public class ReportPreferences : DerivedPreferences, IReportPreferences {
+    private const string KEY_DATA_LOG_INTERVAL = "settings_default_logging_interval";
     // Implemented for IReportPreferences
     public TimeSpan dataLoggingInterval {
       get {
-//        return TimeSpan.FromSeconds(GetIntFromString(Resource.String.pkey_reporting_data_log_interval, 60));
-        return TimeSpan.FromSeconds(60);
+        int millis = GetInt(KEY_DATA_LOG_INTERVAL);
+        if (millis <= 0) {
+          Log.E(this, "Unexpected data log interval (" + millis + "ms) was received");
+          return TimeSpan.FromSeconds(60);
+        } else {
+          return TimeSpan.FromMilliseconds(millis);
+        }
       }
 
-/*
       set {
-        SetStringFromInt((int)value.TotalMilliseconds);
+        PutInt(KEY_DATA_LOG_INTERVAL, (int)value.TotalMilliseconds);
       }
-*/
     }
 
     public ReportPreferences(AppPrefs prefs) : base(prefs) {
     }
+
+		// Overridden from BasePreferences
+		public override void InitDefaults() {
+      dataLoggingInterval = TimeSpan.FromSeconds(30);
+		}
   }
 
   public class PortalPreferences : DerivedPreferences, IPortalPreferences {
@@ -468,6 +563,10 @@
     }
 
     public PortalPreferences(AppPrefs prefs) : base(prefs) {
+    }
+
+    // Overridden from BasePreferences
+    public override void InitDefaults() {
     }
   }
 }

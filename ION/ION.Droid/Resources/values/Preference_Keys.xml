@@ -21,6 +21,7 @@
 
   <string name="pkey_device_auto_connect">device_auto_connect</string>
 	<string name="pkey_device_long_range">device_long_range</string>
+	<string name="pkey_device_trend_interval">device_trend_interval</string>
 
   <string name="pkey_help_walkthrough">help_walkthrough</string>
 
@@ -28,6 +29,9 @@
   <string name="pkey_location_elevation">location_elevation</string>
   <string name="pkey_location_gps">location_gps</string>
   <string name="pkey_location_gps_error">location_gps_error</string>
+
+	<string name="pkey_rss_last_check_date">rss_last_check_date</string>
+  <string name="pkey_rss_list">rss_list</string>
 
 	<string name="pkey_portal_rememberme">portal_rememberme</string>
 	<string name="pkey_portal_username">portal_username</string>

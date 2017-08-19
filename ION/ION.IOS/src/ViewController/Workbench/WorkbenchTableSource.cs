@@ -180,7 +180,8 @@ namespace ION.IOS.ViewController.Workbench {
 					this.workbench.onWorkbenchEvent -= OnManifoldEvent;
 					SetWorkbench(workbench);		
 				}
-
+        tableView.ReloadData();
+      Console.WriteLine("reloading data");
     }
     // Overridden from UITableViewSource
     public override string TitleForDeleteConfirmation(UITableView tableView, NSIndexPath indexPath) {
@@ -261,7 +262,7 @@ namespace ION.IOS.ViewController.Workbench {
       } else if (record is AddRecord){
 			 	return 58;
 			} else if (record is RateOfChangeRecord){
-				return 120;
+				return 96;
 			} else {
         return 48;
       }
@@ -369,7 +370,7 @@ namespace ION.IOS.ViewController.Workbench {
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
 
         return cell;
-      }else {
+      } else {
         Log.E(this,"Cannot get cell: " + record.viewType + " is not a supported record type.");
         return null;
       }
@@ -601,7 +602,8 @@ namespace ION.IOS.ViewController.Workbench {
 
       if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
         addAction(Strings.Workbench.Viewer.ROC_DESC, (UIAlertAction action) => {
-          manifold.AddSensorProperty(new RateOfChangeSensorProperty(sensor));
+          manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold,ion.preferences.device.trendInterval));
+          //manifold.AddSensorProperty(new RateOfChangeSensorProperty(sensor));
         });
       }
 
@@ -673,7 +675,9 @@ namespace ION.IOS.ViewController.Workbench {
           break;
 
         case WorkbenchEvent.EType.ManifoldEvent:
-          OnManifoldEvent(workbenchEvent.manifoldEvent);
+	        if (workbenchEvent.manifoldEvent.type != ManifoldEvent.EType.Invalidated) {
+	          OnManifoldEvent(workbenchEvent.manifoldEvent);
+	        }
           break;
 
         case WorkbenchEvent.EType.Removed:

@@ -15,8 +15,7 @@
     /// The default time that is allowed for a rigado connection attempt.
     /// </summary>
     private static readonly TimeSpan DEFAULT_TIMEOUT = TimeSpan.FromSeconds(45);
-    private static readonly TimeSpan LONG_RANGE_TIMEOUT = TimeSpan.FromMilliseconds(
-      (AndroidConnectionManager.DOWN_TIME + AndroidConnectionManager.SCAN_TIME).TotalMilliseconds * 3);
+    private static readonly TimeSpan LONG_RANGE_TIMEOUT = TimeSpan.FromMilliseconds(7500);
     /// <summary>
     /// The delay from a disconnecto to a reconnect attempt.
     /// </summary>
@@ -25,10 +24,6 @@
     /// The delay before the connection disconnects because the service scan timed out.
     /// </summary>
     private const long SERVICES_DELAY = 1000 * 20;
-    /// <summary>
-    /// The message that is used to start a passive connection attempt for the connection.
-    /// </summary>
-    private const int MSG_GO_PASSIVE = 1;
     /// <summary>
     /// The message that is used to check whether or not the connection has successfully found its services.
     /// </summary>
@@ -46,28 +41,17 @@
     // Implemented for IConnection
     public EConnectionState connectionState {
       get {
-        if (__connectionState == EConnectionState.Disconnected) {
-          var dtime = DateTime.Now - lastPacketTime;
-          if (dtime <= LONG_RANGE_TIMEOUT && lastPacket != null) {
-            handler.RemoveMessages(MSG_CHECK_LONG_RANGE);
-            handler.PostDelayed(() => handler.SendEmptyMessageDelayed(MSG_CHECK_LONG_RANGE, (long)LONG_RANGE_TIMEOUT.TotalMilliseconds), 500);
-//            handler.SendEmptyMessageDelayed(MSG_CHECK_LONG_RANGE, (long)LONG_RANGE_TIMEOUT.TotalMilliseconds);
-            return EConnectionState.Broadcasting;
-          } else {
-            return __connectionState;
-          }
-        } else {
-          return __connectionState;
-        }
+        return __connectionState;
       }
       private set {
-        var oldState = __connectionState;
+        var oldState = connectionState;
         __connectionState = value;
         if (onStateChanged != null) {
           onStateChanged(this, oldState);
         }
       }
     } EConnectionState __connectionState;
+
 
     // Implemented for IConnection
     public bool isConnected { get { return connectionState == EConnectionState.Connected; } }
@@ -76,7 +60,7 @@
     // Implemented for IConnection
     public string address { get { return device.Address; } }
     // Implemented for IConnection
-    public byte[] lastPacket { 
+    public byte[] lastPacket {
       get {
         return __lastPacket;
       }
@@ -88,7 +72,8 @@
           onDataReceived(this, __lastPacket);
         }
       }
-    } byte[] __lastPacket;
+    }
+    byte[] __lastPacket;
 
     // Implemented for IConnection
     public DateTime lastSeen { get; set; }
@@ -111,7 +96,19 @@
     /// <summary>
     /// The bluetooth gatt that the connection is using to interface with the bluetooth module.
     /// </summary>
-    protected BluetoothGatt gatt;
+    protected BluetoothGatt gatt {
+      get {
+        return __gatt;
+      }
+      set {
+        __gatt = value;
+      }
+    }
+    BluetoothGatt __gatt;
+    /// <summary>
+    /// Whether or not the connection should connect passively.
+    /// </summary>
+    private bool shouldPassiveConnect;
 
     /// <summary>
     /// The last time we received a packet.
@@ -136,18 +133,24 @@
     }
 
     // Implemented for IConnection
-    public bool Connect() {
+    public bool Connect(bool passive = false) {
       lock (locker) {
         if (isConnected) {
           return true;
         } else {
-          if (connectionState != EConnectionState.Disconnected) {
-            Disconnect(false);
+          // Ensure a clean connection attempt
+          if (gatt != null || connectionState != EConnectionState.Disconnected) {
+						Disconnect(false);
           }
+
           try {
-            Log.D(this, "Device {" + name + "} is performing an active connection");
-            gatt = device.ConnectGatt(manager.context, true, this);
-//            handler.SendEmptyMessageDelayed(MSG_GO_PASSIVE, PASSIVE_DELAY);
+						Log.D(this, "Device {" + name + "} is performing an " + (passive ? "passive" : "active") + " connection");
+						if (passive) {
+							gatt = device.ConnectGatt(manager.context, true, this);
+						} else {
+							connectionState = EConnectionState.Connecting;
+							gatt = device.ConnectGatt(manager.context, false, this);
+						}
             return true;
           } catch (Exception e) {
             Log.E(this, "Failed to start pending gatt connection.", e);
@@ -158,8 +161,9 @@
     }
 
     // Implemented for IConnection
-    public void Disconnect(bool reconnect=false) {
+    public void Disconnect(bool reconnect = false) {
       lock (locker) {
+        Log.D(this, "Device {" + name + "} is disconnecting");
         handler.RemoveCallbacksAndMessages(null);
 
         OnDisconnect();
@@ -174,7 +178,7 @@
           gatt = null;
 
           if (reconnect) {
-            handler.PostDelayed(() => Connect(), 1500);
+            handler.PostDelayed(() => Connect(true), 1500);
           }
         }
       }
@@ -183,7 +187,6 @@
     // Overridden from BluetoothGattCallback
     public sealed override void OnConnectionStateChange(BluetoothGatt gatt, GattStatus status, ProfileState newState) {
       lock (locker) {
-        Log.D(this, "The Le device is in state: " + newState);
         switch (newState) {
           case ProfileState.Connected: {
               handler.RemoveCallbacksAndMessages(null);
@@ -205,7 +208,9 @@
             } // ProfileState.Connecting
 
           case ProfileState.Disconnected: {
-              Disconnect(manager.ion.preferences.device.allowDeviceAutoConnect);
+							// Only attempt a reconnect if the device disconnected unexpectedly
+							bool reconnect = connectionState == EConnectionState.Connected && manager.ion.preferences.device.allowDeviceAutoConnect;
+              Disconnect(reconnect);
               break;
             } // ProfileState.Disconnected
 
@@ -239,32 +244,26 @@
     public bool HandleMessage(Message msg) {
       lock (locker) {
         switch (msg.What) {
-          case MSG_GO_PASSIVE: {
-            if (isConnected) {
-              Disconnect(false);
-            }
-
-            return ConnectPassive();
-          } // MSG_GO_PASSIVE
-
           case MSG_CHECK_SERVICES: {
-            if (!ValidateServices()) {
-              Log.E(this, "Failed to validate services; disconnecting with intention of an immediate reconnect");
-              Disconnect(false);
-            }
-            return true;
-          } // MSG_CHECK_SERVICES
-
-          case MSG_CHECK_LONG_RANGE: { 
-            if (DateTime.Now - lastPacketTime > LONG_RANGE_TIMEOUT) {
-              connectionState = EConnectionState.Disconnected;
-            }
-            return true;
-          } // MSG_CHECK_LONG_RANGE
+              if (!ValidateServices()) {
+                Log.E(this, "Failed to validate services; disconnecting with intention of an immediate reconnect");
+                Disconnect(false);
+              }
+              return true;
+            } // MSG_CHECK_SERVICES
+              /*
+                        case MSG_CHECK_LONG_RANGE: { 
+                          Log.D(this, "long range mode check");
+                          if (DateTime.Now - lastPacketTime > LONG_RANGE_TIMEOUT) {
+                            connectionState = EConnectionState.Disconnected;
+                          }
+                          return true;
+                        } // MSG_CHECK_LONG_RANGE
+              */
 
           default: {
-            return false;
-          }
+              return false;
+            }
         }
       }
     }
@@ -293,31 +292,5 @@
     /// </summary>
     /// <returns><c>true</c>, if services was validated, <c>false</c> otherwise.</returns>
     protected abstract bool ValidateServices();
-
-    /// <summary>
-    /// Performs a passive connect - meaning that the connection will be established in the furture at an indeterminate
-    /// time when the platform walks into range of the device.
-    /// </summary>
-    /// <returns><c>true</c>, if passive was connected, <c>false</c> otherwise.</returns>
-    private bool ConnectPassive() {
-      lock (locker) {
-        if (isConnected) {
-          return true;
-        }
-
-        if (gatt != null) {
-          Disconnect();
-        }
-
-        try {
-          Log.D(this, "Device {" + name + "} is performing a passive connection");
-          gatt = device.ConnectGatt(manager.context, true, this);
-          return true;
-        } catch (Exception e) {
-          Log.E(this, string.Format("Failed to start passive connect for device [{0}: {1}]", name, address), e);
-          return false;
-        }
-      }
-    }
   }
 }

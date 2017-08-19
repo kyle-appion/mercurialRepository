@@ -5,6 +5,7 @@
 	using Android.Content;
 	using Android.Graphics;
 	using Android.Views;
+  using Android.Util;
 
 	using Appion.Commons.Measure;
 	using Appion.Commons.Util;
@@ -225,7 +226,12 @@
 
 			canvas.ClipRect(rect);
 
-			// Draw the window
+      // Draw the window
+
+      rect.Left += 1;
+      rect.Top += 1;
+      rect.Right -= 1;
+      rect.Bottom -= 1;
 			canvas.DrawRoundRect(rect, 7, 7, windowPaint);
 			// Draw the selection line
 			canvas.DrawLine(cx, 0, cx, MeasuredHeight, windowPaint);
@@ -242,7 +248,7 @@
 			minPress = minPress - Math.Sign(minPress) * (minPress % span);
 			var y = window.height * 0.5f;
 
-			while (minPress < maxPressure) {
+			while (minPress <= maxPressure) {
 				// Draw the big tick
 				var x = CalculateRelativeXCoordForTemperature((float)ptChart.GetTemperature(pressureUnit.OfScalar(minPress)).ConvertTo(temperatureUnit).amount);
 				canvas.DrawLine(x, y, x, y - fullTickHeight, pressurePaint);
@@ -264,6 +270,7 @@
 		}
 
 		private int CalculatePressureTickSpan(double minPress) {
+      // TODO ahodder@appioninc.com: This needs to be more algorithmic.
 			if (pressureUnit == Units.Pressure.CM_HG) {
 				if (minPress < 50) {
 					return 10;
@@ -274,6 +281,20 @@
 				} else {
 					return 250;
 				}
+      } else if (pressureUnit == Units.Pressure.KILOPASCAL) {
+        if (minPress < 40) {
+          return 5;
+        } else if (minPress < 100) {
+          return 10;
+        } else if (minPress < 200) {
+          return 50;
+        } else if (minPress < 500) {
+          return 100; 
+        } else if (minPress < 1000) {
+          return 200;
+        } else {
+          return 500;
+        }
 			} else {
 				if (minPress < 10) {
 					return 2;
@@ -283,9 +304,13 @@
 					return 10;
 				} else if (minPress < 200) {
 					return 50;
-				} else {
-					return 100;
-				}
+        } else if (minPress < 500) {
+					return 100; 
+        } else if (minPress < 1000) {
+          return 200;
+        } else {
+          return 500;
+        }
 			}
 		}
 
@@ -326,7 +351,13 @@
 
 			window.Set(new RectF(padding, padding, w - padding, h - padding));
 
-			step = window.width / 50;
+      if (this.pressureUnit.Equals(Units.Pressure.KILOPASCAL)) {
+  			step = window.width / 50;
+      } else {
+        step = pressurePaint.MeasureText("99");
+      }
+
+
 			fullTickHeight = window.height * 0.25f;
 			offset = 0;
 

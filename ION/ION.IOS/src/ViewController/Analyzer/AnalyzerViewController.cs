@@ -487,11 +487,11 @@ namespace ION.IOS.ViewController.Analyzer {
 
       ///CREATE MANUAL MANIFOLDS
       if(mentryView.dtypeButton.AccessibilityIdentifier.Equals("Pressure")){
-        start.pressedSensor.manualSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0),ESensorType.Pressure);     
+        start.pressedSensor.manualSensor = new ManualSensor(ESensorType.Pressure, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0));     
       } else if (mentryView.dtypeButton.AccessibilityIdentifier.Equals("Temperature")) {
-        start.pressedSensor.manualSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0),ESensorType.Temperature);
+        start.pressedSensor.manualSensor = new ManualSensor(ESensorType.Temperature, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0));
       } else {
-        start.pressedSensor.manualSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Vacuum).OfScalar(0.0),ESensorType.Vacuum);
+        start.pressedSensor.manualSensor = new ManualSensor(ESensorType.Vacuum, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Vacuum).OfScalar(0.0));
       }
 
       ///SET MANUALSENSOR MEASUREMENT AND UNIT TYPE
@@ -748,11 +748,11 @@ namespace ION.IOS.ViewController.Analyzer {
           analyzerSensors.viewList[i].isManual = true;
           
           if(mentryView.dtypeButton.AccessibilityIdentifier.Equals("Pressure")){
-            analyzerSensors.viewList[i].manualSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0),ESensorType.Pressure);
+            analyzerSensors.viewList[i].manualSensor = new ManualSensor(ESensorType.Pressure, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0));
           } else if (mentryView.dtypeButton.AccessibilityIdentifier.Equals("Temperature")) {
-            analyzerSensors.viewList[i].manualSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0),ESensorType.Temperature);
+            analyzerSensors.viewList[i].manualSensor = new ManualSensor(ESensorType.Temperature, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0));
           } else {
-            analyzerSensors.viewList[i].manualSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Vacuum).OfScalar(0.0),ESensorType.Vacuum);
+            analyzerSensors.viewList[i].manualSensor = new ManualSensor(ESensorType.Vacuum, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Vacuum).OfScalar(0.0));
           }
           analyzerSensors.viewList[i].manualSensor.name = analyzerSensors.viewList[i].topLabel.Text;
           analyzerSensors.viewList[i].manualSensor.unit = AnalyserUtilities.getManualUnit(analyzerSensors.viewList[i].manualSensor.type,mentryView.mbuttonText.Text.ToLower());
@@ -1534,7 +1534,7 @@ namespace ION.IOS.ViewController.Analyzer {
 				}
 			}
 			
-			////TODO NEED TO FIGURE OUT A NON INTENSIVE WAY TO SORT THE VIEW LIST BASED ON THE SENSOR LAYOUT IF THEY DIFFER
+			////TODO NEED TO FIGURE OUT A LESS INTENSIVE WAY TO SORT THE VIEW LIST BASED ON THE SENSOR LAYOUT IF THEY DIFFER
 			if(unordered){
 				for(int v = 0; v < 8; v++){
 					if(analyzerSensors.viewList[v].snapArea.AccessibilityIdentifier != analyzer.sensorPositions[v].ToString()){
@@ -1574,6 +1574,7 @@ namespace ION.IOS.ViewController.Analyzer {
 		}
 		
 		public void confirmSubviews(string section = "high"){
+      bool subviewsChanged = false;
 			//Console.WriteLine(section + " section");
 			if(section == "low"){
 				////SETUP HIGH AREA TABLE SOURCE IF NULL
@@ -1586,6 +1587,7 @@ namespace ION.IOS.ViewController.Analyzer {
 					if(!lowHighSensors.lowArea.tableSubviews.Contains(existing)){
 						Console.WriteLine("Added low area subview " + existing);   
 						lowHighSensors.lowArea.tableSubviews.Add(existing);
+            subviewsChanged = true;
 					}
 				}
 				
@@ -1594,13 +1596,16 @@ namespace ION.IOS.ViewController.Analyzer {
 					if(!analyzer.lowSubviews.Contains(removal)){
 						Console.WriteLine("Removed low area subview" + removal);
 						lowHighSensors.lowArea.tableSubviews.Remove(removal);
+            subviewsChanged = true;
 					}
 				}
 
 
 				lowHighSensors.lowArea.subviewTable.Hidden = false;
 				viewAnalyzerContainer.BringSubviewToFront(lowHighSensors.lowArea.subviewTable);
-				lowHighSensors.lowArea.subviewTable.ReloadData();
+        if (subviewsChanged) {
+          lowHighSensors.lowArea.subviewTable.ReloadData();
+        }
 			} else {
 				////SETUP HIGH AREA TABLE SOURCE IF NULL
 				if(lowHighSensors.highArea.subviewTable.Source == null){
@@ -1611,19 +1616,23 @@ namespace ION.IOS.ViewController.Analyzer {
 					if(!lowHighSensors.highArea.tableSubviews.Contains(existing)){
 						Console.WriteLine("Added high area subview " + existing);
 						lowHighSensors.highArea.tableSubviews.Add(existing);
+            subviewsChanged = true;
 					}
 				}
 				////REMOVE ANY SUBVIEWS THAT ARE NO LONGER SENT FROM THE REMOTE LAYOUT
 				foreach(var removal in lowHighSensors.highArea.tableSubviews.ToArray()){
-					if(!analyzer.highSubviews.Contains(removal)){
+					if(!analyzer.highSubviews.Contains(removal)){   
 						Console.WriteLine("Removed high area subview" + removal);
 						lowHighSensors.highArea.tableSubviews.Remove(removal);
+            subviewsChanged = true;
 					}
 				}
 							
 				lowHighSensors.highArea.subviewTable.Hidden = false;
 				viewAnalyzerContainer.BringSubviewToFront(lowHighSensors.highArea.subviewTable);
-				lowHighSensors.highArea.subviewTable.ReloadData();
+				if (subviewsChanged) {
+					lowHighSensors.highArea.subviewTable.ReloadData();
+				}
 			}
 		}
 		
@@ -1672,7 +1681,7 @@ namespace ION.IOS.ViewController.Analyzer {
 				} else {
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEEDIT;
 				}
-				if(remoteControl != null && remoteControl.remoteLoggingButton != null){
+				if(ion.remoteDevice != null && remoteControl != null && remoteControl.remoteLoggingButton != null){
 					if(ion.remoteDevice.loggingStatus){
 						NSUserDefaults.StandardUserDefaults.SetString("1","remoteLogging");
 						remoteControl.remoteLoggingButton.SetTitle("Stop Logging", UIControlState.Normal);

@@ -64,6 +64,7 @@ namespace ION.Droid.Dialog {
       adb.SetNegativeButton(Resource.String.cancel, (obj, which) => {
         var d = obj as Android.App.Dialog;
         d.Dismiss();
+        cache.Clear();
       });
 
 			if (analyzer.isEditable) {
@@ -107,6 +108,7 @@ namespace ION.Droid.Dialog {
 					});
 
 					ldb.Show();
+					cache.Clear();
 				});
 			}
 

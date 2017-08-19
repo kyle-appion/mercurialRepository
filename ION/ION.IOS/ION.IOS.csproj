@@ -19,15 +19,19 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <MtouchArch>i386</MtouchArch>
-    <MtouchLink>None</MtouchLink>
+    <MtouchArch>i386, x86_64</MtouchArch>
+    <MtouchLink>Full</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
     <MtouchProfiling>true</MtouchProfiling>
     <CodesignKey>iPhone Developer</CodesignKey>
-    <MtouchI18n></MtouchI18n>
+    <MtouchI18n>
+    </MtouchI18n>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+    <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
-    <DebugType></DebugType>
+    <DebugType>
+    </DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\iPhone\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
@@ -36,10 +40,13 @@
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
-    <MtouchI18n></MtouchI18n>
-    <MtouchSdkVersion></MtouchSdkVersion>
-    <CodesignProvision></CodesignProvision>
-    <IpaPackageName></IpaPackageName>
+    <MtouchI18n>
+    </MtouchI18n>
+    <MtouchSdkVersion>
+    </MtouchSdkVersion>
+    <CodesignProvision>ION Testo Cert</CodesignProvision>
+    <IpaPackageName>
+    </IpaPackageName>
     <MtouchUseLlvm>false</MtouchUseLlvm>
     <MtouchLink>Full</MtouchLink>
     <MtouchFloat32>false</MtouchFloat32>
@@ -69,7 +76,8 @@
     <MtouchProfiling>false</MtouchProfiling>
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
-    <IpaPackageName></IpaPackageName>
+    <IpaPackageName>
+    </IpaPackageName>
     <MtouchFastDev>false</MtouchFastDev>
     <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
     <MtouchLink>Full</MtouchLink>
@@ -86,9 +94,11 @@
     <Reference Include="MonoTouch.Dialog-1" />
     <Reference Include="Xfinium.Pdf.Xamarin.iOS">
       <HintPath>..\packages\Nfinium\XFINIUM.PDF 5.4.0 Mobile Professional Edition Commercial Version\Redist\iOS-Unified\Xfinium.Pdf.Xamarin.iOS.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Xfinium.Pdf.Render.Xamarin.iOS">
       <HintPath>..\packages\Nfinium\XFINIUM.PDF 5.4.0 Mobile Professional Edition Commercial Version\Redist\iOS-Unified\Xfinium.Pdf.Render.Xamarin.iOS.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="SWTableViewCell">
       <HintPath>..\packages\SWTableViewCell-0.3.6.1\lib\ios-unified\SWTableViewCell.dll</HintPath>
@@ -115,6 +125,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="Xfinium.Pdf.Xamarin.iOS">
       <HintPath>..\packages\Xfinium\XFINIUM.PDF 5.4.0 Mobile Professional Edition Commercial Version\Redist\iOS-Unified\Xfinium.Pdf.Xamarin.iOS.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="SWTableViewCell">
       <HintPath>..\packages\SWTableViewCell-0.3.6.1\lib\ios-unified\SWTableViewCell.dll</HintPath>
@@ -139,6 +150,9 @@
     </Reference>
     <Reference Include="FlexCel">
       <HintPath>..\Components\FlexCel-6.8.0\lib\ios-unified\FlexCel.dll</HintPath>
+    </Reference>
+    <Reference Include="Xfinium.Pdf.Pcl">
+      <HintPath>..\..\..\..\..\Downloads\Xfinium\XfiniumPdf540PclProCommercial\Xfinium.Pdf.Pcl.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -679,6 +693,23 @@
     <ImageAsset Include="Resources\Images.xcassets\wireless_disconnected.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\wireless_connected.imageset\wifi-256.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\wireless_disconnected.imageset\wifi-1-bar-256.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_0.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_25.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_50.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_75.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_100.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_0.imageset\ic_battery_vert_empty.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_25.imageset\ic_battery_vert_25.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_50.imageset\ic_battery_vert_50.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_75.imageset\ic_battery_vert_75.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_vert_100.imageset\ic_battery_vert_100.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_add_to_analyzer.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_add_to_analyzer.imageset\ic_device_add_to_analyzer.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_add_to_workbench.imageset\ic_device_add_to_workbench.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\gold_arrow_right.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\gold_arrow_left.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\gold_arrow_right.imageset\gold_arrow_right.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\gold_arrow_left.imageset\gold_arrow_left.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -1067,6 +1098,18 @@
     <Compile Include="src\ViewController\RateofChangeSettings\RateofChangeSettingsViewController.designer.cs">
       <DependentUpon>RateofChangeSettingsViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\ViewController\DeviceGrid\DeviceGridViewController.cs" />
+    <Compile Include="src\ViewController\DeviceGrid\DeviceGridViewController.designer.cs">
+      <DependentUpon>DeviceGridViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\DeviceGrid\GridCellConnected.cs" />
+    <Compile Include="src\ViewController\DeviceGrid\DeviceGridSource.cs" />
+    <Compile Include="src\ViewController\DeviceGrid\DeviceGridFlowDelegate.cs" />
+    <Compile Include="src\ViewController\DeviceGrid\SensorStatusPopup.cs" />
+    <Compile Include="src\ViewController\DeviceGrid\GridCellDisconnected.cs" />
+    <Compile Include="src\ViewController\DeviceGrid\GridCellDisconnected.designer.cs">
+      <DependentUpon>GridCellDisconnected.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -1093,7 +1136,6 @@
     <Folder Include="Settings.bundle\en.lproj\" />
     <Folder Include="src\Net\" />
     <Folder Include="src\Location\" />
-    <Folder Include="src\Report\" />
     <Folder Include="src\ViewController\FileManager\" />
     <Folder Include="src\ViewController\ScreenshotReport\" />
     <Folder Include="src\ViewController\Help\" />
@@ -1155,6 +1197,16 @@
     <Folder Include="Resources\Images.xcassets\wireless_connected.imageset\" />
     <Folder Include="Resources\Images.xcassets\wireless_disconnected.imageset\" />
     <Folder Include="src\ViewController\RateofChangeSettings\" />
+    <Folder Include="Resources\Fonts\" />
+    <Folder Include="src\ViewController\DeviceGrid\" />
+    <Folder Include="Resources\Images.xcassets\img_battery_vert_0.imageset\" />
+    <Folder Include="Resources\Images.xcassets\img_battery_vert_25.imageset\" />
+    <Folder Include="Resources\Images.xcassets\img_battery_vert_50.imageset\" />
+    <Folder Include="Resources\Images.xcassets\img_battery_vert_75.imageset\" />
+    <Folder Include="Resources\Images.xcassets\img_battery_vert_100.imageset\" />
+    <Folder Include="Resources\Images.xcassets\ic_device_add_to_analyzer.imageset\" />
+    <Folder Include="Resources\Images.xcassets\gold_arrow_right.imageset\" />
+    <Folder Include="Resources\Images.xcassets\gold_arrow_left.imageset\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -1163,7 +1215,6 @@
     <BundleResource Include="Resources\Images.xcassets\img_battery_50.imageset\img_battery_50.pdf" />
     <BundleResource Include="Resources\Images.xcassets\img_battery_75.imageset\img_battery_75.pdf" />
     <BundleResource Include="Resources\Images.xcassets\img_battery_0.imageset\img_battery_0.pdf" />
-    <BundleResource Include="Resources\Images.xcassets\ic_device_add_to_workbench.imageset\ic_device_add_to_workbench.pdf" />
     <BundleResource Include="Resources\Images.xcassets\ic_menu_overflow.imageset\ic_menu_moreoverflow.png" />
     <BundleResource Include="Resources\Images.xcassets\ic_logo_appiondefault.imageset\ic_logo_appiondefault.png" />
     <BundleResource Include="Resources\en.lproj\Localizable.strings" />
@@ -1173,6 +1224,12 @@
     <BundleResource Include="Resources\Images.xcassets\Contents.json" />
     <BundleResource Include="Resources\xml\whats_new.xml" />
     <BundleResource Include="Resources\xml\VersionUpdateLog.txt" />
+    <BundleResource Include="Resources\Fonts\DroidSans-Bold.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="Resources\Fonts\DroidSans.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </BundleResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">

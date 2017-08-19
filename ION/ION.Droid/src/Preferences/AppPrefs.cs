@@ -1,5 +1,5 @@
 ﻿namespace ION.Droid.Preferences {
-  
+
   using System;
 
   using Android.Content;
@@ -13,7 +13,7 @@
   /// <summary>
   /// A simple class that is used to access the android applications preferences.
   /// </summary>
-  public class AppPrefs : IIONPreferences {
+  public class AppPrefs : Java.Lang.Object, IIONPreferences, ISharedPreferencesOnSharedPreferenceChangeListener {
 		/// <summary>
 		/// The name of the general ion preferences.
 		/// </summary>
@@ -28,7 +28,16 @@
 			return PREFS;
 		}
 
-    // Implemented for IPreferences
+    public void OnSharedPreferenceChanged(ISharedPreferences prefs, string key) {
+      if (onPreferencesChanged != null) {
+        onPreferencesChanged();
+      }
+    }
+
+    // Implemented for IIONPreferences
+    public event Action onPreferencesChanged;
+
+    // Implemented for IIONPreferences
     public string lastKnownAppVersion {
       get {
         return prefs.GetString(context.GetString(Resource.String.pkey_app_version), "0.0.0");
@@ -41,7 +50,7 @@
       }
     }
 
-    // Implemented for IPreferences
+    // Implemented for IIONPreferences
     public Guid appId {
       get {
         lock (PREFS) {
@@ -67,7 +76,7 @@
       }
     }
 
-    // Implemented for IPreferences
+    // Implemented for IIONPreferences
     public bool allowAppAnalytics {
       get {
         return prefs.GetBoolean(context.GetString(Resource.String.pkey_app_analytics), true);
@@ -85,7 +94,7 @@
     /// <value><c>true</c> if first launch; otherwise, <c>false</c>.</value>
     public bool firstLaunch {
       get {
-        var ret = prefs.GetBoolean(context.GetString(Resource.String.pkey_first_launch), true);        
+        var ret = prefs.GetBoolean(context.GetString(Resource.String.pkey_first_launch), true);
 
         if (ret) {
           var e = prefs.Edit();
@@ -143,28 +152,49 @@
       }
     }
 
+    /// <summary>
+    /// The date of the last most recent read rss item.
+    /// </summary>
+    /// <value><c>true</c> if last rss date; otherwise, <c>false</c>.</value>
+    public string lastRssDate {
+      get {
+        var usDate = prefs.GetString(context.GetString(Resource.String.pkey_rss_last_check_date), null);
+        if (usDate == null) {
+          return DateTime.Now.ToString();
+        } else {
+          return usDate;          
+        }
+      }
+      set {
+        var e = prefs.Edit();
+        e.PutString(context.GetString(Resource.String.pkey_rss_last_check_date), value);
+        e.Commit();
+      }      
+    }
+
+
     public DevicePreferences _device { get; private set; }
-    // Implemented for IPreferences
+    // Implemented for IIONPreferences
     public IDevicePreferences device { get { return _device; } }
 
     public AlarmPreferences _alarm { get; private set; }
-    // Implemented for IPreferences
+    // Implemented for IIONPreferences
     public IAlarmPreferences alarm { get { return _alarm; } }
 
     public LocationPreferences _location { get; private set; }
-    // Implemented for IPreferences
+    // Implemented for IIONPreferences
     public ILocationPreferences location { get { return _location; } }
 
     public UnitPreferences _units { get; private set; }
-    // Implemented for IPreferences
+    // Implemented for IIONPreferences
     public IUnitPreferences units { get { return _units; } }
 
     public ReportPreferences _report { get; private set; }
-    // Implemented for IPreferences
+    // Implemented for IIONPreferences
     public IReportPreferences report { get { return _report; } }
 
     public PortalPreferences _portal { get; private set; }
-    // Implemented for IPreferences
+    // Implemented for IIONPreferences
     public IPortalPreferences portal { get { return _portal; } }
 
     /// <summary>
@@ -187,6 +217,8 @@
       _units = new UnitPreferences(this);
       _report =  new ReportPreferences(this);
       _portal = new PortalPreferences(this);
+
+      prefs.RegisterOnSharedPreferenceChangeListener(this);
     }
   }
 
@@ -314,7 +346,7 @@
   }
 
   public class DevicePreferences : BasePreferences, IDevicePreferences {
-    // Implemented for IPreferences
+    // Implemented for IIONPreferences
     public bool allowDeviceAutoConnect {
       get {
         return GetBool(Resource.String.pkey_device_auto_connect, true);
@@ -324,14 +356,31 @@
       }
     }
 
-    // Implemented for IPreferences
+    // Implemented for IIONPreferences
     public bool allowLongRangeMode {
       get {
-        return GetBool(Resource.String.pkey_device_long_range, true);
+        return GetBool(Resource.String.pkey_device_long_range, false);
       }
 
       set {
         PutBool(Resource.String.pkey_device_long_range, value);
+      }
+    }
+
+    // Implemented for IIONPreferences
+    public TimeSpan rateOfChangeWindow {
+      get {
+        return TimeSpan.FromMilliseconds(trendInterval.TotalMilliseconds * 300);
+      }
+    }
+
+    // Implemented for IDevicePreferences
+    public TimeSpan trendInterval {
+      get {
+        return TimeSpan.FromMilliseconds(GetIntFromString(Resource.String.pkey_device_trend_interval, 1000));
+      }
+      set {
+        PutInt(Resource.String.pkey_device_trend_interval, (int)value.TotalMilliseconds);
       }
     }
 
@@ -412,9 +461,42 @@
   }
 
   /// <summary>
+  /// The preferences that are used to store the local application's network preferences.
+  /// </summary>
+  public class NetworkPreferences : BasePreferences {
+
+    /// <summary>
+    /// The last date that we checked the rss feed.
+    /// </summary>
+    /// <value>The last rss check date.</value>
+    public DateTime lastRssCheckDate {
+      get {
+        var usDateString = GetString(Resource.String.pkey_rss_last_check_date, null);
+        if (usDateString == null) {
+          return new DateTime(1, 1, 1);
+        } else {
+          try {
+            return DateTime.Parse(usDateString);
+          } catch (Exception e) {
+            var key = context.GetString(Resource.String.pkey_rss_last_check_date);
+            Log.E(this, "Failed to DateTime parse preference: " + key + " {" + usDateString + "}", e);
+            return new DateTime(1, 1, 1);
+          }
+        }
+      }
+      set {
+        PutString(Resource.String.pkey_rss_last_check_date, value.ToLongDateString());
+      }
+    }
+
+    public NetworkPreferences(AppPrefs prefs) : base(prefs) {
+    }
+  }
+
+  /// <summary>
   /// The preferences that are used to query the application's default unit preferences.
   /// </summary>
-  public class UnitPreferences : BasePreferences, IUnitPreferences { 
+  public class UnitPreferences : BasePreferences, IUnitPreferences {
     // Overridden from IUnits
     public Unit length {
       get {
@@ -494,7 +576,7 @@
       var key = context.GetString(preferenceKey);
 
       try {
-        var ret = UnitLookup.GetUnit(int.Parse(prefs.GetString(key, null)));  
+        var ret = UnitLookup.GetUnit(int.Parse(prefs.GetString(key, null)));
         return ret;
       } catch (Exception e) {
         Log.E(this, "Failed to retrieve unit for key: " + key, e);
@@ -580,4 +662,3 @@
 		}
 	}
 }
-

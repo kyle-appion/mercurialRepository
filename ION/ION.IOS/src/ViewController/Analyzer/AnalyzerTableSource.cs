@@ -1,10 +1,11 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using UIKit;
 using Foundation;
 using CoreGraphics;
 using ION.Core.Sensors.Properties;
 using ION.Core.App;
+using ION.IOS.ViewController.Workbench;
 
 namespace ION.IOS.ViewController.Analyzer
 {
@@ -38,9 +39,13 @@ namespace ION.IOS.ViewController.Analyzer
     public override UIView GetViewForHeader(UITableView tableView, nint section) {
       return null;
     }
-      
+
     public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath) {
-      return .521f * tableSensors.snapArea.Bounds.Height;
+      if (tableItems[indexPath.Row].Contains("Trending")){
+        return 144f;
+      } else {
+        return 72f;
+			}
     }
 
     public override void CommitEditingStyle (UITableView tableView, UITableViewCellEditingStyle editingStyle, Foundation.NSIndexPath indexPath)
@@ -98,7 +103,7 @@ namespace ION.IOS.ViewController.Analyzer
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         cell.Layer.BorderWidth = 1f;
         return cell;
-      } else if (tableItems[indexPath.Row].Contains("Rate")) {
+      } else if (tableItems[indexPath.Row].Contains("Trending") || tableItems[indexPath.Row].Contains("Rate")) {
         var cell = tableView.DequeueReusableCell("Rate") as RoCTableCell;
         if (cell == null)
           cell = new UITableViewCell(UITableViewCellStyle.Default, "Rate") as RoCTableCell;
@@ -190,6 +195,15 @@ namespace ION.IOS.ViewController.Analyzer
 		public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
 		{
 			Console.WriteLine ("Clicked: " + tableItems[indexPath.Row]);
+      if(tableItems[indexPath.Row].Contains("Trending")){
+        var clickedRecord = new RateOfChangeRecord(tableSensors.manifold,tableSensors.roc);
+
+				var rocvc = tableSensors.__analyzerviewcontroller.InflateViewController<RateofChangeSettingsViewController>(BaseIONViewController.VC_RATEOFCHANGE);
+				var passingRecord = clickedRecord;
+				rocvc.initialRecord = passingRecord;
+
+				tableSensors.__analyzerviewcontroller.NavigationController.PushViewController(rocvc, true);       
+      }
 		}
 
 //    public override UITableViewCellEditingStyle EditingStyleForRow(UITableView tableView, NSIndexPath indexPath) {
