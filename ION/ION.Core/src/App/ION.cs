@@ -122,6 +122,12 @@
     /// <value>The current workbench.</value>
     Workbench currentWorkbench { get; set; }
 
+		/// <summary>
+		/// The stored remote workbench for the ION context.
+		/// </summary>
+		/// <value>The remote workbench.</value>
+		Workbench storedWorkbench { get; set; }
+
     /// <summary>
     /// Queries the screenshot report folder.
     /// </summary>

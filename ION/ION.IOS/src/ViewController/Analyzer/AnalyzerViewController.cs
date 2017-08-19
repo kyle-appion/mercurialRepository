@@ -87,6 +87,7 @@ namespace ION.IOS.ViewController.Analyzer {
       AutomaticallyAdjustsScrollViewInsets = false;
 
       backAction = () => {
+        
         root.navigation.ToggleMenu();
       };
      
@@ -1013,7 +1014,7 @@ namespace ION.IOS.ViewController.Analyzer {
     }
     
     public void addDeviceSensor(sensor area, GaugeDeviceSensor sensor){
-    	//Console.WriteLine("Adding a device sensor " + sensor.device.serialNumber.rawSerial + " that is located at spot " + analyzerSensors.viewList.IndexOf(area) + " but belongs to area " + area.snapArea.AccessibilityIdentifier);
+    	Console.WriteLine("Adding a device sensor " + sensor.device.serialNumber.rawSerial + " that is located at spot " + analyzerSensors.viewList.IndexOf(area) + " but belongs to area " + area.snapArea.AccessibilityIdentifier);
   		bool existingConnection = false;
       foreach(sensor item in analyzerSensors.viewList){
         if(item.currentSensor != null && item.currentSensor == sensor){
@@ -1393,6 +1394,7 @@ namespace ION.IOS.ViewController.Analyzer {
     /// sets up the analyzer based off of user layout
     /// </summary>
     public void layoutAnalyzer(){
+      Console.WriteLine("Analyzer checking slot layout");
 			for(int i = 0; i < analyzer.sensorList.Count; i++){
 				//var viewIndex = analyzerSensors.areaList.IndexOf(analyzer.sensorList[i].analyzerArea);
 				//Console.WriteLine("Looking at sensor list item location " + analyzer.sensorList[i].analyzerSlot + " that is package area " + analyzer.sensorList[i].analyzerArea);
@@ -1675,6 +1677,7 @@ namespace ION.IOS.ViewController.Analyzer {
   	        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
   	        dataRecord.BackgroundColor = UIColor.Clear;
   	      }
+        layoutAnalyzer();
 	    } else {
 				if(webServices.downloading){
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEVIEW;

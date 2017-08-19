@@ -43,8 +43,8 @@
 	<string>YES</string>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>bluetooth-central</string>
 		<string>audio</string>
+		<string>bluetooth-central</string>
 	</array>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>NSLocationAlwaysUsageDescription</string>
