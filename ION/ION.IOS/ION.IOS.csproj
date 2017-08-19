@@ -710,6 +710,8 @@
     <ImageAsset Include="Resources\Images.xcassets\gold_arrow_left.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\gold_arrow_right.imageset\gold_arrow_right.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\gold_arrow_left.imageset\gold_arrow_left.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_folder_black.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_folder_black.imageset\ic_folder_black.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -1207,6 +1209,7 @@
     <Folder Include="Resources\Images.xcassets\ic_device_add_to_analyzer.imageset\" />
     <Folder Include="Resources\Images.xcassets\gold_arrow_right.imageset\" />
     <Folder Include="Resources\Images.xcassets\gold_arrow_left.imageset\" />
+    <Folder Include="Resources\Images.xcassets\ic_folder_black.imageset\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

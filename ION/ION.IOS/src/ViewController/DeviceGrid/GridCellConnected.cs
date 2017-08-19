@@ -5,6 +5,10 @@ using UIKit;
 using ION.IOS.Util;
 using ION.Core.Devices;
 using ION.Core.Sensors;
+using ION.Core.App;
+using System.Threading.Tasks;
+using System.Drawing;
+using ION.IOS.Devices;
 
 namespace ION.IOS.ViewController.DeviceGrid {
   public class GridCellConnected : UICollectionViewCell{
@@ -14,6 +18,8 @@ namespace ION.IOS.ViewController.DeviceGrid {
     public nfloat textSize;
     public static NSString CellID = new NSString("connectedCell");
     public GaugeDeviceSensor slotSensor;
+    IION ion;
+    public bool actualLinked = true;
 
     [Export("initWithFrame:")]
     public GridCellConnected(CGRect frame) : base(frame) {
@@ -22,7 +28,7 @@ namespace ION.IOS.ViewController.DeviceGrid {
 			} else {
 				textSize = 25f;
 			}
-
+      ion = AppState.context;
       BackgroundView = new UIView { BackgroundColor = UIColor.Clear};
 
       ContentView.BackgroundColor = UIColor.Clear;
@@ -44,38 +50,24 @@ namespace ION.IOS.ViewController.DeviceGrid {
       measurementLabel.AdjustsFontSizeToFitWidth = true;
       measurementLabel.TextAlignment = UITextAlignment.Right;
 
-			linkLabel1 = new UILabel(new CGRect(.05 * sensorInfoView.Bounds.Width, .65 * sensorInfoView.Bounds.Height, .5 * sensorInfoView.Bounds.Width, .3 * sensorInfoView.Bounds.Height));
+			linkLabel1 = new UILabel(new CGRect(.05 * sensorInfoView.Bounds.Width, .65 * sensorInfoView.Bounds.Height, .7 * sensorInfoView.Bounds.Width, .3 * sensorInfoView.Bounds.Height));
       linkLabel1.BackgroundColor = UIColor.Red;
       linkLabel1.TextAlignment = UITextAlignment.Center;
       linkLabel1.Font = UIFont.BoldSystemFontOfSize(textSize);
       linkLabel1.TextColor = UIColor.White;
       linkLabel1.Layer.CornerRadius = 5;
       linkLabel1.ClipsToBounds = true;
-      linkLabel1.Text = "SC";
+      linkLabel1.Text = "Actual";
 			linkLabel1.AdjustsFontSizeToFitWidth = true;
 
-			linkLabel2 = new UILabel(new CGRect(.01 * sensorInfoView.Bounds.Width, .65 * sensorInfoView.Bounds.Height, .7 * sensorInfoView.Bounds.Width, .3 * sensorInfoView.Bounds.Height));
-			linkLabel2.BackgroundColor = UIColor.White;
-			linkLabel2.TextAlignment = UITextAlignment.Center;
-			linkLabel2.Font = UIFont.BoldSystemFontOfSize(textSize);
-			linkLabel2.TextColor = UIColor.Black;
-			linkLabel2.Layer.CornerRadius = 5;
-			linkLabel2.ClipsToBounds = true;
-			linkLabel2.Text = "Live";
-			linkLabel2.AdjustsFontSizeToFitWidth = true;
-      linkLabel2.Hidden = true;
-
-			unitLabel = new UILabel(new CGRect(.5 * sensorInfoView.Bounds.Width, .65 * sensorInfoView.Bounds.Height,.49 * sensorInfoView.Bounds.Width, .3 * sensorInfoView.Bounds.Height));
+			unitLabel = new UILabel(new CGRect(.5 * sensorInfoView.Bounds.Width, .65 * sensorInfoView.Bounds.Height,.5 * sensorInfoView.Bounds.Width, .3 * sensorInfoView.Bounds.Height));
 			unitLabel.Font = UIFont.BoldSystemFontOfSize(textSize);
 			unitLabel.AdjustsFontSizeToFitWidth = true;
       unitLabel.TextAlignment = UITextAlignment.Right;
-			//unitLabel.Text = "°F";  
-      //unitLabel.Layer.BorderWidth = 1f;  
 
 			sensorInfoView.AddSubview(measurementLabel);
       sensorInfoView.BringSubviewToFront(measurementLabel);
 			sensorInfoView.AddSubview(linkLabel1);
-			sensorInfoView.AddSubview(linkLabel2);
 			sensorInfoView.AddSubview(unitLabel);
 
 			sensorStatusView = new UIView(new CGRect(0, .76 * ContentView.Bounds.Height, ContentView.Bounds.Width, .24 * ContentView.Bounds.Height));
@@ -83,20 +75,22 @@ namespace ION.IOS.ViewController.DeviceGrid {
       sensorStatusView.Layer.CornerRadius = 5;
       sensorStatusView.ClipsToBounds = true;
 
-			connectionImage = new UIImageView(new CGRect(.05 * sensorStatusView.Bounds.Width, .25 * sensorStatusView.Bounds.Height, .1 * sensorStatusView.Bounds.Width, .5 * sensorStatusView.Bounds.Height));
-      connectionImage.Layer.CornerRadius = 8;
-      connectionImage.BackgroundColor = UIColor.Green;
+			connectionImage = new UIImageView(new CGRect(.05 * sensorStatusView.Bounds.Width, .25 * sensorStatusView.Bounds.Height, .1 * sensorStatusView.Bounds.Width, .45 * sensorStatusView.Bounds.Height));
+      connectionImage.Layer.CornerRadius = 8f;
+      connectionImage.Layer.MasksToBounds = true;
 
 			extraImage = new UIImageView(new CGRect(.25 * sensorStatusView.Bounds.Width, .1 * sensorStatusView.Bounds.Height, .25 * sensorStatusView.Bounds.Width, sensorStatusView.Bounds.Height));
       extraImage.BackgroundColor = UIColor.Black;
 
-			workbenchImage = new UIImageView(new CGRect(.5 * sensorStatusView.Bounds.Width, 0, .25 * sensorStatusView.Bounds.Width, sensorStatusView.Bounds.Height));
-      workbenchImage.Image = UIImage.FromBundle("ic_nav_workbench");
-      workbenchImage.TintColor = new UIColor(Colors.WHITE);
+			workbenchImage = new UIImageView(new CGRect(.51 * sensorStatusView.Bounds.Width, .05 * sensorStatusView.Bounds.Width, .21 * sensorStatusView.Bounds.Width, .8 * sensorStatusView.Bounds.Height));
+			workbenchImage.Image = UIImage.FromBundle("ic_nav_workbench");
+			workbenchImage.Image = workbenchImage.Image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
+			workbenchImage.TintColor = UIColor.White;
 
-			analyzerImage = new UIImageView(new CGRect(.75 * sensorStatusView.Bounds.Width,0,.25 * sensorStatusView.Bounds.Width, sensorStatusView.Bounds.Height));
+			analyzerImage = new UIImageView(new CGRect(.76 * sensorStatusView.Bounds.Width, .05 * sensorStatusView.Bounds.Width, .21 * sensorStatusView.Bounds.Width, .8 * sensorStatusView.Bounds.Height));
 			analyzerImage.Image = UIImage.FromBundle("ic_nav_analyzer");
-			analyzerImage.TintColor = new UIColor(Colors.WHITE);
+			analyzerImage.Image = analyzerImage.Image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
+			analyzerImage.TintColor = UIColor.White;
 
 			sensorStatusView.AddSubview(connectionImage);
 			sensorStatusView.AddSubview(extraImage);
@@ -115,9 +109,10 @@ namespace ION.IOS.ViewController.DeviceGrid {
 				ContentView.Hidden = true;
 				BackgroundView.Hidden = true;
       } else {
+				slotSensor.onSensorStateChangedEvent -= gaugeUpdating;
 				slotSensor.onSensorStateChangedEvent += gaugeUpdating;
 
-				typeLabel.Text += " " + slotSensor.device.serialNumber.rawSerial;
+				typeLabel.Text = slotSensor.device.serialNumber.deviceModel.GetTypeString();
 				measurementLabel.Text = slotSensor.measurement.amount.ToString();
 				unitLabel.Text = slotSensor.measurement.unit.ToString();
 
@@ -126,20 +121,56 @@ namespace ION.IOS.ViewController.DeviceGrid {
           pressureLinkImage.Image = UIImage.FromBundle("gold_arrow_right");
           pressureLinkImage.BackgroundColor = UIColor.Clear;
 					ContentView.AddSubview(pressureLinkImage);
+          linkLabel1.Hidden = true;
 				} else if (slotSensor.type == Core.Sensors.ESensorType.Temperature && slotSensor.index != 0) {
 					tempLinkImage = new UIImageView(new CGRect(-.23 * ContentView.Bounds.Width, .5 * ContentView.Bounds.Height, .23 * ContentView.Bounds.Width, .12 * ContentView.Bounds.Height));
 					tempLinkImage.Image = UIImage.FromBundle("gold_arrow_left");
 					tempLinkImage.BackgroundColor = UIColor.Clear;
 					ContentView.AddSubview(tempLinkImage);
-        }
+          linkLabel1.Hidden = false;
+				} else if (slotSensor.type == Core.Sensors.ESensorType.Vacuum){
+					linkLabel1.Hidden = true;
+				}
 				ContentView.Hidden = false;
 				BackgroundView.Hidden = false;
+
+				if (ion.currentWorkbench.ContainsSensor(sensor)) {
+					workbenchImage.Hidden = false;
+				} else {
+					workbenchImage.Hidden = true;
+				}
+
+				if (ion.currentAnalyzer.sensorList.Contains(sensor)) {
+					analyzerImage.Hidden = false;
+				} else {
+					analyzerImage.Hidden = true;
+				}
 			}
     }
 
 		public async void gaugeUpdating(Sensor sensor) {
-      measurementLabel.Text = sensor.measurement.amount.ToString();
-      unitLabel.Text = sensor.measurement.unit.ToString();
+			await Task.Delay(TimeSpan.FromMilliseconds(1));
+      var gaugeSensor = sensor as GaugeDeviceSensor;
+
+      if (gaugeSensor.device.isConnected) {
+        connectionImage.BackgroundColor = UIColor.Green;
+        measurementLabel.Text = sensor.measurement.amount.ToString();
+        unitLabel.Text = sensor.measurement.unit.ToString();
+      } else if (gaugeSensor.device.connection.connectionState == Core.Connections.EConnectionState.Broadcasting) {
+				connectionImage.BackgroundColor = UIColor.Blue;
+				measurementLabel.Text = sensor.measurement.amount.ToString();
+				unitLabel.Text = sensor.measurement.unit.ToString();
+      } else {
+        if (gaugeSensor.device.isNearby) {
+					connectionImage.BackgroundColor = UIColor.Yellow;
+					measurementLabel.Text = "---";
+					unitLabel.Text = "";
+        } else {
+          connectionImage.BackgroundColor = UIColor.Red;
+          measurementLabel.Text = "---";
+          unitLabel.Text = "";
+        }
+			}
 		}
   }
 }

@@ -161,6 +161,7 @@
     <Compile Include="src\App\IIONPreferences.cs" />
     <Compile Include="src\Content\IonState.cs" />
     <Compile Include="src\IO\RssParser.cs" />
+    <Compile Include="src\Devices\Sorters\GeneralSensorSorter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

@@ -225,7 +225,24 @@
         }
 			}
 		} Workbench __workbench;
+		// Overridden from IION
+		public Workbench storedWorkbench {
+			get {
+				return __storedworkbench;
+			}
+			set {
+				if (value == null) {
+					value = new Workbench(this);
+				}
 
+				__storedworkbench = value;
+
+				if (onWorkbenchChanged != null) {
+					onWorkbenchChanged(value);
+				}
+			}
+		}
+		Workbench __storedworkbench;
     // Overridden from IION
     public IFolder screenshotReportFolder {
       get {

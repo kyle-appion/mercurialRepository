@@ -48,16 +48,19 @@ namespace ION.IOS.ViewController.DeviceGrid {
 
     public override UICollectionReusableView GetViewForSupplementaryElement(UICollectionView collectionView, NSString elementKind, NSIndexPath indexPath) {
 			var headerView = (Header)collectionView.DequeueReusableSupplementaryView(elementKind, "sectionHeader", indexPath);
+			headerView.headerImage.Image = headerView.headerImage.Image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
 
-      if (indexPath.Section == 0) {
+			if (indexPath.Section == 0) {
         headerView.Text = "Available Devices";
         headerView.BackgroundColor = UIColor.Clear;
         headerView.label.TextColor = UIColor.FromRGB(57, 181, 74);
+        headerView.headerImage.TintColor = UIColor.FromRGB(57, 181, 74);
 			} else {
 				headerView.Text = "Disconnected Devices";
 				headerView.BackgroundColor = UIColor.Clear;
         headerView.label.TextColor = UIColor.Red;
-      }
+				headerView.headerImage.TintColor = UIColor.Red;
+			}
 			return headerView;
     }
   }
@@ -77,8 +80,11 @@ namespace ION.IOS.ViewController.DeviceGrid {
 		[Export("initWithFrame:")]
 		public Header(System.Drawing.RectangleF frame) : base(frame) {
       headerImage = new UIImageView(new CGRect(0,0,50,50));
-      headerImage.Image = UIImage.FromBundle("ic_checkbox");
-      label = new UILabel(new CGRect(55, 0, 300, 50));
+      headerImage.Image = UIImage.FromBundle("ic_folder_black");
+			//headerImage.Image = headerImage.Image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
+			//headerImage.TintColor = UIColor.Red;
+
+			label = new UILabel(new CGRect(55, 0, 300, 50));
 
       label.Font = UIFont.BoldSystemFontOfSize(28f);
 			AddSubview(headerImage);
