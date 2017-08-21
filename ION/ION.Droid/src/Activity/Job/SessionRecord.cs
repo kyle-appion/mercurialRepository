@@ -35,11 +35,11 @@
 		public TextView devicesUsed;
 		public CheckBox check;
 
-		public SessionViewHolder(ViewGroup parent, int viewResource, Action<SessionRecord> onChecked) : base(parent, viewResource) {
+		public SessionViewHolder(ViewGroup parent) : base(parent, Resource.Layout.view_holder_job_session) {
 			date = ItemView.FindViewById<TextView>(Resource.Id.report_date_created);
 			duration = ItemView.FindViewById<TextView>(Resource.Id.report_session_duration);
 			devicesUsed = ItemView.FindViewById<TextView>(Resource.Id.report_devices_used);
-			check = ItemView.FindViewById<CheckBox>(Resource.Id.check);
+			check = ItemView.FindViewById<CheckBox>(Resource.Id.checkbox);
 			check.Enabled = false;
 			check.Clickable = false;
 			check.Checked = false;

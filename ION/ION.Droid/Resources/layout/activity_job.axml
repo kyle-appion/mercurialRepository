@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <TextView
+    android:text="@string/job_active"
+    android:background="@color/green"
+    android:textStyle="bold"
+    android:gravity="center"
+    android:textSize="@dimen/text_size_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
+    <FrameLayout
+      android:padding="@dimen/padding"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+    <include layout="@layout/view_holder_job"
+      android:id="@id/active"/>
+      <TextView
+        android:id="@id/text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/job_active_empty"
+        android:textSize="@dimen/text_size_xlarge"
+        android:textColor="@color/white"
+        android:textStyle="italic"/>
+    </FrameLayout>
+
+  <Space
+    android:layout_width="wrap_content"
+    android:layout_height="10dp"/>
+
+  <TextView
+    android:text="@string/job_saved"
+    android:background="@color/orange"
+    android:textStyle="bold"
+    android:gravity="center"
+    android:textSize="@dimen/text_size_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
+  <ION.Droid.Widgets.RecyclerViews.SwipeRecyclerView
+    android:id="@id/list"
+    android:padding="@dimen/padding"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
+</LinearLayout>

@@ -12,11 +12,11 @@
   <color name="light_red">#ffff5c5c</color>
 	<color name="maroon">#ff84332b</color>
   <color name="nav_gray">#ff999999</color>
-  <color name="orange">#fff7941d</color>
+  <color name="orange">#ffd95e16</color>
   <color name="red">#ffff0000</color>
   <color name="transparent">#00000000</color>
   <color name="white">#ffffffff</color>
   <color name="yellow">#ffffff00</color>
-  
+
   <color name="red_accent">#ffff5656</color>
 </resources>

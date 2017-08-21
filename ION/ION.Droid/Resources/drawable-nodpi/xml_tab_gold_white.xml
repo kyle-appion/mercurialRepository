@@ -1,11 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <!-- Background Color -->
   <item>
     <shape android:shape="rectangle">
       <solid android:color="@color/white"/>
 		</shape>
 	</item>
 
+  <!-- Tab Color -->
   <item android:left="-4dp" android:right="-4dp" android:top="-4dp" android:bottom="0dp">
     <shape
       android:shape="rectangle">

@@ -22,6 +22,8 @@
 
 	public class JobAdapter : RecordAdapter {
 
+		public event Action<JobRow> onFavoriteClicked;
+
 		private IION ion;
 
 		public JobAdapter(IION ion) {
@@ -45,12 +47,14 @@
 			var context = parent.Context;
 			switch ((EViewType)viewType) {
 				case EViewType.Job:
-					var jobret = new JobViewHolder(rv, Resource.Layout.list_item_job_row);
-				return jobret;
+					var jobret = new JobViewHolder(rv, (job => {
+						onFavoriteClicked(job);
+					}));
+				  return jobret;
 				default:
 					// TODO ahodder@appioninc.com: This needs to return a template empty object
 					Log.E(this, "Failed to create view for: " + (EViewType)viewType);
-				return null;
+				  return null;
 			}
 		}
 

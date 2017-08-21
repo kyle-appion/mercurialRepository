@@ -184,6 +184,17 @@
 				NotifyItemInserted(index);
 			}
 		}
+    
+    /// <summary>
+    /// Removes the given record from the adapter.
+    /// </summary>
+    /// <param name="record">Record.</param>
+    public void RemoveRecord(IRecord record) {
+      var index = IndexOfRecord(record);
+      if (index >= 0) {
+        RemoveRecord(index);
+      }
+    }
 
 		/// <summary>
 		/// Removes the given record from the adapter.

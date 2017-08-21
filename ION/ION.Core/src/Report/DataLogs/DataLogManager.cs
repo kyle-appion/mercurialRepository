@@ -54,7 +54,7 @@
     /// Queries the current recording session id or 0 if not recording.
     /// </summary>
     /// <value>The current session identifier.</value>
-    public int currentSessionId { get { return currentSession._id; } }
+    public int currentSessionId { get { return currentSession == null ? 0 : currentSession._id; } }
 
     /// <summary>
     /// The application context that this manager lives in.

@@ -39,11 +39,7 @@
 
     public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			View ret;
-			if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
-				ret = inflater.Inflate(Resource.Layout.fragment_edit_job_4_4, container, false);
-			} else {
-				ret = inflater.Inflate(Resource.Layout.fragment_edit_job, container, false);
-			}
+			ret = inflater.Inflate(Resource.Layout.fragment_job_edit, container, false);
 
 			name = ret.FindViewById<EditText>(Resource.Id.name);
 			customer = ret.FindViewById<EditText>(Resource.Id.customer_no);
@@ -81,6 +77,10 @@
 			system.Text = job.systemType;
 			addressView.Text = job.jobAddress;
       coordinates.Text = job.jobLocation;
+    }
+    
+    public Task<bool> LoadAsync(JobRow job) {
+      return Task.FromResult(true);
     }
 
     public async Task<bool> SaveAsync(JobRow job) {
@@ -136,7 +136,7 @@
         // Get coordinates based on given address
         var address = await PollGeocode(usAddress);
         if (address == null) {
-          Toast.MakeText(Activity, Resource.String.location_undetermined, ToastLength.Long).Show();
+          Alert(Resource.String.location_undetermined);
         } else {
           coordinates.Text = address.Latitude + ", " + address.Longitude;
         }
