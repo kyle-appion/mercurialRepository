@@ -184,6 +184,10 @@ namespace ION.Droid.Preferences {
     public AlarmPreferences _alarm { get; private set; }
     // Implemented for IIONPreferences
     public IAlarmPreferences alarm { get { return _alarm; } }
+    
+    public IJobPreferences _job { get; private set; }
+    // Implemented for IIONPreferences
+    public IJobPreferences job { get { return _job; } }
 
     public FluidPreferences _fluid { get; private set; }
     // Implemented for IIONPreferences
@@ -221,6 +225,7 @@ namespace ION.Droid.Preferences {
       this.prefs = prefs;
       _device = new DevicePreferences(this);
       _alarm = new AlarmPreferences(this);
+      _job = new JobPreferences(this);
       _fluid = new FluidPreferences(this);
       _location = new LocationPreferences(this);
       _units = new UnitPreferences(this);
@@ -285,6 +290,16 @@ namespace ION.Droid.Preferences {
     /// <param name="fallback">Fallback.</param>
     public float GetFloat(int key, float fallback) {
       return prefs.GetFloat(context.GetString(key), fallback);
+    }
+    
+    /// <summary>
+    /// Queries an integer from preferences
+    /// </summary>
+    /// <returns>The int.</returns>
+    /// <param name="key">Key.</param>
+    /// <param name="fallback">Fallback.</param>
+    public int GetInt(int key, int fallback) {
+      return prefs.GetInt(context.GetString(key), fallback);
     }
 
     /// <summary>
@@ -422,6 +437,22 @@ namespace ION.Droid.Preferences {
     }
 
     public AlarmPreferences(AppPrefs prefs) : base(prefs) {
+    }
+  }
+  
+  /// <summary>
+  /// The preferences that are used to query the application's job preferences.
+  /// </summary>
+  public class JobPreferences : BasePreferences, IJobPreferences {
+    public int activeJob { 
+      get {
+        return GetInt(Resource.String.pkey_job_active, 0);
+      }
+      set {
+        PutInt(Resource.String.pkey_job_active, value);
+      }
+    }
+    public JobPreferences(AppPrefs prefs) : base(prefs) {
     }
   }
 

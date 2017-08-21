@@ -340,16 +340,26 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
 	JOBS
 	-->
 	<string name="job">Job</string>
+  <string name="job_active">Active Job</string>
+  <string name="job_active_empty">No active job assigned</string>
 	<string name="job_adding_sessions">Adding sessions to job...</string>
 	<string name="job_available_sessions">Available Sessions</string>
-	<string name="job_available_sessions_warning">(Adding a session in red will remove the association to its current job)</string>
-	<string name="job_current_sessions">Linked Sessions</string>
+  <string name="job_available_sessions_empty">No datalog sessions have been recorded</string>
+	<string name="job_available_sessions_warning">Adding a session in red will remove the link to its current job</string>
+  <string name="job_link">Link</string>
+  <string name="job_link_break_title">Break Job Link</string>
+  <string name="job_link_ensure_break_request">Some or all of the selected sessions are registered to another job.\n\n Would you like to link the sessions to this job instead?</string>
+  <string name="job_link_remove_selected">Unlink Selected</string>
+  <string name="job_link_selected">Link Selected</string>
+  <string name="job_linked_empty">No sessions currently linked</string>
+	<string name="job_linked_sessions">Linked Sessions</string>
 	<string name="job_customer_no">Customer #</string>
 	<string name="job_delete">Really delete job?</string>
 	<string name="job_delete_message">Deleting a job is permanent and irreversible. Are you sure that you wish to delete this job?</string>
 	<string name="job_dispatch_no">Dispatch #</string>
 	<string name="job_edit">Edit Job</string>
 	<string name="job_error_failed_to_save">Failed to save job.</string>
+  <string name="job_id">Job ID</string>
 	<string name="job_info">Job Info</string>
 	<string name="job_loading">Loading the job...</string>
   <string name="job_name">Job Name</string>

@@ -42,6 +42,11 @@
     /// <value>The alarm.</value>
     IAlarmPreferences alarm { get; }
     /// <summary>
+    /// Queries the job preferences.
+    /// </summary>
+    /// <value>The job.</value>
+    IJobPreferences job { get; }
+    /// <summary>
     /// Queries the fluid preferences.
     /// </summary>
     /// <value>The fluid.</value>
@@ -103,6 +108,14 @@
   } // End IUnits
 
   public interface IAlarmPreferences {
+  }
+  
+  public interface IJobPreferences {
+    /// <summary>
+    /// Gets or sets the id of the active job.
+    /// </summary>
+    /// <value>The active job.</value>
+    int activeJob { get; set; }
   }
 
   public interface IFluidPreferences {

@@ -8,6 +8,7 @@
   <item name="_3" type="id"/>
   <item name="accept" type="id"/>
 	<item name="account" type="id"/>
+  <item name="active" type="id"/>
   <item name="add" type="id"/>
   <item name="address" type="id"/>
   <item name="address1" type="id"/>
@@ -41,6 +42,7 @@
   <item name="counter" type="id"/>
   <item name="country" type="id"/>
 	<item name="customer_no" type="id"/>
+  <item name="data" type="id"/>
   <item name="date" type="id"/>
   <item name="delete" type="id"/>
   <item name="disconnected" type="id"/>
@@ -68,6 +70,8 @@
 	<item name="highest" type="id"/>
 	<item name="home" type="id"/>
   <item name="icon" type="id"/>
+  <item name="id" type="id"/>
+  <item name="info" type="id"/>
 	<item name="job" type="id"/>
 	<item name="lastName" type="id"/>
   <item name="left" type="id"/>

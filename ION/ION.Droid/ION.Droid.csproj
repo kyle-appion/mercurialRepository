@@ -272,7 +272,7 @@
     <Compile Include="src\Fragments\_Analyzer\ViewTemplate.cs" />
     <Compile Include="src\Fragments\_Analyzer\ManifoldViewTemplate.cs" />
     <Compile Include="src\Activity\Job\JobAdapter.cs" />
-    <Compile Include="src\Activity\Job\JobViewHolder.cs" />
+    <Compile Include="src\Activity\Job\JobRecord.cs" />
     <Compile Include="src\Activity\Job\EViewType.cs" />
     <Compile Include="src\Activity\Job\SessionAdapter.cs" />
     <Compile Include="src\Activity\Job\SessionRecord.cs" />
@@ -373,7 +373,6 @@
     <AndroidResource Include="Resources\drawable-ldpi\ic_bluetooth_broadcast.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_bluetooth_disconnected.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_bluetooth_paired.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\ic_bookmark.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_compressor.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_devices_add.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_devices_add_to_analyzer.png" />
@@ -506,7 +505,6 @@
     </AndroidResource>
     <AndroidResource Include="Resources\layout-ldpi\activity_edit_job.axml" />
     <AndroidResource Include="Resources\layout-ldpi\fragment_edit_job.axml" />
-    <AndroidResource Include="Resources\layout-ldpi\fragment_edit_job_sessions.axml" />
     <AndroidResource Include="Resources\layout-ldpi\fragment_by_job.axml" />
     <AndroidResource Include="Resources\layout-ldpi\fragment_by_session.axml" />
     <AndroidResource Include="Resources\layout-ldpi\fragment_report_spreadsheet.axml" />
@@ -751,6 +749,16 @@
     <AndroidResource Include="Resources\layout\dialog_report_export_chooser.axml" />
     <AndroidResource Include="Resources\layout\dialog_report_settings.axml" />
     <AndroidResource Include="Resources\drawable\ic_line_chart.png" />
+    <AndroidResource Include="Resources\layout\activity_job.axml" />
+    <AndroidResource Include="Resources\layout\view_holder_job.axml" />
+    <AndroidResource Include="Resources\layout\view_holder_background_delete.axml" />
+    <AndroidResource Include="Resources\layout\fragment_job_edit.axml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_tab_white_light_blue.xml" />
+    <AndroidResource Include="Resources\layout\activity_job_edit.axml" />
+    <AndroidResource Include="Resources\layout\fragment_job_edit_sessions.axml" />
+    <AndroidResource Include="Resources\drawable\ic_bookmark.png" />
+    <AndroidResource Include="Resources\layout\view_delete.axml" />
+    <AndroidResource Include="Resources\layout\view_holder_job_session.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
