@@ -61,7 +61,7 @@
 		public void RequestDeleteJob(JobRecord record) {
 			var context = recyclerView.Context;
 			var adb = new IONAlertDialog(context);
-			adb.SetTitle(Resource.String.job_delete);
+			adb.SetTitle(Resource.String.job_delete_title);
 			adb.SetMessage(Resource.String.job_delete_message);
 
 			adb.SetNegativeButton(Resource.String.cancel, (sender, e) => {

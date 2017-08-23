@@ -354,7 +354,7 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
   <string name="job_linked_empty">No sessions currently linked</string>
 	<string name="job_linked_sessions">Linked Sessions</string>
 	<string name="job_customer_no">Customer #</string>
-	<string name="job_delete">Really delete job?</string>
+	<string name="job_delete_title">Really delete job?</string>
 	<string name="job_delete_message">Deleting a job is permanent and irreversible. Are you sure that you wish to delete this job?</string>
 	<string name="job_dispatch_no">Dispatch #</string>
 	<string name="job_edit">Edit Job</string>
