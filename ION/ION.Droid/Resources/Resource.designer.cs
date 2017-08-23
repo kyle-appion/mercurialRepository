@@ -5644,11 +5644,11 @@ namespace ION.Droid
 			// aapt resource value: 0x7f0801a9
 			public const int job_customer_no = 2131231145;
 			
-			// aapt resource value: 0x7f0801aa
-			public const int job_delete = 2131231146;
-			
 			// aapt resource value: 0x7f0801ab
 			public const int job_delete_message = 2131231147;
+			
+			// aapt resource value: 0x7f0801aa
+			public const int job_delete_title = 2131231146;
 			
 			// aapt resource value: 0x7f0801ac
 			public const int job_dispatch_no = 2131231148;

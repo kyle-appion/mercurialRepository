@@ -28,13 +28,7 @@ namespace ION.Droid.Activity.Job {
     private RecyclerView list;
     private JobAdapter adapter;
 
-    /// <summary>
-    /// Whether or not the activity is currently loading a job.
-    /// </summary>
-    private bool loadingJobs;
-
     protected override void OnCreate(Bundle savedInstanceState) {
-      RequestWindowFeature(WindowFeatures.IndeterminateProgress);
       base.OnCreate(savedInstanceState);
       SetContentView(Resource.Layout.activity_job);
 
@@ -56,6 +50,11 @@ namespace ION.Droid.Activity.Job {
       };
       list.SetAdapter(adapter);
       adapter.emptyView = FindViewById(Resource.Id.empty);
+      activeJobView.Click += (s, e) => {
+        var i = new Intent(this, typeof(EditJobActivity));
+        i.PutExtra(EditJobActivity.EXTRA_JOB_ID, ion.preferences.job.activeJob);
+        StartActivity(i);
+      };
       
       RemoveActiveJob();
     }
@@ -88,12 +87,6 @@ namespace ION.Droid.Activity.Job {
       view.Click += (sender, e) => {
         StartActivityForResult(typeof(EditJobActivity), REQUEST_CREATE_JOB);
       };
-
-      if (loadingJobs) {
-        SetProgressBarIndeterminateVisibility(true);
-      } else {
-        SetProgressBarIndeterminateVisibility(false);
-      }
 
       return true;
     }

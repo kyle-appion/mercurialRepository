@@ -41,7 +41,7 @@ namespace ION.Droid.Activity.Job {
 					return;
 				}
 				var adb = new IONAlertDialog(view.Context);
-				adb.SetTitle(Resource.String.job_delete);
+				adb.SetTitle(Resource.String.job_delete_title);
 				adb.SetMessage(Resource.String.job_delete_message);
 				adb.SetNegativeButton(Resource.String.cancel, (sender, e) => {});
 				adb.SetPositiveButton(Resource.String.delete, (sender, e) => {

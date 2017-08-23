@@ -36,6 +36,8 @@
 		private EditText addressView;
     private TextView coordinates;
     private View getAddress;
+    
+    private JobRow job;
 
     public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			View ret;
@@ -53,6 +55,10 @@
       coordinates = ret.FindViewById<TextView>(Resource.Id.coordinates);
       getAddress = ret.FindViewById<ImageView>(Resource.Id.icon);
       getAddress.SetOnClickListener(new ViewClickAction((v) => GetAddress()));
+      
+      ret.FindViewById(Resource.Id.delete).Click += (sender, e) => {
+        RequestDeleteJob();
+      };
 
       return ret;
     }
@@ -67,6 +73,7 @@
 		}
 
     public void Present(JobRow job) {
+      this.job = job;
       name.Text = job.jobName;
       customer.Text = job.customerNumber;
       dispatch.Text = job.dispatchNumber;
@@ -145,6 +152,25 @@
 
       await Task.Delay(500);
       dialog.Dismiss();
+    }
+    
+    private void RequestDeleteJob() {
+      var adb = new IONAlertDialog(Activity);
+      adb.SetTitle(Resource.String.job_delete_title);
+      adb.SetMessage(Resource.String.job_delete_message);
+      adb.SetNegativeButton(Resource.String.cancel, (sender, e) => {
+      });
+      adb.SetPositiveButton(Resource.String.delete, (sender, e) => {
+        DeleteJob();
+      });
+      adb.Show();
+    }
+    
+    private void DeleteJob() {
+      var deleted = ion.database.Delete<JobRow>(job);
+      (deleted == 1).Assert("Attempted to delete a single job, but deleted " + deleted + " instead.");
+      Activity.SetResult(Result.Ok);
+      Activity.Finish();
     }
 
 		private async Task<Address> PollGeocode(string address) {
