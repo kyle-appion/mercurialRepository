@@ -9,27 +9,33 @@ using ION.Core.App;
 using System.Threading.Tasks;
 using ION.Core.Location;
 using ION.IOS.App;
+using System.Xml;
 
 namespace ION.IOS.ViewController.JobManager  {
   
   public class EditJobView {
     public UIView editView;
-    public UILabel confirmLabel;
-    public UILabel coordinateLabel;
-    public UITextField jobName;
-    public UITextField customerNumber;
-    public UITextField dispatchNumber;
-    public UITextField prodOrderNumber;
-    public UITextField techName;
-    public UITextField systemName;    
-    public UITextField jobAddress;
+		public UITextField jobName;
+		public UILabel jobNameLabel;
+		public UITextField customerNumber;
+		public UILabel customerNumberLabel;
+		public UITextField dispatchNumber;
+		public UILabel dispatchNumberLabel;
+		public UITextField prodOrderNumber;
+		public UILabel prodOrderNumberLabel;
+		public UITextField notes;
+		public UILabel notesLabel;
+		public UITextField techName;
+		public UILabel techNameLabel;
+		public UITextField systemName;
+		public UILabel systemNameLabel;
+		public UITextField jobAddress;
+		public UILabel jobAddressLabel;
 		public UIActivityIndicatorView loadingCoordinates;
-    
-    public UIButton coordinateButton;
-    public UIButton additionalInfo;
     IION ion;
-    
-    public CLGeocoder geoCoder;
+		public string fileDir;
+
+		//public CLGeocoder geoCoder;
     
     public bool expanded = false;
     public int jobID = 0;
@@ -37,20 +43,13 @@ namespace ION.IOS.ViewController.JobManager  {
     public EditJobView(UIView parentView,int frnJID) {
       ion = AppState.context;
       jobID = frnJID;
-      geoCoder = new CLGeocoder();
+      //geoCoder = new CLGeocoder();
 
       editView = new UIView(new CGRect(0,0,parentView.Bounds.Width,parentView.Bounds.Height));
       editView.AddGestureRecognizer(new UITapGestureRecognizer(() => {
         editView.EndEditing(true);
       }));
-
-      confirmLabel = new UILabel(new CGRect(.25 * editView.Bounds.Width, 0,.5 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60)));
-      confirmLabel.AdjustsFontSizeToFitWidth = true;
-      confirmLabel.TextColor = UIColor.FromRGB(49, 111, 18);
-      confirmLabel.TextAlignment = UITextAlignment.Center;
-      confirmLabel.Font = UIFont.BoldSystemFontOfSize(20);
-      confirmLabel.Text = Util.Strings.Job.SAVEDSUCCESS;
-      confirmLabel.Hidden = true;     
+      editView.BackgroundColor = UIColor.White;
 
       var holderName = "";
       var holderCustomer = "";
@@ -91,11 +90,15 @@ namespace ION.IOS.ViewController.JobManager  {
         }
       }
 
-      jobName = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.14 * (editView.Bounds.Height - 60))){
-        Placeholder = Util.Strings.Job.JOBNAME+"("+ Util.Strings.REQUIRED+")",
-        FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
-        FloatingLabelTextColor = UIColor.Gray,
-        FloatingLabelActiveTextColor = UIColor.Blue,
+      jobNameLabel = new UILabel(new CGRect(.05 * editView.Bounds.Width, .03 * (editView.Bounds.Height - 60), .9 * editView.Bounds.Width, .05 * (editView.Bounds.Height - 60)));
+      jobNameLabel.Text = "Job Name:("+ Util.Strings.REQUIRED+")";
+      jobNameLabel.Font = UIFont.BoldSystemFontOfSize(15f);
+
+      jobName = new UITextField(new CGRect(.05 * editView.Bounds.Width,.08 * (editView.Bounds.Height - 60),.9 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60))){
+        Placeholder = "TEXT IS ENTERED HERE",
+        //FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
+        //FloatingLabelTextColor = UIColor.Gray,
+        //FloatingLabelActiveTextColor = UIColor.Blue,
         TextAlignment = UITextAlignment.Center,
         AutocorrectionType = UITextAutocorrectionType.No,
         AutocapitalizationType = UITextAutocapitalizationType.None,
@@ -107,11 +110,14 @@ namespace ION.IOS.ViewController.JobManager  {
       };
       jobName.Text = holderName;
 
-      customerNumber = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.21 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.14 * (editView.Bounds.Height - 60))){
-        Placeholder = Util.Strings.Job.CUSTOMERNUMBER,
-        FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
-        FloatingLabelTextColor = UIColor.Gray,
-        FloatingLabelActiveTextColor = UIColor.Blue,
+      customerNumberLabel = new UILabel(new CGRect(.05 * editView.Bounds.Width, .15 * (editView.Bounds.Height - 60), .9 * editView.Bounds.Width, .05 * (editView.Bounds.Height - 60)));
+			customerNumberLabel.Text = "Customer #:";
+			customerNumberLabel.Font = UIFont.BoldSystemFontOfSize(15f);
+      customerNumber = new UITextField(new CGRect(.05 * editView.Bounds.Width,.2 * (editView.Bounds.Height - 60),.9 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60))){
+        Placeholder = "TEXT IS ENTERED HERE",
+        //FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
+        //FloatingLabelTextColor = UIColor.Gray,
+        //FloatingLabelActiveTextColor = UIColor.Blue,
         TextAlignment = UITextAlignment.Center,
         AutocorrectionType = UITextAutocorrectionType.No,
         AutocapitalizationType = UITextAutocapitalizationType.None,
@@ -123,11 +129,14 @@ namespace ION.IOS.ViewController.JobManager  {
       };
       customerNumber.Text = holderCustomer;
 
-      dispatchNumber = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.35 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.14 * (editView.Bounds.Height - 60))){
-        Placeholder = Util.Strings.Job.DISPATCHNUMBER,
-        FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
-        FloatingLabelTextColor = UIColor.Gray,
-        FloatingLabelActiveTextColor = UIColor.Blue,
+      dispatchNumberLabel = new UILabel(new CGRect(.05 * editView.Bounds.Width, .27 * (editView.Bounds.Height - 60), .9 * editView.Bounds.Width, .05 * (editView.Bounds.Height - 60)));
+			dispatchNumberLabel.Text = "Dispatch #:";
+			dispatchNumberLabel.Font = UIFont.BoldSystemFontOfSize(15f);
+      dispatchNumber = new UITextField(new CGRect(.05 * editView.Bounds.Width,.32 * (editView.Bounds.Height - 60),.9 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60))){
+        Placeholder = "TEXT IS ENTERED HERE",
+        //FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
+        //FloatingLabelTextColor = UIColor.Gray,
+        //FloatingLabelActiveTextColor = UIColor.Blue,
         TextAlignment = UITextAlignment.Center,
         AutocorrectionType = UITextAutocorrectionType.No,
         AutocapitalizationType = UITextAutocapitalizationType.None,
@@ -140,11 +149,14 @@ namespace ION.IOS.ViewController.JobManager  {
       };
       dispatchNumber.Text = holderDispatch;
 
-      prodOrderNumber = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.49 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.14 * (editView.Bounds.Height - 60))){
-        Placeholder = Util.Strings.Job.POFULL,
-        FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
-        FloatingLabelTextColor = UIColor.Gray,
-        FloatingLabelActiveTextColor = UIColor.Blue,
+      prodOrderNumberLabel = new UILabel(new CGRect(.05 * editView.Bounds.Width, .39 * (editView.Bounds.Height - 60), .9 * editView.Bounds.Width, .05 * (editView.Bounds.Height - 60)));
+			prodOrderNumberLabel.Text = "Purchase Order #:";
+			prodOrderNumberLabel.Font = UIFont.BoldSystemFontOfSize(15f);
+      prodOrderNumber = new UITextField(new CGRect(.05 * editView.Bounds.Width,.44 * (editView.Bounds.Height - 60),.9 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60))){
+        Placeholder = "TEXT IS ENTERED HERE",
+        //FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
+        //FloatingLabelTextColor = UIColor.Gray,
+        //FloatingLabelActiveTextColor = UIColor.Blue,
         TextAlignment = UITextAlignment.Center,
         AutocorrectionType = UITextAutocorrectionType.No,
         AutocapitalizationType = UITextAutocapitalizationType.None,
@@ -155,23 +167,42 @@ namespace ION.IOS.ViewController.JobManager  {
         return true;
       };
       prodOrderNumber.Text = holderPO;
-      
-      additionalInfo = new UIButton(new CGRect(.1 * editView.Bounds.Width,.63 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60)));
-      additionalInfo.SetTitle("Additional Information",UIControlState.Normal);
-      additionalInfo.SetTitleColor(UIColor.Blue,UIControlState.Normal);
-      additionalInfo.TouchUpInside += showAdditionalInfo;
-			additionalInfo.TouchDown += (sender, e) => {additionalInfo.SetTitleColor(UIColor.Black, UIControlState.Normal);};
-			additionalInfo.TouchUpOutside += (sender, e) => {additionalInfo.SetTitleColor(UIColor.Blue, UIControlState.Normal);}; 
-    
-      techName = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.7 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.09 * (editView.Bounds.Height - 60))){
-        Placeholder = "Tech Name",
-        FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
-        FloatingLabelTextColor = UIColor.Gray,
-        FloatingLabelActiveTextColor = UIColor.Blue,
+
+			notesLabel = new UILabel(new CGRect(.05 * editView.Bounds.Width, .51 * (editView.Bounds.Height - 60), .9 * editView.Bounds.Width, .05 * (editView.Bounds.Height - 60)));
+			notesLabel.Text = "Notes:";
+			notesLabel.Font = UIFont.BoldSystemFontOfSize(15f);
+			notes = new UITextField(new CGRect(.05 * editView.Bounds.Width, .56 * (editView.Bounds.Height - 60), .9 * editView.Bounds.Width, .07 * (editView.Bounds.Height - 60))) {
+				Placeholder = "TEXT IS ENTERED HERE",
+				//FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
+				//FloatingLabelTextColor = UIColor.Gray,
+				//FloatingLabelActiveTextColor = UIColor.Blue,
+				TextAlignment = UITextAlignment.Center,
+				AutocorrectionType = UITextAutocorrectionType.No,
+				AutocapitalizationType = UITextAutocapitalizationType.None,
+			};
+			notes.Layer.BorderWidth = 1f;
+			notes.ShouldReturn += (textField) => {
+				textField.ResignFirstResponder();
+				return true;
+			};
+			var notesQuery = ion.database.Query<ION.Core.Database.JobRow>("SELECT jobName FROM JobRow WHERE JID = ?", jobID);
+			if (notesQuery.Count > 0) {
+				fileDir = System.IO.Path.Combine(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal)), notesQuery[0].jobName + ".xml");
+			}
+
+      loadNotes(jobID);
+
+      techNameLabel = new UILabel(new CGRect(.05 * editView.Bounds.Width, .63 * (editView.Bounds.Height - 60), .9 * editView.Bounds.Width, .05 * (editView.Bounds.Height - 60)));
+			techNameLabel.Text = "Technician Name:";
+			techNameLabel.Font = UIFont.BoldSystemFontOfSize(15f);
+      techName = new UITextField(new CGRect(.05 * editView.Bounds.Width,.68 * (editView.Bounds.Height - 60),.9 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60))){
+        Placeholder = "TEXT IS ENTERED HERE",
+        //FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
+        //FloatingLabelTextColor = UIColor.Gray,
+        //FloatingLabelActiveTextColor = UIColor.Blue,
         TextAlignment = UITextAlignment.Center,
         AutocorrectionType = UITextAutocorrectionType.No,
         AutocapitalizationType = UITextAutocapitalizationType.None,
-        Hidden = true,
 			};
 			techName.Layer.BorderWidth = 1f;
       techName.ShouldReturn += (textField) => {
@@ -180,15 +211,17 @@ namespace ION.IOS.ViewController.JobManager  {
       };
       techName.Text = holderTech;
 
-      systemName = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.79 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.09 * (editView.Bounds.Height - 60))){
-        Placeholder = "Type of System",
-        FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
-        FloatingLabelTextColor = UIColor.Gray,
-        FloatingLabelActiveTextColor = UIColor.Blue,
+      systemNameLabel = new UILabel(new CGRect(.05 * editView.Bounds.Width, .75 * (editView.Bounds.Height - 60), .9 * editView.Bounds.Width, .05 * (editView.Bounds.Height - 60)));
+			systemNameLabel.Text = "System Info:";
+			systemNameLabel.Font = UIFont.BoldSystemFontOfSize(15f);
+      systemName = new UITextField(new CGRect(.05 * editView.Bounds.Width,.8 * (editView.Bounds.Height - 60),.9 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60))){
+        Placeholder = "TEXT IS ENTERED HERE",
+        //FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
+        //FloatingLabelTextColor = UIColor.Gray,
+        //FloatingLabelActiveTextColor = UIColor.Blue,
         TextAlignment = UITextAlignment.Center,
         AutocorrectionType = UITextAutocorrectionType.No,
         AutocapitalizationType = UITextAutocapitalizationType.None,
-        Hidden = true,
 			};
 			systemName.Layer.BorderWidth = 1f;
       systemName.ShouldReturn += (textField) => {
@@ -196,135 +229,164 @@ namespace ION.IOS.ViewController.JobManager  {
         return true;
       };
       systemName.Text = holderSystem;
-           
-      jobAddress = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width, .88 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.09 * (editView.Bounds.Height - 60))){
-				Placeholder = "Address(Empty Address Uses GPS)",
-        FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
-        FloatingLabelTextColor = UIColor.Gray,
-        FloatingLabelActiveTextColor = UIColor.Blue,
+
+			jobAddressLabel = new UILabel(new CGRect(.05 * editView.Bounds.Width, .87 * (editView.Bounds.Height - 60), .9 * editView.Bounds.Width, .05 * (editView.Bounds.Height - 60)));
+			jobAddressLabel.Text = "Address:";
+			jobAddressLabel.Font = UIFont.BoldSystemFontOfSize(15f);
+      jobAddress = new UITextField(new CGRect(.05 * editView.Bounds.Width, .93 * (editView.Bounds.Height - 60),.9 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60))){
+				Placeholder = "TEXT IS ENTERED HERE",
+        //FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
+        //FloatingLabelTextColor = UIColor.Gray,
+        //FloatingLabelActiveTextColor = UIColor.Blue,
         TextAlignment = UITextAlignment.Center,
         AutocorrectionType = UITextAutocorrectionType.No,
         AutocapitalizationType = UITextAutocapitalizationType.None,
         AdjustsFontSizeToFitWidth = true,
-        Hidden = true,
 			};
 			jobAddress.Layer.BorderWidth = 1f;
 			jobAddress.Text = holderAddress;
 			
-			coordinateButton = new UIButton(new CGRect(.25 * editView.Bounds.Width, .97 * (editView.Bounds.Height - 60),.5 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60)));
-			coordinateButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);			
-			coordinateButton.SetTitle("Get Coordinates",UIControlState.Normal);
-			coordinateButton.SetTitleColor(UIColor.Black,UIControlState.Normal);
-			coordinateButton.Layer.BorderWidth = 1f;
-			coordinateButton.Layer.CornerRadius = 5f;
-			coordinateButton.Hidden = true;
-			coordinateButton.TouchDown += (sender, e) => {coordinateButton.BackgroundColor = UIColor.Blue;};
-			coordinateButton.TouchUpOutside += (sender, e) => {coordinateButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
-			coordinateButton.TouchUpInside += (sender, e) => {
-				updateJobCoordinates(sender, e);
-			};
-
-			coordinateButton.TouchDown += (sender, e) => {coordinateButton.SetTitleColor(UIColor.Black, UIControlState.Normal);};
-			coordinateButton.TouchUpOutside += (sender, e) => {coordinateButton.SetTitleColor(UIColor.Black, UIControlState.Normal);};
-			
-			coordinateLabel = new UILabel(new CGRect(.1 * editView.Bounds.Width, 1.05 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60)));
-			coordinateLabel.AdjustsFontSizeToFitWidth = true;
-			coordinateLabel.Hidden = true;
-			coordinateLabel.TextAlignment = UITextAlignment.Center;
-			coordinateLabel.Text = holderLocation;
-			
-      editView.AddSubview(confirmLabel);
-      editView.AddSubview(jobName);
-      editView.AddSubview(customerNumber);
-      editView.AddSubview(dispatchNumber);
-      editView.AddSubview(prodOrderNumber);
-      editView.AddSubview(additionalInfo);
-      editView.AddSubview(techName);
-      editView.AddSubview(systemName);
-      editView.AddSubview(jobAddress);
-      editView.AddSubview(coordinateButton);
-      editView.AddSubview(coordinateLabel);
+			editView.AddSubview(jobName);
+			editView.AddSubview(jobNameLabel);
+			editView.AddSubview(customerNumber);
+			editView.AddSubview(customerNumberLabel);
+			editView.AddSubview(dispatchNumber);
+			editView.AddSubview(dispatchNumberLabel);
+			editView.AddSubview(prodOrderNumber);
+			editView.AddSubview(prodOrderNumberLabel);
+			editView.AddSubview(notes);
+			editView.AddSubview(notesLabel);
+			editView.AddSubview(techName);
+			editView.AddSubview(techNameLabel);
+			editView.AddSubview(systemName);
+			editView.AddSubview(systemNameLabel);
+			editView.AddSubview(jobAddress);
+			editView.AddSubview(jobAddressLabel);
     }
-		
-		public void showAdditionalInfo(object sender, EventArgs e){
-			additionalInfo.SetTitleColor(UIColor.Blue, UIControlState.Normal);
-			if(expanded){
-				techName.Hidden = true;
-				systemName.Hidden = true;
-				jobAddress.Hidden = true;
-				coordinateButton.Hidden = true;
-				coordinateLabel.Hidden = true;
-				expanded = false;			
-			} else {
-				techName.Hidden = false;
-				systemName.Hidden = false;
-				jobAddress.Hidden = false;
-				coordinateButton.Hidden = false;
-				coordinateLabel.Hidden = false;
-				expanded = true;
-			}			
-		}
-		
-		public async Task<bool> updateJobCoordinates(object sender, EventArgs e){
-			coordinateButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-			await Task.Delay(TimeSpan.FromMilliseconds(2));			
-			loadingCoordinates = new UIActivityIndicatorView(new CGRect(.1 * editView.Bounds.Width, 1.05 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60)));
-			loadingCoordinates.BackgroundColor = UIColor.Black;
-			loadingCoordinates.Alpha = .8f;
-			editView.AddSubview(loadingCoordinates);
-			editView.BringSubviewToFront(loadingCoordinates);
-			loadingCoordinates.StartAnimating();
-			
-			if(string.IsNullOrEmpty(jobAddress.Text)){
-        var iosIon = ion as IosION;
-        if(iosIon.settings._location.allowsGps){
-					var latlong = ion.locationManager.lastKnownLocation.latitude.ToString("0.000000") + "," + ion.locationManager.lastKnownLocation.longitude.ToString("0.000000");
-					coordinateButton.Enabled = false;
-					coordinateLabel.Text = latlong;			
-					
-					var placemarks = await geoCoder.ReverseGeocodeLocationAsync(new CLLocation(ion.locationManager.lastKnownLocation.latitude,ion.locationManager.lastKnownLocation.longitude));
-					var address = "";
-			    foreach (var placemark in placemarks) {
-	          address = placemark.Name + " " + placemark.Locality + ", " + placemark.AdministrativeArea + " " + placemark.PostalCode;
-			    }
-					loadingCoordinates.StopAnimating();
-			    
-					ion.database.Query<ION.Core.Database.JobRow>("UPDATE JobRow SET jobLocation = ?, jobAddress = ? WHERE JID = ?",latlong,address,jobID);
-					jobAddress.Text = address;
-								
-					coordinateButton.Enabled = true;
-					} else {
-						loadingCoordinates.StopAnimating();
-					
-						var window = UIApplication.SharedApplication.KeyWindow;
-						var rootVC = window.RootViewController as IONPrimaryScreenController;
-						
-						var alert = UIAlertController.Create ("GPS Disabled", "You must enable ION HVAC/R through your device settings to access your location if no address is entered.", UIAlertControllerStyle.Alert);
-						alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
-						rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-					}
-					return true;
-			} else {
-				coordinateButton.Enabled = false;
-				var placemarks = await geoCoder.GeocodeAddressAsync(jobAddress.Text);
-				loadingCoordinates.StopAnimating();
-				
-				if(placemarks.Length == 0){
-					coordinateLabel.Text = "Unable to retrieve coordinates";
-				} else {
-					var latlong = "";
-					foreach(var placemark in placemarks){
-						latlong = placemark.Location.Coordinate.Latitude + ","+placemark.Location.Coordinate.Longitude;
-					}
-					ion.database.Query<ION.Core.Database.JobRow>("UPDATE JobRow SET jobLocation = ?, jobAddress = ? WHERE JID = ?",latlong,jobAddress.Text,jobID);
 
-					coordinateLabel.Text = latlong;
+		public void loadNotes(int frnJID) {
+			if (!frnJID.Equals(0)) {
+				if (File.Exists(fileDir)) {
+					// Create an XML reader for this file.
+					using (XmlReader reader = XmlReader.Create(fileDir)) {
+						while (reader.Read()) {
+							// Only detect start elements.
+							if (reader.IsStartElement()) {
+								// Get element name and switch on it.
+								switch (reader.Name) {
+									case "Info":
+									// Search for the attribute name on this current node.
+									string attribute = reader["Info"];
+									if (attribute != null) {
+										Console.WriteLine(" Has attribute name: " + attribute);
+									}
+									// Next read will contain text.
+									if (reader.Read()) {
+										notes.Text = reader.Value.Trim();
+									}
+									break;
+								}
+							}
+						}
+					}
 				}
-
-				coordinateButton.Enabled = true;
-				return true;
 			}
-		}	
+		}
+
+		public void updateNotes(int frnJID) {
+			if (!frnJID.Equals(0)) {
+				if (File.Exists(fileDir)) {
+					File.Delete(fileDir);
+					using (XmlWriter writer = XmlWriter.Create(fileDir)) {
+						writer.WriteStartDocument();
+						writer.WriteStartElement("Job");
+
+						writer.WriteStartElement("Notes");
+
+						writer.WriteElementString("Info", notes.Text);   // <-- These are new
+
+						writer.WriteEndElement();
+
+						writer.WriteEndElement();
+						writer.WriteEndDocument();
+					}
+				} else {
+					using (XmlWriter writer = XmlWriter.Create(fileDir)) {
+						writer.WriteStartDocument();
+						writer.WriteStartElement("Job");
+
+						writer.WriteStartElement("Notes");
+
+						writer.WriteElementString("Info", notes.Text);   // <-- These are new
+
+						writer.WriteEndElement();
+
+						writer.WriteEndElement();
+						writer.WriteEndDocument();
+					}
+				}
+			}
+		}
+		//public async Task<bool> updateJobCoordinates(object sender, EventArgs e){
+		//	coordinateButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+		//	await Task.Delay(TimeSpan.FromMilliseconds(2));			
+		//	loadingCoordinates = new UIActivityIndicatorView(new CGRect(.1 * editView.Bounds.Width, 1.05 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60)));
+		//	loadingCoordinates.BackgroundColor = UIColor.Black;
+		//	loadingCoordinates.Alpha = .8f;
+		//	editView.AddSubview(loadingCoordinates);
+		//	editView.BringSubviewToFront(loadingCoordinates);
+		//	loadingCoordinates.StartAnimating();
+			
+		//	if(string.IsNullOrEmpty(jobAddress.Text)){
+  //      var iosIon = ion as IosION;
+  //      if(iosIon.settings._location.allowsGps){
+		//			var latlong = ion.locationManager.lastKnownLocation.latitude.ToString("0.000000") + "," + ion.locationManager.lastKnownLocation.longitude.ToString("0.000000");
+		//			coordinateButton.Enabled = false;
+		//			coordinateLabel.Text = latlong;			
+					
+		//			var placemarks = await geoCoder.ReverseGeocodeLocationAsync(new CLLocation(ion.locationManager.lastKnownLocation.latitude,ion.locationManager.lastKnownLocation.longitude));
+		//			var address = "";
+		//	    foreach (var placemark in placemarks) {
+	 //         address = placemark.Name + " " + placemark.Locality + ", " + placemark.AdministrativeArea + " " + placemark.PostalCode;
+		//	    }
+		//			loadingCoordinates.StopAnimating();
+			    
+		//			ion.database.Query<ION.Core.Database.JobRow>("UPDATE JobRow SET jobLocation = ?, jobAddress = ? WHERE JID = ?",latlong,address,jobID);
+		//			jobAddress.Text = address;
+								
+		//			coordinateButton.Enabled = true;
+		//			} else {
+		//				loadingCoordinates.StopAnimating();
+					
+		//				var window = UIApplication.SharedApplication.KeyWindow;
+		//				var rootVC = window.RootViewController as IONPrimaryScreenController;
+						
+		//				var alert = UIAlertController.Create ("GPS Disabled", "You must enable ION HVAC/R through your device settings to access your location if no address is entered.", UIAlertControllerStyle.Alert);
+		//				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+		//				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+		//			}
+		//			return true;
+		//	} else {
+		//		coordinateButton.Enabled = false;
+		//		var placemarks = await geoCoder.GeocodeAddressAsync(jobAddress.Text);
+		//		loadingCoordinates.StopAnimating();
+				
+		//		if(placemarks.Length == 0){
+		//			coordinateLabel.Text = "Unable to retrieve coordinates";
+		//		} else {
+		//			var latlong = "";
+		//			foreach(var placemark in placemarks){
+		//				latlong = placemark.Location.Coordinate.Latitude + ","+placemark.Location.Coordinate.Longitude;
+		//			}
+		//			ion.database.Query<ION.Core.Database.JobRow>("UPDATE JobRow SET jobLocation = ?, jobAddress = ? WHERE JID = ?",latlong,jobAddress.Text,jobID);
+
+		//			coordinateLabel.Text = latlong;
+		//		}
+
+		//		coordinateButton.Enabled = true;
+		//		return true;
+		//	}
+		//}	
   }
 }
 

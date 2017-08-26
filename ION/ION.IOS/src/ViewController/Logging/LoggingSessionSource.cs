@@ -60,9 +60,10 @@ namespace ION.IOS.ViewController.Logging {
       cell.SelectionStyle = UITableViewCellSelectionStyle.Default;
 
       if(usingSessions.Contains(tableItems[indexPath.Row].SID)){
-        cell.Accessory = UITableViewCellAccessory.Checkmark;
-        //cell.BackgroundColor = UIColor.LightGray;
-      }
+        cell.checkImage.Image = UIImage.FromBundle("filled_checkbox");
+      } else {
+				cell.checkImage.Image = UIImage.FromBundle("blank_checkbox");
+			}
       return cell;            
     }
 

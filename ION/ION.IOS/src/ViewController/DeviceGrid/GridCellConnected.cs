@@ -104,12 +104,16 @@ namespace ION.IOS.ViewController.DeviceGrid {
     }
 
     public void UpdateCell(GaugeDeviceSensor sensor){
+      Console.WriteLine("Update Cell called");
+      if(slotSensor != null){
+        Console.WriteLine("sensor was not null: " + slotSensor.name +" " + slotSensor.type.ToString());
+      }
       slotSensor = sensor;
+			slotSensor.onSensorStateChangedEvent -= gaugeUpdating;
 			if(slotSensor == null){
 				ContentView.Hidden = true;
 				BackgroundView.Hidden = true;
       } else {
-				slotSensor.onSensorStateChangedEvent -= gaugeUpdating;
 				slotSensor.onSensorStateChangedEvent += gaugeUpdating;
 
 				typeLabel.Text = slotSensor.device.serialNumber.deviceModel.GetTypeString();
@@ -150,7 +154,7 @@ namespace ION.IOS.ViewController.DeviceGrid {
 
 		public async void gaugeUpdating(Sensor sensor) {
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
-      var gaugeSensor = sensor as GaugeDeviceSensor;
+      var gaugeSensor = slotSensor;
 
       if (gaugeSensor.device.isConnected) {
         connectionImage.BackgroundColor = UIColor.Green;

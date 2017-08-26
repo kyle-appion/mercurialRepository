@@ -39,6 +39,11 @@
     /// </summary>
     /// <value>The alarm.</value>
     IAlarmPreferences alarm { get; }
+		/// <summary>
+		/// Queries the job preferences.
+		/// </summary>
+		/// <value>The job.</value>
+		IJobPreferences jobs { get; }
     /// <summary>
     /// Queries the location preferences.
     /// </summary>
@@ -98,6 +103,10 @@
   } // End IUnits
 
   public interface IAlarmPreferences {
+  }
+
+  public interface IJobPreferences {
+    int activeJob { get; set; }
   }
 
   public interface ILocationPreferences {

@@ -21,8 +21,9 @@ namespace ION.IOS.ViewController.Workbench {
 	using ION.IOS.App;
 	using ION.Core.Net;
 	using ION.IOS.Viewcontroller.RemoteAccess;
+  using ION.IOS.ViewController.DeviceGrid;
 
-	public partial class WorkbenchViewController : BaseIONViewController {
+  public partial class WorkbenchViewController : BaseIONViewController {
     /// <summary>
     /// The current ion context.
     /// </summary>
@@ -59,8 +60,6 @@ namespace ION.IOS.ViewController.Workbench {
         root.navigation.ToggleMenu();
       };
       AutomaticallyAdjustsScrollViewInsets = false;
-
-
 			
 			if(remoteMode){
 				remoteTitle = new UILabel(new CGRect(0, 0, 480, 44));
@@ -215,7 +214,9 @@ namespace ION.IOS.ViewController.Workbench {
     /// </summary>
     private void OnRequestViewer() {
     	if(!remoteMode){
-	      var sb = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
+				//var sb = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
+				var sb = InflateViewController<DeviceGridViewController>(VC_DEVICE_GRID);
+        sb.fromWorkbench = true;
 	      sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
 	        Log.D(this,"Adding device to workbench");
 	        workbench.AddSensor(sensor);

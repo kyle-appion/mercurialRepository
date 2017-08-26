@@ -27,7 +27,7 @@ namespace ION.IOS.Util {
     DONE = "done".FromResources(),
     ENTER_NAME = "enter_name".FromResources(),
     HELP = "help".FromResources(),
-    INCLUDED = "included".FromResources(),
+    INCLUDE = "include".FromResources(),
     LINKED = "linked".FromResources(),
     NAME = "name".FromResources(),
     NEXT = "next".FromResources(),
@@ -153,8 +153,12 @@ namespace ION.IOS.Util {
         SCANNING = "device_manager_scanning".FromResources()
         ;
       } // End Strings.Device.Manager
-
-      public static class Model {
+			public static class Grid {
+				public static readonly string
+				SELF = "grid_view".FromResources()
+				;
+			} // End Strings.Device.Model
+			public static class Model {
         public static readonly string
         _3XTM = "device_model_3xtm".FromResources(),
         AV760 = "device_model_av760".FromResources(),
@@ -307,6 +311,7 @@ namespace ION.IOS.Util {
       ADDRESS = "report_address".FromResources(),
 			BYDATE = "report_by_date".FromResources(),
 			BYJOB = "report_by_job".FromResources(),
+      BUILDREPORT = "report_build".FromResources(),
       CALIBRATION_CERTIFICATES = "report_calibration_certificates".FromResources(),
       CITY = "report_city".FromResources(),
       CHOOSEEND = "report_choose_end".FromResources(),

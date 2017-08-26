@@ -6,16 +6,24 @@ using UIKit;
 
 using ION.IOS.Util;
 using ION.Core.App;
+using static ION.IOS.ViewController.JobManager.JobViewController;
 
 namespace ION.IOS.ViewController.JobManager {
   public class CreatedJobSource : UITableViewSource   {
+		/// <summary>
+		/// The action that will be fired when the user selects a job to be active
+		/// </summary>
+		public SetActiveJob clickedJobActive { get; set; }
+
     public List<int> jobID;
     public IION ion;
     public JobViewController vc;
-    public CreatedJobSource(List<int> jobs, JobViewController managerVC = null) {
+
+    public CreatedJobSource(List<int> jobs, SetActiveJob chooseActiveJob, JobViewController managerVC = null) {
       jobID = jobs;
       ion = AppState.context;
       vc = managerVC;
+      clickedJobActive = chooseActiveJob;
     }
     // Overriden from UITableViewSource
     public override UIView GetViewForHeader(UITableView tableView, nint section) {
@@ -50,7 +58,8 @@ namespace ION.IOS.ViewController.JobManager {
     }
 
     public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath) {
-      return .3f * tableView.Bounds.Width;
+			//return .3f * tableView.Bounds.Width;
+			return 102;
     }
 
     // Overridden from UITableViewSource
@@ -87,9 +96,12 @@ namespace ION.IOS.ViewController.JobManager {
         cell = new UITableViewCell(UITableViewCellStyle.Default, "createdJobCell") as CreatedJobCell;
       }
 
-      cell.makeCellData(jobID[indexPath.Row],tableView.Bounds.Width,.3 * tableView.Bounds.Width);
+      cell.makeCellData(jobID[indexPath.Row],tableView.Bounds.Width,102, clickedJobActive);
       cell.Layer.BorderWidth = 1f;
+      cell.Layer.CornerRadius = 5f;
+      cell.ClipsToBounds = true;
       cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+
       return cell;
     }
   }

@@ -9,14 +9,27 @@ using ION.Core.Devices;
 using ION.Core.Devices.Sorters;
 using ION.IOS.ViewController.Workbench;
 using ION.IOS.ViewController.Analyzer;
+using ION.IOS.Util;
 
 namespace ION.IOS.ViewController.DeviceGrid {
   public partial class DeviceGridViewController : BaseIONViewController {
+		/// <summary>
+		/// The delegate that is used to pass a sensor back from the device manager.
+		/// </summary>
+		public delegate void OnSensorReturn(GaugeDeviceSensor sensor);
+
+		/// <summary>
+		/// The action that will be fired when the user selects a sensor for returning 
+		/// within the device manager.
+		/// </summary>
+		public OnSensorReturn onSensorReturnDelegate { get; set; }
+
     UITapGestureRecognizer gridTapped;
 		SensorStatusPopup selectedSensor;
     IION ion;
     bool updatingGrid = false;
-    public int fromAnalyzer;
+    public int fromAnalyzer = -1;
+    public bool fromWorkbench = false;
 
 		private List<GaugeDeviceSensor> connectedSensors = new List<GaugeDeviceSensor>();
 		private List<GaugeDeviceSensor> disconnectedSensors = new List<GaugeDeviceSensor>();
@@ -31,10 +44,15 @@ namespace ION.IOS.ViewController.DeviceGrid {
       base.ViewDidLoad();
       View.BackgroundColor = UIColor.FromPatternImage(UIImage.FromBundle("CarbonBackground"));
 
-      InitNavigationBar("ic_job_settings", false);
-      backAction = () => {
-        root.navigation.ToggleMenu();
-      };
+      if (fromAnalyzer == -1 && !fromWorkbench) {
+        InitNavigationBar("ic_job_settings", false);
+        backAction = () => {
+          root.navigation.ToggleMenu();
+        };
+      } else {
+				InitNavigationBar("ic_nav_device_manager", true);
+			}
+			NavigationItem.Title = Strings.Device.Grid.SELF;
 			AutomaticallyAdjustsScrollViewInsets = false;
 
 			foreach (var device in ion.deviceManager.knownDevices) {
@@ -56,6 +74,23 @@ namespace ION.IOS.ViewController.DeviceGrid {
 				}
 			}
 
+      foreach (var device in ion.deviceManager.foundDevices){
+				var holder = device as GaugeDevice;
+        if(holder.isNearby){
+					foreach (var sensor in holder.sensors) {
+            if(!connectedSensors.Contains(sensor)){
+							connectedSensors.Add(sensor);
+						}
+					}
+        } else {
+					foreach (var sensor in holder.sensors) {
+						if (!disconnectedSensors.Contains(sensor)) {
+							disconnectedSensors.Add(sensor);
+						}
+					}
+        }
+      }
+
 			connectedSensors.Sort(new GeneralSensorSorter());
 			disconnectedSensors.Sort(new GeneralSensorSorter());
 
@@ -67,6 +102,8 @@ namespace ION.IOS.ViewController.DeviceGrid {
       await Task.Delay(TimeSpan.FromMilliseconds(2));
       selectedSensor = new SensorStatusPopup(View);
       selectedSensor.gridVC = this;
+			selectedSensor.analyzerSlot = fromAnalyzer;
+      selectedSensor.fromWorkbench = fromWorkbench;
 
       View.AddSubview(selectedSensor.popupView);
 
@@ -89,13 +126,13 @@ namespace ION.IOS.ViewController.DeviceGrid {
     }
 
 		private void OnDeviceManagerEvent(DeviceManagerEvent dme) {
+      Console.WriteLine("DM Event: " + dme.type + " etype: " + dme.deviceEvent.type);
       if (DeviceManagerEvent.EType.DeviceEvent == dme.type && updatingGrid == false) {
 				if (DeviceEvent.EType.ConnectionChange == dme.deviceEvent.type) {
           updatingGrid = true;
           Console.WriteLine("Device connection change occurred");
 					connectedSensors.Clear();
 					disconnectedSensors.Clear();
-
 
 					foreach (var device in ion.deviceManager.knownDevices) {
 						var holder = device as GaugeDevice;
@@ -104,8 +141,14 @@ namespace ION.IOS.ViewController.DeviceGrid {
 								connectedSensors.Add(sensor);
 							}
 						} else {
-							foreach (var sensor in holder.sensors) {
-								disconnectedSensors.Add(sensor);	
+							if (holder.isNearby) {
+								foreach (var sensor in holder.sensors) {
+									disconnectedSensors.Add(sensor);
+								}
+							} else {
+								foreach (var sensor in holder.sensors) {
+									disconnectedSensors.Add(sensor);
+								}
 							}
 						}
 					}
@@ -156,27 +199,48 @@ namespace ION.IOS.ViewController.DeviceGrid {
     }
 
     public override void ViewDidAppear(bool animated) {
+      
 			gridView.ReloadData();
+		}
+    public override void ViewWillDisappear(bool animated) {
+      fromAnalyzer = -1;
+			fromWorkbench = false;
 		}
     public override void DidReceiveMemoryWarning() {
       base.DidReceiveMemoryWarning();
       // Release any cached data, images, etc that aren't in use.
     }   
 
-    public void inflateWorkbench(){
+    public void inflateWorkbench(GaugeDeviceSensor sensor = null){
 			//var path = NSIndexPath.FromRowSection(0, 0);
 			var window = UIApplication.SharedApplication.KeyWindow;
       var vc = window.RootViewController as IONPrimaryScreenController;
-      //TODO This is wholely dependent upon the flyoutnavigation controller library being used for the menu. Any updates will also affect how the grid view navigates for its sensor
-      vc.navigation.GetType().InvokeMember("NavigationItemSelected", System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Static, Type.DefaultBinder, vc.navigation, new object[]{ 0 });
-		}
+      if (fromWorkbench) {
+				fromAnalyzer = -1;
+				fromWorkbench = false;
+				onSensorReturnDelegate(sensor);
+				NavigationController.PopViewController(true);
+			} else {
+				//TODO This is wholely dependent upon the flyoutnavigation controller library being used for the menu. Any updates will also affect how the grid view navigates for its sensor
+				NavigationController.PopViewController(true);
+				vc.navigation.GetType().InvokeMember("NavigationItemSelected", System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Static, Type.DefaultBinder, vc.navigation, new object[] { 0 });
+			}
+    }
 
-		public void inflateAnalyzer() {
+		public void inflateAnalyzer(GaugeDeviceSensor sensor = null) {
 			var window = UIApplication.SharedApplication.KeyWindow;
 			var vc = window.RootViewController as IONPrimaryScreenController;
-			//TODO This is wholely dependent upon the flyoutnavigation controller library being used for the menu. Any updates will also affect how the grid view navigates for its sensor
-			vc.navigation.GetType().InvokeMember("NavigationItemSelected", System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Static, Type.DefaultBinder, vc.navigation, new object[] { 1 });
-		}
+      if (fromAnalyzer == -1) {
+				//TODO This is wholely dependent upon the flyoutnavigation controller library being used for the menu. Any updates will also affect how the grid view navigates for its sensor
+				NavigationController.PopViewController(true);
+				vc.navigation.GetType().InvokeMember("NavigationItemSelected", System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Static, Type.DefaultBinder, vc.navigation, new object[] { 1 });
+      } else {
+				fromAnalyzer = -1;
+				fromWorkbench = false;
+				onSensorReturnDelegate(sensor);
+        NavigationController.PopViewController(true);
+      }
+    }
   }
 }
 

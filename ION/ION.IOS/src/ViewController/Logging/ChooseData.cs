@@ -21,17 +21,17 @@ namespace ION.IOS.ViewController.Logging {
     public UIView DataType;
     public UIButton jobButton;
     public UIButton sessionButton;
-    public UIButton showGraphButton;
-    public UILabel step2;
-    public UIImageView backArrow;
-    public UILabel middleBorder;
-    public UILabel bottomBorder;
+		public UIButton noJobLabel;
+
+		public UITableView jobTable;
+		public UITableView sessionTable;
+		public UIRefreshControl refreshJobs;
+		public UIRefreshControl refreshSessions;
+
     public UILabel sessionHeader;
-    public UIButton noJobLabel;
-    public UITableView jobTable;
-    public UIRefreshControl refreshJobs;
-    public UITableView sessionTable;
-    public UIRefreshControl refreshSessions;
+		public UILabel jobHighlight;
+		public UILabel sessionHighlight;
+
     public UITapGestureRecognizer resize;
     public UIActivityIndicatorView activityLoadingTables;
     public List<JobData> allJobs;
@@ -41,9 +41,9 @@ namespace ION.IOS.ViewController.Logging {
     private IION ion;
     public nfloat cellHeight;
 
-    public ChooseData(UIView mainView, ObservableCollection<int> selected, LoggingViewController vc) {
+    public ChooseData(UIView containerView, ObservableCollection<int> selected, LoggingViewController vc) {
       parentVC = vc;
-      DataType = new UIView(new CGRect(.01 * mainView.Bounds.Width, .12 * mainView.Bounds.Height, .98 * mainView.Bounds.Width, .75 * mainView.Bounds.Height));
+      DataType = new UIView(new CGRect(0, 55, containerView.Bounds.Width, .8 * containerView.Bounds.Height));
       DataType.BackgroundColor = UIColor.White;
       DataType.Layer.BorderColor = UIColor.Black.CGColor;
       DataType.Layer.BorderWidth = 1f;
@@ -51,102 +51,41 @@ namespace ION.IOS.ViewController.Logging {
       DataType.ClipsToBounds = true;
 
       selectedSessions = selected;
-      selectedSessions.CollectionChanged += checkForSelected;
-      //cellHeight = .07f * mainView.Bounds.Height;
-      cellHeight = .1f * mainView.Bounds.Height;
-
-      step2 = new UILabel(new CGRect(0,0,DataType.Bounds.Width, .09 * mainView.Bounds.Height));
-      step2.BackgroundColor = UIColor.FromRGB(95,212,48);
-      step2.ClipsToBounds = true;
-      step2.Layer.BorderWidth = 1f;
-      step2.Layer.CornerRadius = 5;
-      step2.Text = Util.Strings.Report.RETURNSESSIONS; 
-      step2.TextColor = UIColor.Black;
-      step2.TextAlignment = UITextAlignment.Center;
-      step2.AdjustsFontSizeToFitWidth = true;
-      step2.Hidden = true;
-
-      backArrow = new UIImageView(new CGRect(.15 * DataType.Bounds.Width, .25 * step2.Bounds.Height,.1 * step2.Bounds.Width, .5 * step2.Bounds.Height));
-      backArrow.Image = UIImage.FromBundle("img_bent_arrow");
-      step2.AddSubview(backArrow);
+      cellHeight = .1f * containerView.Bounds.Height;
 
       activityLoadingTables = new UIActivityIndicatorView(new CGRect(0,0, DataType.Bounds.Width, DataType.Bounds.Height));
 
-      ion = AppState.context;  
+      ion = AppState.context;
 
-      ///button to switch to job listing
-      jobButton = new UIButton(new CGRect(0,.06 * mainView.Bounds.Height,.49 * mainView.Bounds.Width, .06 * mainView.Bounds.Height));
+			sessionHeader = new UILabel(new CGRect(0, 0, DataType.Bounds.Width, 40));
+			sessionHeader.Text = Util.Strings.Report.SESSIONSELECTION;
+			sessionHeader.TextAlignment = UITextAlignment.Center;
+			sessionHeader.Font = UIFont.BoldSystemFontOfSize(20);
+			sessionHeader.BackgroundColor = UIColor.FromRGB(0, 166, 81);
+
+      jobButton = new UIButton(new CGRect(0,40,.5 * DataType.Bounds.Width, 40));
       jobButton.Layer.BorderColor = UIColor.Black.CGColor;
       jobButton.SetTitle(Util.Strings.Report.BYJOB, UIControlState.Normal);
       jobButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
       jobButton.BackgroundColor = UIColor.White;
 
-      ///user feedback for button press
       jobButton.TouchUpInside += switchJobTab;
-      jobButton.TouchDown += (sender, e) => { jobButton.BackgroundColor = UIColor.White;};
-      jobButton.TouchUpOutside += (sender, e) => {
-        if(!jobTable.Hidden){
-          jobButton.BackgroundColor = UIColor.White;
-        } else {
-          jobButton.BackgroundColor = UIColor.LightGray;
-        }
-      };
-      ///button to switch to session listing
-      sessionButton = new UIButton(new CGRect(.49 * mainView.Bounds.Width,.06 * mainView.Bounds.Height,.49 * mainView.Bounds.Width, .06 * mainView.Bounds.Height));
+
+      jobHighlight = new UILabel(new CGRect(0,80,.5 * DataType.Bounds.Width,5));
+      jobHighlight.BackgroundColor = UIColor.FromRGB(0, 174, 239);
+
+      sessionButton = new UIButton(new CGRect(.5 * DataType.Bounds.Width,40,.5 * containerView.Bounds.Width, 40));
       sessionButton.Layer.BorderColor = UIColor.Black.CGColor;
       sessionButton.SetTitle(Util.Strings.Report.BYDATE, UIControlState.Normal);
       sessionButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
       sessionButton.BackgroundColor = UIColor.White;
 
-      ///user feedback for button press
       sessionButton.TouchUpInside += switchSessionTab;
-      sessionButton.TouchDown += (sender, e) => { sessionButton.BackgroundColor = UIColor.White;};
-      sessionButton.TouchUpOutside += (sender, e) => {
-        noJobLabel.Hidden = true;
-        if(!sessionTable.Hidden){
-          sessionButton.BackgroundColor = UIColor.White;
-        } else {
-          sessionButton.BackgroundColor = UIColor.LightGray;
-        }
-      };
 
-      sessionHeader = new UILabel(new CGRect(0,0,DataType.Bounds.Width, .061 * mainView.Bounds.Height));
-      sessionHeader.Layer.CornerRadius = 5;
-      sessionHeader.Text = Util.Strings.Report.SESSIONSELECTION;
-      sessionHeader.TextAlignment = UITextAlignment.Center;
-      sessionHeader.Font = UIFont.BoldSystemFontOfSize(20);
-      sessionHeader.BackgroundColor = UIColor.FromRGB(95,212,48);
+      sessionHighlight = new UILabel(new CGRect(.5 * DataType.Bounds.Width, 80, .5 * DataType.Bounds.Width, 5));
+      sessionHighlight.BackgroundColor = UIColor.Black;
 
-      middleBorder = new UILabel(new CGRect(.5 * DataType.Bounds.Width,jobButton.Bounds.Height,2,jobButton.Bounds.Height));
-      middleBorder.BackgroundColor = UIColor.Black;
-      middleBorder.Layer.CornerRadius = 5;
-
-      bottomBorder = new UILabel(new CGRect(.45 * jobButton.Bounds.Width,1.76 * jobButton.Bounds.Height,.1 * jobButton.Bounds.Width,.08 * jobButton.Bounds.Height));
-      bottomBorder.BackgroundColor = UIColor.Blue;
-      bottomBorder.Layer.ShadowColor = UIColor.Black.CGColor;
-      bottomBorder.Layer.ShadowOpacity = .1f;
-      bottomBorder.Layer.ShadowRadius = .3f;
-      bottomBorder.Layer.ShadowOffset = new CGSize(0f, 1f);
-      bottomBorder.Layer.ShouldRasterize = true;
-      bottomBorder.Layer.MasksToBounds = true;
-
-      //showGraphButton = new UIButton(new CGRect(.25 * mainView.Bounds.Width,.89 * mainView.Bounds.Height,.5 * mainView.Bounds.Width, cellHeight));
-      showGraphButton = new UIButton(new CGRect(.25 * mainView.Bounds.Width,.89 * mainView.Bounds.Height,.5 * mainView.Bounds.Width, .7 * cellHeight));
-      showGraphButton.Layer.BorderColor = UIColor.Black.CGColor;
-      showGraphButton.Layer.BorderWidth = 2f;
-      showGraphButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-      showGraphButton.SetTitle(Util.Strings.Report.GRAPHSELECTION, UIControlState.Normal);
-      showGraphButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
-      showGraphButton.Enabled = false;
-      showGraphButton.Alpha = .6f;
-      showGraphButton.ClipsToBounds = true;
-
-      ///user feedback for button press
-      showGraphButton.TouchUpInside += (sender, e) => { showGraphButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
-      showGraphButton.TouchDown += (sender, e) => { showGraphButton.BackgroundColor = UIColor.Blue;};
-      showGraphButton.TouchUpOutside += (sender, e) => { showGraphButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
-
-      sessionTable = new UITableView(new CGRect(0, 2 * sessionButton.Bounds.Height, DataType.Bounds.Width, 6.1 * cellHeight));
+      sessionTable = new UITableView(new CGRect(5, 85, DataType.Bounds.Width - 10, 6.1 * cellHeight));
       sessionTable.RegisterClassForCellReuse(typeof(SessionCell),"sessionCell");
       sessionTable.BackgroundColor = UIColor.Clear;
       sessionTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
@@ -162,7 +101,7 @@ namespace ION.IOS.ViewController.Logging {
       sessionTable.InsertSubview(refreshSessions,0);
       sessionTable.SendSubviewToBack(refreshSessions);
 
-      jobTable = new UITableView(new CGRect(0, 2 * jobButton.Bounds.Height, DataType.Bounds.Width, 6.1 * cellHeight));
+      jobTable = new UITableView(new CGRect(5, 85, DataType.Bounds.Width - 10, 6.1 * cellHeight));
       jobTable.RegisterClassForCellReuse(typeof(JobCell),"jobCell");
       jobTable.BackgroundColor = UIColor.Clear;
       jobTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
@@ -174,7 +113,7 @@ namespace ION.IOS.ViewController.Logging {
       jobTable.InsertSubview(refreshJobs,0);  
       jobTable.SendSubviewToBack(refreshJobs);
 
-      noJobLabel = new UIButton(new CGRect(0,2 * jobButton.Bounds.Height,DataType.Bounds.Width,cellHeight));
+      noJobLabel = new UIButton(new CGRect(0,90,DataType.Bounds.Width,cellHeight));
       noJobLabel.SetTitle(Util.Strings.Report.NOJOBS, UIControlState.Normal);
       noJobLabel.SetTitleColor(UIColor.Black, UIControlState.Normal);
       noJobLabel.BackgroundColor = UIColor.FromRGB(255, 215, 101);
@@ -191,20 +130,18 @@ namespace ION.IOS.ViewController.Logging {
        
       DataType.AddSubview(sessionHeader);
       DataType.AddSubview(jobButton);
-      DataType.BringSubviewToFront(jobButton);
+			DataType.BringSubviewToFront(jobButton);
+			DataType.AddSubview(jobHighlight);
       DataType.AddSubview(sessionButton);
       DataType.BringSubviewToFront(sessionButton);
-      DataType.AddSubview(jobTable);
+			DataType.AddSubview(sessionHighlight);
+			DataType.AddSubview(jobTable);
       DataType.BringSubviewToFront(jobTable);
-      //DataType.AddSubview(noJobLabel);
+      DataType.AddSubview(noJobLabel);
       DataType.AddSubview(sessionTable);
       DataType.BringSubviewToFront(sessionTable);
       DataType.AddSubview(activityLoadingTables);
       DataType.BringSubviewToFront(activityLoadingTables);
-      DataType.AddSubview(step2);
-      DataType.BringSubviewToFront(step2);
-      DataType.AddSubview(bottomBorder);
-      DataType.AddSubview(middleBorder);
       jobButton.SendActionForControlEvents(UIControlEvent.TouchUpInside);
     }
     /// <summary>
@@ -216,18 +153,17 @@ namespace ION.IOS.ViewController.Logging {
       noJobLabel.Hidden = true;
       jobButton.Enabled = true;
       jobButton.BackgroundColor = UIColor.LightGray;
+      jobHighlight.BackgroundColor = UIColor.Black;
       jobButton.Font = UIFont.SystemFontOfSize(18);
       sessionButton.BackgroundColor = UIColor.White;
       sessionButton.Font = UIFont.BoldSystemFontOfSize(22);
-
+      sessionHighlight.BackgroundColor = UIColor.FromRGB(0, 174, 239);
       sessionButton.Enabled = false;
       jobTable.Hidden = true;
       sessionTable.Hidden = false;
 
       UIView.Animate(.3, 0, UIViewAnimationOptions.CurveEaseInOut, () => {        
-        var newCenter = bottomBorder.Frame;
-        newCenter.X = .72f * DataType.Bounds.Width;
-        bottomBorder.Frame = newCenter;
+
       },() => {
         if(!ion.dataLogManager.isRecording){
           GetAllSessions();
@@ -269,7 +205,6 @@ namespace ION.IOS.ViewController.Logging {
       }
       allSessions = queriedSessions;
 
-      sessionTable.Frame = new CGRect(0, 2 * sessionButton.Bounds.Height, DataType.Bounds.Width, 6.1 * cellHeight);
       sessionTable.Source = new LoggingSessionSource(allSessions,cellHeight, selectedSessions);
       sessionTable.ReloadData();
       sessionTable.LayoutIfNeeded();
@@ -300,7 +235,6 @@ namespace ION.IOS.ViewController.Logging {
       }
       allSessions = queriedSessions;
 
-      sessionTable.Frame = new CGRect(0, 2 * sessionButton.Bounds.Height, DataType.Bounds.Width, 6.1 * cellHeight);
       sessionTable.Source = new LoggingSessionSource(allSessions,cellHeight, selectedSessions);
       sessionTable.ReloadData();
       sessionTable.LayoutIfNeeded();
@@ -317,18 +251,18 @@ namespace ION.IOS.ViewController.Logging {
     public void switchJobTab(object sender, EventArgs e){
     	sessionButton.Enabled = true;
       sessionButton.BackgroundColor = UIColor.LightGray;
+      sessionHighlight.BackgroundColor = UIColor.Black;
       sessionButton.Font = UIFont.SystemFontOfSize(18);
       jobButton.BackgroundColor = UIColor.White;
       jobButton.Font = UIFont.BoldSystemFontOfSize(22);
+			jobHighlight.BackgroundColor = UIColor.FromRGB(0, 174, 239);
 
-      jobButton.Enabled = false;
+			jobButton.Enabled = false;
       sessionTable.Hidden = true;
       jobTable.Hidden = false;
 
       UIView.Animate(.3, 0, UIViewAnimationOptions.CurveEaseInOut, () => {        
-        var newCenter = bottomBorder.Frame;
-        newCenter.X = .45f * jobButton.Bounds.Width;
-        bottomBorder.Frame = newCenter;
+
       },() => {
         GetAllJobs();
       });
@@ -369,7 +303,6 @@ namespace ION.IOS.ViewController.Logging {
       }
       
       allJobs = queriedJobs;
-      jobTable.Frame = new CGRect(0, 2 * jobButton.Bounds.Height, DataType.Bounds.Width, 6.1 * cellHeight);
       jobTable.Source = new LoggingJobSource(allJobs, cellHeight, selectedSessions);
       jobTable.ReloadData();
       //jobTable.LayoutIfNeeded();
@@ -408,7 +341,6 @@ namespace ION.IOS.ViewController.Logging {
       }      
       
       allJobs = queriedJobs;
-      jobTable.Frame = new CGRect(0, 2 * jobButton.Bounds.Height, DataType.Bounds.Width, 6.1 * cellHeight);
       jobTable.Source = new LoggingJobSource(allJobs, cellHeight, selectedSessions);
       jobTable.ReloadData();
       jobTable.LayoutIfNeeded();
@@ -423,15 +355,6 @@ namespace ION.IOS.ViewController.Logging {
       jobButton.Enabled = true;
     }
 
-    public void checkForSelected(object sender, EventArgs e){
-        if(selectedSessions.Count > 0){
-          showGraphButton.Enabled = true;
-          showGraphButton.Alpha = 1f;
-        } else {
-          showGraphButton.Enabled = false;
-          showGraphButton.Alpha = .6f;
-        }
-    }
   }
 }
 

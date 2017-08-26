@@ -34,7 +34,7 @@ file.
 "app_feedback" = "ION App Feedback";
 "linked" = "Linked";
 "spreadsheet" = "Spreadsheet";
-"included" = "Included";
+"include" = "Include";
 "select_all" = "Select All";
 "deselect_all" = "Deselect All";
 "devices" = "Devices";
@@ -133,6 +133,9 @@ file.
 "device_manager_scan" = "Scan";
 "device_manager_scanning" = "Scanning";
 
+/* DEVICE GRID */
+"grid_view" = "Device Grid";
+
 /* DEVICE MODEL */
 "device_model_3xtm" = "3XTM";
 "device_model_av760" = "AV760";
@@ -195,8 +198,8 @@ file.
 "job_info" = "Job Info";
 "job_name" = "Job Name";
 "job_po_number" = "PO Number";
-"job_po_full" = "Product Order Number";
-"job_po_sign" = "Product Order #";
+"job_po_full" = "Purchase Order Number";
+"job_po_sign" = "Purchase Order #";
 "job_customer_number" = "Customer Number";
 "job_customer_sign" = "Customer #";
 "job_multiple" = "Spans multiple jobs";
@@ -209,15 +212,15 @@ file.
 "job_start_date" = "Start Date";
 "job_duration" = "Duration";
 "job_current_sessions" = "Current Sessions";
-"job_no_session" = "No Sessions Currently Associated";
-"job_none_available" = "No Sessions Available";
-"job_remove_selected" = "Remove Selected";
+"job_no_session" = "No sessions currently linked";
+"job_none_available" = "No sessions have been recorded";
+"job_remove_selected" = "Remove Selection";
 "job_sessions_removing" = "Removing Sessions";
 "job_remove_dialogue" = "Are you sure you want to remove these sessions from the current job?";
 "job_confirm_removal" = "Confirm Removal";
 "job_red_sessions" = "(Adding a session in red will remove the association to it's current job)";
 "job_available_sessions" = "Available Sessions";
-"job_add_selected" = "Add Selected";
+"job_add_selected" = "Add Selection";
 "job_notes_saved" = "Notes Saved";
 "job_save_notes" = "Save Notes";
 "job_settings" = "Job Settings";
@@ -233,9 +236,9 @@ file.
 "measure_minimum" = "Minimum";
 "measure_maximum" = "Maximum";
 "measure_average" = "Average";
-"measure_lowest" = "Lowest Measurement";
-"measure_highest" = "Highest Measurement";
-"measure_avg" = "Average Measurement";
+"measure_lowest" = "Lowest";
+"measure_highest" = "Highest";
+"measure_avg" = "Average";
 
 /* NAVIGATION DRAWER */
 "navigation_calculators" = "Calculators";
@@ -252,6 +255,7 @@ file.
 "report_address" = "Address";
 "report" = "Report";
 "reports" = "Reports";
+"report_build" = "Build Report";
 "report_calibration_certificates" = "Calibration Certificates";
 "report_city" = "City";
 "report_downloading_certificates" = "Downloading Certificates...";
@@ -295,7 +299,7 @@ file.
 "report_no_jobs" = "No jobs exist. Click to create";
 "report_new" = "New Report";
 "report_saved" = "Saved Reports";
-"report_selection" = "Report Selection";
+"report_selection" = "Report Archive";
 "report_graph_info" = "Graph Information";
 "report_choose_start" = "Select a start time for the graph";
 "report_choose_end" = "Select an end time for the graph";

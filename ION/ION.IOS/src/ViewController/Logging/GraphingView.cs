@@ -57,14 +57,15 @@ namespace ION.IOS.ViewController.Logging
 		public UIButton menuButton;
 		public UIButton resetButton;
 		public UIButton exportGraph;
-		public UIButton scrollDown;
-    public UIButton extendedDown;
-		public UIButton scrollUp;
-    public UIButton extendedUp;
+		public UIButton beginPicker;
+		public UIButton endPicker;
+		public UIButton graphTab;
+		public UIButton numericTab;
 
 		public UITableView graphTable;
+		public UITableView extraInfoTable;
 
-    public UIPanGestureRecognizer lTrackerDrag;
+		public UIPanGestureRecognizer lTrackerDrag;
 		public UIPanGestureRecognizer lViewDrag;
     public UIPanGestureRecognizer rTrackerDrag;
 		public UIPanGestureRecognizer rViewDrag;
@@ -72,7 +73,13 @@ namespace ION.IOS.ViewController.Logging
 		public UIImageView leftTrackerCircle;
 		public UIImageView rightTrackerCircle;
 
+    public UILabel reportHeader;
 		public UILabel subDates;
+    public UILabel subFinish;
+		public UILabel graphTabHighlight;
+		public UILabel numericTabHighlight;
+    public UILabel deviceCountLabel;
+
 		public double trackerHeight;
 		public int topCell;
 		public int bottomCell;
@@ -113,7 +120,6 @@ namespace ION.IOS.ViewController.Logging
 
 			gView = new UIView (new CGRect (0,0, mainView.Bounds.Width, mainView.Bounds.Height));
 			gView.BackgroundColor = UIColor.White;
-			gView.Layer.CornerRadius = 8;
 			gView.Layer.BorderColor = UIColor.Black.CGColor;
 			gView.Layer.BorderWidth = 1f;
 
@@ -148,34 +154,56 @@ namespace ION.IOS.ViewController.Logging
 
         createButtons (sessions);
 
-        graphTable = new UITableView(new CGRect(.1 * gView.Bounds.Width, .15 * gView.Bounds.Height, .85 * gView.Bounds.Width, trackerHeight));
+        graphTable = new UITableView(new CGRect(.05 * gView.Bounds.Width, .15 * gView.Bounds.Height + 45, .9 * gView.Bounds.Width, trackerHeight));
         graphTable.BackgroundColor = UIColor.Clear;
         graphTable.Layer.BorderColor = UIColor.Black.CGColor;
         graphTable.Layer.BorderWidth = 1f;
         graphTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
-        graphTable.ScrollEnabled = false;
-        graphTable.RegisterClassForCellReuse(typeof(graphCell), "graphingCell");
+				graphTable.Bounces = false;
+				if (selectedData.Count <= 3) {
+					graphTable.ScrollEnabled = false;
+				}
+				graphTable.RegisterClassForCellReuse(typeof(graphCell), "graphingCell");
 
         CreateGraphTrackers(mainView);
 
         graphTable.Source = new graphingTableSource(selectedData, gView, trackerHeight);
         graphTable.ReloadData();
 
+				extraInfoTable = new UITableView(new CGRect(.05 * gView.Bounds.Width, .15 * gView.Bounds.Height + 45, .9 * gView.Bounds.Width, trackerHeight));
+				extraInfoTable.RegisterClassForCellReuse(typeof(legendCell), "legendCell");
+
+				if (selectedData.Count <= 3) {
+					extraInfoTable.ScrollEnabled = false;
+				}
+				extraInfoTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
+				extraInfoTable.Layer.CornerRadius = 3;
+				extraInfoTable.Source = new legendSource(selectedData, gView);
+				extraInfoTable.Bounces = false;
+        extraInfoTable.Hidden = true;
+
         gView.AddSubview(graphTable);
         gView.AddSubview(leftTrackerView);
         gView.AddSubview(leftTrackerCircle);
         gView.AddSubview(rightTrackerView);
-        gView.AddSubview(rightTrackerCircle);
-        gView.AddSubview(subDates);
+				gView.AddSubview(rightTrackerCircle);
+				gView.AddSubview(reportHeader);
+				gView.AddSubview(subDates);
+        gView.AddSubview(subFinish);
+				gView.AddSubview(beginPicker);
+				gView.AddSubview(endPicker);
+				gView.AddSubview(graphTab);
+				gView.AddSubview(numericTab);
+				gView.AddSubview(graphTabHighlight);
+				gView.AddSubview(numericTabHighlight);
+				gView.AddSubview(deviceCountLabel);
         gView.AddSubview(menuButton);
-        gView.AddSubview(scrollUp);
-        gView.AddSubview(extendedUp);
-        gView.AddSubview(scrollDown);
-        gView.AddSubview(extendedDown);
 				gView.AddSubview(exportSelect.blackoutView);
 				gView.AddSubview(exportSelect.popupView);
-				gView.BringSubviewToFront(exportSelect.popupView);        
-        if(ChosenDates.allTimes[ChosenDates.latest.ToString()] == 0){
+				gView.BringSubviewToFront(exportSelect.popupView);
+				gView.AddSubview(extraInfoTable);
+
+				if(ChosenDates.allTimes[ChosenDates.latest.ToString()] == 0){
 					dateMultiplier = 1;
 				} else {
         	dateMultiplier = (.8 * graphTable.Bounds.Width) / ChosenDates.allTimes[ChosenDates.latest.ToString()];
@@ -193,27 +221,28 @@ namespace ION.IOS.ViewController.Logging
 		/// a subsection of the data
 		/// </summary>
 		public void CreateGraphTrackers(UIView mainView){
-			leftTrackerView = new UIView (new CGRect (.1 * gView.Bounds.Width,.15 * gView.Bounds.Height, 1, trackerHeight));
+			leftTrackerView = new UIView (new CGRect (.05 * gView.Bounds.Width,.15 * gView.Bounds.Height + 45, 1, trackerHeight));
 			leftTrackerView.BackgroundColor = UIColor.Gray;
 			leftTrackerView.Alpha = .4f;
 
-			leftTrackerCircle = new UIImageView (new CGRect (.1 * gView.Bounds.Width, .15 * gView.Bounds.Height + trackerHeight, 30,33));
+			leftTrackerCircle = new UIImageView (new CGRect (.05 * gView.Bounds.Width, .15 * gView.Bounds.Height + trackerHeight + 45, 30,33));
 			leftTrackerCircle.Image = UIImage.FromBundle ("ic_left_tracker");
 			leftTrackerCircle.UserInteractionEnabled = true;
 
 			lTrackerDrag = new UIPanGestureRecognizer (() => {
-				var xPlot = (leftTrackerCircle.Center.X - .5 * leftTrackerCircle.Bounds.Width) - (.1 * mainView.Bounds.Width);
+				var xPlot = (leftTrackerCircle.Center.X - .5 * leftTrackerCircle.Bounds.Width) - (.05 * mainView.Bounds.Width);
 				if(lTrackerDrag.State == UIGestureRecognizerState.Changed){
           var index = (int)(xPlot/dateMultiplier);
           if(ChosenDates.allIndexes.ContainsKey(index)){
             ChosenDates.subLeft = DateTime.Parse(ChosenDates.allIndexes[index]);
           }
-          subDates.Text = Util.Strings.Report.START + ": " + ChosenDates.subLeft.ToString () + "\n"+Util.Strings.Report.FINISH+": " + ChosenDates.subRight.ToString();
+					beginPicker.SetTitle(ChosenDates.subLeft.ToString(), UIControlState.Normal);
+					endPicker.SetTitle(ChosenDates.subRight.ToString(), UIControlState.Normal);
 				}   
-				if(lTrackerDrag.LocationInView(mainView).X > (.1 * mainView.Bounds.Width) && lTrackerDrag.LocationInView(mainView).X < (.75 * mainView.Bounds.Width)){
+				if(lTrackerDrag.LocationInView(mainView).X > (.05 * mainView.Bounds.Width) && lTrackerDrag.LocationInView(mainView).X < (.75 * mainView.Bounds.Width)){
 					if(rightTrackerCircle.Center.X - rightTrackerCircle.Bounds.Width > lTrackerDrag.LocationInView(mainView).X){
-						leftTrackerView.Frame = new CGRect(.1 * mainView.Bounds.Width,.15 * mainView.Bounds.Height, lTrackerDrag.LocationInView(mainView).X - (.1 * mainView.Bounds.Width), trackerHeight);
-						leftTrackerCircle.Frame = new CGRect(lTrackerDrag.LocationInView(mainView).X,.15 * mainView.Bounds.Height + trackerHeight,30,33);
+						leftTrackerView.Frame = new CGRect(.05 * mainView.Bounds.Width,.15 * mainView.Bounds.Height + 45, lTrackerDrag.LocationInView(mainView).X - (.05 * mainView.Bounds.Width), trackerHeight);
+						leftTrackerCircle.Frame = new CGRect(lTrackerDrag.LocationInView(mainView).X,.15 * mainView.Bounds.Height + trackerHeight + 45,30,33);
 					}
 				}
 				if (lTrackerDrag.State == UIGestureRecognizerState.Ended){          
@@ -226,76 +255,44 @@ namespace ION.IOS.ViewController.Logging
 						animation: () =>{
               subDates.TextColor = UIColor.FromRGB(49, 111, 18);
 							subDates.TextColor = UIColor.Black;
+							subFinish.TextColor = UIColor.FromRGB(49, 111, 18);
+							subFinish.TextColor = UIColor.Black;
+
               leftTrackerView.BackgroundColor = UIColor.Gray;
 						},
 						completion: () =>{}
 					);
 				}
 			});
-
-      lViewDrag = new UIPanGestureRecognizer (() => {
-        var xPlot = (leftTrackerCircle.Center.X - .5 * leftTrackerCircle.Bounds.Width) - (.1 * mainView.Bounds.Width);
-        if(lViewDrag.State == UIGestureRecognizerState.Changed){
-          var index = (int)(xPlot/dateMultiplier);
-          if(ChosenDates.allIndexes.ContainsKey(index)){
-            ChosenDates.subLeft = DateTime.Parse(ChosenDates.allIndexes[index]);
-          }
-          subDates.Text = Util.Strings.Report.START + ": " + ChosenDates.subLeft.ToString () + "\n"+Util.Strings.Report.FINISH+": " + ChosenDates.subRight.ToString();
-        }
-        if(lViewDrag.LocationInView(mainView).X > (.1 * mainView.Bounds.Width) && lViewDrag.LocationInView(mainView).X < (.75 * mainView.Bounds.Width)){
-          if(rightTrackerCircle.Center.X - rightTrackerCircle.Bounds.Width > lViewDrag.LocationInView(mainView).X){
-            leftTrackerView.Frame = new CGRect(.1 * mainView.Bounds.Width,.15 * mainView.Bounds.Height, lViewDrag.LocationInView(mainView).X - (.1 * mainView.Bounds.Width), trackerHeight);
-            //leftTrackerCircle.Frame = new CGRect(lViewDrag.LocationInView(mainView).X - 15,.15 * mainView.Bounds.Height + trackerHeight,30,33);
-            leftTrackerCircle.Frame = new CGRect(lViewDrag.LocationInView(mainView).X,.15 * mainView.Bounds.Height + trackerHeight,30,33);
-          }
-        }
-        if (lViewDrag.State == UIGestureRecognizerState.Ended){
-          leftTrackerView.BackgroundColor = UIColor.FromRGB(49, 111, 18);
-          subDates.TextColor = UIColor.Green;
-          UIView.Transition(
-            withView:subDates,
-            duration:.5,
-            options: UIViewAnimationOptions.TransitionCrossDissolve,
-            animation: () =>{
-              subDates.TextColor = UIColor.FromRGB(49, 111, 18);
-              subDates.TextColor = UIColor.Black;
-              leftTrackerView.BackgroundColor = UIColor.Gray;
-            },
-            completion: () =>{}
-          );
-        }
-      }); 
 			 
 			leftTrackerCircle.AddGestureRecognizer (lTrackerDrag);
-      leftTrackerView.AddGestureRecognizer(lViewDrag);
 
-			rightTrackerView = new UIView (new CGRect (.915 * graphTable.Bounds.Width,.15 * gView.Bounds.Height, 1, trackerHeight));
+			rightTrackerView = new UIView (new CGRect (.855 * graphTable.Bounds.Width,.15 * gView.Bounds.Height + 45, 1, trackerHeight));
 			rightTrackerView.BackgroundColor = UIColor.Gray;
 			rightTrackerView.Alpha = .4f;
 
-			rightTrackerCircle = new UIImageView (new CGRect (0, .15 * gView.Bounds.Height + trackerHeight,30, 33));
+			rightTrackerCircle = new UIImageView (new CGRect (0, .15 * gView.Bounds.Height + trackerHeight + 45,30, 33));
 			rightTrackerCircle.Image = UIImage.FromBundle ("ic_right_tracker");
 			rightTrackerCircle.UserInteractionEnabled = true;
 
 			var trackerRect = rightTrackerCircle.Center;
-			//trackerRect.X = rightTrackerView.Center.X - (.5f * rightTrackerView.Bounds.Width);
 			trackerRect.X = rightTrackerView.Center.X - 15;
 			rightTrackerCircle.Center = trackerRect;
 			
 			rTrackerDrag = new UIPanGestureRecognizer (() => {
-				var xPlot = (rightTrackerCircle.Center.X + .5 * rightTrackerCircle.Bounds.Width) - (.1 * mainView.Bounds.Width);
+				var xPlot = (rightTrackerCircle.Center.X + .5 * rightTrackerCircle.Bounds.Width) - (.05 * mainView.Bounds.Width);
 				if(rTrackerDrag.State == UIGestureRecognizerState.Changed){          
           var index = (int)(xPlot/dateMultiplier);
           if(ChosenDates.allIndexes.ContainsKey(index)){
             ChosenDates.subRight = DateTime.Parse(ChosenDates.allIndexes[index]);
           }
-          subDates.Text = Util.Strings.Report.START + ": " + ChosenDates.subLeft.ToString () + "\n"+Util.Strings.Report.FINISH+": " + ChosenDates.subRight.ToString();
+					beginPicker.SetTitle(ChosenDates.subLeft.ToString(), UIControlState.Normal);
+					endPicker.SetTitle(ChosenDates.subRight.ToString(), UIControlState.Normal);
 				}
-        if(rTrackerDrag.LocationInView(mainView).X > (.11 * mainView.Bounds.Width) && rTrackerDrag.LocationInView(mainView).X < (.915 * graphTable.Bounds.Width)){
+				if(rTrackerDrag.LocationInView(mainView).X > (.06 * mainView.Bounds.Width) && rTrackerDrag.LocationInView(mainView).X < (.855 * graphTable.Bounds.Width)){
 					if(leftTrackerCircle.Center.X + leftTrackerCircle.Bounds.Width < rTrackerDrag.LocationInView(mainView).X){
-						rightTrackerView.Frame = new CGRect(rTrackerDrag.LocationInView(mainView).X,.15 * mainView.Bounds.Height,(.915 * graphTable.Bounds.Width) - rTrackerDrag.LocationInView(mainView).X, trackerHeight);
-						//rightTrackerCircle.Frame = new CGRect(rTrackerDrag.LocationInView(mainView).X - 15,.15 * mainView.Bounds.Height + trackerHeight,30,33);
-						rightTrackerCircle.Frame = new CGRect(rTrackerDrag.LocationInView(mainView).X - rightTrackerCircle.Bounds.Width,.15 * mainView.Bounds.Height + trackerHeight,30,33);
+						rightTrackerView.Frame = new CGRect(rTrackerDrag.LocationInView(mainView).X,.15 * mainView.Bounds.Height + 45,(.855 * graphTable.Bounds.Width) - rTrackerDrag.LocationInView(mainView).X, trackerHeight);
+						rightTrackerCircle.Frame = new CGRect(rTrackerDrag.LocationInView(mainView).X - rightTrackerCircle.Bounds.Width,.15 * mainView.Bounds.Height + trackerHeight + 45,30,33);
 					}
 				}
 				if (rTrackerDrag.State == UIGestureRecognizerState.Ended){
@@ -308,63 +305,84 @@ namespace ION.IOS.ViewController.Logging
 						animation: () =>{
               subDates.TextColor = UIColor.FromRGB(49, 111, 18);
 							subDates.TextColor = UIColor.Black;
+							subFinish.TextColor = UIColor.FromRGB(49, 111, 18);
+							subFinish.TextColor = UIColor.Black;
               rightTrackerView.BackgroundColor = UIColor.Gray;
 						},
 						completion: () =>{}
 					);
 				}
 			});
-
-      rViewDrag = new UIPanGestureRecognizer (() => {
-        var xPlot = (rightTrackerCircle.Center.X + .5 * rightTrackerCircle.Bounds.Width) - (.1 * mainView.Bounds.Width);
-        if(rViewDrag.State == UIGestureRecognizerState.Changed){          
-          var index = (int)(xPlot/dateMultiplier);
-          if(ChosenDates.allIndexes.ContainsKey(index)){
-            ChosenDates.subRight = DateTime.Parse(ChosenDates.allIndexes[index]);
-          }
-          subDates.Text = Util.Strings.Report.START + ": " + ChosenDates.subLeft.ToString () + "\n"+Util.Strings.Report.FINISH+": " + ChosenDates.subRight.ToString();
-        }
-        if(rViewDrag.LocationInView(mainView).X > (.11 * mainView.Bounds.Width) && rViewDrag.LocationInView(mainView).X < (.915 * graphTable.Bounds.Width)){
-          if(leftTrackerCircle.Center.X + leftTrackerCircle.Bounds.Width < rViewDrag.LocationInView(mainView).X){
-            rightTrackerView.Frame = new CGRect(rViewDrag.LocationInView(mainView).X,.15 * mainView.Bounds.Height,(.915 * graphTable.Bounds.Width) - rViewDrag.LocationInView(mainView).X, trackerHeight);
-            rightTrackerCircle.Frame = new CGRect(rViewDrag.LocationInView(mainView).X - rightTrackerCircle.Bounds.Width,.15 * mainView.Bounds.Height + trackerHeight,30,33);
-          }
-        }
-        if (rViewDrag.State == UIGestureRecognizerState.Ended){
-
-          rightTrackerView.BackgroundColor = UIColor.FromRGB(49, 111, 18);
-          UIView.Transition(
-            withView:subDates,
-            duration:.5,
-            options: UIViewAnimationOptions.TransitionCrossDissolve,
-            animation: () =>{
-              subDates.TextColor = UIColor.FromRGB(49, 111, 18);
-              subDates.TextColor = UIColor.Black;
-              rightTrackerView.BackgroundColor = UIColor.Gray;
-            },
-            completion: () =>{}
-          );
-        }
-      });
 				
 			rightTrackerCircle.AddGestureRecognizer (rTrackerDrag);
-      rightTrackerView.AddGestureRecognizer(rViewDrag);
 
-			subDates = new UILabel (new CGRect (.1 * gView.Bounds.Width,0,.8 * gView.Bounds.Width,.1 * gView.Bounds.Height));
+      reportHeader = new UILabel(new CGRect(0,0,gView.Bounds.Width,40));
+      reportHeader.Text = "Build Report";
+      reportHeader.BackgroundColor = UIColor.FromRGB(0, 174, 239);
+      reportHeader.Font = UIFont.BoldSystemFontOfSize(20f);
+      reportHeader.AdjustsFontSizeToFitWidth = true;
+      reportHeader.TextAlignment = UITextAlignment.Center;
+
+			subDates = new UILabel(new CGRect(.05 * gView.Bounds.Width, 40, .2 * gView.Bounds.Width, .05 * gView.Bounds.Height));
+			subFinish = new UILabel (new CGRect (.05 * gView.Bounds.Width,.05 * gView.Bounds.Height + 40,.2 * gView.Bounds.Width,.05 * gView.Bounds.Height));
+			subFinish.TextColor = UIColor.Black;
+			beginPicker = new UIButton(new CGRect(.26 * gView.Bounds.Width, 40, .61 * gView.Bounds.Width, .05 * gView.Bounds.Height));
+			beginPicker.SetTitleColor(UIColor.Black, UIControlState.Normal);
+			endPicker = new UIButton(new CGRect(.26 * gView.Bounds.Width,.05 * gView.Bounds.Height + 40,.61 * gView.Bounds.Width,.05 * gView.Bounds.Height));
+			endPicker.SetTitleColor(UIColor.Black, UIControlState.Normal);
+
 			subDates.AdjustsFontSizeToFitWidth = true;
 			subDates.TextColor = UIColor.Black;
 			subDates.TextAlignment = UITextAlignment.Left;
-      subDates.Lines = 0;
-			subDates.Text = Util.Strings.Report.START + ": " + ChosenDates.subLeft.ToString () + "\n"+Util.Strings.Report.FINISH+": " + ChosenDates.subRight.ToString();
+			subDates.Text = Util.Strings.Report.START + ": ";
 			subDates.Font = UIFont.FromName("Helvetica-Bold", 22f);
 			subDates.MinimumFontSize = 11.5f;
+
+			graphTab = new UIButton(new CGRect(.05 * gView.Bounds.Width, .1 * gView.Bounds.Height + 45, .25 * gView.Bounds.Width, .05 * gView.Bounds.Height - 5));
+      graphTab.BackgroundColor = UIColor.White;
+      graphTab.SetTitle("GRAPH", UIControlState.Normal);
+      graphTab.SetTitleColor(UIColor.Black, UIControlState.Normal);
+      graphTab.Layer.BorderWidth = 1f;
+
+      graphTabHighlight = new UILabel(new CGRect(.05 * gView.Bounds.Width, .15 * gView.Bounds.Height + 40, .25 * gView.Bounds.Width, 5));
+      graphTabHighlight.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+      graphTabHighlight.Layer.BorderWidth = 1f;
+
+			numericTab = new UIButton(new CGRect(.3 * gView.Bounds.Width, .1 * gView.Bounds.Height + 45, .25 * gView.Bounds.Width, .05 * gView.Bounds.Height - 5));
+			numericTab.BackgroundColor = UIColor.LightGray;
+			numericTab.SetTitle("NUMERIC", UIControlState.Normal);
+			numericTab.SetTitleColor(UIColor.Black, UIControlState.Normal);
+			numericTab.Layer.BorderWidth = 1f;
+
+			numericTabHighlight = new UILabel(new CGRect(.3 * gView.Bounds.Width, .15 * gView.Bounds.Height + 40, .25 * gView.Bounds.Width, 5));
+			numericTabHighlight.BackgroundColor = UIColor.Black;
+			numericTabHighlight.Layer.BorderWidth = 1f;
+
+			deviceCountLabel = new UILabel(new CGRect(.56 * gView.Bounds.Width, .1 * gView.Bounds.Height + 40, .4 * gView.Bounds.Width, .05 * gView.Bounds.Height));
+      deviceCountLabel.Text = "# of Sensors: " + selectedData.Count();
+      deviceCountLabel.Font = UIFont.BoldSystemFontOfSize(18f);
+
+			subFinish.AdjustsFontSizeToFitWidth = true;
+			subFinish.TextColor = UIColor.Black;
+			subFinish.TextAlignment = UITextAlignment.Left;
+      subFinish.Text = Util.Strings.Report.FINISH+ ": ";
+			subFinish.Font = UIFont.FromName("Helvetica-Bold", 22f);
+			subFinish.MinimumFontSize = 11.5f;
+
+			beginPicker.SetTitle(ChosenDates.subLeft.ToString(), UIControlState.Normal);
+      beginPicker.Font = UIFont.BoldSystemFontOfSize(21f);
+      beginPicker.TouchUpInside += BeginningDatePickerTapped;
+			endPicker.SetTitle(ChosenDates.subRight.ToString(), UIControlState.Normal);
+			endPicker.Font = UIFont.BoldSystemFontOfSize(21f);
+      endPicker.TouchUpInside += EndingDatePickerTapped;
 		}
+
 		/// <summary>
 		/// Creates the buttons to navigate and manipulate the graph and its included data
 		/// </summary>
     public void createButtons(ObservableCollection<int> sessions){
       var deviceCount = ChosenDates.includeList.Count;
-      resetButton = new UIButton (new CGRect (.05 * gView.Bounds.Width, .82 * mainVC.View.Bounds.Height, .3 * gView.Bounds.Width, .08 * gView.Bounds.Height));
+      resetButton = new UIButton (new CGRect (.05 * gView.Bounds.Width, .82 * mainVC.View.Bounds.Height, .4 * gView.Bounds.Width, .08 * gView.Bounds.Height));
 			resetButton.BackgroundColor = UIColor.Red;
 			resetButton.SetTitle (Util.Strings.RESET, UIControlState.Normal);
       resetButton.Font = UIFont.ItalicSystemFontOfSize(22);
@@ -375,26 +393,27 @@ namespace ION.IOS.ViewController.Logging
         ChosenDates.subRight = ChosenDates.latest;
 				UIView.Animate(.15,0, UIViewAnimationOptions.CurveLinear,
 					() =>{
-						leftTrackerView.Frame = new CGRect(.1 * gView.Bounds.Width,.15 * gView.Bounds.Height, 1, trackerHeight);
+						leftTrackerView.Frame = new CGRect(.05 * gView.Bounds.Width,.15 * gView.Bounds.Height + 45, 1, trackerHeight);
 						var trackerRect = leftTrackerCircle.Center;
 						trackerRect.X = leftTrackerView.Center.X + (.5f * leftTrackerCircle.Bounds.Width);
 						leftTrackerCircle.Center = trackerRect;
 					},() => {});
 
 				UIView.Animate(.15,0, UIViewAnimationOptions.CurveLinear,
-					() =>{ 
-						rightTrackerView.Frame = new CGRect(.915 * graphTable.Bounds.Width,.15 * gView.Bounds.Height, 1, trackerHeight);
+					() =>{
+						rightTrackerView.Frame = new CGRect(.855 * graphTable.Bounds.Width,.15 * gView.Bounds.Height + 45, 1, trackerHeight);
 						var trackerRect = rightTrackerCircle.Center;
 						trackerRect.X = rightTrackerView.Center.X - (.5f * rightTrackerCircle.Bounds.Width);
 						rightTrackerCircle.Center = trackerRect;
 					},() => {});				
 				resetButton.BackgroundColor = UIColor.Red;
-        subDates.Text = Util.Strings.Report.START + ": " + ChosenDates.subLeft.ToString () + "\n"+Util.Strings.Report.FINISH+": " + ChosenDates.subRight.ToString();
+				beginPicker.SetTitle(ChosenDates.subLeft.ToString(), UIControlState.Normal);
+				endPicker.SetTitle(ChosenDates.subRight.ToString(), UIControlState.Normal);
 			};
 			resetButton.TouchDown += (sender, e) => {resetButton.BackgroundColor = UIColor.Blue;};
       resetButton.TouchUpOutside += (sender, e) => {resetButton.BackgroundColor = UIColor.Red;};
 
-      exportGraph = new UIButton (new CGRect (.65 * gView.Bounds.Width, .82 * mainVC.View.Bounds.Height,.3 * gView.Bounds.Width,.08 * gView.Bounds.Height));
+      exportGraph = new UIButton (new CGRect (.55 * gView.Bounds.Width, .82 * mainVC.View.Bounds.Height,.4 * gView.Bounds.Width,.08 * gView.Bounds.Height));
       exportGraph.BackgroundColor = UIColor.FromRGB(49, 111, 18);
 			exportGraph.SetTitle (Util.Strings.Report.EXPORT, UIControlState.Normal); 
 			exportGraph.Layer.CornerRadius = 5f; 
@@ -410,55 +429,17 @@ namespace ION.IOS.ViewController.Logging
 			exportSelect.pdfExport.TouchUpInside += pdfExport;
 			exportSelect.spreadsheetExport.TouchUpInside += spreadsheetExport;
 
-      menuButton = new UIButton (new CGRect (.9 * gView.Bounds.Width,5,.1 * gView.Bounds.Width,.075 * gView.Bounds.Width));
+      menuButton = new UIButton (new CGRect (.87 * gView.Bounds.Width,45,.1 * gView.Bounds.Width,.1 * gView.Bounds.Width));
 			menuButton.SetBackgroundImage (UIImage.FromBundle ("ic_settings"), UIControlState.Normal);
+      menuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+			menuButton.Layer.CornerRadius = 5f;
+			menuButton.Layer.BorderWidth = 1f;
+      menuButton.ClipsToBounds = true;
 
       var scrollPosition = .24 * gView.Bounds.Height;
       if (UserInterfaceIdiomIsPhone) {
         scrollPosition = .26 * gView.Bounds.Height;
       }
-      scrollUp = new UIButton (new CGRect (0,scrollPosition,.1 * gView.Bounds.Width, .1 * gView.Bounds.Width));
-			scrollUp.SetImage (UIImage.FromBundle ("ic_scrollup"), UIControlState.Normal);
-			scrollUp.Enabled = false;
-
-			scrollUp.TouchUpInside += (sender, e) => {
-				graphTable.ScrollToRow(NSIndexPath.FromRowSection(topCell,0), UITableViewScrollPosition.Top, true);
-				if(topCell <= 0){
-					topCell = 0;
-					scrollUp.Enabled = false;
-          scrollDown.Enabled = true;
-				} else {
-					topCell = topCell - 1;
-					bottomCell = bottomCell -1;
-					scrollDown.Enabled = true;
-				}
-			};
-      extendedUp = new UIButton(new CGRect(0,0,.1 * gView.Bounds.Width,scrollPosition));
-      extendedUp.TouchUpInside += (sender, e) => {scrollUp.SendActionForControlEvents(UIControlEvent.TouchUpInside);};
-      extendedUp.TouchDown += (sender, e) => {scrollUp.SendActionForControlEvents(UIControlEvent.TouchDown);};
-
-      scrollDown = new UIButton (new CGRect (0, .65 * gView.Bounds.Height,.1 * gView.Bounds.Width, .1 * gView.Bounds.Width));
-			scrollDown.SetImage (UIImage.FromBundle ("ic_scrolldown"), UIControlState.Normal);
-			scrollDown.TouchUpInside += (sender, e) => {
-				graphTable.ScrollToRow(NSIndexPath.FromRowSection(bottomCell,0), UITableViewScrollPosition.Bottom, true);
-				if(bottomCell >= deviceCount - 1){
-					bottomCell = deviceCount - 1;
-					scrollDown.Enabled = false;
-          scrollUp.Enabled = true;
-				} else {
-					topCell = topCell + 1;
-					bottomCell = bottomCell + 1;
-					scrollUp.Enabled = true;
-				}
-			};
-      extendedDown = new UIButton(new CGRect(0,.75 * gView.Bounds.Height,.1 * gView.Bounds.Width,.15 * gView.Bounds.Height));
-      extendedDown.TouchUpInside += (sender, e) => {scrollDown.SendActionForControlEvents(UIControlEvent.TouchUpInside);};
-      extendedDown.TouchDown += (sender, e) => {scrollDown.SendActionForControlEvents(UIControlEvent.TouchDown);};
-
-			if (ChosenDates.includeList.Count <= 4) {
-				scrollUp.Hidden = true;
-				scrollDown.Hidden = true;
-			}
 		}
     /// <summary>
     /// Gets the earliest and latest dates from the sessions chosen
@@ -1919,7 +1900,94 @@ namespace ION.IOS.ViewController.Logging
 				extraInfoRow++;
 			}
 		}
+    /// <summary>
+    /// Opens the date picker to choose the starting date 
+    /// </summary>
+    /// <param name="sender">Sender.</param>
+    /// <param name="e">E.</param>
+		async void BeginningDatePickerTapped(object sender, EventArgs e) {
+			var modalPicker = new ModalPickerViewController(ModalPickerType.Custom, Util.Strings.Report.SELECTSTART, mainVC) {
+				HeaderBackgroundColor = UIColor.Red,
+				HeaderTextColor = UIColor.White,
+				TransitioningDelegate = new ModalPickerTransitionDelegate(),
+				ModalPresentationStyle = UIModalPresentationStyle.Custom
+			};
+			//Create the model for the Picker View
+			var timeList = ChosenDates.allTimes.Select(kvp => kvp.Key).ToList();
+			timeList.OrderBy(x => x);
+			modalPicker.PickerView.Model = new CustomPickerModel(timeList, gView);
 
+			modalPicker.OnModalPickerDismissed += (s, ea) =>
+			{
+				modalPicker.DidChangeValue("stuff");
+
+				var index = modalPicker.PickerView.SelectedRowInComponent(0);
+				ChosenDates.subLeft = DateTime.Parse(timeList[(int)index]);
+
+				beginPicker.SetTitle(ChosenDates.subLeft.ToString(), UIControlState.Normal);
+				mainVC.DismissViewController(false, null);
+
+				////calculate left tracker size based on manual selected dates
+				var leftIndex = ChosenDates.allTimes[ChosenDates.subLeft.ToString()];
+				var lwidth = dateMultiplier * leftIndex;
+
+				///resize left tracker to match manual selection
+				leftTrackerView.Frame = new CGRect(.05f * gView.Bounds.Width, .15f * gView.Bounds.Height + 5, lwidth, trackerHeight);
+				var trackerRect = leftTrackerCircle.Center;
+				trackerRect.X = leftTrackerView.Frame.Right + (.5f * leftTrackerCircle.Bounds.Width);
+				leftTrackerCircle.Center = trackerRect;
+			};
+
+			await mainVC.PresentViewControllerAsync(modalPicker, true);
+		}
+    /// <summary>
+    /// Opens the date picker to chose the ending date
+    /// </summary>
+    /// <param name="sender">Sender.</param>
+    /// <param name="e">E.</param>
+		async void EndingDatePickerTapped(object sender, EventArgs e) {
+			var modalPicker = new ModalPickerViewController(ModalPickerType.Custom, Util.Strings.Report.SELECTEND, mainVC) {
+				HeaderBackgroundColor = UIColor.Red,
+				HeaderTextColor = UIColor.White,
+				TransitioningDelegate = new ModalPickerTransitionDelegate(),
+				ModalPresentationStyle = UIModalPresentationStyle.Custom
+			};
+			//Create the model for the Picker View
+			var endingDates = new List<string>();
+			foreach (var time in ChosenDates.allTimes) {
+				if (DateTime.Parse(time.Key) > ChosenDates.subLeft) {
+					endingDates.Add(time.Key);
+				}
+			}
+			if (endingDates.Count == 0) {
+				foreach (var time in ChosenDates.allTimes) {
+					endingDates.Add(time.Key);
+				}
+			}
+			endingDates.OrderBy(x => x);
+			modalPicker.PickerView.Model = new CustomPickerModel(endingDates, gView);
+
+			modalPicker.OnModalPickerDismissed += (s, ea) =>
+			{
+				var index = modalPicker.PickerView.SelectedRowInComponent(0);
+				ChosenDates.subRight = DateTime.Parse(endingDates[(int)index]);
+				endPicker.SetTitle(ChosenDates.subRight.ToString(), UIControlState.Normal);
+				mainVC.DismissViewController(false, null);
+
+				////calculate right tracker size based on manual selected dates
+				var rightIndex = ChosenDates.allTimes[ChosenDates.subRight.ToString()];
+				var rfinal = (dateMultiplier * rightIndex) + (.05 * gView.Bounds.Width);
+				double rwidth = ChosenDates.allTimes[ChosenDates.latest.ToString()] - rightIndex;
+				rwidth = rwidth * dateMultiplier;
+
+				///resize right tracker to match manual selection
+				rightTrackerView.Frame = new CGRect(rfinal, .15 * gView.Bounds.Height + 5, rwidth, trackerHeight);
+				var trackerRect = rightTrackerCircle.Center;
+				trackerRect.X = rightTrackerView.Frame.Left - (.5f * rightTrackerCircle.Bounds.Width);
+				rightTrackerCircle.Center = trackerRect;
+			};
+			await mainVC.PresentViewControllerAsync(modalPicker, true);
+		}
     /*
     /// <summary>
     /// Adjusts the second y axis to scale along side the first y axis and the x axis

@@ -9,8 +9,8 @@ using System.CodeDom.Compiler;
 
 namespace ION.IOS.ViewController.Logging
 {
-	[Register ("LoggingViewController")]
-	partial class LoggingViewController
+	[Register ("GraphingViewController")]
+	partial class GraphingViewController
 	{
 		[Outlet]
 		UIKit.UIView containerView { get; set; }

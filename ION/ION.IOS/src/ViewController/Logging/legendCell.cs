@@ -15,20 +15,74 @@ namespace ION.IOS.ViewController.Logging
 
 		public UILabel header;
 		public UILabel information;
+		public UILabel includeLabel;
+		public UIButton includeButton;
+		public UIView buttonImage;
 
-		public void setupTable(UIView parentView,deviceReadings deviceData,List<deviceReadings> allData)
+		public void setupTable(UITableView tableView,deviceReadings deviceData,List<deviceReadings> allData)
 		{
 			double highestMeasurement = -9999;
 			double lowestMeasurement = 9999999;
+			var combineName = deviceData.serialNumber + "/" + deviceData.sensorIndex;
 
-			header = new UILabel (new CGRect (0,0,.98 * parentView.Bounds.Width,.055 * parentView.Bounds.Height));
+			var cellHeight = .25 * tableView.Bounds.Height;
+
+			header = new UILabel (new CGRect (0,0,.8 * tableView.Bounds.Width, .2 * cellHeight));
 			header.BackgroundColor = UIColor.Black;
 			header.TextColor = UIColor.White;
-			header.TextAlignment = UITextAlignment.Center;
+      header.TextAlignment = UITextAlignment.Left;
 			header.AdjustsFontSizeToFitWidth = true;
-      header.Text = deviceData.serialNumber;
+      header.Text = deviceData.serialNumber + "    " + deviceData.type;
 
-			information = new UILabel (new CGRect (0,.055 * parentView.Bounds.Height,.98 * parentView.Bounds.Width,.111 * parentView.Bounds.Height));
+			if (deviceData.type.Equals("Temperature")) {
+				header.BackgroundColor = UIColor.FromRGB(247, 148, 29);
+				header.TextColor = UIColor.Black;
+			} else if (deviceData.type.Equals("Vacuum")) {
+				header.BackgroundColor = UIColor.FromRGB(123, 38, 34);
+				header.TextColor = UIColor.White;
+			} else {
+				header.BackgroundColor = UIColor.FromRGB(46, 49, 146);
+				header.TextColor = UIColor.White;
+			}
+
+			includeLabel = new UILabel(new CGRect(.8 * tableView.Bounds.Width, 0, .2 * tableView.Bounds.Width, .2 * cellHeight));
+			includeLabel.TextAlignment = UITextAlignment.Center;
+			includeLabel.Text = Util.Strings.INCLUDE;
+			includeLabel.AdjustsFontSizeToFitWidth = true;
+			includeLabel.Layer.BorderWidth = 1f;
+			includeLabel.BackgroundColor = UIColor.Black;
+			includeLabel.TextColor = UIColor.White;
+
+			includeButton = new UIButton(new CGRect(.799 * tableView.Bounds.Width, 0, .2 * tableView.Bounds.Width, cellHeight));
+			includeButton.SetTitleColor(UIColor.White, UIControlState.Normal);
+			includeButton.Layer.BorderWidth = 1f;
+
+			buttonImage = new UIView(new CGRect(.8 * tableView.Bounds.Width, .25 * includeButton.Bounds.Height, includeButton.Bounds.Width, .75 * includeButton.Bounds.Height));
+			buttonImage.BackgroundColor = UIColor.Yellow;
+			buttonImage.UserInteractionEnabled = true;
+
+			var image = new UIImageView(new CGRect(.25 * buttonImage.Bounds.Width, .25 * buttonImage.Bounds.Height, .5 * buttonImage.Bounds.Width, .5 * buttonImage.Bounds.Width));
+			image.Layer.CornerRadius = 12;
+			image.BackgroundColor = UIColor.White;
+			if (ChosenDates.includeList.Contains(combineName)) {
+				image.Image = UIImage.FromBundle("ic_checkbox");
+			} else {
+				image.Image = UIImage.FromBundle("ic_unchecked");
+			}
+
+			buttonImage.AddSubview(image);
+
+			includeButton.TouchUpInside += (sender, e) => {
+				if (ChosenDates.includeList.Contains(combineName)) {
+					ChosenDates.includeList.Remove(combineName);
+					image.Image = UIImage.FromBundle("ic_unchecked");
+				} else {
+					ChosenDates.includeList.Add(combineName);
+					image.Image = UIImage.FromBundle("ic_checkbox");
+				}
+			};
+
+			information = new UILabel (new CGRect (0,.2 * cellHeight,.8 * tableView.Bounds.Width, .8 * cellHeight));
 			information.Layer.BorderWidth = 1f;
 			information.Lines = 0;
 			information.AdjustsFontSizeToFitWidth = true;
@@ -40,28 +94,21 @@ namespace ION.IOS.ViewController.Logging
  
       if (deviceData.type.Equals("Temperature")) {
         defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_temperature");
-        //Console.WriteLine("Changed to temperature default unit: " + defaultUnit);
         if (defaultUnit == null) {
           defaultUnit = "18";
           NSUserDefaults.StandardUserDefaults.SetInt(18, "settings_units_default_temperature");
         }
       } else if (deviceData.type.Equals("Vacuum")) {
         defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_vacuum");
-        //Console.WriteLine("Changed to vacuum default unit: " + defaultUnit);
       }
       var lookup = ION.Core.Sensors.UnitLookup.GetUnit(Convert.ToInt32(defaultUnit));
       var standardUnit = lookup.standardUnit;
       
-			//Console.WriteLine("Compiling legend data for device " + deviceData.serialNumber + " with index " + deviceData.sensorIndex);
       foreach (var device in allData) {
-      	//Console.WriteLine("Looking at device " + device.serialNumber + " and index " + device.sensorIndex);
         if (device.serialNumber.Equals(deviceData.serialNumber) && device.sensorIndex.Equals(deviceData.sensorIndex)) {
-        	//Console.WriteLine("Looking through data");
-          //foreach (var reading in device.readings) {
           for(int i = 0;i < device.readings.Count; i++){
       			var baseValue = standardUnit.OfScalar(device.readings[i]);
       			var coverted = baseValue.ConvertTo(lookup);
-          	//Console.WriteLine("legend at reading " + coverted + " at time " + device.times[i]);
           	if(device.readings[i] < lowestMeasurement){
 							lowestMeasurement = device.readings[i];				
 						}
@@ -69,20 +116,10 @@ namespace ION.IOS.ViewController.Logging
 							highestMeasurement = device.readings[i];
 						}
 						totalValue += device.readings[i];					
-          	//Console.WriteLine("Lowest: " + lowestMeasurement + " highest: " + highestMeasurement + " current " + coverted.amount);
-            //if (reading < coverted.amount) {
-            //  lowestMeasurement = reading;
-            //}
-            //if (reading > coverted.amount) {
-            //  highestMeasurement = reading;
-            //} 
-            //totalValue += reading;
             totalMeasurements++;
           }
         }
       }
-
-
 
       var workingValue = standardUnit.OfScalar(highestMeasurement);
 
@@ -98,6 +135,11 @@ namespace ION.IOS.ViewController.Logging
 
 			this.AddSubview (header);
 			this.AddSubview (information);
+
+			this.AddSubview(includeLabel);
+			this.AddSubview(buttonImage);
+			this.AddSubview(includeButton);
+			this.BringSubviewToFront(includeButton);
 		}
 	}
 }
