@@ -11,14 +11,14 @@ namespace ION.IOS.ViewController.Logging {
     public UIView showReports;
     public UITableView spreadsheetTable;
     public UITableView pdfTable;
-    public UILabel savedHeader;
     public UIButton spreadsheetButton;
     public UIButton pdfButton;
-    public UILabel middleBorder;
-    public UILabel bottomBorder;
+		public UILabel savedHeader;
+		public UILabel pdfHighlight;
+		public UILabel spreadsheetHighlight;
 
-    public ChooseSaved(UIView mainView) {
-      showReports = new UIView(new CGRect(.01 * mainView.Bounds.Width, .02 * mainView.Bounds.Height,.98 * mainView.Bounds.Width, .09 * mainView.Bounds.Height));
+		public ChooseSaved(UIView containerView) {
+      showReports = new UIView(new CGRect(0, 55, containerView.Bounds.Width, .85 * containerView.Bounds.Height));
       showReports.BackgroundColor = UIColor.White;
       showReports.Layer.CornerRadius = 5;
       showReports.Layer.BorderColor = UIColor.Black.CGColor;
@@ -26,91 +26,61 @@ namespace ION.IOS.ViewController.Logging {
       showReports.Hidden = true;
       showReports.ClipsToBounds = true;
 
-      var cellHeight = .07f * mainView.Bounds.Height;
+      var cellHeight = .07f * containerView.Bounds.Height;
 
-      savedHeader = new UILabel(new CGRect(0,0,showReports.Bounds.Width, .061 * mainView.Bounds.Height));
+      savedHeader = new UILabel(new CGRect(0,0,showReports.Bounds.Width, 40));
       savedHeader.Layer.CornerRadius = 8f;
       savedHeader.Text = Util.Strings.Report.SELECTION;
       savedHeader.TextAlignment = UITextAlignment.Center;
       savedHeader.Font = UIFont.BoldSystemFontOfSize(20);
-      savedHeader.BackgroundColor = UIColor.FromRGB(95,212,48);
-      savedHeader.Hidden = true;
+      savedHeader.BackgroundColor = UIColor.FromRGB(230, 103, 39);
+
+			///button to switch to session listing
+			pdfButton = new UIButton(new CGRect(0, 40, .5 * containerView.Bounds.Width, 40));
+			pdfButton.Layer.BorderColor = UIColor.Black.CGColor;
+			pdfButton.SetTitle("PDF", UIControlState.Normal);
+			pdfButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
+			pdfButton.BackgroundColor = UIColor.LightGray;
+
+			///user feedback for button press
+			pdfButton.TouchUpInside += switchPDFTab;
+
+      pdfHighlight = new UILabel(new CGRect(0, 80, pdfButton.Bounds.Width,5));
+      pdfHighlight.BackgroundColor = UIColor.FromRGB(0, 174, 239);
 
       ///button to switch to job listing
-      spreadsheetButton = new UIButton(new CGRect(0,.06 * mainView.Bounds.Height,.49 * mainView.Bounds.Width, .06 * mainView.Bounds.Height));
+      spreadsheetButton = new UIButton(new CGRect(.5 * containerView.Bounds.Width,40,.5 * containerView.Bounds.Width, 40));
       spreadsheetButton.Layer.BorderColor = UIColor.Black.CGColor;
       spreadsheetButton.SetTitle(Util.Strings.SPREADSHEET, UIControlState.Normal);
       spreadsheetButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
       spreadsheetButton.BackgroundColor = UIColor.White;
-      spreadsheetButton.Hidden = true;
 
       ///user feedback for button press
       spreadsheetButton.TouchUpInside += switchSpreadsheetTab;
-      spreadsheetButton.TouchDown += (sender, e) => { spreadsheetButton.BackgroundColor = UIColor.White;};
-      spreadsheetButton.TouchUpOutside += (sender, e) => {
-        if(!spreadsheetTable.Hidden){
-          spreadsheetButton.BackgroundColor = UIColor.White;
-        } else {
-          spreadsheetButton.BackgroundColor = UIColor.LightGray;
-        }
-      };
-      ///button to switch to session listing
-      pdfButton = new UIButton(new CGRect(.49 * mainView.Bounds.Width,.06 * mainView.Bounds.Height,.49 * mainView.Bounds.Width, .06 * mainView.Bounds.Height));
-      pdfButton.Layer.BorderColor = UIColor.Black.CGColor;
-      pdfButton.SetTitle("PDF", UIControlState.Normal);
-      pdfButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
-      pdfButton.BackgroundColor = UIColor.LightGray;
-      pdfButton.Hidden = true;
 
-      ///user feedback for button press
-      pdfButton.TouchUpInside += switchPDFTab;
-      pdfButton.TouchDown += (sender, e) => { pdfButton.BackgroundColor = UIColor.White;};
-      pdfButton.TouchUpOutside += (sender, e) => {
-        if(!pdfTable.Hidden){
-          pdfButton.BackgroundColor = UIColor.White;
-        } else {
-          pdfButton.BackgroundColor = UIColor.LightGray;
-        }
-      };
+			spreadsheetHighlight = new UILabel(new CGRect(.5 * containerView.Bounds.Width, 80, spreadsheetButton.Bounds.Width, 5));
+			spreadsheetHighlight.BackgroundColor = UIColor.Black;
 
-      middleBorder = new UILabel(new CGRect(.5 * showReports.Bounds.Width,pdfButton.Bounds.Height,2,pdfButton.Bounds.Height));
-      middleBorder.BackgroundColor = UIColor.Black;
-      middleBorder.Layer.CornerRadius = 8f;
-      middleBorder.Hidden = true;
-
-      bottomBorder = new UILabel(new CGRect(.45 * pdfButton.Bounds.Width,1.76 * pdfButton.Bounds.Height,.2 * pdfButton.Bounds.Width,.08 * pdfButton.Bounds.Height));
-      bottomBorder.BackgroundColor = UIColor.Blue;
-      bottomBorder.Layer.ShadowColor = UIColor.Black.CGColor;
-      bottomBorder.Layer.ShadowOpacity = .1f;
-      bottomBorder.Layer.ShadowRadius = .3f;
-      bottomBorder.Layer.ShadowOffset = new CGSize(0f, 1f);
-      bottomBorder.Layer.ShouldRasterize = true;
-      bottomBorder.Layer.MasksToBounds = true;
-      bottomBorder.Hidden = true;
-
-      spreadsheetTable = new UITableView(new CGRect(0, 2 * pdfButton.Bounds.Height, showReports.Bounds.Width, 9 * cellHeight));
+      spreadsheetTable = new UITableView(new CGRect(0, 85, showReports.Bounds.Width, 9 * cellHeight));
       spreadsheetTable.RegisterClassForCellReuse(typeof(SpreadsheetCell),"spreadsheetCell");
       spreadsheetTable.BackgroundColor = UIColor.Clear;
       spreadsheetTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
-      spreadsheetTable.Hidden = true;
 
-
-      pdfTable = new UITableView(new CGRect(0, 2 * pdfButton.Bounds.Height, showReports.Bounds.Width, 9 * cellHeight));
+      pdfTable = new UITableView(new CGRect(0, 85, showReports.Bounds.Width, 9 * cellHeight));
       pdfTable.RegisterClassForCellReuse(typeof(SpreadsheetCell),"spreadsheetCell");
       pdfTable.BackgroundColor = UIColor.Clear;
       pdfTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
-      pdfTable.Hidden = true;
 
       showReports.AddSubview(savedHeader);
-      showReports.AddSubview(spreadsheetButton);
-      showReports.AddSubview(pdfButton);
-      showReports.AddSubview(middleBorder);
-      showReports.AddSubview(bottomBorder);
+			showReports.AddSubview(spreadsheetButton);
+			showReports.AddSubview(spreadsheetHighlight);
+			showReports.AddSubview(pdfButton);
+			showReports.AddSubview(pdfHighlight);
       showReports.AddSubview(spreadsheetTable);
       showReports.BringSubviewToFront(spreadsheetTable);
       showReports.AddSubview(pdfTable);
       showReports.BringSubviewToFront(pdfTable);
-      spreadsheetButton.SendActionForControlEvents(UIControlEvent.TouchUpInside);
+      pdfButton.SendActionForControlEvents(UIControlEvent.TouchUpInside);
     }
 
     /// <summary>
@@ -123,23 +93,12 @@ namespace ION.IOS.ViewController.Logging {
       spreadsheetButton.Font = UIFont.SystemFontOfSize(18);
       pdfButton.BackgroundColor = UIColor.White;
       pdfButton.Font = UIFont.BoldSystemFontOfSize(22);
+      pdfHighlight.BackgroundColor = UIColor.FromRGB(0, 174, 239);
+      spreadsheetHighlight.BackgroundColor = UIColor.Black;
 
-      pdfButton.Enabled = false;
       spreadsheetTable.Hidden = true;
       pdfTable.Hidden = false;
-
-      UIView.Animate(.3, 0, UIViewAnimationOptions.CurveEaseInOut, () => {        
-        var newCenter = bottomBorder.Frame;
-        newCenter.X = .7f * showReports.Bounds.Width;
-        bottomBorder.Frame = newCenter;
-      },() => {
-        GetAllPDFS();
-      });
     } 
-
-    public void GetAllPDFS(){
-      spreadsheetButton.Enabled = true;
-    }
 
     /// <summary>
     /// Animate the switch to the spreadsheet tab and then load spreadsheets
@@ -151,24 +110,12 @@ namespace ION.IOS.ViewController.Logging {
       pdfButton.Font = UIFont.SystemFontOfSize(18);
       spreadsheetButton.BackgroundColor = UIColor.White;
       spreadsheetButton.Font = UIFont.BoldSystemFontOfSize(22);
+			pdfHighlight.BackgroundColor = UIColor.Black;
+			spreadsheetHighlight.BackgroundColor = UIColor.FromRGB(0, 174, 239);
 
-      spreadsheetButton.Enabled = false;
       pdfTable.Hidden = true;
       spreadsheetTable.Hidden = false;
-
-      UIView.Animate(.3, 0, UIViewAnimationOptions.CurveEaseInOut, () => {        
-        var newCenter = bottomBorder.Frame;
-        newCenter.X = .4f * spreadsheetButton.Bounds.Width;
-        bottomBorder.Frame = newCenter;
-      },() => {
-        GetAllSpreadsheets();
-      });
     }
-
-    public void GetAllSpreadsheets(){
-      pdfButton.Enabled = true;
-    }
-
   }
 }
 

@@ -37,7 +37,7 @@ namespace ION.IOS.ViewController.Logging
 		}
 
 		public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath) {
-			return .166f * parentView.Bounds.Height;
+			return .25f * tableView.Bounds.Height;
 		}
 
 		public override bool CanEditRow(UITableView tableView, NSIndexPath indexPath) {
@@ -67,7 +67,7 @@ namespace ION.IOS.ViewController.Logging
 				cell = new UITableViewCell(UITableViewCellStyle.Default, "legendCell") as legendCell;
 			}
 
-			cell.setupTable(parentView,tableItems [indexPath.Row],tableItems);
+			cell.setupTable(tableView,tableItems [indexPath.Row],tableItems);
 			cell.SelectionStyle = UITableViewCellSelectionStyle.None;
 			return cell;
 		}

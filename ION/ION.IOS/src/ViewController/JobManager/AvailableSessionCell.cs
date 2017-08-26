@@ -3,13 +3,23 @@ using UIKit;
 using CoreGraphics;
 
 using ION.Core.App;
+using ION.Core.Database;
+using System.Linq;
 
 namespace ION.IOS.ViewController.JobManager {
   public class AvailableSessionCell : UITableViewCell {
-    public UILabel sessionInfo;
+		public UILabel recordDateLabel;
+		public UILabel durationLabel;
+		public UILabel deviceCountLabel;
+		public UILabel dateValueLabel;
+		public UILabel durationValueLabel;
+		public UILabel deviceCountValueLabel;
 
+		public UIImageView checkImage;
+
+    IION ion;
     public AvailableSessionCell(IntPtr handle) {
-      
+      ion = AppState.context;
     }
 
     public AvailableSessionCell() {
@@ -17,49 +27,49 @@ namespace ION.IOS.ViewController.JobManager {
     }
 
     public void SetupCell(ION.IOS.ViewController.Logging.SessionData data, double cellHeight, double cellWidth){
-
+			var deviceAmount = ion.database.Table<SensorMeasurementRow>()
+    		.Where(smr => smr.frn_SID == data.SID)
+    		.Select(smr => smr.serialNumber).Distinct()
+    		.Count();
+      
       var duration = data.finish.Subtract(data.start).TotalMinutes;
 
-      var formatTime = "";
+			recordDateLabel = new UILabel(new CGRect(5, 0, .32 * cellWidth, .33 * cellHeight));
+			recordDateLabel.Font = UIFont.BoldSystemFontOfSize(16f);
+			recordDateLabel.Text = "Date Recorded:";
 
-      if(data.start.ToLocalTime().TimeOfDay.Equals("PM")){
-        data.start.AddHours(12);
-        formatTime = data.start.ToLocalTime().AddHours(12).Hour + ":";
+			durationLabel = new UILabel(new CGRect(5, .33 * cellHeight, .32 * cellWidth, .33 * cellHeight));
+			durationLabel.Font = UIFont.BoldSystemFontOfSize(16f);
+			durationLabel.Text = "Duration:";
 
-        if (data.start.Minute < 10)
-          formatTime += "0" + data.start.Minute + ":";
-        else
-          formatTime += data.start.Minute + ":";
+			deviceCountLabel = new UILabel(new CGRect(5, .66 * cellHeight, .32 * cellWidth, .33 * cellHeight));
+			deviceCountLabel.Font = UIFont.BoldSystemFontOfSize(16f);
+			deviceCountLabel.Text = "# of Sensors";
 
-        formatTime += data.start.Second;
-      }else{
-        //formatTime = start.Hour + ":" + start.Minute + ":" + start.Second;
-        formatTime = data.start.ToLocalTime().Hour + ":";
+			dateValueLabel = new UILabel(new CGRect(.35 * cellWidth, 0, .5 * cellWidth, .33 * cellHeight));
+			dateValueLabel.Text = data.start.Date.ToString(@"yyyy-MM-dd") + " | " + data.start.ToLocalTime().ToShortTimeString();
 
-        if (data.start.Minute < 10)
-          formatTime += "0" + data.start.Minute + ":";
-        else
-          formatTime += data.start.Minute + ":";
+			durationValueLabel = new UILabel(new CGRect(.35 * cellWidth, .33 * cellHeight, .5 * cellWidth, .33 * cellHeight));
+			durationValueLabel.Text = duration.ToString("0.0") + " min";
 
-        formatTime += data.start.Second;
-      } 
+			deviceCountValueLabel = new UILabel(new CGRect(.35 * cellWidth, .66 * cellHeight, .5 * cellWidth, .33 * cellHeight));
+			deviceCountValueLabel.Text = deviceAmount.ToString();
 
-      sessionInfo = new UILabel(new CGRect(0,0,cellWidth,cellHeight));
-      sessionInfo.Layer.BorderWidth = .5f;
-      sessionInfo.AdjustsFontSizeToFitWidth = true;
-      sessionInfo.TextAlignment = UITextAlignment.Left;
-      sessionInfo.Font = UIFont.SystemFontOfSize(20);
-      sessionInfo.Lines = 0;
-      sessionInfo.Text = Util.Strings.Job.STARTDATE +": " + data.start.ToShortDateString() + " " + formatTime + " \n"+Util.Strings.Job.DURATION+":    " + duration.ToString("0.0") + " min";
-      if (!data.frnJID.Equals(0)) {
-        sessionInfo.TextColor = UIColor.Red;
+			checkImage = new UIImageView(new CGRect(.9 * cellWidth, .3 * cellHeight, .4 * cellHeight, .4 * cellHeight));
+
+      if (data.frnJID != 0){
+        this.BackgroundColor = UIColor.FromRGB(255, 75, 75);
       }
 
-      this.Layer.ShadowColor = UIColor.Black.CGColor;
-      this.Layer.ShadowOpacity = .1f;
-      this.Layer.ShadowRadius = .3f;
-      this.Layer.ShadowOffset = new CGSize(0f, 1f);
-      this.AddSubview(sessionInfo);
+			this.AddSubview(recordDateLabel);
+			this.AddSubview(durationLabel);
+			this.AddSubview(deviceCountLabel);
+
+			this.AddSubview(dateValueLabel);
+			this.AddSubview(durationValueLabel);
+			this.AddSubview(deviceCountValueLabel);
+
+			this.AddSubview(checkImage);
     }
   }
 }

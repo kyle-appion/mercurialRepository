@@ -5,60 +5,57 @@ using CoreGraphics;
 
 namespace ION.IOS.ViewController.Logging {
   public class ChooseReporting : UIView {
+    public UIView typeView;
 
-    public UIView reportType;
     public UIButton savedReports;
     public UIButton newReport;
-    public UILabel step1;
-    public UITapGestureRecognizer resize;
-    
-    public ChooseReporting(UIView mainView) {
-      reportType = new UIView(new CGRect(.01 * mainView.Bounds.Width, .02 * mainView.Bounds.Height, .98 * mainView.Bounds.Width, .15 * mainView.Bounds.Height));
-      reportType.BackgroundColor = UIColor.Clear;
-      reportType.Layer.BorderColor = UIColor.Black.CGColor;
-      reportType.Layer.CornerRadius = 8;
 
-      newReport = new UIButton(new CGRect(0,.1 * reportType.Bounds.Height,.5 * reportType.Bounds.Width, .5 * reportType.Bounds.Height));
+		public UILabel newHighlight;
+		public UILabel savedHighlight;
+
+    public ChooseReporting(UIView containerView) {
+      typeView = new UIView(new CGRect(0,0,containerView.Bounds.Width,55));
+
+      newReport = new UIButton(new CGRect(0,0,.5 * typeView.Bounds.Width, 40));
       newReport.Enabled = false;
       newReport.SetTitle(Util.Strings.Report.NEWREPORT, UIControlState.Normal);
-      newReport.BackgroundColor = UIColor.FromRGB(95,212,48);
+      newReport.BackgroundColor = UIColor.White;
       newReport.SetTitleColor(UIColor.Black, UIControlState.Normal);
-      newReport.Layer.CornerRadius = 5;
-      newReport.Layer.BorderWidth = 2f;
 
-      savedReports = new UIButton(new CGRect(.5 * reportType.Bounds.Width,.1 * reportType.Bounds.Height,.5 * reportType.Bounds.Width, .5 * reportType.Bounds.Height));
+      newHighlight = new UILabel(new CGRect(0,40,.5 * typeView.Bounds.Width,5));
+      newHighlight.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+
+      savedReports = new UIButton(new CGRect(.5 * typeView.Bounds.Width,0,.5 * typeView.Bounds.Width, 40));
       savedReports.SetTitle(Util.Strings.Report.SAVEDREPORT, UIControlState.Normal);
-      savedReports.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+      savedReports.BackgroundColor = UIColor.LightGray;
       savedReports.SetTitleColor(UIColor.Black, UIControlState.Normal);
-      savedReports.Layer.CornerRadius = 5;
-      savedReports.Layer.BorderWidth = 2f;
 
-      savedReports.TouchUpInside += (sender, e) => {newReport.Enabled = true; savedReports.Enabled = false; savedReports.BackgroundColor = UIColor.FromRGB(95,212,48);};
-      savedReports.TouchDown += (sender, e) => {newReport.Enabled = false; savedReports.BackgroundColor = UIColor.FromRGB(95,212,48);};
-      savedReports.TouchUpOutside += (sender, e) => {
-        if(!savedReports.Enabled){          
-          savedReports.BackgroundColor = UIColor.FromRGB(95,212,48);
-          newReport.Enabled = true; 
-        } else {
-          savedReports.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-        }
+      savedHighlight = new UILabel(new CGRect(.5 * typeView.Bounds.Width, 40, .5 * typeView.Bounds.Width, 5));
+			savedHighlight.BackgroundColor = UIColor.Black;
+
+      savedReports.TouchUpInside += (sender, e) => {
+        newReport.Enabled = true; 
+        savedReports.Enabled = false; 
+        savedReports.BackgroundColor = UIColor.White; 
+        savedHighlight.BackgroundColor = UIColor.FromRGB(255, 215, 101); 
+        newReport.BackgroundColor = UIColor.LightGray; 
+        newHighlight.BackgroundColor = UIColor.Black; 
       };
 
-      newReport.TouchUpInside += (sender, e) => {savedReports.Enabled = true; newReport.Enabled = false; newReport.BackgroundColor = UIColor.FromRGB(95,212,48);};
-      newReport.TouchDown += (sender, e) => {savedReports.Enabled = false; newReport.BackgroundColor = UIColor.FromRGB(95,212,48);};
-      newReport.TouchUpOutside += (sender, e) => {
+      newReport.TouchUpInside += (sender, e) => {
+        savedReports.Enabled = true; 
+        newReport.Enabled = false; 
+        newReport.BackgroundColor = UIColor.White;
+		    newHighlight.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+		    savedReports.BackgroundColor = UIColor.LightGray;
+		    savedHighlight.BackgroundColor = UIColor.Black;
+	    };
 
-        if(!newReport.Enabled){
-          newReport.BackgroundColor = UIColor.FromRGB(95,212,48);
-          savedReports.Enabled = true;
-        } else {
-          newReport.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-        }         
-      };
-
-      reportType.AddSubview(savedReports);
-      reportType.AddSubview(newReport);
-    }
+      typeView.AddSubview(savedReports);
+      typeView.AddSubview(savedHighlight);
+      typeView.AddSubview(newReport);
+			typeView.AddSubview(newHighlight);
+		}
   }
 }
 

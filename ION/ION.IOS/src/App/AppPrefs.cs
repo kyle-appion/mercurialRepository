@@ -58,8 +58,12 @@
     public AlarmPreferences _alarm { get; private set; }
     // Implemented for IPreferences
     public IAlarmPreferences alarm { get { return _alarm; } }
+		// Implemented for IPreferences
+    public JobPreferences _jobs { get; private set; }
+		// Implemented for IPreferences
+		public IJobPreferences jobs { get { return _jobs; } }
 
-    public LocationPreferences _location { get; private set; }
+		public LocationPreferences _location { get; private set; }
     // Implemented for IPreferences
     public ILocationPreferences location { get { return _location; } }
 
@@ -106,6 +110,7 @@
       _units = new UnitPreferences(this);
       _report =  new ReportPreferences(this);
       _portal = new PortalPreferences(this);
+      _jobs = new JobPreferences(this);
 
       NSNotificationCenter.DefaultCenter.AddObserver(NSUserDefaults.DidChangeNotification, OnSettingsChanged);
       if (!initialized) {
@@ -124,6 +129,7 @@
       _units.InitDefaults();
       _report.InitDefaults();
       _portal.InitDefaults();
+      _jobs.InitDefaults();
     }
 
     private void OnSettingsChanged(NSNotification defaults) {
@@ -238,6 +244,22 @@
       NSUserDefaults.StandardUserDefaults.SetDouble(setting, key);
       Sync();
     }
+    /// <summary>
+    /// Sets the active job a user has for managing sessions.
+    /// </summary>
+    /// <param name="key">Key.</param>
+    /// <param name="jobid">Jobid.</param>
+    public void PutActiveJob(string key, int jobid){
+			NSUserDefaults.StandardUserDefaults.SetInt(jobid, key);
+		}
+		/// <summary>
+		/// Gets the active job a user has for managing sessions.
+		/// </summary>
+		/// <param name="key">Key.</param>
+		/// <param name="jobid">Jobid.</param>
+		public void GetActiveJob(string key) {
+			NSUserDefaults.StandardUserDefaults.IntForKey(key);
+		}
   }
 
   public abstract class DerivedPreferences : BasePreferences {
@@ -336,6 +358,26 @@
       allowsSounds = true;
 		}
   }
+
+  public class JobPreferences : DerivedPreferences, IJobPreferences {
+		private const string KEY_JOB_ACTIVE = "settings_job_active";
+
+		public int activeJob {
+			get {
+				return GetInt(KEY_JOB_ACTIVE);
+			}
+			set {
+				PutInt(KEY_JOB_ACTIVE, value);
+			}
+		}
+
+		public JobPreferences(AppPrefs prefs) : base(prefs) {
+		}
+
+		public override void InitDefaults() {
+			activeJob = 0;
+		}
+	}
 
   public class LocationPreferences : DerivedPreferences, ILocationPreferences {
     private const string KEY_USE_GEO_LOCATION = "settings_location_use_geolocation";

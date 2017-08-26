@@ -1,6 +1,6 @@
 // WARNING
 //
-// This file has been generated automatically by Xamarin Studio to store outlets and
+// This file has been generated automatically by Visual Studio to store outlets and
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
@@ -13,13 +13,13 @@ namespace ION.IOS.ViewController.JobManager
 	partial class JobViewController
 	{
 		[Outlet]
-		UIKit.UITableView jobTable { get; set; }
+		UIKit.UIView containerView { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (jobTable != null) {
-				jobTable.Dispose ();
-				jobTable = null;
+			if (containerView != null) {
+				containerView.Dispose ();
+				containerView = null;
 			}
 		}
 	}

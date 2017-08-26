@@ -25,6 +25,7 @@ using ION.Core.Database;
 using ION.IOS.ViewController.ScreenshotReport;
 using ION.IOS.Util;
 using ION.IOS.Devices;
+using ION.IOS.ViewController.DeviceGrid;
 
 namespace ION.IOS.ViewController.Analyzer { 
   
@@ -616,7 +617,6 @@ namespace ION.IOS.ViewController.Analyzer {
       addDeviceSheet = UIAlertController.Create (Util.Strings.Analyzer.ADDFROM, "", UIAlertControllerStyle.Alert);
       
       if(lowHighArea.snapArea.AccessibilityIdentifier == "low" || lowHighArea.snapArea.AccessibilityIdentifier == "high"){
-      	addDeviceSheet = UIAlertController.Create (Util.Strings.Analyzer.ADDFROM, "", UIAlertControllerStyle.Alert);
 
         addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Device.Manager.SELF, UIAlertActionStyle.Default, (action) => {
           if(!AnalyserUtilities.freeSpot(analyzerSensors,associatedSensor,lowHighArea.snapArea.AccessibilityIdentifier)){
@@ -969,11 +969,18 @@ namespace ION.IOS.ViewController.Analyzer {
     /// </summary>
     private void OnRequestViewer(sensor area) {
 			if(!remoteMode){
-	      var sb = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
-	      sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
-						addDeviceSensor(area,sensor);
-	      };
-	      NavigationController.PushViewController(sb, true);
+				// var sb = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
+				// sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
+				//addDeviceSensor(area,sensor);
+				//};
+				//NavigationController.PushViewController(sb, true);
+				var dg = InflateViewController<DeviceGridViewController>(VC_DEVICE_GRID);
+        dg.fromAnalyzer = analyzerSensors.viewList.IndexOf(area);
+        dg.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
+			    addDeviceSensor(area,sensor);
+		    };
+
+				NavigationController.PushViewController(dg, true);
 	    } else {
 	      var sb = InflateViewController<RemoteDeviceManagerViewController>(VC_REMOTE_DEVICE_MANAGER);
 	      sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
@@ -987,7 +994,8 @@ namespace ION.IOS.ViewController.Analyzer {
     /// </summary>
     private void lhOnRequestViewer(lowHighSensor area) {
 			if(!remoteMode){
-	      var sb = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
+				//var sb = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
+				var sb = InflateViewController<DeviceGridViewController>(VC_DEVICE_GRID);
 	      sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
 	      	if(sensor.type == ESensorType.Temperature){
 						UIAlertController tempAlert = UIAlertController.Create (Util.Strings.Analyzer.SETUP, Util.Strings.Analyzer.SETUPPRESSURE, UIAlertControllerStyle.Alert);

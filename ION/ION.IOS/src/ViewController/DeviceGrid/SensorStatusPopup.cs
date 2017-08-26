@@ -11,6 +11,17 @@ using ION.IOS.ViewController.DeviceGrid;
 namespace ION.IOS.ViewController {
 
   public class SensorStatusPopup {
+		/// <summary>
+		/// The delegate that is used to pass a sensor back from the device manager.
+		/// </summary>
+		public delegate void OnSensorReturn(GaugeDeviceSensor sensor);
+
+		/// <summary>
+		/// The action that will be fired when the user selects a sensor for returning 
+		/// within the device manager.
+		/// </summary>
+		public OnSensorReturn onSensorReturnDelegate { get; set; }
+
     public UIView popupView;
     public UILabel nameLabel, typeLabel1, typeLabel2, measurementLabel1, measurementLabel2, unitLabel1, unitLabel2, displayOnLabel, moreInfoLabel, divider1, divider2, divider3, divider4;
     public UIButton settingsButton, connectButton, linkToggleButton, addWorkbench1, addWorkbench2, addAnalyzer1, addAnalyzer2;
@@ -19,6 +30,8 @@ namespace ION.IOS.ViewController {
     public bool shouldOpen = true;
     IION ion;
     public DeviceGridViewController gridVC;
+    public int analyzerSlot;
+    public bool fromWorkbench;
 
     public SensorStatusPopup(UIView gridView) {
       ion = AppState.context;
@@ -178,7 +191,6 @@ namespace ION.IOS.ViewController {
     }
 
 		public void connectSensor(object sender, EventArgs e) {
-			Console.WriteLine("Connect or disconnect the sensor");
       if(sensor.device.isConnected){
         sensor.device.connection.Disconnect();
       } else {
@@ -187,13 +199,15 @@ namespace ION.IOS.ViewController {
 		}
 
 		public void addToWorkbench(object sender, EventArgs e) {
-      Console.WriteLine("Add sensor " + sensor.device.sensors[0].name +" "+sensor.device.sensors[0].type.ToString()+" to workbench" );
+      //Console.WriteLine("Add sensor " + sensor.device.sensors[0].name +" "+sensor.device.sensors[0].type.ToString()+" to workbench" );
       popupView.Hidden = true;
       if (ion.currentWorkbench.IndexOf(sensor.device.sensors[0]) == -1) {
-        Console.WriteLine("Adding Manifold to workbench");
-        ion.currentWorkbench.AddSensor(sensor.device.sensors[0]);
-
-				gridVC.inflateWorkbench();
+        if (fromWorkbench){
+					gridVC.inflateWorkbench(sensor.device.sensors[0]);
+				} else {
+					ion.currentWorkbench.AddSensor(sensor.device.sensors[0]);
+					gridVC.inflateWorkbench();
+				}
 			} else {
 				Console.WriteLine("Manifold is already on the Workbench");
 			}
@@ -201,22 +215,26 @@ namespace ION.IOS.ViewController {
 
 		public void addToWorkbench2(object sender, EventArgs e) {
       if(sensor.device.sensorCount == 1){
-        Console.WriteLine("Add sensor " + sensor.device.sensors[0].name + " " + sensor.device.sensors[0].type.ToString() + " to workbench");
 				popupView.Hidden = true;
 				if (ion.currentWorkbench.IndexOf(sensor.device.sensors[0]) == -1) {
-					ion.currentWorkbench.AddSensor(sensor.device.sensors[0]);
-
-					gridVC.inflateWorkbench();
+					if (fromWorkbench) {
+						gridVC.inflateWorkbench(sensor.device.sensors[0]);
+					} else {
+						ion.currentWorkbench.AddSensor(sensor.device.sensors[0]);
+						gridVC.inflateWorkbench();
+					}
 				} else {
 					Console.WriteLine("Pressure Manifold is already on the Workbench");
 				}
 			} else {
-        Console.WriteLine("Add sensor " + sensor.device.sensors[1].name + " " + sensor.device.sensors[1].type.ToString() + " to workbench");
 				popupView.Hidden = true;
 				if (ion.currentWorkbench.IndexOf(sensor.device.sensors[1]) == -1) {
-					ion.currentWorkbench.AddSensor(sensor.device.sensors[1]);
-
-					gridVC.inflateWorkbench();
+					if (fromWorkbench) {
+						gridVC.inflateWorkbench(sensor.device.sensors[1]);
+					} else {
+						ion.currentWorkbench.AddSensor(sensor.device.sensors[1]);
+						gridVC.inflateWorkbench();
+					}
         } else {
 					Console.WriteLine("Temperature Manifold is already on the Workbench");
 				}
@@ -224,33 +242,53 @@ namespace ION.IOS.ViewController {
 		}
 
 		public void addToAnalyzer(object sender, EventArgs e) {
-			Console.WriteLine("Add sensor " + sensor.device.sensors[0].name + " " + sensor.device.sensors[0].type.ToString() + " to analyzer");
 			popupView.Hidden = true;
       if(!ion.currentAnalyzer.sensorList.Contains(sensor.device.sensors[0])){
-        updateAnalyzer(sensor.device.sensors[0]);
-				gridVC.inflateAnalyzer();
+        if(analyzerSlot == -1){
+          Console.WriteLine("No specific analyzer slot set");
+					updateAnalyzer(sensor.device.sensors[0]);
+					gridVC.inflateAnalyzer();
+				} else {
+          sensor.device.sensors[0].analyzerSlot = analyzerSlot;
+          ion.currentAnalyzer.sensorList.Add(sensor.device.sensors[0]);
+					gridVC.inflateAnalyzer(sensor.device.sensors[0]);
+				}
       } else {
 
 				Console.WriteLine("Sensor is already on the Analyzer");
 			}
-		}   
+		}
 
 		public void addToAnalyzer2(object sender, EventArgs e) {
 			if (sensor.device.sensorCount == 1) {
-				Console.WriteLine("Add sensor " + sensor.device.sensors[0].name + " " + sensor.device.sensors[0].type.ToString() + " to analyzer");
 				popupView.Hidden = true;
 				if (!ion.currentAnalyzer.sensorList.Contains(sensor.device.sensors[0])) {
-					updateAnalyzer(sensor.device.sensors[0]);
-					gridVC.inflateAnalyzer();
+					if (analyzerSlot == -1) {
+						Console.WriteLine("No specific analyzer2 slot set");
+						updateAnalyzer(sensor.device.sensors[0]);
+						gridVC.inflateAnalyzer();
+					} else {
+						Console.WriteLine("Requested slot is available so adding sensor to that slot");
+						sensor.device.sensors[0].analyzerSlot = analyzerSlot;
+						ion.currentAnalyzer.sensorList.Add(sensor.device.sensors[0]);
+						gridVC.inflateAnalyzer(sensor.device.sensors[0]);
+					}
 				} else {
 					Console.WriteLine("Pressure sensor is already on the Analyzer");
 				}
 			} else {
-				Console.WriteLine("Add sensor " + sensor.device.sensors[1].name + " " + sensor.device.sensors[1].type.ToString() + " to analyzer");
 				popupView.Hidden = true;
 				if (!ion.currentAnalyzer.sensorList.Contains(sensor.device.sensors[1])) {
-					updateAnalyzer(sensor.device.sensors[1]);
-					gridVC.inflateAnalyzer();
+					if (analyzerSlot == -1) {
+						Console.WriteLine("No specific analyzer2 slot set");
+						updateAnalyzer(sensor.device.sensors[1]);
+						gridVC.inflateAnalyzer();
+					} else {
+						Console.WriteLine("Requested slot is available so adding sensor to that slot");
+						sensor.device.sensors[1].analyzerSlot = analyzerSlot;
+						ion.currentAnalyzer.sensorList.Add(sensor.device.sensors[1]);
+						gridVC.inflateAnalyzer(sensor.device.sensors[1]);
+					}
 				} else {
 					Console.WriteLine("Temperature sensor is already on the Analyzer");
 				}
@@ -258,8 +296,11 @@ namespace ION.IOS.ViewController {
 		}
 
     public void updatePopup(GaugeDeviceSensor passedSensor){
+      if(sensor != null){
+				sensor.onSensorStateChangedEvent -= updateSensor;
+			}
+      Console.WriteLine("Analyzer slot index: " + analyzerSlot);
       sensor = passedSensor;
-			sensor.onSensorStateChangedEvent -= updateSensor;
 			sensor.onSensorStateChangedEvent += updateSensor;
 			nameLabel.Text = sensor.device.serialNumber.deviceModel.GetTypeString() + ":" + sensor.device.serialNumber.rawSerial.ToUpper();
 			deviceImage.Image = Devices.DeviceUtil.GetUIImageFromDeviceModel(sensor.device.serialNumber.deviceModel);
@@ -339,7 +380,7 @@ namespace ION.IOS.ViewController {
     }
 
     public void updateAnalyzer(GaugeDeviceSensor sensor){
-			if (!ion.currentAnalyzer.sensorList.Contains(sensor)) {
+
 				var deviceType = sensor.device.serialNumber.deviceModel;
         int index;
 				if (deviceType == EDeviceModel.P500 || deviceType == EDeviceModel.PT500) {
@@ -388,16 +429,13 @@ namespace ION.IOS.ViewController {
 
 					//}
 				}
-      } else {
-        Console.WriteLine("Sensor is already on the analyzer");
-      }
+
     }
 
     public int analyzerOpen(Core.Content.Analyzer.ESide side){
 			bool[] slots = new bool[8] { true, true, true, true,true, true, true, true };
 
 			foreach (var item in ion.currentAnalyzer.sensorList) {
-				Console.WriteLine("Slot " + item.analyzerSlot + " is taken");
 				if (item.analyzerSlot == 0) {
 					slots[0] = false;
 				} else if (item.analyzerSlot == 1) {
@@ -416,24 +454,20 @@ namespace ION.IOS.ViewController {
 					slots[7] = false;
 				}
 			}
-      Console.WriteLine("Starting on " + side + " side first");
 			if (side == Core.Content.Analyzer.ESide.Low) {
         for (int i = 0; i < 8; i++){
           if(slots[i] == true){
-						Console.WriteLine("Slot " + i + " is free on side when starting on low side");
 						return i;
           }
         }
 			} else {
 				for (int i = 4; i < 8; i++) {
 					if (slots[i] == true) {
-            Console.WriteLine("Slot " + i + " is free on high side");
 						return i;
 					}
 				}
 				for (int i = 0; i < 4; i++) {
 					if (slots[i] == true) {
-						Console.WriteLine("Slot " + i + " is free on low side because high side is full");
 						return i;
 					}
 				}

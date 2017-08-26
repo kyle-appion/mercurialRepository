@@ -240,6 +240,12 @@ namespace ION.IOS.ViewController {
         foreach (var device in ion.deviceManager.devices) {
           serials.Add(device.serialNumber);
         }
+        /////////testing for specific nist certificate data////////////
+       //  var iserial = SerialNumberExtensions.ParseSerialNumber("S816H502");
+       //  serials.Add(iserial);
+		     //iserial = SerialNumberExtensions.ParseSerialNumber("S516H214");
+		     //serials.Add(iserial);
+        ////////////////
 
 				Log.D(this, Arrays.AsString<ISerialNumber>(serials.ToArray()));
 				var task = new ION.Core.Net.RequestCalibrationCertificates(ion, serials.ToArray());
