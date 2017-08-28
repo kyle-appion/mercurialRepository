@@ -2,7 +2,7 @@
 <Button xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@id/view"
     android:padding="@dimen/padding"
-    android:background="@color/red"
+    android:background="@drawable/xml_rect_red_black_bordered"
     android:text="@string/delete"
     android:textSize="@dimen/text_size_xlarge"
     android:textStyle="bold"

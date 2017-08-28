@@ -2,35 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
-        android:text="@string/report_session_selection"
-        android:textSize="@dimen/text_size_title"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:background="@color/light_blue"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Button
-            android:id="@id/report_by_job"
-            android:text="@string/report_by_job"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
-        <Button
-            android:id="@id/report_by_date"
-            android:gravity="center"
-            android:text="@string/report_by_date"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/padding"
+    android:paddingLeft="@dimen/padding"
+    android:paddingRight="@dimen/padding">
     <FrameLayout
         android:background="@color/white"
         android:layout_weight="1"
@@ -53,7 +28,6 @@
             android:gravity="center" />
     </FrameLayout>
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding">

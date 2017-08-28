@@ -46,23 +46,30 @@ using ION.Droid.Widgets.RecyclerViews;
     private TextView duration;
     private TextView sensors;
     private CheckBox check;
+    private ReportSessionAdapter.ISessionActions actions;
 
-    public ReportSessionViewHolder(SwipeRecyclerView list, Action<ReportSessionRecord> onSessionCheckChanged, ViewGroup parent) : base(list, Resource.Layout.view_holder_report_session, Resource.Layout.list_item_button) {
+    public ReportSessionViewHolder(ViewGroup parent, SwipeRecyclerView list, ReportSessionAdapter.ISessionActions actions) : base(list, Resource.Layout.view_holder_report_session, Resource.Layout.view_delete) {
       recorded = foreground.FindViewById<TextView>(Resource.Id.report_create_date);
       duration = foreground.FindViewById<TextView>(Resource.Id.report_duration);
       sensors = foreground.FindViewById<TextView>(Resource.Id.report_devices_used);
       check = foreground.FindViewById<CheckBox>(Resource.Id.checkbox);
+      
+      this.actions = actions;
 
       ((ViewGroup)recorded.Parent.Parent).SetOnClickListener(new ViewClickAction((v) => {
 			  record.isChecked = !record.isChecked;
 			  check.Checked = record.isChecked;
-        onSessionCheckChanged(record);
+        actions.OnCheckChanged(record);
       }));
+      
+      background.Click += (sender, e) => {
+        actions.OnDeleteClicked(record);
+      };
       check.Enabled = false;
     }
 
     public override void Invalidate() {
-      recorded.Text = record.dateRecorded.ToShortDateString() + " | " + record.dateRecorded.ToShortTimeString();
+      recorded.Text = record.dateRecorded.ToLocalTime().ToShortDateString() + " | " + record.dateRecorded.ToLocalTime().ToShortTimeString();
       duration.Text = record.duration.ToFriendlyString(recorded.Context);
       sensors.Text = record.sensorCount + "";
 			check.Checked = record.isChecked;

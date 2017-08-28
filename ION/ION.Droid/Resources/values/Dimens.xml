@@ -100,13 +100,13 @@
   <!-- The icon size for the device icon in the manifold within the anlyzer. -->
   <dimen name="analyzer_icon_size">24dp</dimen>
   <!-- The text size for the measurement text view in the sensor mount header within the analyzer. -->
-  <dimen name="analyzer_sensor_mount_header">22dp</dimen>
+  <dimen name="analyzer_sensor_mount_header">4dp</dimen>
   <!-- The text size for the measurement text view in the sensor mount measurement within the analyzer. -->
-  <dimen name="analyzer_sensor_mount_measurement">28dp</dimen>
+  <dimen name="analyzer_sensor_mount_measurement">6dp</dimen>
   <!-- The text size for the measurement text view in the manifold within the analyzer. -->
-  <dimen name="analyzer_viewer_text_size">18sp</dimen>
+  <dimen name="analyzer_viewer_text_size">14sp</dimen>
   <!-- The text size for the measurement text view in the manifold within the analyzer. -->
-  <dimen name="analyzer_viewer_measurement_text_size">24sp</dimen>
+  <dimen name="analyzer_viewer_measurement_text_size">20sp</dimen>
 
   <!--
   Device Manager dimensions

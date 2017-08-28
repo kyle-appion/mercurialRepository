@@ -292,6 +292,7 @@ namespace ION.Droid.Fragments {
 				Log.D(this, "Starting record with an interval of: " + interval.ToString());
 
 				if (!await ion.dataLogManager.BeginRecording(interval)) {
+          Error(Resource.String.report_error_failed_to_start_recording);
           Log.D(this, "Failed to begin recording");
         }
       }
@@ -315,6 +316,10 @@ namespace ION.Droid.Fragments {
       ion.PostToMain(() => {
         Toast.MakeText(Activity, message, ToastLength.Short).Show();
       });
+    }
+    
+    public void Error(int stringResource, Exception e = null) {
+      Error(GetString(stringResource), e);
     }
 
     /// <summary>

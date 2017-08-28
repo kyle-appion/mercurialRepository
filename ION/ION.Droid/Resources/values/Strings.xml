@@ -39,7 +39,6 @@
   <string name="download_error">Download Error</string>
   <string name="edit_manual_entry">Edit Manual Entry</string>
   <string name="elevation">Elevation</string>
-	<string name="elevation_help">USASDF</string>
   <string name="email">Email</string>
   <string name="enable">Enable</string>
   <string name="enabling_bluetooth">Enabling Bluetooth...</string>

@@ -182,7 +182,10 @@
 		private void InvalidateBattery(GaugeDevice device) {
 			if (device != null) {
 				var bat = device.battery;
-        if (device.isConnected && bat != lastBattery) {
+        if (!device.isConnected) {
+          lastBattery = -1;
+          battery.Visibility = ViewStates.Invisible;
+        } else if (bat != lastBattery) {
 					battery.Visibility = ViewStates.Visible;
 					if (bat >= 100) {
 						battery.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_battery_horiz_100));
@@ -196,9 +199,6 @@
 						battery.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_battery_horiz_empty));
 					}
           lastBattery = bat;
-				} else {
-					battery.Visibility = ViewStates.Invisible;
-					lastBattery = -1;
 				}
 			} else {
 				battery.Visibility = ViewStates.Invisible;

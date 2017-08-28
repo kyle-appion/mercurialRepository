@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
+using Android.Graphics;
+using Android.Graphics.Drawables;
 using Android.OS;
 using Android.Support.V7.Widget;
 using Android.Views;
@@ -26,6 +29,7 @@ using ION.CoreExtensions.IO;
 using ION.Droid.Activity;
 using ION.Droid.IO;
 using ION.Droid.Dialog;
+using ION.Droid.Report;
 using ION.Droid.Util;
 
 namespace ION.Droid.Activity.Report {
@@ -35,6 +39,9 @@ namespace ION.Droid.Activity.Report {
     /// The extra key used to retrieve an integer array of session ids.
     /// </summary>
     public const string EXTRA_SESSIONS = "ION.Droid.Activity.Report.New.extra.SESSIONS";
+    
+    private const int GRAPH_WIDTH = 800;
+    private const int GRAPH_HEIGHT = 400;
 
     /// <summary>
     /// The start time for exporting.
@@ -162,8 +169,6 @@ namespace ION.Droid.Activity.Report {
 			_numericView.Click += (sender, e) => SetDetailMode(true);
 
       FindViewById(Resource.Id.settings).Click += (sender, e) => ShowSettings();
-      FindViewById(Resource.Id.reset).Click += (sender, e) => Reset();
-      FindViewById(Resource.Id.export).Click += (sender, e) => PrepareExport();
     }
 
     /// <summary>
@@ -240,6 +245,12 @@ namespace ION.Droid.Activity.Report {
 		}
 
     private void PrepareExport() {
+      var exportData = _adapter.GetCheckedResults();
+      if (exportData.Count <= 0) {
+        Alert(Resource.String.report_error_graph_no_sessions_provided);
+        return;
+      }
+    
 			var view = LayoutInflater.From(this).Inflate(Resource.Layout.dialog_report_export_chooser, null, false);
 
 			var tabBar = view.FindViewById(Resource.Id.title);
@@ -276,6 +287,7 @@ namespace ION.Droid.Activity.Report {
       adb.SetPositiveButton(Resource.String.export, (sender, e) => {
         string ext = "";
         IDataLogExporter exporter = null;
+        IGraphRenderer renderer = null;
         Intent successIntent = new Intent();
 
         if (showingPdf) {
@@ -284,12 +296,14 @@ namespace ION.Droid.Activity.Report {
           switch (tab1.FindViewById<RadioGroup>(Resource.Id.content).CheckedRadioButtonId) {
             case Resource.Id._1:
               exporter = new PdfReportExporter(ion, isChecked);
+              renderer = new SimpleGraphRenderer(this, ion);
               break;
 				    case Resource.Id._2:
               exporter = new PdfDetailedReportExporter(ion, isChecked);
+              renderer = new DetailedGraphRenderer(this, ion);
               break;
 			    }
-          successIntent.PutExtra(ReportActivity.EXTRA_SHOW_SAVED_PDF, true);
+          successIntent.PutExtra(ReportActivity.EXTRA_SHOW_ARCHIVE_VIEW, ReportActivity.PDF);
         } else {
           var radio = tab2.FindViewById<RadioGroup>(Resource.Id.content);
           switch (radio.CheckedRadioButtonId) {
@@ -303,68 +317,147 @@ namespace ION.Droid.Activity.Report {
               exporter = new CsvExporter(ion);
   					  break;
 			    }
-  			  successIntent.PutExtra(ReportActivity.EXTRA_SHOW_SAVED_SPREADSHEETS, true);
+  			  successIntent.PutExtra(ReportActivity.EXTRA_SHOW_ARCHIVE_VIEW, ReportActivity.SPREADSHEETS);
   		  }
 
-        Export(ext, exporter, successIntent);
+        Export(exportData, ext, exporter, renderer, successIntent);
   	  });
 
       adb.Show();
 		}
 
-    private Task Export(string fileExtension, IDataLogExporter exporter, Intent successIntent) {
-      Alert("Not completed");
-      return Task.FromResult(new Object());
-/*
+    private async Task Export(Dictionary<GaugeDeviceSensor, SensorDataLogResults> exportData, string fileExtension, IDataLogExporter exporter, IGraphRenderer renderer, Intent successIntent) {
       var progress = new ProgressDialog(this);
       progress.SetTitle(Resource.String.please_wait);
       progress.SetMessage(GetString(Resource.String.saving));
       progress.Show();
+      
+      DataLogReport dlr = null;
+      try {
+        dlr = await BuildDataLogReport(exportData, exporter, renderer);
+        dlr.reportName = GetString(Resource.String.report_data_logging_title);
+      } catch (Exception e) {
+        Error(Resource.String.report_error_failed_to_build_report, e);
+        progress.Dismiss();
+        return;
+      }
+      
+      // Build the file name for the report
+      var dateString = DateTime.Now.ToFullShortString().Replace('\\', '-').Replace('/', '_').Replace(':', '_');
+      var filename = dlr.reportName + " " + dateString + fileExtension;
+      filename = filename.Replace(" ", "_");
+      IFile file = null;
+      // Todo ahodder@appioninc.com: we can overwite files if the user saves too many reports in the same minute
 
-      return Task.Factory.StartNew(async () => {
-        // Query the jobs that are included in this report.
-        var sessionIds = new HashSet<int>();
-        foreach (var )
-
-        ion.database.Table<JobRow>().
-
-        // Build the data log report proper
-        var dlr = new DataLogReport();
-
-
-
-  		  // Build the file name for the report
-  		  var dateString = DateTime.Now.ToFullShortString().Replace('\\', '-').Replace('/', '_');
-  		  var filename = GetString(Resource.String.report_data_logging_title) + " " + dateString + " " + fileExtension;
-  		  var success = false;
-        IFile file = null;
-
-		    try {
-          var folder = ion.dataLogReportFolder;
-          file = folder.GetFile(filename, EFileAccessResponse.ReplaceIfExists);
-
-          using (var stream = file.OpenForReading()) {
-            success = await exporter.Export(stream, dlr);
+      try {
+        var folder = ion.dataLogReportFolder;
+        if (!folder.Exists()) {
+          if (!folder.Create()) {
+            Log.E(this, "Failed to create data log directory");
+            Error(Resource.String.report_error_failed_to_export);
+            return;
           }
-        } finally {
-          if (!success) {
-            try {
-              file.Delete();
-            } catch (Exception e) {
-              Log.E(this, "Failed to delete file after data log export failed", e);
+        }
+        
+        file = folder.GetFile(filename, EFileAccessResponse.ReplaceIfExists);
+
+        using (var stream = file.OpenForWriting()) {
+          await exporter.Export(stream, dlr);
+        }
+        
+        SetResult(Result.Ok, successIntent);
+        Finish();
+      } catch (Exception e) {
+        Error(Resource.String.report_error_failed_to_export, e);
+        try {
+          file.Delete();
+        } catch (Exception ee) {
+          Log.E(this, "Failed to delete file after data log export failed", ee);
+        }
+      } finally {
+        progress.Dismiss();
+      }
+    }
+    
+    private Task<DataLogReport> BuildDataLogReport(Dictionary<GaugeDeviceSensor, SensorDataLogResults> exportData, IDataLogExporter exporter, IGraphRenderer renderer) {
+      return Task.Factory.StartNew(() => {
+  
+        var jobs = new HashSet<JobRow>();
+        var sessionIds = new HashSet<int>();
+        foreach (var sdlr in exportData.Values) {
+          foreach (var id in sdlr.sessionIds) {
+            if (sessionIds.Contains(id)) {
+              continue;
+            }
+            
+            sessionIds.Add(id); // Register the id as already queried
+            var sr = ion.database.QueryForAsync<SessionRow>(id).Result;
+            
+            if (sr != null) {
+              var job = ion.database.QueryForAsync<JobRow>(sr.frn_JID).Result;
+              if (job != null) {
+                jobs.Add(job);
+              }
             }
           }
         }
-      }).ContinueWith((arg) => {
-        progress.Dismiss();
-        if (arg.Result.Exception == null) {
-          SetResult(Result.Result.Ok, successIntent);
-          Finish();
-        } else {
-          Error(GetString(Resource.String.report_error), arg.Result.Exception);
+        
+        // Create our report
+        var dlr = new DataLogReport(new DataLogReportLocalization(this), jobs, exportData);
+        
+        // todo ahodder@appioninc.com: we should cache the graphs to file so we don't rape memory
+        // Set all available graphs
+        if (renderer != null) {
+          var graphs = BuildGraphs(exportData, renderer, GRAPH_WIDTH, GRAPH_HEIGHT);
+          foreach (var sensor in graphs.Keys) {
+            dlr.SetSensorDataGraph(sensor, graphs[sensor]);
+          }
         }
-      }, TaskScheduler.FromCurrentSynchronizationContext());
-*/
+        
+        // Load the application logo
+        try {
+          var logo = Resources.GetDrawable(Resource.Drawable.img_logo_appionblack, Theme) as BitmapDrawable;
+          using (var ms = new MemoryStream(512)) {
+            logo.Bitmap.Compress(Bitmap.CompressFormat.Png, 100, ms);
+            dlr.appionLogoPng = new IonImage(IonImage.EType.Png, logo.Bitmap.Width, logo.Bitmap.Height, ms.ToArray());
+          }
+        } catch (Exception ee) {
+          Log.E(this, "Failed to load application logo for report", ee);
+        }
+        
+        return dlr;
+      });
+    }
+    
+    /// <summary>
+    /// Builds graph images for the given results.
+    /// </summary>
+    /// <returns>The graphs.</returns>
+    /// <param name="exportData">Export data.</param>
+    /// <param name="renderer">Renderer.</param>
+    /// <param name="width">Width.</param>
+    /// <param name="height">Height.</param>
+    private Dictionary<GaugeDeviceSensor, IonImage> BuildGraphs(Dictionary<GaugeDeviceSensor, SensorDataLogResults> exportData, IGraphRenderer renderer, int width, int height) {
+      var ret = new Dictionary<GaugeDeviceSensor, IonImage>();
+      
+      foreach (var results in exportData.Values) {
+        var bitmap = Bitmap.CreateBitmap(width, height, Bitmap.Config.Argb8888);
+        try {
+          var canvas = new Canvas(bitmap);
+          // todo ahodder@appioninc.com: get rid of the dil.
+          renderer.Render(canvas, _adapter.dil, results);
+
+          using (var ms = new MemoryStream(128)) {
+            bitmap.Compress(Bitmap.CompressFormat.Png, 100, ms);
+            ret[results.sensor] = new IonImage(IonImage.EType.Png, bitmap.Width, bitmap.Height, ms.ToArray());
+          }
+        } finally {
+          bitmap.Recycle();
+          bitmap.Dispose();
+        }
+      }
+
+      return ret; 
     }
   }
 }

@@ -96,7 +96,7 @@
       xAxis.MajorStep = (xAxis.Maximum - xAxis.Minimum) / Math.Min(10, indices);
       xAxis.LabelFormatter = (arg) => {
         var date = dil.GetDateTimeFromIndex((int)arg);
-        return /* date.ToShortDateString() + "\n" + */ date.ToLongTimeString();
+        return date.ToLongTimeString();
       };
 
       yAxis.Minimum = results.minimum.amount;
@@ -109,7 +109,7 @@
         var su = sensor.unit.standardUnit;
         return SensorUtils.ToFormattedString(su.OfScalar(arg).ConvertTo(sensor.unit));
       };
-      yAxis.Title = sensor.type.GetTypeString() + " (" + sensor.unit.ToString() + ")";
+      yAxis.Title = sensor.unit.ToString();
 
       model.Series.Clear();
       foreach (var s in series) {

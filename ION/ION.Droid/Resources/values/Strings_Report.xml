@@ -2,6 +2,8 @@
 <resources>
 	<string name="reports">Reports</string>
 	<string name="reporting">Reporting</string>
+  <string name="report_archive">Report Archive</string>
+  <string name="report_archive_empty">No reports saved</string>
   <string name="report_average_colon">Average: </string>
   <string name="report_build">Build Report</string>
   <string name="report_by_date">By Date</string>
@@ -38,8 +40,10 @@
   <string name="report_duration">Duration</string>
 
   <string name="report_error_failed_to_load_sessions">Failed to load sessions.</string>
+  <string name="report_error_failed_to_build_report">Failed to build report.</string>
   <string name="report_error_failed_to_export">Failed to export report.</string>
-  <string name="report_error_graph_no_sessions_provided">Failed to start session graphing: not sessions were selected.</string>
+  <string name="report_error_failed_to_start_recording">Failed to start recording</string>
+  <string name="report_error_graph_no_sessions_provided">Failed to start session graphing: no sessions were selected.</string>
   <string name="report_error_unknown">Unknown error occurred.</string>
   <string name="report_error_workbench_and_analyzer_empty">Recording not started. Please add Viewers to either your Workbench or Analyzer to start recording.</string>
 

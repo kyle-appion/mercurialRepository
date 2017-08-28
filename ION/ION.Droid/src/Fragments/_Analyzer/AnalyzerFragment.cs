@@ -254,61 +254,77 @@ namespace ION.Droid.Fragments._Analyzer {
       ldb.SetTitle(string.Format(GetString(Resource.String.devices_actions_1arg), manifold.primarySensor.name));
 
       var dgs = manifold.primarySensor as GaugeDeviceSensor;
-      var connectionState = dgs.device.connection.connectionState;
+      
+      if (dgs != null) {
+        var connectionState = dgs.device.connection.connectionState;
+        if (connectionState == EConnectionState.Disconnected || connectionState == EConnectionState.Broadcasting) {
+          ldb.AddItem(Resource.String.reconnect, () => {
+            dgs.device.connection.Connect();
+          });
+        }
+        
+        if ((connectionState != EConnectionState.Disconnected && connectionState != EConnectionState.Broadcasting)) {
+          ldb.AddItem(Resource.String.disconnect, () => {
+            dgs.device.connection.Disconnect();
+          });
+        }
+        
+        ldb.AddItem(Resource.String.rename, () => {
+          if (manifold.primarySensor is GaugeDeviceSensor) {
+            var gds = manifold.primarySensor as GaugeDeviceSensor;
+            new RenameDialog(gds.device).Show(Activity);
+          } else {
+            new RenameDialog(manifold.primarySensor).Show(Activity);
+          }
+        });
+        
+        if (dgs != null && dgs.device.isConnected) {
+          ldb.AddItem(GetString(Resource.String.remote_change_unit), () => {
+            var device = dgs.device;
+  
+            if (device.sensorCount > 1) {
+              var d = new ListDialogBuilder(Activity);
+              d.SetTitle(Resource.String.select_a_sensor);
+  
+              for (int i = 0; i < device.sensorCount; i++) {
+                var sensor = device[i];
+                d.AddItem(i + ": " + sensor.type.GetTypeString(), () => {
+                  ShowChangeUnitDialog(sensor);
+                });
+              }
+  
+              d.Show();
+            } else {
+              ShowChangeUnitDialog(device.sensors[0]);
+            }
+          });
+        }
+        
+        ldb.AddItem(Resource.String.alarm, () => {
+          var i = new Intent(Activity, typeof(SensorAlarmActivity));
+          i.PutExtra(SensorAlarmActivity.EXTRA_SENSOR, manifold.primarySensor.ToParcelable());
+          StartActivity(i);
+        });
+      } else {
+        ldb.AddItem(Resource.String.edit_manual_entry, () => {
+          new ManualSensorEditDialog(Activity, manifold.primarySensor as ManualSensor).Show();
+        });
+      }
+      
+      /*
+      var s = analyzer[index];
+        if (s is GaugeDeviceSensor) {
+          var side = Analyzer.ESide.Low;
+          analyzer.GetSideOfIndex(index, out side);
+          new ViewerDialog(this.Activity, analyzer, analyzer[index], side).Show();
+        } else if (s is ManualSensor) {
+          new ManualSensorEditDialog(Activity, s as ManualSensor).Show();
+        }
+      */
 
-			if (dgs != null && connectionState == EConnectionState.Disconnected || connectionState == EConnectionState.Broadcasting) {
-				ldb.AddItem(Resource.String.reconnect, () => {
-					dgs.device.connection.Connect();
-				});
-			}
-
-			if (dgs != null && (connectionState != EConnectionState.Disconnected && connectionState != EConnectionState.Broadcasting)) {
-				ldb.AddItem(Resource.String.disconnect, () => {
-					dgs.device.connection.Disconnect();
-				});
-			}
-
-      ldb.AddItem(Resource.String.rename, () => {
-				ldb.AddItem(Resource.String.rename, () => {
-					if (manifold.primarySensor is GaugeDeviceSensor) {
-						var gds = manifold.primarySensor as GaugeDeviceSensor;
-						new RenameDialog(gds.device).Show(Activity);
-					} else {
-						new RenameDialog(manifold.primarySensor).Show(Activity);
-					}
-				});
-      });
-
-			if (dgs != null && dgs.device.isConnected) {
-				ldb.AddItem(GetString(Resource.String.remote_change_unit), () => {
-					var device = dgs.device;
-
-					if (device.sensorCount > 1) {
-						var d = new ListDialogBuilder(Activity);
-						d.SetTitle(Resource.String.select_a_sensor);
-
-						for (int i = 0; i < device.sensorCount; i++) {
-							var sensor = device[i];
-							d.AddItem(i + ": " + sensor.type.GetTypeString(), () => {
-								ShowChangeUnitDialog(sensor);
-							});
-						}
-
-						d.Show();
-					} else {
-						ShowChangeUnitDialog(device.sensors[0]);
-					}
-				});
-			}
 
       ldb.AddItem(Resource.String.workbench_add_viewer_sub, () => {
         ShowAddSubviewDialog(manifold);
-      });
-
-      ldb.AddItem(Resource.String.alarm, () => {
-        var i = new Intent(Activity, typeof(SensorAlarmActivity));
-        i.PutExtra(SensorAlarmActivity.EXTRA_SENSOR, manifold.primarySensor.ToParcelable());
-        StartActivity(i);
       });
 
       ldb.AddItem(Resource.String.remove, () => {

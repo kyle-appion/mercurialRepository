@@ -191,7 +191,7 @@
     <Compile Include="src\Fragments\GeneralApplicationSettingsFragment.cs" />
     <Compile Include="src\Fragments\FluidFragment.cs" />
     <Compile Include="src\Activity\ScreenshotActivity.cs" />
-    <Compile Include="src\Fragments\FileViewerFragment.cs" />
+    <Compile Include="src\Fragments\FileBrowserFragment.cs" />
     <Compile Include="src\Activity\ScreenshotArchiveActivity.cs" />
     <Compile Include="src\IO\FileExtensions.cs" />
     <Compile Include="src\Tasks\DownloadCalibrationCertificateTask.cs" />
@@ -319,16 +319,16 @@
     <Compile Include="src\Activity\Report\ReportGraphActivity.cs" />
     <Compile Include="src\Activity\Report\ReportGraphAdapter.cs" />
     <Compile Include="src\Activity\Report\ReportGraphRecord.cs" />
-    <Compile Include="src\Activity\Report\ReportArchiveFragment.cs" />
     <Compile Include="src\Activity\Report\ReportJobHeaderRecord.cs" />
     <Compile Include="src\Activity\Report\ReportSessionAdapter.cs" />
     <Compile Include="src\Activity\Report\ReportSessionRecord.cs" />
-    <Compile Include="src\Activity\Report\ReportSessionSelectionFragment.cs" />
     <Compile Include="src\Activity\Report\IGraphRenderer.cs" />
     <Compile Include="src\Activity\Report\SimpleGraphRenderer.cs" />
     <Compile Include="src\Activity\Report\SensorDataLogResultsExtensions.cs" />
     <Compile Include="src\Activity\Report\DetailedGraphRenderer.cs" />
     <Compile Include="src\Activity\Report\SensorExtensions.cs" />
+    <Compile Include="src\Activity\Report\ReportByJobFragment.cs" />
+    <Compile Include="src\Activity\Report\ReportByDateFragment.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -447,11 +447,8 @@
     <AndroidResource Include="Resources\layout-ldpi\ok_done.axml" />
     <AndroidResource Include="Resources\values\arrays.xml" />
     <AndroidResource Include="Resources\layout-ldpi\activity_screenshot.axml" />
-    <AndroidResource Include="Resources\layout-ldpi\fragment_file_manager.axml" />
-    <AndroidResource Include="Resources\layout-ldpi\activity_screenshot_archive.axml" />
     <AndroidResource Include="Resources\layout-ldpi\list_item_file.axml" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_logo_appion_a.png" />
-    <AndroidResource Include="Resources\layout-ldpi\activity_calibration_certificate_archive.axml" />
     <AndroidResource Include="Resources\menu\download.xml" />
     <AndroidResource Include="Resources\drawable-ldpi\xml_analyzer_viewer_background.xml" />
     <AndroidResource Include="Resources\layout-ldpi\analyzer_manifold_viewer.axml" />
@@ -736,9 +733,8 @@
     <AndroidResource Include="Resources\drawable-nodpi\xml_rect_black_gold_bordered_round.xml" />
     <AndroidResource Include="Resources\drawable-nodpi\xml_rect_gold_black_bordered_round.xml" />
     <AndroidResource Include="Resources\layout\fragment_report_archive.axml" />
-    <AndroidResource Include="Resources\layout\fragment_report_session_selection.axml" />
     <AndroidResource Include="Resources\layout\view_holder_report_session.axml" />
-    <AndroidResource Include="Resources\layout\activity_report_new.axml" />
+    <AndroidResource Include="Resources\layout\activity_report.axml" />
     <AndroidResource Include="Resources\layout\view_holder_report_job_header.axml" />
     <AndroidResource Include="Resources\layout\activity_report_graph_sessions.axml" />
     <AndroidResource Include="Resources\drawable-nodpi\xml_tab_gold_white.xml" />
@@ -759,6 +755,12 @@
     <AndroidResource Include="Resources\drawable\ic_bookmark.png" />
     <AndroidResource Include="Resources\layout\view_delete.axml" />
     <AndroidResource Include="Resources\layout\view_holder_job_session.axml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_rect_red_black_bordered.xml" />
+    <AndroidResource Include="Resources\layout\fragment_report_sessions.axml" />
+    <AndroidResource Include="Resources\drawable-nodpi\xml_rect_light_gray_black_bordered_round.xml" />
+    <AndroidResource Include="Resources\layout\fragment_file_browser.axml" />
+    <AndroidResource Include="Resources\layout\activity_screenshot_archive.axml" />
+    <AndroidResource Include="Resources\layout\activity_calibration_certificate_archive.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

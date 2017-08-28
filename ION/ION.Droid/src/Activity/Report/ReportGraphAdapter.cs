@@ -182,37 +182,29 @@ namespace ION.Droid.Activity.Report {
       NotifyDrag();
 			NotifyDataSetChanged();
     }
-
-/*
-		/// <summary>
-		/// Creates simple graphs for the the reports.
-		/// </summary>
-		/// <returns>The detailed graphs.</returns>
-		public Dictionary<GaugeDeviceSensor, IonImage> CaptureGraphs(DataLogReport dlr, IGraphRenderer renderer) {
-			var ret = new Dictionary<GaugeDeviceSensor, IonImage>();
-
-			var tuple = BuildSensorReportEncapsulations(dlr.dataLogResults);
-
-			foreach (var encap in tuple.Item2) {
-				var bitmap = Bitmap.CreateBitmap(800, 400, Bitmap.Config.Argb8888);
-				try {
-					var canvas = new Canvas(bitmap);
-					renderer.Render(canvas, encap);
-
-					using (var ms = new MemoryStream(128)) {
-						bitmap.Compress(Bitmap.CompressFormat.Png, 100, ms);
-						ret[encap.sensor] = new IonImage(IonImage.EType.Png, bitmap.Width, bitmap.Height, ms.ToArray());
-					}
-				} finally {
-					bitmap.Recycle();
-					bitmap.Dispose();
-				}
-			}
-
-			return ret;
-		}
-*/
-
+    
+    /// <summary>
+    /// Builds the dictionary of results that have been selected from the adapter.
+    /// </summary>
+    /// <returns>The selected results.</returns>
+    public Dictionary<GaugeDeviceSensor, SensorDataLogResults> GetCheckedResults() {
+      var ret = new Dictionary<GaugeDeviceSensor, SensorDataLogResults>();
+      
+      var startDate = dil.GetDateTimeFromIndex((int)(dil.count * leftPercent));
+      var endDate = dil.GetDateTimeFromIndex((int)((dil.count - 1) * rightPercent));
+      
+      foreach (var record in records) {
+        var rgr = record as ReportGraphRecord;
+        if (rgr == null || !rgr.isChecked) {
+          continue;
+        }
+        
+        ret[rgr.data.sensor] = rgr.data.SubsetByDates(startDate, endDate);
+      }
+      
+      return ret;
+    }
+    
 		/// <summary>
 		/// Safely performs an onOverlayDragEvent notification.
 		/// </summary>

@@ -24,6 +24,11 @@
     /// <value>The name of the report.</value>
     public string reportName { get; set; }
     /// <summary>
+    /// The date that the report was created.
+    /// </summary>
+    /// <value>The created.</value>
+    public DateTime created { get; set; }
+    /// <summary>
     /// The localization object for the report.
     /// </summary>
     /// <value>The localization.</value>
@@ -34,10 +39,11 @@
     /// <value>The appion logo png.</value>
     public IonImage appionLogoPng { get; set; }
 		/// <summary>
-		/// The Dictionary that maps sensors to their exported graph png image. 
+		/// The Dictionary that maps sensors to their exported graph png image.
 		/// </summary>
 		public Dictionary<GaugeDeviceSensor, IonImage> graphImages { get; set; }
-		/// <summary>
+
+    /// <summary>
 		/// The date that the report was started.
 		/// </summary>
 		/// <value>The jobs.</value>
@@ -51,20 +57,31 @@
 		/// The jobs that are attached to the report.
 		/// </summary>
 		public HashSet<JobRow> jobs { get; private set; }
-		/// <summary>
-		/// The devices that produced the session results.
-		/// </summary>
-		public HashSet<IDevice> devices { get; private set; }
-		/// <summary>
-		/// The sensors that were used to make up the report.
-		/// </summary>
-		/// <value>The sensors.</value>
-		public HashSet<GaugeDeviceSensor> sensors { get; private set; }
     /// <summary>
-    /// The sorted by start date session results that are making up the current report.
+    /// The DateIndexLookup that is used to match sensor measurements to indices.
     /// </summary>
-    /// <value>The results.</value>
-		public List<SensorDataLogResults> dataLogResults { get; private set; }
+    /// <value>The dil.</value>
+//    public DateIndexLookup dil { get; private set; }
+    /// <summary>
+    /// The dictionary of sensors and their coresponding data log results.
+    /// </summary>
+    /// <value>The data log results.</value>
+    public Dictionary<GaugeDeviceSensor, SensorDataLogResults> dataLogResults { get; private set; }
+
+    /// <summary>
+    /// The devices that produced the session results.
+    /// </summary>
+    public HashSet<IDevice> devices {
+      get {
+        var ret = new HashSet<IDevice>();
+        if (dataLogResults != null) {
+          foreach (var sensor in dataLogResults.Keys) {
+            ret.Add(sensor.device);
+          }
+        }
+        return ret;
+      }
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:ION.Core.Report.DataLogs.DataLogReport"/> class.
@@ -74,100 +91,86 @@
     /// <param name="end">End.</param>
     /// <param name="jobs">Jobs.</param>
     /// <param name="devices">Devices.</param>
-    public DataLogReport(ILocalization local, DateTime start, DateTime end, HashSet<JobRow> jobs, HashSet<IDevice> devices) {
+    public DataLogReport(ILocalization local, HashSet<JobRow> jobs,/* DateIndexLookup dil, */Dictionary<GaugeDeviceSensor, SensorDataLogResults> dataLogResults) {
       this.localization = local;
-			this.start = start;
-			this.end = end;
 			this.jobs = jobs;
-			this.devices = devices;
+      this.dataLogResults = dataLogResults;
 
-      sensors = new HashSet<GaugeDeviceSensor>();
-      dataLogResults = new List<SensorDataLogResults>();
       graphImages = new Dictionary<GaugeDeviceSensor, IonImage>();
+
+      var sd = new DateTime(9999, 1, 1);
+      var ed = new DateTime(1, 1, 1);
+      foreach (var sdlr in dataLogResults.Values) {
+        if (sdlr.startDate < sd) {
+          sd = sdlr.startDate;
+        }
+        if (sdlr.endDate > ed) {
+          ed = sdlr.endDate;
+        }
+      }
+
+      // Set defaults
+      reportName = "Unnamed Report";
+      created = DateTime.Now;
 		}
 
     /// <summary>
-    /// Adds the results to the report.
+    /// Sets graph data for the given sensor. If the image data is null, then existing graph data will be cleared.
     /// </summary>
-    /// <returns>True if the results were added (another report with the same sensor wasn't already added) flase
-    /// otherwise</returns>
-    /// <param name="results">Results.</param>
-    /// <param name="image">The optional image to attach to the report.</param>
-    public bool AddSensorDataLogResults(SensorDataLogResults results, IonImage image = null) {
-      if (!sensors.Contains(results.sensor)) {
-        sensors.Add(results.sensor);
-        dataLogResults.Add(results);
-        graphImages[results.sensor] = image;
-        return true;
-      } else {
+    /// <returns><c>true</c>, if sensor data graph was added, <c>false</c> otherwise.</returns>
+    /// <param name="sensor">Sensor.</param>
+    /// <param name="image">Image.</param>
+    public bool SetSensorDataGraph(GaugeDeviceSensor sensor, IonImage image = null) {
+      if (!dataLogResults.ContainsKey(sensor)) {
         return false;
       }
+
+      graphImages[sensor] = image;
+      return true;
     }
-
+    
     /// <summary>
-    /// Creates a new DataLogReport.
+    /// Builds a dictionary mapping session ids to start/end date tuples.
     /// </summary>
-    /// <returns>The from session results.</returns>
-    /// <param name="ion">Ion.</param>
-    /// <param name="start">Start.</param>
-    /// <param name="end">End.</param>
-    /// <param name="sessionResults">Session results.</param>
-    public static DataLogReport BuildFromSessionResults(IION ion, ILocalization local, DateTime start, DateTime end, List<SessionResults> sessionResults) {
-/*
-      sessionResults.Sort();
-
-      var jobs = new HashSet<JobRow>();
-      var deviceSet = new HashSet<IDevice>();
-      var sensorSet = new HashSet<GaugeDeviceSensor>();
-
-      foreach (var results in sessionResults) {
-        foreach (var dsl in results.deviceSensorLogs) {
-          if (SerialNumberExtensions.IsValidSerialNumber(dsl.deviceSerialNumber)) {
-            deviceSet.Add(ion.deviceManager[SerialNumberExtensions.ParseSerialNumber(dsl.deviceSerialNumber)]);
+    /// <returns>The session start ends.</returns>
+    public Dictionary<int, Tuple<DateTime, DateTime>> GatherSessionStartEnds() {
+      var ret = new Dictionary<int, Tuple<DateTime, DateTime>>();
+    
+      foreach (var sdlr in dataLogResults.Values) {
+        foreach (var sid in sdlr.sessionIds) {
+          var dlms = sdlr[sid];
+          
+          if (dlms.Count <= 0) {
+            continue;
           }
-        }
-
-        var row = ion.database.Table<SessionRow>().Where(sr => sr.SID == results.sessionId).FirstOrDefault();
-        if (row != null) {
-          var job = ion.database.Table<JobRow>().Where(jr => jr.JID == row.frn_JID).FirstOrDefault();
-          if (job != null) {
-            jobs.Add(job);
+          
+          if (ret.ContainsKey(sid)) {
+            var other = ret[sid];
+            DateTime st = other.Item1;
+            DateTime et = other.Item2;
+            var changed = false;
+            
+            if (dlms[0].recordedDate < st) {
+              st = dlms[0].recordedDate;
+              changed = true;
+            }
+            
+            if (dlms[dlms.Count].recordedDate > et) {
+              et = dlms[dlms.Count - 1].recordedDate;
+              changed = true;
+            }
+            
+            if (changed) {
+              ret[sid] = new Tuple<DateTime, DateTime>(st, et);
+            }
+          } else {
+            ret[sid] = new Tuple<DateTime, DateTime>(dlms[0].recordedDate, dlms[dlms.Count - 1].recordedDate);
           }
-        } else {
-          Log.E(typeof(DataLogReport).Name, "Failed to query a session for for export");
         }
       }
-
-      var ret = new DataLogReport(local, start, end, jobs, deviceSet, sessionResults);
-
-      ret.sensors = GetUsedSensors(ion, sessionResults);
-
+      
       return ret;
-*/
-      return null;
-		}
-
-		/// <summary>
-		/// Builds a collection of all of the GaugeDeviceSensors that are apart of the session results.
-		/// </summary>
-		/// <returns>The used sensors.</returns>
-		/// <param name="ion">Ion.</param>
-		/// <param name="sessionResults">Session results.</param>
-		private static HashSet<GaugeDeviceSensor> GetUsedSensors(IION ion, IEnumerable<SessionResults> sessionResults) {
-			var sensors = new HashSet<GaugeDeviceSensor>();
-
-			foreach (var session in sessionResults) {
-				foreach (var dsl in session.deviceSensorLogs) {
-					var sn = dsl.deviceSerialNumber.ParseSerialNumber();
-					var device = ion.deviceManager[sn] as GaugeDevice;
-					if (device != null) {
-						sensors.Add(device[dsl.index]);
-					}
-				}
-			}
-
-			return sensors;
-		}
+    }
 
     /// <summary>
     /// The localization object that provides localized strings for the report.
@@ -239,4 +242,3 @@
     }
   }
 }
-
