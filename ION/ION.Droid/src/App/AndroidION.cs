@@ -63,8 +63,6 @@ namespace ION.Droid.App {
 			context.UpdateNotification();
       isDisposed = false;
       
-      var genTask = GeneratePTFluidLookupTables();
-
       currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;
       currentAnalyzer.onAnalyzerEvent += OnAnalyzerEvent;
 
@@ -76,7 +74,6 @@ namespace ION.Droid.App {
         }
       }
 
-      await genTask;
       var _ = preferences.lastKnownAppVersion;
 
 			return await base.OnPostInitAsync();
@@ -185,12 +182,13 @@ namespace ION.Droid.App {
     }
 #endif
 
-
+/*
+#if DEBUG
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// This is used to test fluid create lookups for the ION PT Gauge Fluid Protocol
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		private async Task GeneratePTFluidLookupTables() {
-      var step = Units.Pressure.PSIG.OfScalar(0.5);
+      var step = Units.Pressure.PSIG.OfScalar(1);
     
 		  var fluid = await fluidManager.GetFluidAsync("R410A");
       var file = CreateFluidFileFromFluid(fluid, step);
@@ -305,7 +303,7 @@ namespace ION.Droid.App {
 
 
 			var step = pressureStep.ConvertTo(kpa).amount;
-			var rows = (int)((max - min) / psi.OfScalar(0.5).ConvertTo(kpa).amount);
+			var rows = (int)((max - min) / pressureStep.ConvertTo(kpa).amount);
 			var bub = new int[rows];
 			var dew = new int[rows];
 			// Write the bubble temperatures
@@ -344,6 +342,8 @@ namespace ION.Droid.App {
         this.tdew = tdew;
       }
     }
+#endif
+*/
   }
 }
 

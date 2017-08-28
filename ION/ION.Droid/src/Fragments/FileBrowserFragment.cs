@@ -17,7 +17,7 @@
   /// <summary>
   /// The file manager fragment is a simple fragment that will act as a file manager/explorer for the app.
   /// </summary>
-  public class FileViewerFragment : IONFragment {
+  public class FileBrowserFragment : IONFragment {
 		/// <summary>
 		/// The delegate that is called when a file is clicked in the fragment.
 		/// </summary>
@@ -69,12 +69,26 @@
 				}
 			}
 		} FileExtensionFilter __filter;
+    
+    /// <summary>
+    /// The empty string for the browser.
+    /// </summary>
+    public string emptyString {
+      get {
+        return _emptyString;
+      }
+      set {
+        if (empty != null) {
+          empty.Text = value;
+        }
+        _emptyString = value;
+      }
+    } string _emptyString;
 
 		/// <summary>
 		/// The text view that will display a message when the adapter is empty.
 		/// </summary>
-		public TextView empty;
-
+		private TextView empty;
     /// <summary>
     /// The recycler view that will list the files.
     /// </summary>
@@ -96,6 +110,13 @@
         }
       }
     } FileAdapter __adapter;
+    
+    public FileBrowserFragment() {
+    }
+    
+    public FileBrowserFragment(string emptyString) {
+      this.emptyString = emptyString;
+    }
 
     /// <Docs>The LayoutInflater object that can be used to inflate
     ///  any views in the fragment,</Docs>
@@ -108,10 +129,13 @@
     /// <param name="inflater">Inflater.</param>
     /// <param name="container">Container.</param>
    public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-      var ret = inflater.Inflate(Resource.Layout.fragment_file_manager, container, false);
+      var ret = inflater.Inflate(Resource.Layout.fragment_file_browser, container, false);
 
       list = ret.FindViewById<RecyclerView>(Resource.Id.list);
 			empty = ret.FindViewById<TextView>(Resource.Id.empty);
+      if (emptyString != null) {
+        empty.Text = emptyString;
+      }
 
       list.SetLayoutManager(new LinearLayoutManager(Activity));
 

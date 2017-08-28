@@ -14,9 +14,8 @@ using ION.Droid.Widgets.RecyclerViews;
 namespace ION.Droid.Activity.Report {
   public class ReportSessionAdapter : RecordAdapter {
 
-    public Action<ReportSessionRecord> onSessionCheckChanged;
-    public Action<ReportJobHeaderRecord> onJobRowClicked;
-
+    public ISessionActions sessionActions;
+    
     private SwipeRecyclerView list;
     private DividerItemDecoration divider;
 
@@ -40,18 +39,12 @@ namespace ION.Droid.Activity.Report {
         case EViewType.Header: {
           var vh = new ReportJobHeaderViewHolder(list, parent);
           vh.actionClick = () => {
-            if (onJobRowClicked != null) {
-              onJobRowClicked(vh.record);
-            }
+            sessionActions.OnJobClicked(vh.record);
           };
           return vh;
         }
         case EViewType.Session: {
-          var vh = new ReportSessionViewHolder(list, (sr) => {
-            if (onSessionCheckChanged != null) {
-              onSessionCheckChanged(sr);
-            }
-          }, parent);
+          var vh = new ReportSessionViewHolder(parent, list, sessionActions);
           return vh;
         }
         default:
@@ -103,8 +96,17 @@ namespace ION.Droid.Activity.Report {
 
       return null;
 		}
+    
+    /// <summary>
+    /// The interface that will respond to user input to rows. 
+    /// </summary>
+    public interface ISessionActions {
+      void OnJobClicked(ReportJobHeaderRecord record);
+      void OnCheckChanged(ReportSessionRecord record);
+      void OnDeleteClicked(ReportSessionRecord record);
+    }
   }
-
+  
   /// <summary>
   /// The enumeration that will describe the types of view present in a record adapter.
   /// </summary>

@@ -6,6 +6,8 @@
   using Android.Support.V7.Widget;
   using Android.OS;
   using Android.Views;
+  
+  using Appion.Commons.Util;
 
   using ION.Core.App;
   using ION.Core.Content;
@@ -213,7 +215,7 @@
 	          Log.E(this, "Unexpected issue with inserting sensor into DeviceGridAdapter: found a null item at first index");
 	          // At this point, the adapter is broken, and we can't really fix it without a shit ton of effort. Just append
 	          // the sensor to the end of the list and wait until the user exits activity and comes back.
-	          return sensors.Count;
+	          return;
 #endif
             }
           }

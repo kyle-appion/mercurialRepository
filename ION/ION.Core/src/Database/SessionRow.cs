@@ -16,7 +16,7 @@
     [PrimaryKey, AutoIncrement]
     public int SID { get; set;}
     [Ignore]
-    public int _id {get { return SID;} set { SID = value;}}
+    public int _id { get { return SID; } set { SID = value; } }
 
     /// <summary>
     /// The of the job that the session belongs to.

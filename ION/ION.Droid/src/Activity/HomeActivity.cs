@@ -176,9 +176,6 @@
 						  Log.E(this, "Failed to download rss feed", e);
 					  }
          }, TaskScheduler.FromCurrentSynchronizationContext());
-
-         
-
 		}
 
 		protected override void OnResume() {

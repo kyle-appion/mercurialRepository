@@ -161,7 +161,7 @@
       var imageCellHeight = 3;
 
       var index = 0;
-			foreach (var sensor in dlr.sensors) {
+			foreach (var sensor in dlr.dataLogResults.Keys) {
         if (!dlr.graphImages.ContainsKey(sensor)) {
           Log.E(this, "Failed to export sensor graph");
           continue;          

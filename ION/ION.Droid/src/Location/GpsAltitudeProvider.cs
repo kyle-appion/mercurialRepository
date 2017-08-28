@@ -116,7 +116,6 @@ namespace ION.Droid.Location {
     /// <param name="location">Location.</param>
     public void OnLocationChanged(Location location) {
       if (location.HasAltitude) {
-  			Log.V(this, "GpsAltitudeProvider says that it got a new location: " + location + " Supports altitude: " + lp.SupportsAltitude());
         lastKnownLocation = location;
         lastLocationReceivedTime = DateTime.Now;
         NotifyEvent(new AltitudeEvent(AltitudeEvent.EType.NewLocation, location));
@@ -196,7 +195,7 @@ namespace ION.Droid.Location {
         var start = DateTime.Now;
         while (!disposed && (lastKnownLocation == null || !lastKnownLocation.Equals(old))) {
           if (DateTime.Now - start > TimeSpan.FromSeconds(30)) {
-            Log.D(this, "Failed to find location within 30 seconds");
+            Log.E(this, "Failed to find location within 30 seconds");
             return null;
           }
           Thread.Sleep(250);

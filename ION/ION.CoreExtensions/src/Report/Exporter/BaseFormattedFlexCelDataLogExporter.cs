@@ -98,7 +98,6 @@
 		/// <param name="row">The x coordinate to start drawing the section in cells.</param>
 		/// <param name="col">The y coordinate to start drawing the section in cells.</param>
 		protected Tuple<int, int> DrawReportDates(XlsFile file, DataLogReport dlr, int row, int col) {
-/*
 			var l = dlr.localization;
 
 			// Draw the header
@@ -114,24 +113,26 @@
 			file.SetCellValue(row, col + 1, DateTime.Now.ToLongDateString(), sectionContentFormat);
 			file.SetCellValue(row + 1, col, l.reportDates, sectionHeaderFormat);
 			file.SetCellValue(row + 1, col + 1, "", sectionHeaderFormat);
-
+      
+      var startEnds = dlr.GatherSessionStartEnds();
+      var times = new List<Tuple<DateTime, DateTime>>(startEnds.Values);
+      times.Sort();
+      
 			var offset = 2;
 			// Draw the dates
-      foreach (var sr in dlr.dataLogResults) {
-				var rowOffset = row + offset;
-				// Merge content cells
-				file.MergeCells(rowOffset, col, rowOffset, col + 3);
-        file.SetCellValue(rowOffset, col, sr.startTime.ToShortDateString() + " " + sr.startTime.ToLongTimeString() + " - "
-                          + sr.endTime.ToShortDateString() + " " + sr.endTime.ToLongTimeString(), sectionContentFormat);
-				// Set the cell format for the merged cells (without this the merged cell doesn't have a format and is white)
-				for (int i = 0; i < 4; i++) {
-					file.SetCellFormat(rowOffset, col + i, sectionContentFormat);
-				}
-				offset++;
-			}
-*/
+      foreach (var time in times) {
+        var ro = row + offset++; // row offset;
+        
+        file.MergeCells(ro, col, ro, col + 3);
+        file.SetCellValue(ro, col, time.Item1.ToShortDateString() + " " + time.Item1.ToShortTimeString() + " - " + 
+                                    time.Item2.ToShortDateString() + " " + time.Item2.ToShortTimeString(), sectionContentFormat);
+        // Set the cell format for the merged cells (without this the merged cell doesn't have a format and is white)
+        for (int i = 0; i < 4; i++) {
+          file.SetCellFormat(ro, col + i, sectionContentFormat);
+        }
+      }
 
-      return new Tuple<int, int>(2, 0);//offset);
+      return new Tuple<int, int>(2, offset);
 		}
 
 		/// <summary>
@@ -143,8 +144,8 @@
 		/// <param name="row">The x coordinate to start drawing the section in cells.</param>
 		/// <param name="col">The y coordinate to start drawing the section in cells.</param>
 		protected Tuple<int, int> DrawDeviceAverages(XlsFile file, DataLogReport dlr, int row, int col) {
-/*
 			var l = dlr.localization;
+      
 			// Draw header
 			file.SetCellValue(row, col, l.serialNumber, sectionHeaderFormat);
 			file.SetCellValue(row, col + 1, l.minimum, sectionHeaderFormat);
@@ -153,27 +154,21 @@
 
 			// Draw the content
 			var offset = 1;
-			foreach (var sensor in dlr.sensors) {
-				var rowoff = row + offset;
-				var u = ion.preferences.units.DefaultUnitFor(sensor.type);
+			foreach (var pair in dlr.dataLogResults) {
+				var ro = row + offset++;
+        var sensorType = pair.Key.type;
+				var u = ion.preferences.units.DefaultUnitFor(sensorType);
 
-        Scalar min, max, avg;
-				dlr.CalculateDeviceMetrics(sensor, out min, out max, out avg);
+        var min = pair.Value.minimum.ConvertTo(u);
+        var max = pair.Value.maximum.ConvertTo(u);
+        var avg = pair.Value.average.ConvertTo(u);
 
-        var type = sensor.type;
-        min = min.ConvertTo(ion.preferences.units.DefaultUnitFor(type));
-				max = max.ConvertTo(ion.preferences.units.DefaultUnitFor(type));
-				avg = avg.ConvertTo(ion.preferences.units.DefaultUnitFor(type));
-
-				file.SetCellValue(rowoff, col, sensor.device.serialNumber, sectionContentFormat);
-				file.SetCellValue(rowoff, col + 1, SensorUtils.ToFormattedString(min, true), sectionContentFormat);
-				file.SetCellValue(rowoff, col + 2, SensorUtils.ToFormattedString(max, true), sectionContentFormat);
-				file.SetCellValue(rowoff, col + 3, SensorUtils.ToFormattedString(avg, true), sectionContentFormat);
-
-				offset++;
+				file.SetCellValue(ro, col, pair.Key.device.serialNumber, sectionContentFormat);
+				file.SetCellValue(ro, col + 1, SensorUtils.ToFormattedString(min, true), sectionContentFormat);
+				file.SetCellValue(ro, col + 2, SensorUtils.ToFormattedString(max, true), sectionContentFormat);
+				file.SetCellValue(ro, col + 3, SensorUtils.ToFormattedString(avg, true), sectionContentFormat);
 			}
-*/
-      var offset = 0;
+
 			return new Tuple<int, int>(4, offset);
 		}
 
@@ -190,41 +185,42 @@
 		/// <param name="row">The x coordinate.</param>
 		/// <param name="col">The y coordinate.</param>
 		protected Tuple<int, int> DrawAllMeasurements(XlsFile file, DataLogReport dlr, int row, int col) {
-/*
 			var l = dlr.localization;
-			var sensors = dlr.sensors;
-			var srs = dlr.sessionResults;
-			srs.Sort();
+			var sensors = dlr.dataLogResults.Keys;
 
 			// Coallate data
 			var unsortedMasterDates = new HashSet<DateTime>();
 
 			var masterDates = new List<DateTime>();
-			var sessionBreaks = new HashSet<DateTime>();
-			var measurements = new Dictionary<string, Measurements>();
-
-			foreach (var sr in dlr.sessionResults) {
-				foreach (var dsl in sr.deviceSensorLogs) {
-					var sensor = GetSensor(ion, dsl.deviceSerialNumber, dsl.index);
-
-					Measurements m;
-
-					if (!measurements.TryGetValue(dsl.deviceSerialNumber, out m)) {
-						m = new Measurements() {
-							sensor = sensor,
-							serialNumber = dsl.deviceSerialNumber,
-							sensorIndex = dsl.index,
-						};
-						measurements[dsl.deviceSerialNumber] = m;
-					}
-
-					foreach (var sl in dsl.logs) {
-						unsortedMasterDates.Add(sl.recordedDate);
-						m.measurements[sl.recordedDate] = sl.measurement;
-					}
-					sessionBreaks.Add(dsl.end);
-				}
-			}
+			var sessionBreaks = new Dictionary<int, DateTime>();
+			var measurements = new Dictionary<GaugeDeviceSensor, Measurements>();
+      
+      foreach (var sdlr in dlr.dataLogResults) {
+        foreach (var sid in sdlr.Value.sessionIds) {
+          Measurements m;
+          if (!measurements.TryGetValue(sdlr.Key, out m)) {
+            measurements[sdlr.Key] = m = new Measurements() {
+              sensor = sdlr.Key,
+              measurements = new Dictionary<DateTime, Scalar>(),
+            };
+          }
+        
+          foreach (var dlm in sdlr.Value[sid]) {
+            m.measurements[dlm.recordedDate] = dlm.measurement;
+            unsortedMasterDates.Add(dlm.recordedDate);
+          }
+          
+          var last = sdlr.Value[sid][sdlr.Value[sid].Count - 1].recordedDate;
+          if (sessionBreaks.ContainsKey(sid)) {
+            var dt = sessionBreaks[sid];
+            if (last > dt) {
+              sessionBreaks[sid] = last;
+            }
+          } else {
+            sessionBreaks[sid] = last;
+          }
+        }
+      }
 
 			masterDates.AddRange(unsortedMasterDates);
 			masterDates.Sort();
@@ -239,20 +235,18 @@
       // Draw the master dates list to the file.
       for (int i = 0; i < masterDates.Count; i++) {
         var date = masterDates[i];
-        var format = sessionBreaks.Contains(date) ? sessionBreakFormat : sectionContentFormat;
+        var format = sessionBreaks.ContainsValue(date) ? sessionBreakFormat : sectionContentFormat;
         file.SetCellValue(row + i + 1, col, date.ToShortDateString() + " " + date.ToLongTimeString(), format);
       }
 
       // Draw the content for the measurements
       var mi = 1;
-      foreach (var key in measurements.Keys) {
+      foreach (var m in measurements) {
         for (int y = 0; y < masterDates.Count; y++) {
-          var m = measurements[key];
-          var su = m.sensor.unit.standardUnit;
           var dt = masterDates[y];
-          if (m.measurements.ContainsKey(dt)) {
-            var scalar = su.OfScalar(m.measurements[dt]).ConvertTo(ion.preferences.units.DefaultUnitFor(m.sensor.type));
-            var format = sessionBreaks.Contains(dt) ? sessionBreakFormat : sectionContentFormat;
+          if (m.Value.measurements.ContainsKey(dt)) {
+            var scalar = ion.preferences.units.ToDefaultUnit(m.Value.measurements[dt]);
+            var format = sessionBreaks.ContainsValue(dt) ? sessionBreakFormat : sectionContentFormat;
             file.SetCellValue(row + y + 1, row + mi, SensorUtils.ToFormattedString(scalar), format);
           }
         }
@@ -260,32 +254,8 @@
       }
 
       file.AutofitCol(col, col + mi, false, 1.0);
-*/
-      var mi = 0;
-      return new Tuple<int, int>(1 + mi, 1);// + measurements.Count);
-		}
 
-		/// <summary>
-		/// Loads the sensor from the 
-		/// </summary>
-		/// <returns>The sensor.</returns>
-		/// <param name="ion">Ion.</param>
-		/// <param name="serialNumber">Serial number.</param>
-		/// <param name="sensorIndex">Sensor index.</param>
-		protected GaugeDeviceSensor GetSensor(IION ion, string serialNumber, int sensorIndex) {
-			if (SerialNumberExtensions.IsValidSerialNumber(serialNumber)) {
-				var sn = SerialNumberExtensions.ParseSerialNumber(serialNumber);
-				var device = ion.deviceManager[sn] as GaugeDevice;
-				if (device != null) {
-					return device[sensorIndex];
-				} else {
-					Log.E(this, "Failed to find gauge device with serial number: " + serialNumber);
-				}
-			} else {
-				Log.E(this, "Failed to find gauge device with serial number: " + serialNumber);
-			}
-
-			return null;
+      return new Tuple<int, int>(1 + mi, 1 + measurements.Count);
 		}
 
 		/// <summary>
@@ -385,9 +355,7 @@
 
     private class Measurements {
       public GaugeDeviceSensor sensor;
-      public string serialNumber;
-      public int sensorIndex;
-      public Dictionary<DateTime, double> measurements = new Dictionary<DateTime, double>();
+      public Dictionary<DateTime, Scalar> measurements = new Dictionary<DateTime, Scalar>();
     }
   }
 }

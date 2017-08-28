@@ -12,7 +12,7 @@
   /// A simple structure that will map a number of sessions that a GaugeDeviceSensor was present in to the
   /// DataLogMeasurements stored for each of those sessions.
   /// </summary>
-	public class SensorDataLogResults {
+	public class SensorDataLogResults : IComparable<SensorDataLogResults> {
 
     /// <summary>
     /// The inflated sensor who owns the sensor measurement rows.
@@ -24,6 +24,16 @@
 		/// </summary>
 		/// <value>The sessions identifiers.</value>
 		public IEnumerable<int> sessionIds { get { return _measurementData.Keys; } }
+    /// <summary>
+    /// The earliest date present in the data log results.
+    /// </summary>
+    /// <value>The start date.</value>
+    public DateTime startDate { get; private set; }
+    /// <summary>
+    /// The latest date present in the date log results.
+    /// </summary>
+    /// <value>The end date.</value>
+    public DateTime endDate { get; private set; }
     /// <summary>
     /// The minimum measurement of the results.
     /// </summary>
@@ -64,13 +74,23 @@
       this.sensor = sensor;
       _measurementData = measurementData;
 
+      var sd = new DateTime(9999, 1, 1);
+      var ed = new DateTime(1, 1, 1);
       var su = sensor.unit.standardUnit;
       var min = su.OfScalar(double.MaxValue);
       var max = su.OfScalar(double.MinValue);
       var avg = 0.0;
       var cnt = 0;
+      
+      
       foreach (var id in sessionIds) {
         foreach (var dlm in this[id]) {
+          if (dlm.recordedDate < sd) {
+            sd = dlm.recordedDate;
+          }
+          if (dlm.recordedDate > ed) {
+            ed = dlm.recordedDate;
+          }
           if (dlm.measurement < min) {
             min = dlm.measurement;
           }
@@ -82,6 +102,8 @@
         }
       }
 
+      startDate = sd;
+      endDate = endDate;
       minimum = min;
       maximum = max;
       average = su.OfScalar(avg / cnt);
@@ -110,6 +132,10 @@
       }
 
       return new SensorDataLogResults(sensor, dict);
+    }
+    
+    public int CompareTo(SensorDataLogResults results) {
+      return startDate.CompareTo(results.startDate);
     }
   }
 }

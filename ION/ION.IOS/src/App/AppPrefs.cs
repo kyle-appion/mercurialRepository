@@ -58,6 +58,9 @@
     public AlarmPreferences _alarm { get; private set; }
     // Implemented for IPreferences
     public IAlarmPreferences alarm { get { return _alarm; } }
+    
+    public JobPreferences _job { get; private set; }
+    public IJobPreferences job { get { return _job; } }
 
     public FluidPreferences _fluid { get; private set; }
     public IFluidPreferences fluid { get { return _fluid; } }
@@ -105,6 +108,7 @@
     private AppPrefs() {
       _device = new DevicePreferences(this);
       _alarm = new AlarmPreferences(this);
+      _job = new JobPreferences(this);
       _fluid = new FluidPreferences(this);
       _location = new LocationPreferences(this);
       _units = new UnitPreferences(this);
@@ -339,6 +343,26 @@
       allowsVibrate = true;
       allowsSounds = true;
 		}
+  }
+  
+  public class JobPreferences : DerivedPreferences, IJobPreferences {
+    private const string KEY_JOB_ACTIVE = "settings_job_active";
+    
+    public int activeJob {
+      get {
+        return GetInt(KEY_JOB_ACTIVE);
+      } 
+      set {
+        PutInt(KEY_JOB_ACTIVE, value);
+      }     
+    }
+    
+    public JobPreferences(AppPrefs prefs) : base(prefs) {
+    }
+    
+    public override void InitDefaults() {
+      activeJob = 0;
+    }
   }
 
   public class FluidPreferences : DerivedPreferences, IFluidPreferences {

@@ -283,7 +283,7 @@
           }
 
           // It's time to make a recording. Go through all of the device's and record their measurements.
-          var date = DateTime.UtcNow;
+          var date = DateTime.Now;
           var newRows = new List<SensorMeasurementRow>();
 
           foreach (var device in devices) {
@@ -301,13 +301,14 @@
 
           currentSession.sessionEnd = date;
           if ((ion.database.Update(currentSession, typeof(SessionRow)) == 1).Assert("Failed to update SessionRow end date")) {
-            var inserted = ion.database.InsertAll(newRows, typeof(SensorMeasurementRow), true);
-
-            if ((inserted != newRows.Count).Assert("Failed to insert all of the measurements")) {
-              // todo ahodder@appioninc.com: revert last changes.
+            try {
+              var inserted = ion.database.InsertAll(newRows, typeof(SensorMeasurementRow), true);
+            } catch (Exception e) {
+              Log.E(this, "Failed to insert new sensor measurement rows", e);
             }
           }
         }
+        Log.D(this, "Done recording apparently");
       }, cancelToken.Token);
   	}
 

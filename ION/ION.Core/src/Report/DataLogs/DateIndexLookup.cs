@@ -31,6 +31,26 @@
     public DateIndexLookup(Dictionary<DateTime, int> lookup) {
       _lookup = lookup;
     }
+    
+    public DateIndexLookup(IEnumerable<SensorDataLogResults> results) {
+      var dates = new HashSet<DateTime>();
+      foreach (var sdlr in results) {
+        foreach (var sid in sdlr.sessionIds) {
+          foreach (var dlm in sdlr[sid]) {
+            dates.Add(dlm.recordedDate);
+          }
+        }
+      }
+      
+      var sorted = new List<DateTime>(dates);
+      sorted.Sort();
+      
+      _lookup = new Dictionary<DateTime, int>();
+      var i = 0;
+      foreach (var dt in sorted) {
+        _lookup[dt] = i++;
+      }
+    }
 
     public DateTime GetDateTimeFromIndex(int index) {
       foreach (var dt in _lookup.Keys) {

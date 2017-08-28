@@ -96,8 +96,9 @@
       root = new LinearLayout(context);
 
       add = new ImageButton(context);
-      add.SetBackgroundResource(Resource.Drawable.xml_rect_gold_black_bordered);
+      add.SetBackgroundResource(Resource.Drawable.xml_rect_gold_black_bordered_round);
       add.SetImageResource(Resource.Drawable.ic_devices_add);
+      add.SetScaleType(ImageView.ScaleType.FitXy);
       add.Background.Alpha = (int)(0.55f * 255);
       add.Clickable = false;
 

@@ -77,7 +77,6 @@
           __lastKnownLocation = value;
 
           ion.preferences.location.customElevation = __lastKnownLocation.altitude;
-          Log.V(this, "Storing altitude: " + lastKnownLocation.altitude);
 
           if (onLocationChanged != null) {
             onLocationChanged(this, old, __lastKnownLocation);
@@ -211,7 +210,6 @@
     /// Stops location polling.
     /// </summary>
     public void StopAutomaticLocationPolling() {
-      Log.D(this, "Stopping automatic location polling");
       if (client != null && client.IsConnected) {
 				try {
       	  LocationServices.FusedLocationApi.RemoveLocationUpdates(client, this);
@@ -261,14 +259,12 @@
 		/// </summary>
 		/// <param name="bundle">Bundle.</param>
 		public void OnConnected(Bundle bundle) {
-      Log.D(this, "OnConnected to the GoogleApiClient");
     }
 
     /// <summary>
     /// Called when disconnected from the GoogleApiClient.
     /// </summary>
     public void OnDisconnected() {
-      Log.D(this, "OnDisconnected from the GoogleApiClient");
     }
 
     /// <summary>
@@ -284,7 +280,6 @@
     /// </summary>
     /// <param name="location">Location.</param>
     public void OnLocationChanged(Location location) {
-      Log.V(this, "On Location Change: " + location.ToString());
       var altitude = location.Altitude;
       if (altitude == 0) {
 				// TODO ahodder@appioninc.com: the altitude provider should not be null
@@ -314,7 +309,6 @@
     /// </summary>
     /// <param name="i">The index.</param>
     public void OnConnectionSuspended(int i) {
-      Log.V(this, "GoogleApiClient connection suspended");
     }
 
     /// <summary>

@@ -22,12 +22,12 @@
     /// <returns>The assert.</returns>
     /// <param name="expression">If set to <c>true</c> expression.</param>
     /// <param name="errorMessage">Error message.</param>
-    public static bool Assert(this bool expression, string errorMessage, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string called = null) {
+    public static bool Assert(this bool expression, string errorMessage, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null) {
       if (!expression) {
 #if DEBUG
         throw new Exception(errorMessage);
 #else
-        Log.E(caller, string.Format("Assertion failed in production code line {0}:\n\t{1}", lineNumber, errorMessage);
+        Log.E(caller, string.Format("Assertion failed in production code line {0}:\n\t{1}", lineNumber, errorMessage));
 #endif
       }
 
