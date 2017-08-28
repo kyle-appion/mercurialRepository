@@ -44,16 +44,27 @@ namespace ION.IOS.ViewController.Logging
 			graphTable = tableView;
       this.BackgroundColor = UIColor.Clear;
 			this.Layer.BorderWidth = 1f;
-			 
-			plotView = new PlotView(new CGRect(0,0, .8 * cellWidth, cellHeight)){
-				Model = CreatePlotModel(trackerHeight, parentView),
-        BackgroundColor = UIColor.Clear,
-			};
 			
-			deviceName = new UILabel (new CGRect (0,.92 * cellHeight,.3 * cellWidth,.25 * cellHeight));
-      deviceName.Text = cellData.serialNumber;
+			deviceName = new UILabel (new CGRect (0,0,.8 * cellWidth,.2 * cellHeight));
+      deviceName.Text = cellData.serialNumber + "     " + cellData.type;
 			deviceName.AdjustsFontSizeToFitWidth = true;
-			deviceName.TextAlignment = UITextAlignment.Center;
+      deviceName.TextAlignment = UITextAlignment.Left;
+
+			if (cellData.type.Equals("Temperature")) {
+        deviceName.BackgroundColor = UIColor.FromRGB(247, 148, 29);
+        deviceName.TextColor = UIColor.Black;
+			} else if (cellData.type.Equals("Vacuum")) {
+				deviceName.BackgroundColor = UIColor.FromRGB(123, 38, 34);
+				deviceName.TextColor = UIColor.White;
+			} else {
+				deviceName.BackgroundColor = UIColor.FromRGB(46, 49, 146);
+				deviceName.TextColor = UIColor.White;
+			}
+
+			plotView = new PlotView(new CGRect(0, .2 * cellHeight, .8 * cellWidth, .8 * cellHeight)) {
+				Model = CreatePlotModel(trackerHeight, parentView),
+				BackgroundColor = UIColor.Clear,
+			};
 
 			includeButton = new UIButton (new CGRect (.799 * cellWidth,0,.2 * cellWidth, 1.17 * cellHeight));
 			includeButton.SetTitleColor (UIColor.White, UIControlState.Normal);
@@ -61,7 +72,7 @@ namespace ION.IOS.ViewController.Logging
 
       includeLabel = new UILabel (new CGRect (.8 * cellWidth,0,includeButton.Bounds.Width,.25 * includeButton.Bounds.Height));
       includeLabel.TextAlignment = UITextAlignment.Center;
-      includeLabel.Text = Util.Strings.INCLUDED;
+      includeLabel.Text = Util.Strings.INCLUDE;
       includeLabel.AdjustsFontSizeToFitWidth = true;
       includeLabel.Layer.BorderWidth = 1f;
       includeLabel.BackgroundColor = UIColor.Black;
@@ -135,12 +146,12 @@ namespace ION.IOS.ViewController.Logging
 			lowValue = baseLow.ConvertTo(lookup).amount; 
 			var baseHigh = standardUnit.OfScalar(highValue);
 			highValue = baseHigh.ConvertTo(lookup).amount;
-			
+
       var color = OxyColors.Blue;
       var buffer = 0.0;
       
       if(cellData.type.Equals("Temperature")){
-        color = OxyColors.Red;
+        color = OxyColors.Orange;
         buffer = getUnitBuffer(ESensorType.Temperature,lookup);
       } else if (cellData.type.Equals("Vacuum")){
         color = OxyColors.Maroon;

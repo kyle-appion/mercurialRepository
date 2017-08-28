@@ -1112,6 +1112,10 @@
     <Compile Include="src\ViewController\DeviceGrid\GridCellDisconnected.designer.cs">
       <DependentUpon>GridCellDisconnected.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\ViewController\Logging\GraphingViewController.cs" />
+    <Compile Include="src\ViewController\Logging\GraphingViewController.designer.cs">
+      <DependentUpon>GraphingViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

@@ -49,8 +49,8 @@ namespace ION.IOS.ViewController.JobManager {
     // Overriden from UITableViewSource
     public override UIView GetViewForFooter (UITableView tableView, nint section)
     {
-      return new UIView(new CGRect(0,0,0,0));
-    }
+			return new UIView(new CGRect(0, 0, tableView.Bounds.Width, 5));
+		}
 
     public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath) {
 
@@ -64,9 +64,12 @@ namespace ION.IOS.ViewController.JobManager {
 
       cell.SelectionStyle = UITableViewCellSelectionStyle.None;
 
-      if(sessionID.Contains(tableItems[indexPath.Row].SID)){
-        cell.Accessory = UITableViewCellAccessory.Checkmark;
-      }
+			if (sessionID.Contains(tableItems[indexPath.Row].SID)) {
+				cell.checkImage.Image = UIImage.FromBundle("filled_checkbox");
+			} else {
+				cell.checkImage.Image = UIImage.FromBundle("blank_checkbox");
+			}
+      cell.Layer.BorderWidth = 1f;
 
       return cell;
     }
@@ -100,9 +103,11 @@ namespace ION.IOS.ViewController.JobManager {
     public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
     {
       if(sessionID.Contains(tableItems[indexPath.Row].SID)){
+        Console.WriteLine("Session already in list, so removing it");
         sessionID.Remove(tableItems[indexPath.Row].SID);
       } else {
-        sessionID.Add(tableItems[indexPath.Row].SID);
+				Console.WriteLine("Adding session to list");
+				sessionID.Add(tableItems[indexPath.Row].SID);
       }
 
       tableView.ReloadData();

@@ -6,30 +6,32 @@ using CoreGraphics;
 
 using ION.Core.App;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace ION.IOS.ViewController.JobManager {
   public partial class JobEditViewController : BaseIONViewController {
     public JobEditViewController(IntPtr handle) : base(handle) {
     }
 
-    UITabBar tabManager;
     EditJobView editView;
     JobSessionView associateView;
-    JobNotesView notesView;
+    //JobNotesView notesView;
     public UIButton saveButton;
     public int frnJID;
     IION ion;
-    static int loadCount = 0;
+
+
     static nfloat loadHeight = 0;
     public override void ViewDidLoad() {
       base.ViewDidLoad();
       ion = AppState.context;
-			
-      saveButton = new UIButton(new CGRect(0,0,60,30));
-      saveButton.SetTitle(Util.Strings.SAVE, UIControlState.Normal);
+			View.BackgroundColor = UIColor.FromPatternImage(UIImage.FromBundle("CarbonBackground"));
+
+			saveButton = new UIButton(new CGRect(0,0,50,40));
+			saveButton.SetImage(UIImage.FromBundle("ic_device_add"), UIControlState.Normal);
       saveButton.Layer.BorderWidth = 1f;
-      saveButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
       saveButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+
       saveButton.TouchDown += (sender, e) => {saveButton.BackgroundColor = UIColor.Blue;};
       saveButton.TouchUpOutside += (sender, e) => {saveButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
       saveButton.TouchUpInside += (sender, e) => {
@@ -48,12 +50,12 @@ namespace ION.IOS.ViewController.JobManager {
           var jobCheck = ion.database.Query<ION.Core.Database.JobRow>("SELECT JID FROM JobRow WHERE jobName = ?",editView.jobName.Text);
 
           if(jobCheck.Count == 0){
-            var job = new ION.Core.Database.JobRow(){jobName = editView.jobName.Text, customerNumber = editView.customerNumber.Text, dispatchNumber = editView.dispatchNumber.Text, poNumber = editView.prodOrderNumber.Text, techName = editView.techName.Text, systemType = editView.systemName.Text, jobAddress = editView.jobAddress.Text, jobLocation = editView.coordinateLabel.Text};         
+				  //var job = new ION.Core.Database.JobRow() { jobName = editView.jobName.Text, customerNumber = editView.customerNumber.Text, dispatchNumber = editView.dispatchNumber.Text, poNumber = editView.prodOrderNumber.Text, techName = editView.techName.Text, systemType = editView.systemName.Text, jobAddress = editView.jobAddress.Text, jobLocation = editView.coordinateLabel.Text };
+				  var job = new ION.Core.Database.JobRow(){jobName = editView.jobName.Text, customerNumber = editView.customerNumber.Text, dispatchNumber = editView.dispatchNumber.Text, poNumber = editView.prodOrderNumber.Text, techName = editView.techName.Text, systemType = editView.systemName.Text, jobAddress = editView.jobAddress.Text};         
             ion.database.Insert(job);
             this.NavigationController.PopViewController(true);
           } else {
-            editView.confirmLabel.TextColor = UIColor.Red;
-            editView.confirmLabel.Text = Util.Strings.Job.JOBEXISTS;
+            //TODO alert user that a job already exists with that name
           }
         } else {
           var jobCheck = ion.database.Query<ION.Core.Database.JobRow>("SELECT JID FROM JobRow WHERE jobName = ?",editView.jobName.Text);
@@ -67,15 +69,36 @@ namespace ION.IOS.ViewController.JobManager {
 	            System.IO.File.Delete(fileDir);
 						}	
 						ion.database.Query<ION.Core.Database.JobRow>("UPDATE JobRow SET jobName = ?, customerNumber = ?, dispatchNumber = ?, poNumber = ?, techName = ?, systemType = ?, jobAddress = ? WHERE JID = ?",editView.jobName.Text, editView.customerNumber.Text, editView.dispatchNumber.Text, editView.prodOrderNumber.Text, editView.techName.Text,editView.systemName.Text, editView.jobAddress.Text,frnJID);
-            editView.confirmLabel.TextColor = UIColor.Green;
-            editView.confirmLabel.Text = Util.Strings.Job.UPDATED;
           } else {
-            editView.confirmLabel.TextColor = UIColor.Red;
-            editView.confirmLabel.Text = Util.Strings.Job.JOBEXISTS;
-          }
+				  //TODO alert user that a job already exists with that name
+			    }
         }
 
-        editView.confirmLabel.Hidden = false;     
+  		  editView.updateNotes(frnJID);
+  		  using (XmlReader reader = XmlReader.Create(editView.fileDir)) {
+  			  while (reader.Read()) {
+  				  // Only detect start elements.
+  				  if (reader.IsStartElement()) {
+  					  // Get element name and switch on it.
+  					  switch (reader.Name) {
+  						  case "Info":
+  						  // Search for the attribute name on this current node.
+  						  string attribute = reader["Info"];
+  						  if (attribute != null) {
+  							  Console.WriteLine(" Has attribute name: " + attribute);
+  						  }
+  						  // Next read will contain text.
+  						  if (reader.Read()) {
+  							  editView.notes.Text = reader.Value.Trim();
+  							  Console.WriteLine("Notes: ");
+  							  Console.WriteLine(reader.Value.Trim());
+  						  }
+  						  break;
+  					  }
+  				  }
+  			  }
+  		  }
+        NavigationController.PopViewController(true);
       };
       
 
@@ -86,9 +109,6 @@ namespace ION.IOS.ViewController.JobManager {
       NavigationItem.RightBarButtonItem = button;
 			AutomaticallyAdjustsScrollViewInsets = false;
 			
-   //   Console.WriteLine("View bounds start " + View.Bounds);
-			//Console.WriteLine("Holder dimensions " + holderView.Bounds);
-			//Console.WriteLine("Scroller dimensions " + infoScroller.Bounds);
   		setupLayout();
     }
 
@@ -97,90 +117,70 @@ namespace ION.IOS.ViewController.JobManager {
 			//Console.WriteLine("View dimensions " + View.Bounds);
 			//Console.WriteLine("Holder dimensions " + holderView.Bounds);
 			//Console.WriteLine("Scroller dimensions " + infoScroller.Bounds);
-			var managerOffset = 50;
-			if(loadCount == 0){
-				loadHeight = infoScroller.Bounds.Height;
-				loadCount++;
-			} else {
-				if(infoScroller.Bounds.Height != loadHeight){
-					//Console.WriteLine("Heights didn't match for scrollview " + infoScroller.Bounds + " stored height: " + loadHeight);
-					var tempBounds = infoScroller.Bounds;
-					tempBounds.Height = loadHeight;
-					infoScroller.Bounds = tempBounds;
-					managerOffset = 40;
-					var tabBounds = holderView.Bounds;
-					tabBounds.Height += 20;
-					holderView.Bounds = tabBounds;
-					//Console.WriteLine("Now scrollview bounds are: " + infoScroller.Bounds);
-				}
-			}			
+			jobInfoButton = new UIButton(new CGRect(0, 40, .5 * View.Bounds.Width, 40));
+      jobInfoButton.BackgroundColor = UIColor.White;
+      jobInfoButton.SetTitle("Job Info",UIControlState.Normal);
+      jobInfoButton.SetTitleColor(UIColor.Black,UIControlState.Normal);
+      jobInfoButton.Font = UIFont.BoldSystemFontOfSize(15f);
+      jobInfoHighlight = new UILabel(new CGRect(0, 80, .5 * View.Bounds.Width, 5));
+      jobInfoHighlight.BackgroundColor = UIColor.FromRGB(0, 174, 239);
+			dataLogginButton = new UIButton(new CGRect(.5 * View.Bounds.Width,40,.5 * View.Bounds.Width,40));
+			dataLogginButton.BackgroundColor = UIColor.LightGray;
+			dataLogginButton.SetTitle("Data Logging", UIControlState.Normal);
+			dataLogginButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
+			dataLogginButton.Font = UIFont.BoldSystemFontOfSize(15f);
+			dataLoggingHighlight = new UILabel(new CGRect(.5 * View.Bounds.Width, 80, .5 * View.Bounds.Width, 5));
+			dataLoggingHighlight.BackgroundColor = UIColor.Black;
 
-      tabManager = new UITabBar(new CGRect(0,holderView.Bounds.Height - managerOffset, holderView.Bounds.Width,60));
-
-      editView = new EditJobView(infoScroller,frnJID);
+			editView = new EditJobView(infoScroller,frnJID);
+      infoScroller.ContentSize = new CGSize(infoScroller.Bounds.Width, 1.5 * infoScroller.Bounds.Height);
       associateView = new JobSessionView(infoScroller,frnJID);
-      notesView = new JobNotesView(infoScroller, frnJID);
+      //notesView = new JobNotesView(infoScroller, frnJID);
 
       var infoTab = new UITabBarItem();
       infoTab.Tag = 0;
       infoTab.Image = UIImage.FromBundle("ic_small_edit");
       infoTab.Title = Util.Strings.Job.JOBINFO;
 
-      if (!frnJID.Equals(0)) {
-        var sessionTab = new UITabBarItem();
-        sessionTab.Tag = 1;
-        sessionTab.Image = UIImage.FromBundle("ic_small_list");
-        sessionTab.Title = Util.Strings.SESSIONS;
+      jobInfoButton.TouchUpInside += (sender, e) => {
+        jobInfoButton.BackgroundColor = UIColor.White;
+        jobInfoHighlight.BackgroundColor = UIColor.FromRGB(0, 174, 239);
 
-        var notesTab = new UITabBarItem();
-        notesTab.Tag = 2;
-        notesTab.Image = UIImage.FromBundle("ic_notes");
-        notesTab.Title = Util.Strings.NOTES;
+  		  dataLogginButton.BackgroundColor = UIColor.LightGray;
+  		  dataLoggingHighlight.BackgroundColor = UIColor.Black;
 
-        tabManager.Items = new UITabBarItem[]{ infoTab, sessionTab, notesTab };
-      } else {
-        tabManager.Items = new UITabBarItem[]{ infoTab };
-      }
+  		  NavigationItem.Title = Util.Strings.Job.EDIT;
+  			infoScroller.ContentSize = new CGSize(infoScroller.Bounds.Width, 1.5 * infoScroller.Bounds.Height);
 
-      tabManager.SelectedItem = infoTab;
-      tabManager.ItemSelected += (sender, e) => {    
-        switch(e.Item.Tag) {    
-          case 0:
-            NavigationItem.Title = Util.Strings.Job.EDIT;
-            if(editView.expanded){
-							infoScroller.ContentSize = new CGSize(infoScroller.Bounds.Width, 1.5 * infoScroller.Bounds.Height);
-						}
-            saveButton.Hidden = false;
-            associateView.sessionView.Hidden = true;
-            notesView.notesView.Hidden = true;
-            editView.editView.Hidden = false;
-            break;
-          case 1:
-            NavigationItem.Title = Util.Strings.Job.EDITSESSIONS;    
-						infoScroller.ContentSize = new CGSize(infoScroller.Bounds.Width, infoScroller.Bounds.Height);
-            saveButton.Hidden = true;
-            editView.editView.Hidden = true;
-            notesView.notesView.Hidden = true;
-            associateView.sessionView.Hidden = false;
-            break;
-          case 2:
-            NavigationItem.Title = Util.Strings.Job.ADDNOTES;
-						infoScroller.ContentSize = new CGSize(infoScroller.Bounds.Width, infoScroller.Bounds.Height);
-            saveButton.Hidden = true;
-            editView.editView.Hidden = true;
-            associateView.sessionView.Hidden = true;
-            notesView.notesView.Hidden = false;
-            break;
-        }   
+  		  saveButton.Hidden = false;
+  		  associateView.sessionView.Hidden = true;
+  		  //notesView.notesView.Hidden = true;
+  		  editView.editView.Hidden = false;
       };
-      
-      editView.additionalInfo.TouchUpInside += adjustContentSize;
-      
-      holderView.AddSubview(tabManager);
+
+      dataLogginButton.TouchUpInside += (sender, e) => {
+		    jobInfoButton.BackgroundColor = UIColor.LightGray;
+		    jobInfoHighlight.BackgroundColor = UIColor.Black;
+
+  		  dataLogginButton.BackgroundColor = UIColor.White;
+  		  dataLoggingHighlight.BackgroundColor = UIColor.FromRGB(0, 174, 239);
+
+  		  NavigationItem.Title = Util.Strings.Job.EDITSESSIONS;
+  		  infoScroller.ContentSize = new CGSize(infoScroller.Bounds.Width, infoScroller.Bounds.Height);
+  		  saveButton.Hidden = true;
+  		  editView.editView.Hidden = true;
+  		  //notesView.notesView.Hidden = true;
+  		  associateView.sessionView.Hidden = false;
+      };
+
+			View.AddSubview(jobInfoButton);
+			View.AddSubview(jobInfoHighlight);
+			View.AddSubview(dataLogginButton);
+			View.AddSubview(dataLoggingHighlight);
+
       infoScroller.AddSubview(editView.editView);      
       infoScroller.AddSubview(associateView.sessionView);
-      infoScroller.AddSubview(notesView.notesView);
-			holderView.BringSubviewToFront(tabManager);
+      //infoScroller.AddSubview(notesView.notesView);
 		}
 		
 		public void adjustContentSize(object sender, EventArgs e){

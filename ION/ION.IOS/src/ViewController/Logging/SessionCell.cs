@@ -16,9 +16,14 @@ namespace ION.IOS.ViewController.Logging {
     public int SID;
     public DateTime start;
     public DateTime finish;
-    public UILabel sessionDate;
-    public UILabel sessionTime;
-    public UILabel sessionLength;
+		public UILabel recordDateLabel;
+		public UILabel durationLabel;
+		public UILabel deviceCountLabel;
+		public UILabel dateValueLabel;
+		public UILabel durationValueLabel;
+		public UILabel deviceCountValueLabel;
+
+		public UIImageView checkImage;
     public IION ion;
 
     public SessionCell(IntPtr handle ) {
@@ -35,73 +40,45 @@ namespace ION.IOS.ViewController.Logging {
       finish = end.ToLocalTime();
       ion = AppState.context;
 
-      var deviceAmount = ion.database.Table<SensorMeasurementRow>()
-        .Where(smr => smr.frn_SID == SID)
-        .Select(smr => smr.serialNumber).Distinct()
-        .Count();
-		
-      var duration = finish.Subtract(start).TotalMinutes;
+			var deviceAmount = ion.database.Table<SensorMeasurementRow>()
+			  .Where(smr => smr.frn_SID == SID)
+			  .Select(smr => smr.serialNumber).Distinct()
+			  .Count();
 
-      var formatTime = "";
+			var duration = end.Subtract(begin).TotalMinutes;
 
-      if(start.TimeOfDay.Equals("PM")){
-        start.AddHours(12);
-        //formatTime = start.AddHours(12).Hour + ":" + start.Minute + ":" + start.Second;
-        formatTime = start.AddHours(12).Hour + ":";
+			recordDateLabel = new UILabel(new CGRect(5, 0, .32 * tableView.Bounds.Width, .33 * cellHeight));
+			recordDateLabel.Font = UIFont.BoldSystemFontOfSize(16f);
+			recordDateLabel.Text = "Date Recorded:";
 
-        if (start.Minute < 10)
-          formatTime += "0" + start.Minute + ":";
-        else
-          formatTime += start.Minute + ":";
-        
-        formatTime += start.Second;
-      }else{
-        //formatTime = start.Hour + ":" + start.Minute + ":" + start.Second;
-        formatTime = start.Hour + ":";
+			durationLabel = new UILabel(new CGRect(5, .33 * cellHeight, .32 * tableView.Bounds.Width, .33 * cellHeight));
+			durationLabel.Font = UIFont.BoldSystemFontOfSize(16f);
+			durationLabel.Text = "Duration:";
 
-        if (start.Minute < 10)
-          formatTime += "0" + start.Minute + ":";
-        else
-          formatTime += start.Minute + ":";
-        
-        formatTime += start.Second;
-      }
+			deviceCountLabel = new UILabel(new CGRect(5, .66 * cellHeight, .32 * tableView.Bounds.Width, .33 * cellHeight));
+			deviceCountLabel.Font = UIFont.BoldSystemFontOfSize(16f);
+			deviceCountLabel.Text = "# of Sensors";
 
-      sessionDate = new UILabel(new CGRect(0,0,tableView.Bounds.Width, cellHeight));
-      sessionDate.AdjustsFontSizeToFitWidth = true;
-      sessionDate.TextAlignment = UITextAlignment.Left;
-      sessionDate.Layer.BorderColor = UIColor.Black.CGColor;
-      sessionDate.Layer.BorderWidth = 1f;
-      sessionDate.Text = Util.Strings.Job.STARTDATE + " : " + start.ToShortDateString()+" "+formatTime+"\n " + Util.Strings.Job.DURATION + ":    " + duration.ToString("0.0") + " min\n " + Util.Strings.DEVICES + ":     " + deviceAmount;
-      sessionDate.Font = UIFont.SystemFontOfSize(20);
-      sessionDate.Lines = 0;
+			dateValueLabel = new UILabel(new CGRect(.35 * tableView.Bounds.Width, 0, .5 * tableView.Bounds.Width, .33 * cellHeight));
+			dateValueLabel.Text = start.Date.ToString(@"yyyy-MM-dd") + " | " + start.ToLocalTime().ToShortTimeString();
 
-      //sessionDate = new UILabel(new CGRect(0,0,.3 * tableView.Bounds.Width, cellHeight));
-      //sessionDate.AdjustsFontSizeToFitWidth = true;
-      //sessionDate.TextAlignment = UITextAlignment.Center;
-      //sessionDate.Layer.BorderColor = UIColor.Black.CGColor;
-      //sessionDate.Layer.BorderWidth = 1f;
-      //sessionDate.Text = start.ToShortDateString();
-      //sessionDate.Font = UIFont.SystemFontOfSize(20);
+			durationValueLabel = new UILabel(new CGRect(.35 * tableView.Bounds.Width, .33 * cellHeight, .5 * tableView.Bounds.Width, .33 * cellHeight));
+			durationValueLabel.Text = duration.ToString("0.0") + " min";
 
-      //sessionTime = new UILabel(new CGRect(.3 * tableView.Bounds.Width,0,.3 * tableView.Bounds.Width, cellHeight));
-      //sessionTime.AdjustsFontSizeToFitWidth = true;
-      //sessionTime.TextAlignment = UITextAlignment.Center;
-      //sessionTime.Layer.BorderColor = UIColor.Black.CGColor;
-      //sessionTime.Layer.BorderWidth = 1f;
-      //sessionTime.Text = formatTime;
-      //sessionTime.Font = UIFont.SystemFontOfSize(20);
-      
-      //sessionLength = new UILabel(new CGRect(.6 * tableView.Bounds.Width,0,.3 * tableView.Bounds.Width, cellHeight));
-      //sessionLength.AdjustsFontSizeToFitWidth = true;
-      //sessionLength.TextAlignment = UITextAlignment.Center;
-      //sessionLength.Text = duration.ToString("0.0") + " min";
-      //sessionLength.Font = UIFont.SystemFontOfSize(20);      
+			deviceCountValueLabel = new UILabel(new CGRect(.35 * tableView.Bounds.Width, .66 * cellHeight, .5 * tableView.Bounds.Width, .33 * cellHeight));
+			deviceCountValueLabel.Text = deviceAmount.ToString();
 
-      this.AddSubview(sessionDate);
-      //this.AddSubview(sessionTime);
-      //this.AddSubview(sessionLength);
-      this.Layer.BorderWidth = 1f;
+			checkImage = new UIImageView(new CGRect(.9 * tableView.Bounds.Width, .3 * cellHeight, .4 * cellHeight, .4 * cellHeight));
+
+			this.AddSubview(recordDateLabel);
+			this.AddSubview(durationLabel);
+			this.AddSubview(deviceCountLabel);
+
+			this.AddSubview(dateValueLabel);
+			this.AddSubview(durationValueLabel);
+			this.AddSubview(deviceCountValueLabel);
+
+			this.AddSubview(checkImage);
     }
       
   }

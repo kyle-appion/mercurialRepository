@@ -24,6 +24,7 @@
     /// <value>The job identifier.</value>
     [Indexed]
     public int frn_JID { get; set; }
+
     /// <summary>
     /// The start date of the session.
     /// </summary>
