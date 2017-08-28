@@ -258,8 +258,8 @@ namespace ION.IOS.ViewController {
 		}
 
     public void updatePopup(GaugeDeviceSensor passedSensor){
-      sensor = passedSensor;
 			sensor.onSensorStateChangedEvent -= updateSensor;
+			sensor = passedSensor;
 			sensor.onSensorStateChangedEvent += updateSensor;
 			nameLabel.Text = sensor.device.serialNumber.deviceModel.GetTypeString() + ":" + sensor.device.serialNumber.rawSerial.ToUpper();
 			deviceImage.Image = Devices.DeviceUtil.GetUIImageFromDeviceModel(sensor.device.serialNumber.deviceModel);
