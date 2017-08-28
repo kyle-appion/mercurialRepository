@@ -104,12 +104,12 @@ namespace ION.IOS.ViewController.DeviceGrid {
     }
 
     public void UpdateCell(GaugeDeviceSensor sensor){
-      slotSensor = sensor;
+			slotSensor.onSensorStateChangedEvent -= gaugeUpdating;
+			slotSensor = sensor;
 			if(slotSensor == null){
 				ContentView.Hidden = true;
 				BackgroundView.Hidden = true;
       } else {
-				slotSensor.onSensorStateChangedEvent -= gaugeUpdating;
 				slotSensor.onSensorStateChangedEvent += gaugeUpdating;
 
 				typeLabel.Text = slotSensor.device.serialNumber.deviceModel.GetTypeString();
