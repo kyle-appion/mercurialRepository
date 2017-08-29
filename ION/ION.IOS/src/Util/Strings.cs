@@ -408,6 +408,7 @@ namespace ION.IOS.Util {
         SH = "workbench_subview_sh_setup".FromResources(),
         SHSC_DESC = "workbench_subview_shsc_desc".FromResources(),
         SHSC_SETUP = "workbench_subview_shsc_setup".FromResources(),
+        TARGET_SHSC = "workbench_subview_shsc_target".FromResources(),
         TIMER = "workbench_subview_timer".FromResources(),
         TIMER_DESC = "workbench_subview_timer_desc".FromResources(),
         TREND = "workbench_subview_roc_trend".FromResources(),
