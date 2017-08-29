@@ -242,6 +242,8 @@ namespace ION.IOS.ViewController.Workbench {
           var passingRecord = record as RateOfChangeRecord;
           rocvc.initialRecord = passingRecord;
           vc.NavigationController.PushViewController(rocvc, true);
+      } else if (record is ViewerRecord){
+        ShowManifoldContext(null,((ViewerRecord)record).manifold);
       }
     }
 
@@ -256,7 +258,7 @@ namespace ION.IOS.ViewController.Workbench {
 
       if (record is ViewerRecord) {
         //return 158;
-        return 168;
+        return 100;
       } else if (record is SpaceRecord) {
         return 10;
       } else if (record is AddRecord){
@@ -299,8 +301,7 @@ namespace ION.IOS.ViewController.Workbench {
         var viewer = record as ViewerRecord;
         var cell = tableView.DequeueReusableCell(CELL_VIEWER) as ViewerTableCell;
 
-        cell.UpdateTo(ion, viewer.manifold, ShowManifoldContext);
-        cell.Layer.CornerRadius = 5;
+        cell.UpdateTo(ion, viewer.manifold);
         
         var longPress = new UILongPressGestureRecognizer((obj) => {
 					if(obj.State == UIGestureRecognizerState.Began){
