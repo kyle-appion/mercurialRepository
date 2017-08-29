@@ -1,6 +1,6 @@
 // WARNING
 //
-// This file has been generated automatically by Xamarin Studio to store outlets and
+// This file has been generated automatically by Visual Studio to store outlets and
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
@@ -56,11 +56,6 @@ namespace ION.IOS.ViewController.Workbench
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (labelLinked != null) {
-				labelLinked.Dispose ();
-				labelLinked = null;
-			}
-
 			if (activityConnectStatus != null) {
 				activityConnectStatus.Dispose ();
 				activityConnectStatus = null;
@@ -99,6 +94,11 @@ namespace ION.IOS.ViewController.Workbench
 			if (labelHeader != null) {
 				labelHeader.Dispose ();
 				labelHeader = null;
+			}
+
+			if (labelLinked != null) {
+				labelLinked.Dispose ();
+				labelLinked = null;
 			}
 
 			if (labelMeasurement != null) {

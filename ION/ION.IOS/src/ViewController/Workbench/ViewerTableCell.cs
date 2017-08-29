@@ -16,14 +16,9 @@ namespace ION.IOS.ViewController.Workbench {
 	using ION.IOS.Sensors;
 	using ION.IOS.UI;
 	using ION.IOS.Util;
+  using CoreGraphics;
 
-	public partial class ViewerTableCell : UITableViewCell, IReleasable {
-
-    /// <summary>
-    /// The ion context necessary for connecting the primary sensor if it is
-    /// attached to a gauge device.
-    /// </summary>
-    /// <value>The ion.</value>
+  public partial class ViewerTableCell : UITableViewCell, IReleasable {
     private IION ion { get; set; }
     /// <summary>
     /// The manifold that we are representing.
@@ -46,54 +41,11 @@ namespace ION.IOS.ViewController.Workbench {
         }
       }
     } Manifold __manifold;
-    /// <summary>
-    /// The action that is fired when the background clicked.
-    /// </summary>
-    /// <value>The on background clicked.</value>
-    private EventHandler<Manifold> onBackgroundClicked { get; set; }
 
-    /// <summary>
-    /// The last known battery level.
-    /// </summary>
-    /// <value>The last battery level.</value>
     private int lastBatteryLevel { get; set; }
-    /// <summary>
-    /// The last known connection state.
-    /// </summary>
-    /// <value>The last state of the connection.</value>
-//    private EConnectionState lastConnectionState { get; set; }
 
 		public ViewerTableCell (IntPtr handle) : base (handle) {
 		}
-
-    // Overridden from UITableViewCell
-    public override void AwakeFromNib() {
-      base.AwakeFromNib();
-
-      viewBackground.Layer.CornerRadius = 5;
-
-      var tapper = new UITapGestureRecognizer(() => {
-        if (onBackgroundClicked != null) {
-          onBackgroundClicked(this, manifold);
-        }
-      });
-      AddGestureRecognizer(tapper);
-			lastBatteryLevel = -1;
-    }
-
-    // Overridden from UITableViewCell
-    public override void PrepareForReuse() {
-      base.PrepareForReuse();
-
-      Release();
-    }
-
-    // Overridden from UITableViewCell
-    public override void RemoveFromSuperview() {
-      base.RemoveFromSuperview();
-
-      Release();
-    }
 
     // Overridden from IReleasable
     public void Release() {
@@ -102,31 +54,35 @@ namespace ION.IOS.ViewController.Workbench {
 //      lastConnectionState = EConnectionState.Resolving; // Not the best, but a resolution should be over quick.
     }
 
-    public void UpdateTo(IION ion, Manifold manifold, EventHandler<Manifold> backgroundClicked = null) {
+    public void UpdateTo(IION ion, Manifold manifold) {
+			this.BackgroundColor = UIColor.White;
       this.ion = ion;
       this.manifold = manifold;
-      this.onBackgroundClicked = backgroundClicked;
-      this.labelLinked.Hidden = !(manifold.secondarySensor is GaugeDeviceSensor);
-
+     
       buttonConnection.TouchUpInside -= changeConnectionStatus;
       buttonConnection.TouchUpInside += changeConnectionStatus;
     }
 
     public void UpdateFromGaugeSensor(GaugeDeviceSensor sensor) {
+      if(labelHeader == null){
+        return;
+      }
+      Console.WriteLine("Update cell bounds: " + this.Bounds);
       var device = sensor.device;
       var state = device.connection.connectionState;
+
 
       labelHeader.Text = device.serialNumber.deviceModel.GetTypeString() + ": " + sensor.name;
       imageSensorIcon.Image = DeviceUtil.GetUIImageFromDeviceModel(device.serialNumber.deviceModel);
       labelMeasurement.Text = sensor.ToFormattedString();
       labelUnit.Text = sensor.unit.ToString();
-      labelSerialNumber.Text = device.serialNumber.ToString();
       activityConnectStatus.Hidden = EConnectionState.Resolving != sensor.device.connection.connectionState;
       buttonConnection.Hidden = false;
 
       UpdateAlarm(sensor);
 
       if (device.isConnected) {
+        Console.WriteLine("Device is connected so updating battery to " + device.battery);
         UpdateBatteryIcon(device.battery);
 
 //        if (lastConnectionState != state) {
@@ -136,12 +92,17 @@ namespace ION.IOS.ViewController.Workbench {
 
         labelMeasurement.TextColor = new UIColor(Colors.BLACK);
         labelUnit.TextColor = new UIColor(Colors.BLACK);
-        labelConnectionStatus.Hidden = true;
+        labelConnectionStatus.Text = "Connected";
+        labelConnectionStatus.TextColor = UIColor.Green;
       } else {
         if (EConnectionState.Broadcasting == device.connection.connectionState) {
           UpdateBatteryIcon(device.battery);
-        } else {
-          UpdateBatteryIcon(-1);
+					labelConnectionStatus.Text = "Long Range Mode";
+					labelConnectionStatus.TextColor = UIColor.Blue;
+				} else {
+					labelConnectionStatus.Text = "Disconnected";
+					labelConnectionStatus.TextColor = UIColor.Red;
+					UpdateBatteryIcon(-1);
         }
 
 //        if (lastConnectionState != state) {
@@ -151,7 +112,6 @@ namespace ION.IOS.ViewController.Workbench {
 
         labelMeasurement.TextColor = new UIColor(Colors.LIGHT_GRAY);
         labelUnit.TextColor = new UIColor(Colors.LIGHT_GRAY);
-        labelConnectionStatus.Hidden = true;
       }
 
 //      lastConnectionState = state;
@@ -183,7 +143,8 @@ namespace ION.IOS.ViewController.Workbench {
     /// Updates the battery icon. -1 will hide the image.
     /// </summary>
     /// <param name="percent">Percent.</param>
-    private void UpdateBatteryIcon(int percent) {   
+    private void UpdateBatteryIcon(int percent) {
+      Console.WriteLine("Updating battery with " + percent);  
       if (lastBatteryLevel == percent && percent != -1 && lastBatteryLevel != -1) {
         return;
       }
@@ -192,20 +153,26 @@ namespace ION.IOS.ViewController.Workbench {
       imageBattery.TintColor = new UIColor(Colors.BLACK);
 
       if (percent >= 100) {
+        Console.WriteLine("Setting battery level to 100");
         imageBattery.Image = UIImage.FromBundle("img_battery_100");
       } else if (percent >= 75) {
-        imageBattery.Image = UIImage.FromBundle("img_battery_75");
+				Console.WriteLine("Setting battery level to 75");
+				imageBattery.Image = UIImage.FromBundle("img_battery_75");
       } else if (percent >= 50) {
-        imageBattery.Image = UIImage.FromBundle("img_battery_50");
+				Console.WriteLine("Setting battery level to 50");
+				imageBattery.Image = UIImage.FromBundle("img_battery_50");
       } else if (percent >= 25) {
-        imageBattery.Image = UIImage.FromBundle("img_battery_25");
+				Console.WriteLine("Setting battery level to 25");
+				imageBattery.Image = UIImage.FromBundle("img_battery_25");
         imageBattery.TintColor = new UIColor(Colors.RED);
       } else if (percent >= 0) {
-        imageBattery.Image = UIImage.FromBundle("img_battery_0");
+				Console.WriteLine("Setting battery level to 0");
+				imageBattery.Image = UIImage.FromBundle("img_battery_0");
         imageBattery.TintColor = new UIColor(Colors.RED);
       } else {
-        imageBattery.Hidden = true;
-      }
+        Console.WriteLine("Hiding battery");
+				imageBattery.Hidden = true;
+			}
 
       lastBatteryLevel = percent;
     }

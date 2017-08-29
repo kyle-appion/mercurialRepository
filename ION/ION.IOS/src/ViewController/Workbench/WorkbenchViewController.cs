@@ -142,7 +142,7 @@ namespace ION.IOS.ViewController.Workbench {
 			
       tableContent.AllowsSelection = true;
       tableContent.ContentInset = new UIEdgeInsets(0, 0, 0, 0);
-
+      //tableContent.RegisterClassForCellReuse(typeof(ViewerTableCell),"cellViewer");
       source = new WorkbenchTableSource(this, ion, tableContent);
 			source.SetWorkbench(workbench);
       source.onAddClicked = OnRequestViewer;
@@ -155,7 +155,6 @@ namespace ION.IOS.ViewController.Workbench {
 			}
 			workbench.onWorkbenchEvent += OnWorkbenchEvent;
       ion.onIonStateChanged += updateLogging;
-      
     }    
 
     // Overridden from BaseIONViewController

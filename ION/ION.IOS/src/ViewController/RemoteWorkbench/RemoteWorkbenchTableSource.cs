@@ -198,8 +198,8 @@ namespace ION.IOS.ViewController.RemoteAccess {
         var viewer = record as ViewerRecord;
         var cell = tableView.DequeueReusableCell(CELL_VIEWER) as ViewerTableCell;
 
-        cell.UpdateTo(ion, viewer.manifold, ShowManifoldContext);
-        cell.Layer.CornerRadius = 5;
+        cell.UpdateTo(ion, viewer.manifold);
+        cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         return cell;
       } else if (record is MeasurementRecord) {
         var meas = record as MeasurementRecord;
