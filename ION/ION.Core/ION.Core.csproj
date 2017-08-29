@@ -162,6 +162,7 @@
     <Compile Include="src\Content\IonState.cs" />
     <Compile Include="src\IO\RssParser.cs" />
     <Compile Include="src\Devices\Sorters\GeneralSensorSorter.cs" />
+    <Compile Include="src\Sensors\Properties\TargetSuperheatSubcoolProperty.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

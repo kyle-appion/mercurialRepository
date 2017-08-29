@@ -345,6 +345,7 @@ file.
 "workbench_subview_sc" = "S/C";
 "workbench_subview_sh" = "S/H";
 "workbench_subview_shsc_setup" = "Setup";
+"workbench_subview_shsc_target" = "T-SH/SC: Target Superheat/Subcool";
 "workbench_subview_timer" = "TIME";
 "workbench_subview_timer_desc" = "Time Tracker (TIME)";
 "workbench_subview_roc_trend" = "TREND";

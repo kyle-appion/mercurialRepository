@@ -197,6 +197,11 @@
     } Sensor __secondarySensor;
 
     /// <summary>
+    /// The target superheat/subcool for a sensor
+    /// </summary>
+    public double targetSHSC { get; set; }
+
+    /// <summary>
     /// The sensor properties that are within the manifold.
     /// </summary>
     /// <value>The sensor properties.</value>
