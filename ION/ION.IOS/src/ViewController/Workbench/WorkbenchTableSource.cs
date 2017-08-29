@@ -37,7 +37,8 @@ namespace ION.IOS.ViewController.Workbench {
     private const string CELL_ROC_SUBVIEW = "cellRateOfChangeSubview";
     private const string CELL_TIMER_SUBVIEW = "cellTimerSubview";
     private const string CELL_SPACE = "cellSpace";
-    private const string CELL_SECONDARY = "cellLinked";
+		private const string CELL_SECONDARY = "cellLinked";
+		private const string CELL_TARGET_SUBVIEW = "cellTargetSHSC";
 
     /// <summary>
     /// The action that is called when the add row is clicked.
@@ -74,11 +75,13 @@ namespace ION.IOS.ViewController.Workbench {
     /// </summary>
     private bool expanded = true;
 
+    public TargetSHSCView setTargetView;
+
     public WorkbenchTableSource(WorkbenchViewController vc, IION ion, UITableView tableView) {
       this.vc = vc;
       this.ion = ion;
       this.tableView = tableView;
-      
+      setTargetView = new TargetSHSCView(vc.View);
     }
 
     // Overridden from UITableViewSource
@@ -220,6 +223,9 @@ namespace ION.IOS.ViewController.Workbench {
           var shvc = vc.InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL);
           shvc.initialManifold = fr.manifold;
           vc.NavigationController.PushViewController(shvc, true);
+        } else if (fr.sensorProperty is TargetSuperheatSubcoolProperty){
+          //TODO show a dialogue to set the target SH/SC for a manifold
+          setTargetView.setManifold(fr.manifold);
         }
       } else if (record is MeasurementRecord){
 				var property = ((MeasurementRecord)record).sensorProperty as AlternateUnitSensorProperty;
@@ -295,7 +301,7 @@ namespace ION.IOS.ViewController.Workbench {
 				}
 
         return cell;
-      } else if (record is ViewerRecord) {   
+      } else if (record is ViewerRecord) {
         var viewer = record as ViewerRecord;
         var cell = tableView.DequeueReusableCell(CELL_VIEWER) as ViewerTableCell;
 
@@ -350,11 +356,19 @@ namespace ION.IOS.ViewController.Workbench {
         return cell;
       } else if (record is FluidRecord) {
         var fr = record as FluidRecord;
-        var cell = tableView.DequeueReusableCell(CELL_FLUID_SUBVIEW) as FluidSubviewCell;
+        if (fr.sensorProperty is TargetSuperheatSubcoolProperty){
+					var cell = tableView.DequeueReusableCell(CELL_TARGET_SUBVIEW) as TargetSHSCCell;
+					cell.UpdateTo(fr);
+					return cell;
 
-        cell.UpdateTo(fr);
+				} else {
+					var cell = tableView.DequeueReusableCell(CELL_FLUID_SUBVIEW) as FluidSubviewCell;
 
-        return cell;
+					cell.UpdateTo(fr);
+
+					return cell;
+        }
+
       } else if (record is SpaceRecord) {
         var cell = tableView.DequeueReusableCell(CELL_SPACE);
 
@@ -620,6 +634,12 @@ namespace ION.IOS.ViewController.Workbench {
         });
       }
 
+      if (!manifold.HasSensorPropertyOfType(typeof(TargetSuperheatSubcoolProperty))) {
+        addAction(Strings.Workbench.Viewer.TARGET_SHSC, (UIAlertAction action) => {
+    			manifold.AddSensorProperty(new TargetSuperheatSubcoolProperty(manifold));
+    		});
+      }
+
       dialog.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, null));
 
       var popover = dialog.PopoverPresentationController;
@@ -781,7 +801,7 @@ namespace ION.IOS.ViewController.Workbench {
         return new TimerRecord(manifold, sensorProperty as TimerSensorProperty);
       } else if (sensorProperty is RateOfChangeSensorProperty) {
         return new RateOfChangeRecord(manifold, sensorProperty);
-      } else if (sensorProperty is PTChartSensorProperty || sensorProperty is SuperheatSubcoolSensorProperty) {
+      } else if (sensorProperty is PTChartSensorProperty || sensorProperty is SuperheatSubcoolSensorProperty || sensorProperty is TargetSuperheatSubcoolProperty) {
         return new FluidRecord(manifold, sensorProperty);
       } else if (sensorProperty is SecondarySensorProperty){
         return new SecondarySensorRecord(manifold, sensorProperty as SecondarySensorProperty);
@@ -818,6 +838,7 @@ namespace ION.IOS.ViewController.Workbench {
       Fluid,
       RateOfChange,
       Secondary,
+      Target,
     }
   }
 

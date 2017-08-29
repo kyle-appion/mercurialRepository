@@ -1110,6 +1110,11 @@
     <Compile Include="src\ViewController\Logging\GraphingViewController.designer.cs">
       <DependentUpon>GraphingViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\ViewController\Workbench\TargetSHSCCell.cs" />
+    <Compile Include="src\ViewController\Workbench\TargetSHSCCell.designer.cs">
+      <DependentUpon>TargetSHSCCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Workbench\TargetSHSCView.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
