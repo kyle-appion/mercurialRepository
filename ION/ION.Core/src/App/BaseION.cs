@@ -1,7 +1,7 @@
 ﻿namespace ION.Core.App {
 
   using System;
-
+/*
   public class BaseION : IION {
     // Implemented from IION
     public event OnWorkbenchChanged onWorkbenchChanged;
@@ -27,4 +27,6 @@
     
     
   }
+  
+*/
 }
