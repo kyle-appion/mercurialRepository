@@ -306,7 +306,6 @@
     <Compile Include="src\Report\DataLogReportLocalization.cs" />
     <Compile Include="src\Dialog\ManifoldContextDialog.cs" />
     <Compile Include="src\Activity\DeviceGrid\DeviceGridActivity.cs" />
-    <Compile Include="src\Widgets\AutoResizeTextView.cs" />
     <Compile Include="src\Activity\DeviceGrid\LinkDecorator.cs" />
     <Compile Include="src\Activity\DeviceGrid\GaugeDeviceControlDialogFragment.cs" />
     <Compile Include="src\_AndroidExtensions\GraphicsExtensions.cs" />
