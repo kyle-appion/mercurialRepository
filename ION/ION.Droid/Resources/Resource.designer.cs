@@ -2262,6 +2262,9 @@ namespace ION.Droid
 			// aapt resource value: 0x7f0a00dd
 			public const int workbench_viewer_status_icon_width = 2131362013;
 			
+			// aapt resource value: 0x7f0a00df
+			public const int workbench_viewer_unit_text_size = 2131362015;
+			
 			// aapt resource value: 0x7f0a00d7
 			public const int xml_border_stroke = 2131362007;
 			

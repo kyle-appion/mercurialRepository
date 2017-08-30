@@ -132,6 +132,7 @@
 						unit.SetTextColor(Resource.Color.black.AsResourceColor(c));
 
 						connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_connected));
+            connection.SetBackgroundResource(Resource.Drawable.xml_rect_green_black_bordered_round);
 						status.Text = c.GetString(Resource.String.connected);
 						status.SetTextColor(Resource.Color.green.AsResourceColor(c));
 					  break;
@@ -140,6 +141,8 @@
             measurement.SetTextColor(Resource.Color.black.AsResourceColor(c));
 
             connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_disconnected));
+            connection.SetBackgroundResource(Resource.Drawable.xml_rect_light_blue_black_bordered_round);
+            
             status.Text = c.GetString(Resource.String.long_range_mode);
 						status.SetTextColor(Resource.Color.light_blue.AsResourceColor(c));
 					  break;
@@ -149,6 +152,8 @@
 						unit.SetTextColor(Resource.Color.gray.AsResourceColor(c));
 
 						connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_disconnected));
+            connection.SetBackgroundResource(Resource.Drawable.xml_rect_red_black_bordered_round);
+            
 						status.Text = c.GetString(Resource.String.disconnected);
 						status.SetTextColor(Resource.Color.red.AsResourceColor(c));
 					  break;

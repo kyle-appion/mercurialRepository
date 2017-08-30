@@ -29,6 +29,7 @@
 <!-- Content (measurement, unit and status) -->
     <LinearLayout
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white">
@@ -43,9 +44,9 @@
             android:layout_height="@dimen/workbench_viewer_device_icon_height" />
         <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1">
-            <ION.Droid.Widgets.AutoResizeTextView
+            <ION.Droid.Widgets.TypefaceTextView
                 ion:typeface="droidsans_bold"
                 android:textSize="@dimen/workbench_viewer_measurement_text_size"
                 android:hint="XXXXXXX"
@@ -57,21 +58,26 @@
         </FrameLayout>
         <LinearLayout
             android:orientation="vertical"
+            android:clipChildren="false"
+            android:padding="@dimen/padding"
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
             <LinearLayout
+                android:clipChildren="false"
                 android:orientation="horizontal"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1">
                 <ImageView
                     android:id="@id/battery"
                     android:layout_gravity="center_vertical"
-                    android:layout_width="wrap_content"
                     android:src="@drawable/ic_battery_horiz_empty"
-                    android:visibility="invisible"
-                    android:layout_height="@dimen/workbench_viewer_battery_icon_height" />
+                    android:visibility="visible"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
                 <FrameLayout
+                    android:clipChildren="false"
                     android:layout_width="@dimen/workbench_viewer_status_icon_width"
                     android:layout_height="@dimen/workbench_viewer_status_icon_height">
                     <ImageView
@@ -88,6 +94,8 @@
             <ION.Droid.Widgets.TypefaceTextView
                 ion:typeface="droidsans"
                 android:id="@id/unit"
+                android:textSize="@dimen/workbench_viewer_unit_text_size"
+                android:hint="micron"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
