@@ -48,8 +48,8 @@
 			}
 		} SensorPropertyRecord __record;
 
-		public SensorPropertyViewHolder(SwipeRecyclerView recyclerView, int foregroundLayout) : base(recyclerView, foregroundLayout, Resource.Layout.list_item_button) {
-			var button = background as TextView;
+		public SensorPropertyViewHolder(SwipeRecyclerView recyclerView, int foregroundLayout) : base(recyclerView, foregroundLayout, Resource.Layout.view_delete) {
+			var button = background as Button;
 			button.SetText(Resource.String.remove);
 			button.SetOnClickListener(new ViewClickAction((view) => {
 				L.D(this, "Removing sensor property: " + sensorPropertyRecord.sensorProperty);

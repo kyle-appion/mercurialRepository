@@ -65,7 +65,7 @@
 
 		private int lastBattery;
 
-		public ManifoldViewHolder(SwipeRecyclerView parent, BitmapCache cache, Workbench workbench) : base(parent, Resource.Layout.list_item_viewer, Resource.Layout.list_item_button) {
+		public ManifoldViewHolder(SwipeRecyclerView parent, BitmapCache cache, Workbench workbench) : base(parent, Resource.Layout.list_item_viewer, Resource.Layout.view_delete) {
 			this.cache = cache;
 
       name = foreground.FindViewById<TextView>(Resource.Id.name);
@@ -84,7 +84,7 @@
 
 			lastBattery = -1;
 
-			var button = background as TextView;
+			var button = background as Button;
 			button.SetText(Resource.String.remove);
 			button.SetOnClickListener(new ViewClickAction((view) => {
 				workbench.Remove(record.manifold);

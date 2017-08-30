@@ -10,7 +10,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <ION.Droid.Widgets.AutoResizeTextView
+        <ION.Droid.Widgets.TypefaceTextView
             app:typeface="droidsans_bold"
             android:id="@id/type"
             android:textColor="@color/white"
@@ -44,7 +44,7 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-                    <ION.Droid.Widgets.AutoResizeTextView
+                    <ION.Droid.Widgets.TypefaceTextView
                         android:id="@id/measurement"
                         android:singleLine="true"
                         android:gravity="right"
@@ -58,14 +58,14 @@
                         android:layout_width="match_parent"
                         android:layout_weight="3"
                         android:layout_height="0dp">
-                        <ION.Droid.Widgets.AutoResizeTextView
+                        <ION.Droid.Widgets.TypefaceTextView
                             android:id="@id/text"
                             android:gravity="left"
                             android:textColor="@color/black"
                             android:hint="Actual"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
-                        <ION.Droid.Widgets.AutoResizeTextView
+                        <ION.Droid.Widgets.TypefaceTextView
                             android:hint="micron"
                             android:id="@id/unit"
                             android:textColor="@color/black"
