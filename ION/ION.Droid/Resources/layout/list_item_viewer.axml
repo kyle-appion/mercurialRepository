@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ion="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/xml_rect_white_black_bordered"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<!-- Viewer Header -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black">
+        <ION.Droid.Widgets.TypefaceTextView
+            ion:typeface="droidsans"
+            android:id="@id/name"
+            android:textColor="@color/white"
+            android:textSize="@dimen/workbench_viewer_header_text_size"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+        <ION.Droid.Widgets.TypefaceTextView
+            ion:typeface="droidsans"
+            android:id="@id/status"
+            android:textSize="@dimen/workbench_viewer_header_text_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+<!-- Content (measurement, unit and status) -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+        <ImageView
+            android:id="@id/icon"
+            android:layout_width="@dimen/workbench_viewer_device_icon_width"
+            android:layout_height="@dimen/workbench_viewer_device_icon_height"
+            android:src="@drawable/ic_logo_appiondefault" />
+        <Space
+            android:id="@id/alarm"
+            android:layout_width="@dimen/workbench_viewer_device_icon_width"
+            android:layout_height="@dimen/workbench_viewer_device_icon_height" />
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <ION.Droid.Widgets.TypefaceTextView
+                ion:typeface="droidsans_bold"
+                android:textSize="@dimen/workbench_viewer_measurement_text_size"
+                android:hint="XXXXXXX"
+                android:gravity="right"
+                android:singleLine="true"
+                android:id="@id/measurement"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:clipChildren="false"
+            android:padding="@dimen/padding"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:clipChildren="false"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+                <ImageView
+                    android:id="@id/battery"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_battery_horiz_empty"
+                    android:visibility="visible"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+                <FrameLayout
+                    android:clipChildren="false"
+                    android:layout_width="@dimen/workbench_viewer_status_icon_width"
+                    android:layout_height="@dimen/workbench_viewer_status_icon_height">
+                    <ImageView
+                        android:id="@id/connection"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                    <ProgressBar
+                        android:id="@id/progress"
+                        android:indeterminate="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </FrameLayout>
+            </LinearLayout>
+            <ION.Droid.Widgets.TypefaceTextView
+                ion:typeface="droidsans"
+                android:id="@id/unit"
+                android:textSize="@dimen/workbench_viewer_unit_text_size"
+                android:hint="micron"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

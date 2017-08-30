@@ -1,64 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <Space
-        android:layout_height="10dp"
-        android:layout_width="wrap_content" />
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <TextView
-            android:background="@drawable/shape_rounded_title_green"
-            android:text="@string/report_session_selection"
-            android:gravity="center"
-            android:id="@id/text"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size_large"
-            android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@id/report_new"
+            android:text="@string/report_new"
+            android:background="@drawable/xml_tab_gold_white"
+            android:textSize="@dimen/text_size_xlarge"
+            android:padding="@dimen/padding"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content" />
-        <LinearLayout
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <Button
-                android:background="@drawable/tab_indicator_ab_ion_action_bar"
-                android:id="@id/tab_1"
-                android:text="@string/report_by_job"
-                android:textSize="@dimen/text_size_large"
-                android:textColor="@color/black"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="@dimen/padding" />
-            <Button
-                android:background="@drawable/tab_indicator_ab_ion_action_bar"
-                android:id="@id/tab_2"
-                android:text="@string/report_by_date"
-                android:textSize="@dimen/text_size_large"
-                android:textColor="@color/black"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="@dimen/padding" />
-        </LinearLayout>
-        <FrameLayout
-            android:id="@id/content"
-            android:background="@drawable/shape_rounded_content_white"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+        <Button
+            android:id="@id/report_saved"
+            android:text="@string/report_saved"
+            android:background="@drawable/xml_tab_gray_black"
+            android:textSize="@dimen/text_size_xlarge"
+            android:padding="@dimen/padding"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
     </LinearLayout>
-    <Button
-        android:id="@id/report_graph"
-        android:text="@string/report_graph_selection"
-        android:textSize="@dimen/text_size_large"
-        android:visibility="invisible"
+    <Space
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="@dimen/padding" />
+    <TextView
+        android:background="@color/green"
+        android:id="@id/title"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_xlarge"
+        android:textStyle="bold"
+        android:text="I'm Batman!"
+        android:padding="@dimen/padding" />
+    <LinearLayout
+        android:id="@id/view"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@id/tab_1"
+            android:text="@string/report_new"
+            android:background="@drawable/xml_tab_gold_white"
+            android:textSize="@dimen/text_size_xlarge"
+            android:padding="@dimen/padding"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@id/tab_2"
+            android:text="@string/unknown"
+            android:background="@drawable/xml_tab_gray_black"
+            android:textSize="@dimen/text_size_xlarge"
+            android:padding="@dimen/padding"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/padding" />
+    <FrameLayout
+        android:id="@id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>

@@ -49,10 +49,10 @@
 
 		private View association;
 
-		public SensorPropertyViewHolder(SwipeRecyclerView recyclerView, int foregroundLayout) : base(recyclerView, foregroundLayout, Resource.Layout.list_item_button) {
+		public SensorPropertyViewHolder(SwipeRecyclerView recyclerView, int foregroundLayout) : base(recyclerView, foregroundLayout, Resource.Layout.view_delete) {
 			association = ItemView.FindViewById(Resource.Id.association);
 
-			var button = background as TextView;
+			var button = background as Button;
 			button.SetText(Resource.String.remove);
 			button.SetOnClickListener(new ViewClickAction((view) => {
 				sensorPropertyRecord.manifold.RemoveSensorProperty(sensorPropertyRecord.sensorProperty);

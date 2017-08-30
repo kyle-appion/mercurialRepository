@@ -73,11 +73,7 @@ namespace ION.Droid.Activity.Job {
 		public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
 			switch ((EViewType)viewType) {
 				case EViewType.Session:
-					var ret = new SessionViewHolder(parent, Resource.Layout.list_item_session, (sr) => {
-						if (onSessionRowChecked != null) {
-							onSessionRowChecked(this, sr);
-						}
-					});
+					var ret = new SessionViewHolder(parent);
 				return ret;
 				default:
 					throw new Exception("Cannot create view for " + (EViewType)viewType);

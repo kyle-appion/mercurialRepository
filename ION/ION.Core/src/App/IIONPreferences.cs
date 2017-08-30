@@ -1,9 +1,11 @@
 ﻿namespace ION.Core.App {
 
   using System;
+  using System.Threading.Tasks;
 
   using Appion.Commons.Measure;
 
+  using ION.Core.Fluids;
   using ION.Core.Sensors;
 
   public interface IIONPreferences {
@@ -39,11 +41,16 @@
     /// </summary>
     /// <value>The alarm.</value>
     IAlarmPreferences alarm { get; }
-		/// <summary>
-		/// Queries the job preferences.
-		/// </summary>
-		/// <value>The job.</value>
-		IJobPreferences jobs { get; }
+    /// <summary>
+    /// Queries the job preferences.
+    /// </summary>
+    /// <value>The job.</value>
+    IJobPreferences job { get; }
+    /// <summary>
+    /// Queries the fluid preferences.
+    /// </summary>
+    /// <value>The fluid.</value>
+    IFluidPreferences fluid { get; }
     /// <summary>
     /// Queries the location preferences.
     /// </summary>
@@ -98,15 +105,22 @@
     Unit pressure { get; set; }
     Unit temperature { get; set; }
     Unit vacuum { get; set; }
-
-    Unit DefaultUnitFor(ESensorType sensorType);
   } // End IUnits
 
   public interface IAlarmPreferences {
   }
-
+  
   public interface IJobPreferences {
+    /// <summary>
+    /// Gets or sets the id of the active job.
+    /// </summary>
+    /// <value>The active job.</value>
     int activeJob { get; set; }
+  }
+
+  public interface IFluidPreferences {
+    string preferredFluid { get; set; }
+    string[] favorites { get; set; }
   }
 
   public interface ILocationPreferences {
@@ -121,5 +135,42 @@
     bool rememberMe { get; set; }
     string username { get; set; }
     string password { get; set; }
+  }
+
+  /// <summary>
+  /// A class that provides extension methods to the IUnitPreferences interface.
+  /// </summary>
+  public static class IUnitPreferenceExtensions {
+    /// <summary>
+    /// Resolves the default unit for the given sensor type.
+    /// </summary>
+    /// <returns>The unit for.</returns>
+    /// <param name="prefs">Prefs.</param>
+    /// <param name="sensorType">Sensor type.</param>
+		public static Unit DefaultUnitFor(this IUnitPreferences prefs, ESensorType sensorType) {
+			switch (sensorType) {
+				case ESensorType.Length:
+				return prefs.length;
+				case ESensorType.Pressure:
+				return prefs.pressure;
+				case ESensorType.Temperature:
+				return prefs.temperature;
+				case ESensorType.Vacuum:
+				return prefs.vacuum;
+				default:
+				return sensorType.GetDefaultUnit();
+			}
+		}
+
+    /// <summary>
+    /// Converts the scalar to the preferred unit for the quantity backing the scalar.
+    /// </summary>
+    /// <returns>The default unit.</returns>
+    /// <param name="prefs">Prefs.</param>
+    /// <param name="scalar">Scalar.</param>
+		public static Scalar ToDefaultUnit(this IUnitPreferences prefs, Scalar scalar) {
+			var unit = prefs.DefaultUnitFor(scalar.unit.quantity.AsSensorType());
+			return scalar.ConvertTo(unit);
+		}
   }
 }

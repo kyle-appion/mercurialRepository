@@ -96,6 +96,11 @@
     /// </summary>
     public DeviceFactory deviceFactory { get; internal set; }
 
+    /// <summary>
+    /// The object that the device manager will synchronize to.
+    /// </summary>
+    private object locker = new object();
+
     public BaseDeviceManager(IION ion, IConnectionManager connectionManager) {
       this.ion = ion;
       this.connectionManager = connectionManager;
@@ -159,7 +164,7 @@
         Unregister(device);
       }
 
-      connectionManager.Dispose();
+      connectionManager.Release();
       __knownDevices.Clear();
       __foundDevices.Clear();
 
@@ -181,8 +186,44 @@
 
     // Overridden from IDeviceManager
     public IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocolVersion) {
-      var ret = CreateDeviceInternal(serialNumber, connectionAddress, protocolVersion);
-      return ret;
+      lock (locker) {
+        IDevice ret = this[serialNumber];
+
+        if (ret == null) {
+          var connection = connectionManager.CreateConnection(connectionAddress, protocolVersion);
+
+          var protocol = Protocol.FindProtocolFromVersion(protocolVersion);
+          if (protocol == null) {
+            protocol = Protocol.FindProtocolFromVersion(EProtocolVersion.V1);
+          }
+          var definition = deviceFactory.GetDeviceDefinition(serialNumber);
+          ret = definition.CreateDevice(serialNumber, connection, protocol);
+          ret.onDeviceEvent += OnDeviceEvent;
+        }
+
+        if (ret == null) {
+          var msg = BuildErrorHeader(serialNumber, protocolVersion) +
+            ": Please ensure that the serial number is resgistered in ION.Core.Devices.Devices.xml";
+          Log.C(this, msg);
+          throw new Exception(msg);
+        }
+
+        return ret;
+      }
+		}
+
+    // Overridden from IDeviceManager
+    public bool HasDeviceForAddress(string address) {
+      // todo ahodder@appioninc.com: this could be optimized. maybe an address table.
+      // this was introduced when i attempted bring all device management into this class instead of fragmented in the
+      // connection manager and various connection mediums.
+      foreach (var device in devices) {
+        if (device.connection.address.Equals(address)) {
+          return true;
+        }
+      }
+
+      return false;
     }
 
     /// <summary>
@@ -263,15 +304,32 @@
       return knownDevices.Contains(device);
     }
 
+    // Overridden from IDeviceManager
+    public void MarkDeviceAsFound(IDevice device, bool found) {
+      lock (locker) {
+        if (found) {
+          if (__knownDevices.ContainsKey(device.serialNumber)) {
+          } else if (__foundDevices.ContainsKey(device.serialNumber)) {
+          } else {
+            __foundDevices[device.serialNumber] = device;
+          }
+        } else {
+          __foundDevices.Remove(device.serialNumber);
+        }
+      }
+    }
+
     /// <summary>
     /// Registers the device to the known device's mapping.
     /// </summary>
     /// <param name="device">Device.</param>
     public void Register(IDevice device) {
-			if (!__knownDevices.ContainsKey(device.serialNumber)) {
-	      __foundDevices.Remove(device.serialNumber);
-	      __knownDevices.Add(device.serialNumber, device);
-			}
+      lock (locker) {
+        if (!__knownDevices.ContainsKey(device.serialNumber)) {
+          __foundDevices.Remove(device.serialNumber);
+          __knownDevices.Add(device.serialNumber, device);
+        }
+      }
     }
 
     /// <summary>
@@ -279,40 +337,10 @@
     /// </summary>
     /// <param name="device">Device.</param>
     public void Unregister(IDevice device) {
-			__foundDevices[device.serialNumber] = device;
-      __knownDevices.Remove(device.serialNumber);
-    }
-
-    private IDevice CreateDeviceInternal(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocolVersion) {
-      IDevice ret = this[serialNumber];
-
-      if (ret == null) {
-        var connection = connectionManager.CreateConnection(connectionAddress, protocolVersion);
-
-        var protocol = Protocol.FindProtocolFromVersion(protocolVersion);
-        if (protocol == null) {
-          protocol = Protocol.FindProtocolFromVersion(EProtocolVersion.V1);
-        }
-        var definition = deviceFactory.GetDeviceDefinition(serialNumber);
-        ret = definition.CreateDevice(serialNumber, connection, protocol);
-        ret.onDeviceEvent += OnDeviceEvent;
-      } else {
-        if (!ret.connection.address.Equals(connectionAddress)) {
-          var msg = BuildErrorHeader(serialNumber, protocolVersion) + ": a device already exists with address " +
-            ret.connection.address + " but a new device creation request was made for address " + connectionAddress;
-          Log.C(this, msg);
-          throw new Exception(msg);
-        }
+      lock (locker) {
+        __foundDevices[device.serialNumber] = device;
+        __knownDevices.Remove(device.serialNumber);
       }
-
-      if (ret == null) {
-        var msg = BuildErrorHeader(serialNumber, protocolVersion) +
-          ": Please ensure that the serial number is resgistered in ION.Core.Devices.Devices.xml";
-        Log.C(this, msg);
-        throw new Exception(msg);
-      }
-
-      return ret;
     }
 
     /// <summary>
@@ -362,29 +390,18 @@
     /// The delegate that is called when a device is found by the device manager's scan mode.
     /// </summary>
     private void OnDeviceFound(IConnectionManager cm, ISerialNumber serialNumber, string address, byte[] packet, EProtocolVersion protocol) {
-      var device = this[serialNumber];
+      lock (locker) {
+        var device = this[serialNumber];
 
-      if (device == null) {
-        device = CreateDeviceInternal(serialNumber, address, protocol);
-        __foundDevices[serialNumber] = device;
-      }
-/*
-      if (packet != null) {
-        device.connection.lastPacket = packet;
-      }
-*/
-
-/*
-      if (device.protocol is IGaugeProtocol) {
-        var gp = device.protocol as IGaugeProtocol;
-        if (gp.supportsBroadcasting) {
-          device.HandlePacket(packet);
+        if (device == null) {
+          device = CreateDevice(serialNumber, address, protocol);
+          MarkDeviceAsFound(device, true);
         }
-      }
-*/
-      device.connection.lastSeen = DateTime.Now;
 
-      NotifyOfDeviceEvent(DeviceEvent.EType.Found, device);
+        device.connection.lastPacket = packet;
+        device.connection.lastSeen = DateTime.Now;
+        NotifyOfDeviceEvent(DeviceEvent.EType.Found, device);
+      }
     }
 
     /// <summary>

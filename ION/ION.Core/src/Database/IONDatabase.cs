@@ -69,9 +69,11 @@
       // Create the database
       CreateTable<JobRow>();
       CreateTable<DeviceRow>();
+      // Create Data Logging Tables
       CreateTable<LoggingDeviceRow>();
       CreateTable<SessionRow>();
       CreateTable<SensorMeasurementRow>();
+      CreateTable<SessionLinkedSensors>();
     }
 
     /// <summary>
@@ -141,48 +143,37 @@
     /// <returns>The async.</returns>
     /// <param name="t">T.</param>
     public Task<bool> SaveAsync<T>(T t) where T : ITableRow {
-			bool startedTransaction = false;
+			BeginTransaction();
 
-      //try {
-				BeginTransaction();
-				startedTransaction = true;
+      int affected = 0;
+      if (t._id > 0) {
+        affected = Update(t);
+        NotifyOfEvent(DatabaseEvent.EAction.Modified, t);
+      } else {
+        affected = Insert(t);
+        NotifyOfEvent(DatabaseEvent.EAction.Inserted, t);
+      }
 
-        int affected = 0;
-        if (t._id > 0) {
-          affected = Update(t);
-          NotifyOfEvent(DatabaseEvent.EAction.Modified, t);
-        } else {
-          affected = Insert(t);
-          NotifyOfEvent(DatabaseEvent.EAction.Inserted, t);
-        }
-
-        if (affected > 0) {
-          Commit();
-          //Log.D(this, "finished save async");
-          return Task.FromResult(true);
-        } else {
-        	try {
-		        if (t._id > 0) {
-		          affected = Update(t);
-		          NotifyOfEvent(DatabaseEvent.EAction.Modified, t);
-		        } else {
-		          affected = Insert(t);
-		          NotifyOfEvent(DatabaseEvent.EAction.Inserted, t);
-		        }
-					} catch (Exception e){
-						Log.E(this, "Issue trying to store session data the second go around");
-          	return Task.FromResult(false);
-					}
-          Log.E(this, "Retried to store session info");
-          return Task.FromResult(true);
-        }
-    //  } catch (Exception e) {
-    //    Log.E(this, "Failed to save the item: " + t + " to the database", e);
-				//if (startedTransaction) {
-    //    	Rollback();
-				//}
-    //    return Task.FromResult(false);
-    //  }
+      if (affected > 0) {
+        Commit();
+        //Log.D(this, "finished save async");
+        return Task.FromResult(true);
+      } else {
+      	try {
+	        if (t._id > 0) {
+	          affected = Update(t);
+	          NotifyOfEvent(DatabaseEvent.EAction.Modified, t);
+	        } else {
+	          affected = Insert(t);
+	          NotifyOfEvent(DatabaseEvent.EAction.Inserted, t);
+	        }
+				} catch (Exception e){
+					Log.E(this, "Issue trying to store session data the second go around", e);
+        	return Task.FromResult(false);
+				}
+        Log.E(this, "Retried to store session info");
+        return Task.FromResult(true);
+      }
     }
 
     /// <summary>

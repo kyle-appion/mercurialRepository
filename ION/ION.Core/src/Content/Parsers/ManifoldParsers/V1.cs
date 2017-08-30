@@ -62,10 +62,10 @@
 				Fluid fluid = null;
 
 				if (fluidName != null && !fluidName.Equals("")) {
-					fluid = ion.fluidManager.GetFluidAsync(fluidName).Result;
+          fluid = ion.fluidManager.LoadFluidAsync(fluidName).Result;
 				}
 
-				ret.ptChart = PTChart.New(ion, state, fluid);
+        ret.ptChart = fluid.GetPtChart(state);
 			}
 
 			// Read sensor properties

@@ -7,13 +7,13 @@
   /// </summary>
   public enum EDeviceModel {
 		Internal,
-    P300,
-    PT300,
+		AV760,
+		P300,
     P500,
-    PT500,
-    P800,
+		P800,
+		PT300,
+		PT500,
     PT800,
-    AV760,
     _3XTM, // I kind of hate how greg names products some times
 		_1XTM,
     HT,

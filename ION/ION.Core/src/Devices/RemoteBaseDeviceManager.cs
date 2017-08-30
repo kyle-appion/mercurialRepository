@@ -160,7 +160,32 @@ namespace ION.Core.Devices {
       return ret;
     }
 
-		public IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocol){return null;}
+    public bool HasDeviceForAddress(string address) {
+      foreach (var device in this.devices) {
+        if (device.connection.address.Equals(address)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+		// Overridden from IDeviceManager
+		public void MarkDeviceAsFound(IDevice device, bool found) {
+			if (found) {
+				if (__knownDevices.ContainsKey(device.serialNumber)) {
+				} else if (__foundDevices.ContainsKey(device.serialNumber)) {
+				} else {
+					__foundDevices[device.serialNumber] = device;
+				}
+			} else {
+				__foundDevices.Remove(device.serialNumber);
+			}
+		}
+
+		public IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocol) {
+      return null;
+    }
     /// <summary>
     /// Queries all of the device that are of the given type.
     /// </summary>

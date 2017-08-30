@@ -31,6 +31,8 @@
 
       var view = LayoutInflater.From(context).Inflate(Resource.Layout.dialog_rename, null, false);
       var entry = view.FindViewById<EditText>(Resource.Id.name);
+      entry.Hint = renamable.defaultName;
+      entry.Text = renamable.name;
 
       adb.SetTitle(Resource.String.rename);
       adb.SetMessage(renamable.GetRenameMessage(context));
@@ -43,9 +45,13 @@
 
       adb.SetPositiveButton(Resource.String.ok_done, (obj, e) => {
         var dialog = obj as Dialog;
-        dialog.Dismiss();        
+        dialog.Dismiss();
 
-        renamable.Rename(entry.Text);
+        if (string.IsNullOrEmpty(entry.Text.Trim())) {
+          renamable.name = renamable.defaultName;
+        } else {
+          renamable.name = entry.Text;
+        }
       });
 
       adb.Show();
@@ -56,19 +62,33 @@
     /// </summary>
     public interface IRenamable {
       /// <summary>
+      /// The name of the renamable.
+      /// </summary>
+      /// <value>The name.</value>
+      string name { get; set; }
+
+      string defaultName { get; }
+
+      /// <summary>
       /// Queries the rename message for the renamable.
       /// </summary>
       /// <returns>The rename message.</returns>
       /// <param name="context">Context.</param>
       string GetRenameMessage(Context context);
-      /// <summary>
-      /// Called when the rename is commited.
-      /// </summary>
-      /// <param name="newName">New name.</param>
-      void Rename(string newName);
     }
 
     class DeviceRenamable : IRenamable {
+      public string name { 
+        get {
+          return device.name;
+        }
+        set {
+          device.name = value;
+        }
+      }
+
+      public string defaultName { get { return device.serialNumber.ToString(); } }
+
       private IDevice device;
 
       public DeviceRenamable(IDevice device) {
@@ -78,14 +98,21 @@
       public string GetRenameMessage(Context context) {
         return context.GetString(Resource.String.rename) + " " + device.name;
       }
-
-      public void Rename(string newName) {
-        device.name = newName;
-      }
     }
 
     class SensorRenamable : IRenamable {
-      private Sensor sensor;
+      public string name {
+        get {
+          return sensor.name;
+        }
+        set {
+          sensor.name = value;
+        }
+      }
+
+			public string defaultName { get { return sensor.name; } }
+
+			private Sensor sensor;
 
       public SensorRenamable(Sensor sensor) {
         this.sensor = sensor;
@@ -93,10 +120,6 @@
 
       public string GetRenameMessage(Context context) {
         return context.GetString(Resource.String.rename) + " " + sensor.name;
-      }
-
-      public void Rename(string newName) {
-        sensor.name = newName;
       }
     }
   }

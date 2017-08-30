@@ -6,6 +6,9 @@
   <item name="_1" type="id"/>
   <item name="_2" type="id"/>
   <item name="_3" type="id"/>
+  <item name="accept" type="id"/>
+	<item name="account" type="id"/>
+  <item name="active" type="id"/>
   <item name="add" type="id"/>
   <item name="address" type="id"/>
   <item name="address1" type="id"/>
@@ -26,16 +29,25 @@
   <item name="cloud" type="id"/>
   <item name="close" type="id"/>
   <item name="connect" type="id"/>
+	<item name="connected" type="id"/>
   <item name="connection" type="id"/>
+  <item name="container" type="id"/>
   <item name="content" type="id"/>
   <item name="content2" type="id"/>
+  <item name="control" type="id"/>
+  <item name="control2" type="id"/>
   <item name="color" type="id"/>
   <item name="coordinates" type="id"/>
+	<item name="count" type="id"/>
   <item name="counter" type="id"/>
   <item name="country" type="id"/>
 	<item name="customer_no" type="id"/>
+  <item name="data" type="id"/>
   <item name="date" type="id"/>
+  <item name="delete" type="id"/>
+  <item name="disconnected" type="id"/>
 	<item name="dispatch_no" type="id"/>
+  <item name="divider" type="id"/>
   <item name="down" type="id"/>
   <item name="download" type="id"/>
   <item name="edit" type="id"/>
@@ -47,15 +59,19 @@
 	<item name="entry" type="id"/>
   <item name="exit" type="id"/>
 	<item name="export" type="id"/>
+  <item name="filter" type="id"/>
 	<item name="firstName" type="id"/>
   <item name="fluid" type="id"/>
   <item name="footer" type="id"/>
   <item name="forgot" type="id"/>
   <item name="graph" type="id"/>
-  <item name="help" type="id"/>
+  <item name="grid" type="id"/>
+	<item name="help" type="id"/>
 	<item name="highest" type="id"/>
 	<item name="home" type="id"/>
   <item name="icon" type="id"/>
+  <item name="id" type="id"/>
+  <item name="info" type="id"/>
 	<item name="job" type="id"/>
 	<item name="lastName" type="id"/>
   <item name="left" type="id"/>
@@ -66,6 +82,7 @@
 	<item name="logout" type="id"/>
 	<item name="lowest" type="id"/>
   <item name="next" type="id"/>
+	<item name="numeric" type="id"/>
   <!-- lock is a keyword for c# -->
   <item name="padlock" type="id"/>
   <item name="password" type="id"/>
@@ -195,17 +212,20 @@
   <item name="report_data_logging_highest_measurement" type="id"/>
   <item name="report_data_logging_measurement_count" type="id"/>
   <item name="report_date_created" type="id"/>
-  <item name="report_session_duration" type="id"/>
+  <item name="report_duration" type="id"/>
   <item name="report_devices_used" type="id"/>
   <item name="report_graph" type="id"/>
-  <item name="report_job" type="id"/>
+  <item name="report_handles" type="id"/>
+	<item name="report_job" type="id"/>
   <item name="report_new" type="id"/>
+	<item name="report_numeric" type="id"/>
   <item name="report_pick" type="id"/>
   <item name="report_saved" type="id"/>
   <item name="report_screenshot_archive" type="id"/>
   <item name="report_selection" type="id"/>
-  <item name="report_session_selection" type="id"/>
   <item name="report_sessions" type="id"/>
+  <item name="report_session_duration" type="id"/>
+  <item name="report_session_selection" type="id"/>
 
   <!--
   WORKBENCH

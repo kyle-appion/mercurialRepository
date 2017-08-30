@@ -73,6 +73,11 @@
 
       centralManager = new CBCentralManager(this, new DispatchQueue("ION Bluetooth", true), options);
     }
+    
+    // Implemented or IConnectionManager
+    public void Release() {
+      StopScan();
+    }
 
     // Implemented for IConnectionManager
     public bool StartScan() {

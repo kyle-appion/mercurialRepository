@@ -72,7 +72,7 @@ namespace ION.Droid.Activity.Rss {
     }
 
     private void OnSuccess(Rss rss) {
-			adapter.SetItems(rss.channelFeed.items);
+      adapter.SetItems(rss.channels[0].items);
 		}
 
     private void OnFailure() {
@@ -134,9 +134,9 @@ namespace ION.Droid.Activity.Rss {
   /// </summary>
   internal class RssAdapter : RecordAdapter {
 
-    private Action<FeedItem> onFeedItemClicked;
+    private Action<RssItem> onFeedItemClicked;
 
-    public RssAdapter(Action<FeedItem> onFeedItemClicked) {
+    public RssAdapter(Action<RssItem> onFeedItemClicked) {
       this.onFeedItemClicked = onFeedItemClicked;
     }
 
@@ -153,7 +153,7 @@ namespace ION.Droid.Activity.Rss {
       }));
     }
 
-    public void SetItems(IEnumerable<FeedItem> feedItems) {
+    public void SetItems(IEnumerable<RssItem> feedItems) {
       records.Clear();
 
       foreach (var i in feedItems) {

@@ -64,6 +64,7 @@
 		/// <value><c>true</c> if is stable; otherwise, <c>false</c>.</value>
 		public bool isStable {
 			get {
+        // todo ahodder@appioninc.com: crashes if manual sensor (max measurement is null)
 				var scale = sensor.maxMeasurement.ConvertTo(sensor.unit).amount;
         var rocMag = primaryRateOfChange.ConvertTo(sensor.unit).magnitude;
 				var now = DateTime.Now;

@@ -10,6 +10,7 @@
   using ION.Core.Sensors.Alarms;
 
   using ION.Droid.App;
+  using ION.Droid.Devices;
 
   public static class SensorExtensions {
     /// <summary>
@@ -34,6 +35,23 @@
           return ion.context.GetString(Resource.String.vacuum);
         default:
           return ion.context.GetString(Resource.String.unknown);
+      }
+    }
+
+    /// <summary>
+    /// Queries the icon for the given sensor.
+    /// Note: if the sensor is null or is an unknown sensor type, then we will return Resource.Drawable.ic_devices_add.
+    /// </summary>
+    /// <returns>The icon.</returns>
+    /// <param name="sensor">Sensor.</param>
+    public static int GetIcon(this Sensor sensor) {
+      if (sensor is GaugeDeviceSensor) {
+        var gds = sensor as GaugeDeviceSensor;
+        return gds.device.GetDeviceIcon();
+      } else if (sensor is ManualSensor) {
+        return Resource.Drawable.ic_action_edit;
+      } else {
+        return Resource.Drawable.ic_devices_add;
       }
     }
 
@@ -73,7 +91,7 @@
       } else if (sensor is ManualSensor) {
         return new ManualSensorParcelable(sensor as ManualSensor);
       } else {
-        throw new Exception("Cannot get sensor parcelable for sensor: " + sensor);
+        return null;
       }
     }
   }

@@ -92,11 +92,25 @@ namespace ION.Core.Devices {
 		public void ForgetFoundDevices() {
 		}
 
+		// Overridden from IDeviceManager
+		public void MarkDeviceAsFound(IDevice device, bool found) {
+		}
+
 		// Implemented from IDeviceManager
 		public IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocol) {
 			var p = Protocol.FindProtocolFromVersion(protocol);
 			return deviceFactory.GetDeviceDefinition(serialNumber).CreateDevice(serialNumber, new RemoteConnection(serialNumber.ToString()), p);
 		}
+
+    public bool HasDeviceForAddress(string address) {
+      foreach (var device in devices) {
+        if (device.connection.address.Equals(address)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
 
 		// Implemented from IDeviceManager
 		public List<IDevice> GetAllDevicesOfType(EDeviceType deviceType) {

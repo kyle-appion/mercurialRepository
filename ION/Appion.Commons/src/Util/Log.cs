@@ -1,8 +1,8 @@
-﻿using System.Text;
-namespace Appion.Commons.Util {
+﻿namespace Appion.Commons.Util {
 
 	using System;
 	using System.IO;
+  using System.Text;
 	using System.Threading.Tasks;
 
   /// <summary>

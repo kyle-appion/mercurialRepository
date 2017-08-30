@@ -124,17 +124,22 @@ namespace ION.Core.Devices {
     void ForgetFoundDevices();
 
     /// <summary>
-    /// Creates a new device using the provided serial number, connection identifier
-    /// and protocol. If the device cannot be created because of an invalid connection
-    /// identifier, then an AgumentException will be raised. If a device already exists
-    /// with the given serial number, that will be returned instead, unless the
-    /// connection identifier is different. Then we will throw a massive WTF exception.
+    /// Creates a new device using the provided serial number, connection address and protocol.
+    /// Note: this device is NOT registered, meaning it will not be found in known devices.
     /// </summary>
     /// <returns>The device.</returns>
     /// <param name="serialNumber">Serial number.</param>
     /// <param name="connectionAddress">Connection address.</param>
     /// <param name="protocol">Protocol.</param>
+    /// <param name="markAsFound">Whether or not the device manager should mark the device as found.</param>
     IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocol);
+
+    /// <summary>
+    /// Queries whether or not the device manager is aware of a device with the given address.
+    /// </summary>
+    /// <returns><c>true</c>, if connection for address was hased, <c>false</c> otherwise.</returns>
+    /// <param name="address">Address.</param>
+    bool HasDeviceForAddress(string address);
 
     /// <summary>
     /// Queries all of the device that are of the given type.
@@ -169,6 +174,14 @@ namespace ION.Core.Devices {
     /// <returns><c>true</c> if this instance is device known the specified device; otherwise, <c>false</c>.</returns>
     /// <param name="device">Device.</param>
     bool IsDeviceKnown(IDevice device);
+
+    /// <summary>
+    /// Marks or unmarks the found state of a device.
+    /// Note: a found device is a device that is clearable using ForgetFoundDevices.
+    /// </summary>
+    /// <param name="device">Device.</param>
+    /// <param name="known">If set to <c>true</c> known.</param>
+    void MarkDeviceAsFound(IDevice device, bool known);
 
     /// <summary>
     /// Registers the device to the known device's mapping.

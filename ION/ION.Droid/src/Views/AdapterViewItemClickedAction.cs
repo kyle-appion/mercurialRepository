@@ -11,7 +11,6 @@
 
     private OnItemClickedAction action { get; set; }
 
-
     public AdapterViewItemClickedAction(OnItemClickedAction action) {
       this.action = action;
     }

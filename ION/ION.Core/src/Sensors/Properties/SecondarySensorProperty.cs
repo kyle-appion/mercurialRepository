@@ -24,18 +24,12 @@
 		}
 
 		/// <summary>
-		/// The manifold whose sensor we are showing.
-		/// </summary>
-		/// <value>The manifold.</value>
-		public Manifold manifold { get; private set; }
-		/// <summary>
 		/// Whether or not the manifold has a secondary sensor.
 		/// </summary>
 		/// <value><c>true</c> if has secondary sensor; otherwise, <c>false</c>.</value>
 		public bool hasSecondarySensor { get { return manifold.secondarySensor != null; } }
 
     public SecondarySensorProperty(Manifold manifold): base(manifold) {
-			this.manifold = manifold;
 			manifold.onManifoldEvent += ManifoldEventListener;
     }
 

@@ -1,4 +1,4 @@
-﻿namespace ION.CoreExtensions.Net.Portal {
+﻿﻿namespace ION.CoreExtensions.Net.Portal {
 
 	using System;
 	using System.Collections.Generic;
@@ -28,6 +28,9 @@
 
 	using ION.CoreExtensions.Net.Portal.Remote;
 
+  /// <summary>
+  /// An interface object that is used to communicate with the ION portal web service.
+  /// </summary>
 	public class IONPortalService {
 
 		private const string LOGIN_USER = "loginUser";
@@ -46,8 +49,7 @@
 		private const string URL_ACCESS_CODE_PENDING = "http://portal.appioninc.com/App/getRequests.php";
 		private const string URL_CHANGE_STATUS = "http://portal.appioninc.com/App/changeOnlineStatus.php";
 		private const string URL_CLONE_REMOTE = "http://portal.appioninc.com/App/downloadLayouts.php";
-//    private const string URL_RSS_FEED = "http://portal.appioninc.com/RSS/feed.xml";
-    private const string URL_RSS_FEED = "http://www.buildtechhere.com/RSS/feed.xml";
+    private const string URL_RSS_FEED = "http://portal.appioninc.com/RSS/feed.xml";
 		private const string URL_UPDATE_ACCOUNT = "http://portal.appioninc.com/App/updateAccount.php";
 		private const string URL_FORGOT_ACCOUNT = "http://portal.appioninc.com/App/forgotUserPass.php";
 		private const string URL_LOGIN_USER = "http://portal.appioninc.com/App/applogin.php";
@@ -226,6 +228,7 @@
 			web.Proxy = null;
 			client = new HttpClient();
 			client.MaxResponseContentBufferSize = 256000;
+      client.Timeout = TimeSpan.FromSeconds(10);
 		}
 
     /// <summary>
@@ -909,7 +912,8 @@
         if (appStateUploadCancellationToken != null) {
           appStateUploadCancellationToken.Cancel();
         }
-      }
+				appStateUploadCancellationToken = null;
+			}
     }
 
 		/// <summary>
@@ -1008,6 +1012,11 @@
 			}
 		}
 
+    /// <summary>
+    /// Attempts to synchronize the analyzer state from the app state to the analyzer contained in the ion instance.
+    /// </summary>
+    /// <param name="ion">Ion.</param>
+    /// <param name="appState">App state.</param>
 		private void SyncAnalyzer(IION ion, RemoteAppState appState) {
 			// Sync the sensor mounts as this is the more important part
 			var analyzer = ion.currentAnalyzer;
@@ -1099,11 +1108,17 @@
 						m.RemoveSensorProperty(sp);
 					}
 				}
+				if (analyzer.lowSideManifold != null) {
+					if (analyzer.lowSideManifold != null) {
+						if (!analyzer.lowSideManifold.ptChart.fluid.name.Equals(appState.setup.lowFluid)) {
+							var fluid = ion.fluidManager.LoadFluidAsync(appState.setup.lowFluid).Result;
+              analyzer.lowSideManifold.ptChart = new PTChart(fluid, analyzer.lowSideManifold.ptChart.state);
+						}
+					}
+				}
       } else {
-        if (analyzer.lowSideManifold != null) {
-          analyzer.SetManifold(Analyzer.ESide.Low, (Manifold)null);
-        }
-      }
+				analyzer.SetManifold(Analyzer.ESide.Low, (Manifold)null);
+			}
 
 			// Sync the high manifold
       var ushpsn = appState.lh.highSerialNumber;
@@ -1154,11 +1169,18 @@
 						m.RemoveSensorProperty(sp);
 					}
 				}
+
+				if (analyzer.highSideManifold != null) {
+					if (analyzer.highSideManifold != null) {
+						if (!analyzer.highSideManifold.ptChart.fluid.name.Equals(appState.setup.highFluid)) {
+							var fluid = ion.fluidManager.LoadFluidAsync(appState.setup.highFluid).Result;
+							analyzer.highSideManifold.ptChart = new PTChart(fluid, analyzer.highSideManifold.ptChart.state);
+						}
+					}
+				}
       } else {
-        if (analyzer.highSideManifold != null) {
-          analyzer.SetManifold(Analyzer.ESide.High, (Manifold)null);
-        }
-      }
+				analyzer.SetManifold(Analyzer.ESide.High, (Manifold)null);
+			}
 		}
 		/// <summary>
 		/// Attempts to sync the received uploaded workbench to the local remote workbench.
@@ -1211,8 +1233,9 @@
 		// TODO ahodder@appioninc.com: Using Task.Result synchronously
 		private void SyncManifold(IION ion, Manifold manifold, RemoteManifold rm) {
 			var fs = (Fluid.EState)rm.fluidState;
-			if (!manifold.ptChart.fluid.name.Equals(rm.fluid) || manifold.ptChart.state != fs) {
-				manifold.ptChart = PTChart.New(ion, fs, ion.fluidManager.LoadFluidAsync(rm.fluid).Result);
+			if (!manifold.ptChart.fluid.name.Equals(rm.fluidName) || manifold.ptChart.state != fs) {
+        var fluid = ion.fluidManager.LoadFluidAsync(rm.fluidName).Result;
+        manifold.ptChart = fluid.GetPtChart(fs);
 			}
 		}
 
@@ -1230,7 +1253,10 @@
 			}
 
 			foreach (var code in codes) {
-				manifold.AddSensorProperty(RemoteManifold.ParseSensorPropertyFromCode(manifold, code));
+        var sp = RemoteManifold.ParseSensorPropertyFromCode(manifold, code);
+        if (sp != null) {
+          manifold.AddSensorProperty(sp);
+        }
 			}
 		}
 

@@ -89,15 +89,16 @@
     public SensorMount(Context context, Analyzer analyzer) {
       this.context = context;
       this.analyzer = analyzer;
-			var white = context.Resources.GetColor(Resource.Color.white);
-			var black = context.Resources.GetColor(Resource.Color.black);
-      var gray = context.Resources.GetColor(Resource.Color.gray);
+      var white = Resource.Color.white.AsResourceColor(context);
+			var black = Resource.Color.black.AsResourceColor(context);
+      var gray = Resource.Color.gray.AsResourceColor(context);
 
       root = new LinearLayout(context);
 
       add = new ImageButton(context);
-      add.SetBackgroundResource(Resource.Drawable.np_rounded_rect_gold);
+      add.SetBackgroundResource(Resource.Drawable.xml_rect_gold_black_bordered_round);
       add.SetImageResource(Resource.Drawable.ic_devices_add);
+      add.SetScaleType(ImageView.ScaleType.FitXy);
       add.Background.Alpha = (int)(0.55f * 255);
       add.Clickable = false;
 
@@ -109,18 +110,15 @@
       title.Id = Resource.Id.title;
       title.Gravity = GravityFlags.CenterHorizontal;
 			title.SetBackgroundResource(Resource.Drawable.shape_round_top_black);
-//      title.SetPadding(10, 10, 10, 0);
       title.SetTextColor(white);
 			title.SetTextSize(Android.Util.ComplexUnitType.Dip, context.Resources.GetDimension(Resource.Dimension.analyzer_sensor_mount_header));
       title.SetSingleLine(true);
       title.Ellipsize = TextUtils.TruncateAt.End;
       title.SetIncludeFontPadding(false);
       title.Text = "       ";
-//      title.SetTypeface(regular);
 
       measurement = new TextView(context);
 			measurement.SetBackgroundResource(Resource.Drawable.shape_white_center);
-//      measurement.SetPadding(10, 0, 10, 0);
       measurement.Id = Resource.Id.measurement;
       measurement.SetTextColor(gray);
 			measurement.Gravity = GravityFlags.Right | GravityFlags.CenterVertical;
@@ -129,11 +127,9 @@
       measurement.Ellipsize = TextUtils.TruncateAt.End;
       measurement.SetIncludeFontPadding(false);
       measurement.Text = "000,000";
-//      measurement.SetTypeface(regular);
 
       unit = new TextView(context);
 			unit.SetBackgroundResource(Resource.Drawable.shape_round_bottom_white);
-//      unit.SetPadding(10, 0, 10, 10);
       unit.Id = Resource.Id.unit;
       unit.SetTextColor(gray);
 			unit.Gravity = GravityFlags.Center;
@@ -141,7 +137,6 @@
       unit.Ellipsize = TextUtils.TruncateAt.End;
       unit.SetIncludeFontPadding(false);
       unit.Text = "       ";
-//      unit.SetTypeface(regular);
 
       var s1 = new View(context);
 			s1.SetBackgroundResource(Resource.Drawable.shape_white_center);
@@ -173,8 +168,8 @@
     /// </summary>
     /// <param name="sensor">Sensor.</param>
     private void OnSensorStateChangedEvent(Sensor sensor) {
-			var gray = context.Resources.GetColor(Resource.Color.gray);
-			var black = context.Resources.GetColor(Resource.Color.black);
+      var gray = Resource.Color.gray.AsResourceColor(context);
+      var black = Resource.Color.black.AsResourceColor(context);
 
       title.Text = sensor.name;
       measurement.Text = sensor.ToFormattedString(false);
@@ -204,15 +199,15 @@
       switch (side) {
         case Analyzer.ESide.Low:
 					title.SetBackgroundResource(Resource.Drawable.shape_round_top_blue);
-          title.SetTextColor(context.Resources.GetColor(Resource.Color.white));
+          title.SetTextColor(Resource.Color.white.AsResourceColor(context));
           break;
         case Analyzer.ESide.High:
 					title.SetBackgroundResource(Resource.Drawable.shape_round_top_red);
-          title.SetTextColor(context.Resources.GetColor(Resource.Color.white));
+          title.SetTextColor(Resource.Color.white.AsResourceColor(context));
           break;
         default:
 					title.SetBackgroundResource(Resource.Drawable.shape_round_top_black);
-          title.SetTextColor(context.Resources.GetColor(Resource.Color.white));
+          title.SetTextColor(Resource.Color.white.AsResourceColor(context));
           break;
       }
     }

@@ -1,3 +1,5 @@
+using Android.Util;
+
 namespace ION.Droid.Activity.Portal {
 
 	using System;
@@ -23,10 +25,15 @@ namespace ION.Droid.Activity.Portal {
 		protected override void OnCreate(Bundle state) {
 			base.OnCreate(state);
 
-			if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
+			try {
+				if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
+					SetContentView(Resource.Layout.activity_portal_login_4_4);
+				} else {
+					SetContentView(Resource.Layout.activity_portal_login);
+				}
+			} catch (Exception e) {
+				Appion.Commons.Util.Log.E(this, "Failed to set layout. Defaulting to old version", e);
 				SetContentView(Resource.Layout.activity_portal_login_4_4);
-			} else {
-				SetContentView(Resource.Layout.activity_portal_login);
 			}
 
 			ActionBar.SetDisplayHomeAsUpEnabled(true);
@@ -76,7 +83,7 @@ namespace ION.Droid.Activity.Portal {
 			adb.SetView(view);
 			adb.SetCancelable(true);
 
-			var edit = view.FindViewById<TextInputEditText>(Resource.Id.password);
+			var edit = view.FindViewById<EditText>(Resource.Id.password);
 
 			var d = adb.Show();
 
@@ -114,9 +121,9 @@ namespace ION.Droid.Activity.Portal {
 			adb.SetView(view);
 			adb.SetCancelable(true);
 
-			var email = view.FindViewById<TextInputEditText>(Resource.Id.email);
-			var password = view.FindViewById<TextInputEditText>(Resource.Id.password);
-			var passwordConfirm = view.FindViewById<TextInputEditText>(Resource.Id.passwordConfirm);
+			var email = view.FindViewById<EditText>(Resource.Id.email);
+			var password = view.FindViewById<EditText>(Resource.Id.password);
+			var passwordConfirm = view.FindViewById<EditText>(Resource.Id.passwordConfirm);
 			var icon = view.FindViewById<ImageView>(Resource.Id.icon);
 			password.TextChanged += (sender, e) => {
 				if (password.Text.Equals(passwordConfirm.Text) && ion.portal.IsPasswordValid(password.Text)) {

@@ -1,36 +1,30 @@
-﻿namespace ION.Droid.Activity.Report {
+﻿using System;
+using System.Collections.Generic;
 
-	using Android.Content;
+using Android.Content;
+using Android.Graphics;
 
-	using ION.Core.Sensors;
-	
-	public static class SensorExtensions {
-		/// <summary>
-		/// Queries the chart color of the given sensor.
-		/// </summary>
-		/// <returns>The chart color.</returns>
-		/// <param name="sensor">Sensor.</param>
-		/// <param name="context">Context.</param>
-		public static Android.Graphics.Color GetChartColor(this Sensor sensor, Context context) {
-			var color = 0;
+using ION.Core.Sensors;
 
-			switch (sensor.type) {
-				case ESensorType.Pressure:
-					color =  Resource.Color.blue;
-					break;
-				case ESensorType.Temperature:
-					color = Resource.Color.red;
-					break;
-				case ESensorType.Vacuum:
-					color = Resource.Color.maroon;
-					break;
-				default:
-					color =	Resource.Color.black;
-					break;
-			}
-
-			return context.Resources.GetColor(color);
-		}
-	}
+namespace ION.Droid.Activity.Report {
+  public static class SensorExtensions {
+    /// <summary>
+    /// Returns a tuple describing the colors associated with the given sensor. Item1 is the primary color and Item2 is
+    /// the secondary (text) color.
+    /// </summary>
+    /// <returns>The color for sensor.</returns>
+    /// <param name="sensor">Sensor.</param>
+    public static Tuple<Color, Color> GetColorForSensor(this Sensor sensor, Context context) {
+      switch (sensor.type) {
+        case ESensorType.Pressure:
+          return new Tuple<Color, Color>(Resource.Color.blue.AsResourceColor(context), Resource.Color.white.AsResourceColor(context));
+        case ESensorType.Temperature:
+          return new Tuple<Color, Color>(Resource.Color.orange.AsResourceColor(context), Resource.Color.black.AsResourceColor(context));
+        case ESensorType.Vacuum:
+          return new Tuple<Color, Color>(Resource.Color.maroon.AsResourceColor(context), Resource.Color.white.AsResourceColor(context));
+        default:
+          return new Tuple<Color, Color>(Resource.Color.black.AsResourceColor(context), Resource.Color.white.AsResourceColor(context));
+      }
+    }
+  }
 }
-

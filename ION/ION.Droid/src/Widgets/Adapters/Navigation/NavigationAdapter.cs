@@ -2,12 +2,8 @@
 
   using System;
   using System.Collections.Generic;
-  using System.Threading.Tasks;
 
-  using Android.App;
-  using Android.Content;
   using Android.Graphics;
-  using Android.OS;
   using Android.Views;
   using Android.Widget;
 
@@ -45,7 +41,6 @@
     /// Creates a new NavigationAdapter. The content provided to this adapter can contain
     /// items that have mixed hiddenness; the adapter will got through and ensure that 
     /// </summary>
-    /// <param name="context">Context.</param>
     /// <param name="content">Content.</param>
     public NavigationAdapter(List<NavigationItem> content, BitmapCache cache) {
 			this.content = Expand(content);
@@ -63,13 +58,13 @@
     }
 
     // Overridden from BaseAdapter
-    public override View GetView(int position, View convert, ViewGroup parent) {
+    public override View GetView(int position, View convertView, ViewGroup parent) {
       var item = content[position];
 
       if (item is NavigationCategory) {
-        return GetCategoryView(item as NavigationCategory, position, convert, parent);
+        return GetCategoryView(item as NavigationCategory, position, convertView, parent);
       } else if (item is NavigationIconItem) {
-        return GetIconView(item as NavigationIconItem, position, convert, parent);
+        return GetIconView(item as NavigationIconItem, position, convertView, parent);
       } else {
         throw new ArgumentException("Cannot create NavigationItem view for: " + item.GetType().Name);
       }
@@ -92,7 +87,7 @@
 
         vh.title = convert.FindViewById<TextView>(Resource.Id.title);
         vh.title.SetTextSize(Android.Util.ComplexUnitType.Px, res.GetDimension(Resource.Dimension.text_size_medium));
-        vh.title.SetTextColor(res.GetColor(Resource.Color.gray));
+        vh.title.SetTextColor(Resource.Color.gray.AsResourceColor(parent.Context));
       } else {
         vh = (CategoryViewHolder)convert.Tag;
       }
@@ -120,7 +115,7 @@
 
         vh.title = convert.FindViewById<TextView>(Resource.Id.title);
         vh.title.SetTextSize(Android.Util.ComplexUnitType.Px, res.GetDimension(Resource.Dimension.text_size_large));
-        vh.title.SetTextColor(res.GetColor(Resource.Color.white));
+        vh.title.SetTextColor(Resource.Color.white.AsResourceColor(parent.Context));
 
         vh.icon = convert.FindViewById<ImageView>(Resource.Id.icon);
       } else {
@@ -129,7 +124,7 @@
 
       vh.title.Text = item.title;
       vh.icon.SetImageBitmap(cache.GetBitmap(item.icon));
-      vh.icon.SetColorFilter(new Color(res.GetColor(Resource.Color.gray)), PorterDuff.Mode.SrcAtop);
+      vh.icon.SetColorFilter(Resource.Color.gray.AsResourceColor(parent.Context), PorterDuff.Mode.SrcAtop);
 
       return convert;
     }
@@ -144,16 +139,12 @@
       foreach (var item in items) {
         if (item is NavigationCategory) {
           var cat = item as NavigationCategory;
-//          if (!item.hidden) {
-            ret.Add(item);
-            var list = new List<NavigationItem>();
-            list.AddRange(cat.items);
-            ret.AddRange(Expand(list));
-//          }
+          ret.Add(item);
+          var list = new List<NavigationItem>();
+          list.AddRange(cat.items);
+          ret.AddRange(Expand(list));
         } else {
-//          if (!item.hidden) {
-            ret.Add(item);
-//          }
+          ret.Add(item);
         }
       }
 

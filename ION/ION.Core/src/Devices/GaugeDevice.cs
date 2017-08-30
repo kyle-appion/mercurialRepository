@@ -152,9 +152,6 @@
           var sensor = this[i];
 
           if (reading.sensorType != sensor.type) {
-          	/////DO NOT throw exeptions
-            //throw new ArgumentException("Cannot set device sensor measurement: Sensor at " + i + " of type " + 
-            //  this[i].type + " is not valid with received type " + reading.sensorType);
             return;
           }
 
@@ -177,8 +174,7 @@
           NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
 					lastNotify = DateTime.Now;
         }
-      } catch (Exception e) {
-        //Log.D(this, "Cannot resolve packet " + serialNumber + ": unresolved exception {packet=> " + packet?.ToByteString() + "}", e);
+      } catch (Exception) {
 				NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
       }
     }

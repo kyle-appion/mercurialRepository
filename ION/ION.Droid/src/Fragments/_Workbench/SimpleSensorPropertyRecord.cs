@@ -56,7 +56,7 @@
 				divider.Visibility = ViewStates.Invisible;
 			}
 
-			measurement.Text = SensorUtils.ToFormattedString(record.sp.sensor.type, record.sp.modifiedMeasurement, false);
+			measurement.Text = SensorUtils.ToFormattedString(record.sp.modifiedMeasurement, false);
 			unit.Text = record.sp.modifiedMeasurement.unit.ToString();
 		}
 	}

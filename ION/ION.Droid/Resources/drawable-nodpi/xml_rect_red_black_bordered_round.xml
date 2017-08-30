@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+		android:color="@color/red_accent">
+  <item android:id="@android:id/mask">
+    <shape android:shape="rectangle">
+      <solid android:color="@color/black" />
+			<solid android:radius="@dimen/xml_radius"/>
+		</shape>
+  </item>
+
+  <item>
+    <shape
+      android:shape="rectangle">
+      <stroke
+        android:width="@dimen/xml_border_stroke"
+        android:color="@color/black"/>
+      <padding
+        android:left="@dimen/xml_radius"
+        android:right="@dimen/xml_radius"
+        android:top="@dimen/xml_radius"
+        android:bottom="@dimen/xml_radius"/>
+      <solid
+        android:color="@color/red"/>
+      <corners
+        android:radius="@dimen/xml_radius"/>
+    </shape>
+  </item>
+</ripple>

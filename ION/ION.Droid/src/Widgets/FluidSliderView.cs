@@ -1,20 +1,21 @@
-﻿namespace ION.Droid.Widgets {
+﻿﻿namespace ION.Droid.Widgets {
 
 	using System;
 
 	using Android.Content;
 	using Android.Graphics;
 	using Android.Views;
-  using Android.Util;
 
 	using Appion.Commons.Measure;
-	using Appion.Commons.Util;
 
 	using ION.Core.App;
 	using ION.Core.Fluids;
 	using ION.Core.Math;
 	
 	public class FluidSliderView : View {
+
+    private const long SCROLL_DURATION = 500;
+
 		/// <summary>
 		/// The delegate that is called when the fluid slider is scrolled.
 		/// </summary>
@@ -135,7 +136,7 @@
 
       __pressureUnit = ion.preferences.units.pressure;
       __temperatureUnit = ion.preferences.units.temperature;
-			ptChart = PTChart.New(AppState.context, Fluid.EState.Bubble);
+      ptChart = ion.fluidManager.lastUsedFluid.GetPtChart(Fluid.EState.Bubble);
 			isTouchLocked = false;
 		}
 
@@ -183,7 +184,7 @@
 		}
 
 		public void ScrollToPressure(Scalar pressure, bool animate) {
-			ScrollToTemperature(ptChart.GetTemperature(pressure), animate);
+			ScrollToTemperature(ptChart.GetTemperature(pressure, true), animate);
 		}
 
 		public void ScrollToTemperature(Scalar temperature, bool animate) {
@@ -250,7 +251,7 @@
 
 			while (minPress <= maxPressure) {
 				// Draw the big tick
-				var x = CalculateRelativeXCoordForTemperature((float)ptChart.GetTemperature(pressureUnit.OfScalar(minPress)).ConvertTo(temperatureUnit).amount);
+				var x = CalculateRelativeXCoordForTemperature((float)ptChart.GetTemperature(pressureUnit.OfScalar(minPress), true).ConvertTo(temperatureUnit).amount);
 				canvas.DrawLine(x, y, x, y - fullTickHeight, pressurePaint);
 				canvas.DrawText(minPress + "", x, y - fullTickHeight * 1.1f, pressurePaint);
 
@@ -260,7 +261,7 @@
 
 				// Draw sub ticks
 				for (int i = 1; i < subticks; i++) {
-					var fx = CalculateRelativeXCoordForTemperature((float)ptChart.GetTemperature(pressureUnit.OfScalar(minPress + st * i)).ConvertTo(temperatureUnit).amount);
+					var fx = CalculateRelativeXCoordForTemperature((float)ptChart.GetTemperature(pressureUnit.OfScalar(minPress + st * i), true).ConvertTo(temperatureUnit).amount);
 					canvas.DrawLine(fx, y, fx, y - fullTickHeight * 0.5f, pressurePaint);
 				}
 
@@ -390,26 +391,25 @@
 		}
 
 		private void InvalidateExtrema() {
-			var f = ptChart.fluid;
-			var state = ptChart.state;
 			var smp = Units.Pressure.PSIG.OfScalar(-8);
-			var ion = AppState.context;
-			var alt = ion.locationManager.lastKnownLocation.altitude;
-			var rmin = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(f.GetMinimumPressure(ptChart.state).ConvertTo(Units.Pressure.PSIG), alt);
-			var max = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(f.GetMaximumPressure(state).ConvertTo(pressureUnit), alt);
+      var amin = ptChart.minRelativePressure;
+      var amax = ptChart.maxRelativePressure;
 
-			if (smp.amount > rmin.amount) {
-				rmin = smp;
+      amin = amin.ConvertTo(pressureUnit);
+      amax = amax.ConvertTo(pressureUnit);
+
+			if (smp.amount > amin.amount) {
+				amin = smp;
 			}
 
-			minPressure = (int)Math.Ceiling(rmin.ConvertTo(pressureUnit).amount);
-			maxPressure = (int)Math.Floor(max.amount);
+			minPressure = (int)Math.Ceiling(amin.amount);
+      maxPressure = (int)Math.Floor(amax.amount);
 
-			rmin = pressureUnit.OfScalar(minPressure);
-			max = pressureUnit.OfScalar(maxPressure);
+			amin = pressureUnit.OfScalar(minPressure);
+			amax = pressureUnit.OfScalar(maxPressure);
 
-			minTemperature = (int)Math.Ceiling(f.GetTemperatureFromAbsolutePressure(state, Physics.ConvertRelativePressureToAbsolute(rmin, ptChart.elevation)).ConvertTo(temperatureUnit).amount);
-			maxTemperature = (int)Math.Floor(f.GetTemperatureFromAbsolutePressure(state, Physics.ConvertRelativePressureToAbsolute(max, ptChart.elevation)).ConvertTo(temperatureUnit).amount);
+      minTemperature = (int)Math.Ceiling(ptChart.GetTemperatureFromRelativePressure(amin).ConvertTo(temperatureUnit).amount);
+      maxTemperature = (int)Math.Floor(ptChart.GetTemperatureFromRelativePressure(amax).ConvertTo(temperatureUnit).amount);
 
 			Invalidate();
 		}
@@ -463,7 +463,7 @@
 			if (onScroll != null) {
 				var x = window.width / 2;
 				var temp = CalculateTemperatureFromX(x);
-				onScroll(this, touching, ptChart.GetPressure(temp), temp);
+				onScroll(this, touching, ptChart.GetRelativePressure(temp), temp);
      	}
     }
 

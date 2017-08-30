@@ -29,14 +29,14 @@ namespace ION.Core.Fluids {
     /// Queries the list of preferred fluids.
     /// </summary>
     /// <value>The preferred fluids.</value>
-    List<string> preferredFluids { get; }
+    HashSet<string> preferredFluids { get; }
 
     /// <summary>
     /// Queries a list of the identifiers(name) of the fluids that are available
     /// from the fluid manager.
     /// </summary>
     /// <returns></returns>
-    List<string> GetAvailableFluidNames();
+    HashSet<string> GetAvailableFluidNames();
 
     /// <summary>
     /// Queries a fluid with the given name.
@@ -50,6 +50,7 @@ namespace ION.Core.Fluids {
 		/// </summary>
 		/// <returns>The fluid asyc.</returns>
 		/// <param name="fluidName">Fluid name.</param>
+    // TODO ahodder@appioninc.com: This method is not needed. Instead put bool setPreferred=false into GetFluidAsync.
 		Task<Fluid> LoadFluidAsync(string fluidName);
 
     /// <summary>

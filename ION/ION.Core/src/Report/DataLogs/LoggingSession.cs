@@ -24,10 +24,6 @@
     /// </summary>
     private IION ion;
     /// <summary>
-    /// The timer that will perform the logging every interval.
-    /// </summary>
-    private Timer timer;
-    /// <summary>
     /// Whether or not the logging session is active.
     /// </summary>
     private bool isActive;
@@ -101,7 +97,6 @@
     /// <returns><c>true</c> if this instance cancel ; otherwise, <c>false</c>.</returns>
     public void Cancel() {
       isActive = false;
-      //timer.Cancel();
     }
 
     /// <summary>
@@ -121,68 +116,11 @@
     }
 
     /// <summary>
-    /// Called when the timer throw a new timed event.
-    /// </summary>
-    /// <param name="timer">Timer.</param>
-    ////////SOME REASON USING THIS TIMER AND CALLBACK CAUSE THE APP TO CRASH WHEN ENDING A DATA LOGGING SESSION////////
-    ////////NEED TO FIGURE OUT WHY THAT IS////////////////
-    private async void OnTimerCallback(Timer timer) {
-      try {
-        if (!isActive) {
-          Log.D(this, "Canceling callback as timer is disposed");
-          return;
-        }
-
-        var sensors = new HashSet<GaugeDeviceSensor>();
-
-
-				//// pull ios sensorlist items
-        if(ion.currentAnalyzer != null && ion.currentAnalyzer.sensorList != null){
-          foreach (var s in ion.currentAnalyzer.sensorList) {
-            var gds = s as GaugeDeviceSensor;
-            if (gds != null && gds.device.isConnected) {
-              sensors.Add(gds);
-            }
-          }
-        }
-
-        foreach (var m in ion.currentWorkbench.manifolds) {
-          var gds = m.primarySensor as GaugeDeviceSensor;
-          if (gds != null && gds.device.isConnected) {
-            sensors.Add(gds);
-          }
-        }
-
-        var rows = new List<SensorMeasurementRow>();
-        var db = ion.database;
-        var now = DateTime.Now;
-        foreach(var gds in sensors){
-          var existing = db.Query<LoggingDeviceRow>("SELECT * FROM LoggingDeviceRow WHERE serialNumber = ?",gds.device.serialNumber.ToString());
-
-					if(existing.Count == 0){
-            var newDevice = new LoggingDeviceRow{serialNumber = gds.device.serialNumber.ToString()};
-            db.Insert(newDevice);
-          }
-        }
-
-        foreach (var gds in sensors) {
-          // TODO ahodder@appioninc.com: Normalize the device unit or the resulting data backend will be funky.
-          rows.Add(await CreateSensorMeasurement(db, gds, now));
-        }
-
-        var inserted = db.InsertAll(rows, true);
-				Log.D(this, "Inserting: " + inserted + " rows");
-      } catch (Exception e) {
-        Log.E(this, "Failed to resolve timer callback", e);
-      }
-    }
-
-    /// <summary>
     /// Creates a new sensor measurement row for the database.
     /// </summary>
     /// <param name="db">Db.</param>
     /// <param name="sensor">Sensor.</param>
-    private async Task<SensorMeasurementRow> CreateSensorMeasurement(IONDatabase db, GaugeDeviceSensor sensor, DateTime date) {
+    private Task<SensorMeasurementRow> CreateSensorMeasurement(IONDatabase db, GaugeDeviceSensor sensor, DateTime date) {
       var ret = new SensorMeasurementRow();
 
 			// constant checking caused issue for timer when ending a logging session plus it was not used for anything....
@@ -196,7 +134,7 @@
       ret.recordedDate = date;
       ret.measurement = meas.amount;
 
-      return ret;
+      return Task.FromResult(ret);
     }
   }
 }
