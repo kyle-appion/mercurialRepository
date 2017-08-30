@@ -1012,6 +1012,11 @@
 			}
 		}
 
+    /// <summary>
+    /// Attempts to synchronize the analyzer state from the app state to the analyzer contained in the ion instance.
+    /// </summary>
+    /// <param name="ion">Ion.</param>
+    /// <param name="appState">App state.</param>
 		private void SyncAnalyzer(IION ion, RemoteAppState appState) {
 			// Sync the sensor mounts as this is the more important part
 			var analyzer = ion.currentAnalyzer;
