@@ -145,6 +145,16 @@ namespace ION.Droid.Activity.Report {
     public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
       return new ReportGraphViewHolder(this, parent);
     }
+    
+    /// <summary>
+    /// Releases any memory held by the adapter.
+    /// </summary>
+    public void Release() {
+      records.Clear();
+      dil = null;
+      
+      System.GC.Collect();
+    }
 
     /// <summary>
     /// Sets the displayed start and end time for all of the records. This will cause a list invalidation.

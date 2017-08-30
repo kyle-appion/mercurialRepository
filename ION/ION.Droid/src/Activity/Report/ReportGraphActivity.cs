@@ -64,10 +64,6 @@ namespace ION.Droid.Activity.Report {
     /// </summary>
     private TextView _sensorsCountView;
     /// <summary>
-    /// The view that will display the number of sensors that are present in the adapter.
-    /// </summary>
-    private TextView _sensorsView;
-    /// <summary>
     /// The list that will display the graphs and highlight data to the user. This view will also have an overlay
     /// rendered on top of it via the <code>_overlay</code> drawable.
     /// <summary>
@@ -107,6 +103,12 @@ namespace ION.Droid.Activity.Report {
 
       InflateAdapter();
     }
+    
+    protected override void OnPause() {
+      base.OnPause();
+      _adapter.Release();
+      _adapter = null;
+    }
 
 		public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
 			switch (item.ItemId) {
@@ -126,11 +128,11 @@ namespace ION.Droid.Activity.Report {
 			dialog.Show();
 
 			try {
-				var dil = DateIndexLookup.CreateFromSessionsAsync(ion, _sessionIds);
-				var results = ion.dataLogManager.QuerySensorResultsAsync(_sessionIds);
+				var dil = await DateIndexLookup.CreateFromSessionsAsync(ion, _sessionIds);
+				var results = await ion.dataLogManager.QuerySensorResultsAsync(_sessionIds);
 				_adapter = new ReportGraphAdapter(ion,
-                                          await dil,
-                                          await results,
+                                          dil,
+                                          results,
                                           FindViewById(Resource.Id.report_handles),
                                           FindViewById(Resource.Id.left),
                                           FindViewById(Resource.Id.right));
