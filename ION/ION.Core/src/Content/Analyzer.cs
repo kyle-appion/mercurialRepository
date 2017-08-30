@@ -362,7 +362,7 @@
       }
 
       for (int i = 0; i < sensors.Length; i++) {
-        if (sensor == sensors[i]) {//sensor.Equals(sensors[i])) {
+        if (sensor == sensors[i]) {
           return i;
         }
       }
