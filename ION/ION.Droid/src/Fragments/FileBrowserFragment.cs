@@ -298,14 +298,14 @@
 			private ImageView icon;
 			private TextView name;
 
-			public FileHolder(SwipeRecyclerView rv, BitmapCache cache, Action<FileRecord> deleteAction) : base(rv, Resource.Layout.list_item_file, Resource.Layout.list_item_button) {
+			public FileHolder(SwipeRecyclerView rv, BitmapCache cache, Action<FileRecord> deleteAction) : base(rv, Resource.Layout.list_item_file, Resource.Layout.view_delete) {
 				this.cache = cache;
 
 				icon = foreground.FindViewById<ImageView>(Resource.Id.icon);
 				name = foreground.FindViewById<TextView>(Resource.Id.name);
 
-				var button = background as TextView;
-				button.SetText(Resource.String.remove);
+				var button = background as Button;
+				button.SetText(Resource.String.delete);
 				button.SetOnClickListener(new ViewClickAction((view) => {
 					deleteAction(record);
 				}));
@@ -322,14 +322,14 @@
 			private ImageView icon;
 			private TextView name;
 
-			public FolderHolder(SwipeRecyclerView rv, BitmapCache cache) : base(rv, Resource.Layout.list_item_file, Resource.Layout.list_item_button) {
+			public FolderHolder(SwipeRecyclerView rv, BitmapCache cache) : base(rv, Resource.Layout.list_item_file, Resource.Layout.view_delete) {
 				this.cache = cache;
 
 				icon = foreground.FindViewById<ImageView>(Resource.Id.icon);
 				name = foreground.FindViewById<TextView>(Resource.Id.name);
 
-				var button = background as TextView;
-				button.SetText(Resource.String.remove);
+				var button = background as Button;
+				button.SetText(Resource.String.delete);
 				button.SetOnClickListener(new ViewClickAction((view) => {
 					record.data.Delete();
 				}));
