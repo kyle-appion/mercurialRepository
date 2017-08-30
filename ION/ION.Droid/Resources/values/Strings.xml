@@ -39,24 +39,27 @@
   <string name="download_error">Download Error</string>
   <string name="edit_manual_entry">Edit Manual Entry</string>
   <string name="elevation">Elevation</string>
-	<string name="elevation_help">USASDF</string>
   <string name="email">Email</string>
   <string name="enable">Enable</string>
   <string name="enabling_bluetooth">Enabling Bluetooth...</string>
   <string name="enable_bluetooth">Enable Bluetooth</string>
   <string name="enabled">Enabled</string>
 	<string name="end">End</string>
+  <string name="end_colon">End: </string>
   <string name="enter_number">Enter a number</string>
   <string name="exit">Exit</string>
   <string name="exit_ion">Exit ION</string>
 	<string name="export">Export</string>
   <string name="favorites">Favorites</string>
+  <string name="filter">Filter</string>
 	<string name="finish">Finish</string>
+  <string name="finish_colon">Finish: </string>
 	<string name="firstName">First Name</string>
   <string name="_fixed">Fixed</string>
   <string name="forget">Forget</string>
   <string name="forget_all">Forget All</string>
   <string name="goto_settings">Goto Settings</string>
+  <string name="graph">Graph</string>
 	<string name="graph_information">Graph Information</string>
   <string name="help">Help</string>
 	<string name="highest">Highest</string>
@@ -83,10 +86,12 @@
   <string name="_new">New</string>
   <string name="next">Next</string>
   <string name="notes">Notes</string>
+  <string name="numeric">Numeric</string>
   <string name="ok">OK</string>
   <string name="ok_done">OK - Done</string>
   <string name="open">Open</string>
   <string name="open_with">Open With</string>
+  <string name="options">Options</string>
   <string name="password">Password</string>
   <string name="passwordConfirm">Confirm Password</string>
   <string name="passwords_dont_match">Entered passwords don\'t match</string>
@@ -112,6 +117,7 @@
   <string name="request_shutdown_message">Shutting down ION will disconnect all of your devices.</string>
 	<string name="reset">Reset</string>
   <string name="save">Save</string>
+	<string name="save_as">Save As</string>
   <string name="saving">Saving</string>
   <string name="scan">Scan</string>
   <string name="scanning">Scanning</string>
@@ -122,6 +128,7 @@
 	<string name="spreadsheet">Spreadsheet</string>
   <string name="stable">Stable</string>
 	<string name="start">Start</string>
+  <string name="start_colon">Start: </string>
   <string name="state">State</string>
   <string name="submit">Submit</string>
   <string name="text">Text</string>
@@ -168,7 +175,7 @@
   <string name="analyzer_error_failed_to_get_viewer_side">Failed to get the analyzer side for the Viewer</string>
   <string name="analyzer_error_failed_to_launch_ptchart_missing_manifold">Failed to open P/T Chart activity; the manifold is not present in the Analyzer.</string>
   <string name="analyzer_error_failed_to_launch_shsc_missing_manifold">Failed to open Superheat/Subcool activity; the manifold is not present in the Analyzer.</string>
-  <string name="analyzer_error_failed_to_launch_shsc_analyzer_full_1sarg">We cannot open the Superheat / Subcool activity for the clicked subview.\n\nThe {0} side of the Analyzer is full and cannot accept a sensor that is assigned in the Superheat / Subcool activity. Please remove a sensor from the {0} side of the analyzer to make room.</string> 
+  <string name="analyzer_error_failed_to_launch_shsc_analyzer_full_1sarg">We cannot open the Superheat / Subcool activity for the clicked subview.\n\nThe {0} side of the Analyzer is full and cannot accept a sensor that is assigned in the Superheat / Subcool activity. Please remove a sensor from the {0} side of the analyzer to make room.</string>
   <string name="analyzer_error_invalid_sensor_type">Cannot start Superheat / Subcool activity: {0} is an invalid sensor type</string>
   <string name="analyzer_full">Cannot add sensor to the System Analyzer: the System Analyzer is full.</string>
   <string name="analyzer_remove_sensor">Remove Sensor?</string>
@@ -238,6 +245,8 @@
   <string name="device_type">Device Type</string>
   <string name="device_unknown">Unknown Device</string>
 
+  <string name="device_model">Device Model</string>
+
   <string name="devices_actions_1arg">{0}\'s Actions</string>
   <string name="devices_connected_2arg">{0} of {1} devices connected</string>
   <string name="devices_error_connect_for_roc">Please connect the device before trying to view Live Trending</string>
@@ -250,7 +259,7 @@
   <string name="error">Error</string>
   <string name="error_bluetooth">Bluetooth Error</string>
   <string name="error_bluetooth_enable_fail">Failed to enable bluetooth.</string>
-  <string name="error_bluetooth_scan_module_off">Scan cannot be started, bluetooth is off on your device. You must enable bluetooth to start a scan.</string>
+  <string name="error_bluetooth_scan_module_off">Bluetooth is off on your device. You must enable bluetooth to start a scan or connect to a gauge.</string>
   <string name="error_location_failed_to_get_address">Failed to find address using your current location</string>
   <string name="error_location_disabled">Location Disabled</string>
   <string name="error_failed_to_delete">Failed to Delete</string>
@@ -316,19 +325,40 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
   <string name="fluid_sh_abrv">SH</string>
 
 	<!--
+  GRID
+  -->
+  <string name="grid_device">Device Grid</string>
+  <string name="grid_available_devices">Available Devices</string>
+  <string name="grid_disconnected_devices">Disconnected Devices</string>
+  <string name="grid_device">Device Grid</string>
+  <string name="grid_dialog_help">For added functionality, add this device to\n<b>System Analyzer</b> or <b>Workbench</b>.</string>
+  <string name="grid_display_on">Display\nOn</string>
+  <string name="grid_help">This is where we will put the help stuff. Right now, this isn\'t too helpful because I apparently lack the creative imagination to politely inform people that they suck at using this app.</string>
+
+	<!--
 	JOBS
 	-->
 	<string name="job">Job</string>
+  <string name="job_active">Active Job</string>
+  <string name="job_active_empty">No active job assigned</string>
 	<string name="job_adding_sessions">Adding sessions to job...</string>
 	<string name="job_available_sessions">Available Sessions</string>
-	<string name="job_available_sessions_warning">(Adding a session in red will remove the association to its current job)</string>
-	<string name="job_current_sessions">Linked Sessions</string>
+  <string name="job_available_sessions_empty">No datalog sessions have been recorded</string>
+	<string name="job_available_sessions_warning">Adding a session in red will remove the link to its current job</string>
+  <string name="job_link">Link</string>
+  <string name="job_link_break_title">Break Job Link</string>
+  <string name="job_link_ensure_break_request">Some or all of the selected sessions are registered to another job.\n\n Would you like to link the sessions to this job instead?</string>
+  <string name="job_link_remove_selected">Unlink Selected</string>
+  <string name="job_link_selected">Link Selected</string>
+  <string name="job_linked_empty">No sessions currently linked</string>
+	<string name="job_linked_sessions">Linked Sessions</string>
 	<string name="job_customer_no">Customer #</string>
-	<string name="job_delete">Really delete job?</string>
+	<string name="job_delete_title">Really delete job?</string>
 	<string name="job_delete_message">Deleting a job is permanent and irreversible. Are you sure that you wish to delete this job?</string>
 	<string name="job_dispatch_no">Dispatch #</string>
 	<string name="job_edit">Edit Job</string>
 	<string name="job_error_failed_to_save">Failed to save job.</string>
+  <string name="job_id">Job ID</string>
 	<string name="job_info">Job Info</string>
 	<string name="job_loading">Loading the job...</string>
   <string name="job_name">Job Name</string>
@@ -358,12 +388,13 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
 	<string name="location_state_province_region">State / Province / Region</string>
 	<string name="location_zip_postal_code">ZIP / Postal Code</string>
 	<string name="location_country">Country</string>
-	
-  
+
+
   <!--
   MANIFOLD
   -->
   <string name="manifold_add_subview">Add Subview</string>
+  <string name="manifold_calculation_subviews">Calculation Subviews</string>
   <string name="manifold_select_action">Select a viewer action</string>
   <string name="manifold_select_subview">Add Subview</string>
   <string name="manifold_subviews">Subviews</string>
@@ -373,6 +404,7 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
   -->
   <string name="measurement">Measurement</string>
   <string name="measurement_short">MEAS</string>
+  <string name="measurement_units">Measurement Units</string>
   <string name="humidity">Humidity</string>
   <string name="humidity_short">HUM</string>
   <string name="length">Length</string>
@@ -392,71 +424,7 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
   -->
   <string name="network_error">Network Error</string>
   <string name="network_no_connection">Unable to reach server. Please check your internet connection.</string>
-
-	<!--
-  REPORT
-  -->
-  <string name="reports">Reports</string>
-  <string name="report_by_date">By Date</string>
-  <string name="report_by_job">By Job</string>
-  <string name="report_certificates">Calibration Certificates</string>
-  <string name="report_certificates_download">Download Certificates?</string>
-  <string name="report_certificates_downloading">Downloading Certificates</string>
-	<string name="report_certificates_empty">No Calibration Certificates have been downloaded. Click the download icon to download the Calibration Certificates for all of your saved devices.</string>
-  <string name="report_certificates_download_request">Warning! Downloading and saving Calibration Certificates requires an internet connection and may take few minutes to complete. Continue?</string>
-  <string name="report_certificates_error_download_fails_1sarg">Some certificates failed to download. If this problem persists, please contact Appion. \n\n Affected Serial Numbers:\n%1$s</string>
-	<string name="report_choose_export_format">Choose an Export Format</string>
-	<string name="report_created">Report Created</string>
-  <string name="report_data_logging">Reporting</string>
-  <string name="report_data_logging_empty">The session(s) you have selected contain no recorded data. To export a session report, please select a session with at least one data point.</string>
-  <string name="report_data_logging_error_setting_time_to_lowest">Setting time to the first data log time.</string>
-  <string name="report_data_logging_error_setting_time_to_highest">Setting time to the last data log time.</string>
-  <string name="report_data_logging_highest_measurement">Highest Measurement</string>
-  <string name="report_data_logging_lowest_measurement">Lowest Measurement</string>
-  <string name="report_data_logging_measurement_count">Number of Measurements</string>
-  <string name="report_data_logging_select_start_datetime">Choose a manual start date for the graph</string>
-  <string name="report_data_logging_select_end_datetime">Choose a manual end date for the graph</string>
-  <string name="report_data_logging_step_1">Step 1</string>
-  <string name="report_data_logging_step_2">Step 2</string>
-  <string name="report_data_logging_step_3">Step 3</string>
-  <string name="report_date_created">Date Recorded</string>
-  <string name="report_session_duration">Session Duration</string>
-  <string name="report_dates">Report Dates</string>
-  <string name="report_delete_session">Really delete session?</string>
-  <string name="report_delete_session_message">Deleting a session is permanent and irreversible. Are you sure you wish to delete the session?</string>
-  <string name="report_devices_used">Devices Used</string>
-	<string name="report_error_graph_no_sessions_provided">Failed to start session graphing: not sessions were selected.</string>
-  <string name="report_graph">Graph</string>
-	<string name="report_graph_selection">Graph Selection</string>
-  <string name="report_jobs">Jobs</string>
-  <string name="report_job_details">Job Details</string>
-  <string name="report_name">Report Name</string>
-  <string name="report_new">New Report</string>
-  <string name="report_nist_date">Certification Date</string>
-  <string name="report_no_jobs_exist">No jobs exist. Click to create</string>
-	<string name="report_no_sessions_exist">No sessions exist. Click the record button in the Workbench or Analyzer to start recording a new session"</string>
-	<string name="report_no_spreadsheets_exist">No spreadsheet reports exist</string>
-	<string name="report_recording_started">Started Data Logging with an interval of ({0})</string>
-	<string name="report_recording_stopped">Stopped Data Logging. Session can be found in "Reports"</string>
-  <string name="report_saved">Saved Reports</string>
-  <string name="report_screenshot">Screenshot Report</string>
-  <string name="report_screenshot_archive">Screenshot Archive</string>
-  <string name="report_screenshot_empty">No Screenshot Reports have been saved. Click the camera icon in the Workbench or Analyzer to create a Screenshot Report.</string>
-  <string name="report_screenshot_error_export_failed">Failed to export screenshot report.</string>
-  <string name="report_screenshot_error_name_missing">Please enter a name for the report.</string>
-  <string name="report_screenshot_error_screenshot_missing">Failed to export screenshot: missing image data.</string>
-	<string name="report_screenshot_saved">Saved Screenshot Report</string>
-	<string name="report_screenshot_saving">Capturing screen...</string>
-	<string name="report_select_export_data">Select Export Data</string>
-	<string name="report_select_start_time">Select start time for the graph</string>
-	<string name="report_select_end_time">Select end time for the graph</string>
-	<string name="report_selection">Report Selection</string>
-  <string name="report_session_selection">Session Selection</string>
-  <string name="report_sessions">Sessions</string>
-  <string name="report_sessions_loading">Loading Sessions</string>
-  <string name="report_spans_no_jobs">No Jobs Attached To Report</string>
-  <string name="report_spans_multiple_jobs">Spans Mulitple Jobs</string>
-
+  <string name="network_help">Help</string>
 
 	<!--
   RSS
@@ -518,6 +486,7 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
 	<string name="portal_remote_mode_start">Upload Layout</string>
 	<string name="portal_remote_viewing">Remote Viewing</string>
 	<string name="portal_remote_viewing_access">Remote Viewing Access</string>
+  <string name="portal_remote_viewing_empty">No remote device(s) online</string>
 	<string name="portal_remote_your_feed">Your feed</string>
 	<string name="portal_session">Sessions</string>
 	<string name="portal_stop_uploading">Stop Uploading</string>
@@ -569,7 +538,8 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
   WORKBENCH
   -->
   <string name="workbench">Workbench</string>
-  <string name="workbench_remove">Remove from Workbench</string>
+  <string name="workbench_error_already_contains_sensor">The workbench already contains the given sensor.</string>
+  <string name="workbench_remove">Remove from Workbench?</string>
   <string name="workbench_remove_sensor">You are about to remove a Viewer from the Workbench. Removing the viewer will also remove all of its subviews from the workbench. Do you wish to remove the Viewer?</string>
 
 	<string name="workbench_add_all">Add all Subviews</string>

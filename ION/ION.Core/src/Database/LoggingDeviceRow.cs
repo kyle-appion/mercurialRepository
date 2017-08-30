@@ -35,6 +35,10 @@
       return dr != null && LDID == dr.LDID;
     }
 
+    public override int GetHashCode() {
+      return base.GetHashCode();
+    }
+
     // Overridden from Object
     public override string ToString() {
       return "Device {" +

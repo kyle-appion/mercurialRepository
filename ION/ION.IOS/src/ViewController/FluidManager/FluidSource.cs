@@ -59,6 +59,7 @@
       this.table = table;
       this.fluidManager = fluidManager;
       this.fluidNames = fluidNames;
+      this.fluidNames.Sort(new AlphabeticalStringComparer());
     }
 
     // Overridden from UITableViewSource

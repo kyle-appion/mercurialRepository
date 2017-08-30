@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ION.Droid.Widgets.RecyclerViews.SwipeRecyclerView
+        android:id="@id/list"
+        android:layout_margin="@dimen/padding"
+        android:background="@drawable/xml_rect_white_black_bordered"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+    <TextView
+        android:text="@string/report_no_spreadsheets_exist"
+        android:textSize="@dimen/text_size_large"
+        android:id="@id/empty"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

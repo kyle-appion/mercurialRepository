@@ -245,10 +245,10 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     }
 
     public double setPressureStart(Unit pressureUnit){
-    	var fluidMin = ptChart.fluid.GetMinimumPressure(ptChart.state).ConvertTo(lookup);
-    	var convertedFluidMin = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(fluidMin,ptChart.elevation);
-    	
-      if(pressureUnit == Units.Pressure.PSIG){
+      var fluidMin = ptChart.minRelativePressure.ConvertTo(lookup);
+      var convertedFluidMin = fluidMin;
+
+			if(pressureUnit == Units.Pressure.PSIG){
       	if(convertedFluidMin.amount > -8){
 					return Math.Ceiling(convertedFluidMin.amount);
 				} else {

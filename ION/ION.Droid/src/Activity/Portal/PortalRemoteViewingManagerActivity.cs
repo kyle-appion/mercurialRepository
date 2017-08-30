@@ -58,9 +58,9 @@ namespace ION.Droid.Activity.Portal {
 						button.SetText(Resource.String.portal_local_mode);
 					}
 					if (ion is RemoteION) {
-						ActionBar.SetBackgroundDrawable(new ColorDrawable(Resources.GetColor(Resource.Color.red)));
+            ActionBar.SetBackgroundDrawable(new ColorDrawable(Resource.Color.red.AsResourceColor(this)));
 					} else {
-						ActionBar.SetBackgroundDrawable(new ColorDrawable(Resources.GetColor(Android.Resource.Color.BackgroundDark)));
+            ActionBar.SetBackgroundDrawable(new ColorDrawable(Android.Resource.Color.BackgroundDark.AsResourceColor(this)));
 					}
 				}, TimeSpan.FromMilliseconds(500));
 			};

@@ -1,16 +1,11 @@
 ﻿namespace ION.Droid.Activity {
 
   using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
 
   using Android.App;
   using Android.Content;
   using Android.Content.PM;
   using Android.OS;
-  using Android.Preferences;
-  using Android.Runtime;
   using Android.Views;
   using Android.Widget;
 
@@ -136,18 +131,8 @@
       return ret;
     }
 
-    /// <Docs>To be added.</Docs>
-    /// <remarks>To be added.</remarks>
-    /// <summary>
-    /// Raises the build headers event.
-    /// </summary>
-    /// <param name="target">Target.</param>
-//    public override void OnBuildHeaders(IList<Header> target) {
-//    }
-
     private class BoundedHandler {
       SensorAlarmActivity activity;
-      IION ion;
       BoundedSensorAlarm alarm;
 
       Switch toggle;
@@ -194,7 +179,7 @@
             alarm.description = summary;
             alarm.enabled = toggle.Checked;
             alarm.bounds = UnitLookup.GetUnit(unitCode).OfScalar(double.Parse(measurement.Text));
-          } catch (Exception e) {
+          } catch (Exception) {
             activity.Alert(Resource.String.error_invalid_number_entry);
           }
         }

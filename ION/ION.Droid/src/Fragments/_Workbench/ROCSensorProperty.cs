@@ -102,7 +102,7 @@
 
       if (roc.isStable) {
         measurement.Text = c.GetString(Resource.String.stable);
-        unit.Visibility = ViewStates.Invisible;
+        unit.Visibility = ViewStates.Gone;
 				icon.Visibility = ViewStates.Invisible;
 			} else {
 				var averageChange = roc.primaryRateOfChange;

@@ -59,6 +59,16 @@ namespace ION.Core.Sensors {
       }
     }
 
+    public static ESensorType AsSensorType(this Quantity quantity) {
+      switch (quantity) {
+        case Quantity.Pressure: return ESensorType.Pressure;
+        case Quantity.Temperature: return ESensorType.Temperature;
+        case Quantity.Vacuum: return ESensorType.Vacuum;
+        case Quantity.Mass: return ESensorType.Weight;
+        default: return ESensorType.Unknown;
+			}
+    }
+
     /// <summary>
     /// Builds a formatted string of this sensor's measurement.
     /// </summary>
@@ -68,7 +78,7 @@ namespace ION.Core.Sensors {
     /// <returns>The formatted string.</returns>
     /// <param name="sensor">Sensor.</param>
     public static string ToFormattedString(this Sensor sensor, bool includeUnit = false) {
-      return SensorUtils.ToFormattedString(sensor.type, sensor.measurement, includeUnit);
+      return SensorUtils.ToFormattedString(sensor.measurement, includeUnit);
     }
   } // End SensorExtensions
 
@@ -449,6 +459,10 @@ namespace ION.Core.Sensors {
       this.isRelative = isRelative;
     }
 
+    public override string ToString() {
+      return string.Format("[" + this.GetType().Name + ": type={0}, name={1}, unit={2}, measurement={3}]", type, name, unit, measurement);
+    }
+
     /// <summary>
     /// Notifies the sensors event that the sensor state changed.
     /// </summary>
@@ -475,7 +489,7 @@ namespace ION.Core.Sensors {
 			     measurement.ConvertTo(minMeasurement.unit).amount < minMeasurement.amount)) {
 				return "OL";
 			} else {
-      	return SensorUtils.ToFormattedString(type, measurement, includeUnit);
+      	return SensorUtils.ToFormattedString(measurement, includeUnit);
 			}
     }
 

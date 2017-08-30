@@ -63,7 +63,7 @@
             }
           }
           dialog.Dismiss();
-        } catch (Exception e) {
+        } catch (Exception) {
 					Toast.MakeText(context, Resource.String.please_enter_valid_number, ToastLength.Long).Show();
         }
       });

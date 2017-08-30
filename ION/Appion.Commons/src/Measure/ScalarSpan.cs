@@ -6,6 +6,7 @@
   /// A ScalarSpan is a magnitude that is not bound to the range of a unit. This is simply a difference between two
   /// relative scalars.
   /// </summary>
+  // TODO ahodder@appioninc.com: The compares are not right here.
   public struct ScalarSpan {
     /// <summary>
     /// The unit that the scalar is referring to.
@@ -26,6 +27,18 @@
     public ScalarSpan(Unit unit, double magnitude) {
       this.unit = unit;
       this.magnitude = magnitude;
+    }
+
+    public override bool Equals(object obj) {
+      if (obj is ScalarSpan) {
+        var sp = (ScalarSpan)obj;
+
+        if (unit.IsCompatible(sp.unit)) {
+          var su = unit.standardUnit;
+          return unit.GetConverterTo(unit).Convert(magnitude).Equals(sp.unit.GetConverterTo(su).Convert(sp.magnitude));
+        }
+      }
+      return false;
     }
 
 		public override string ToString() {

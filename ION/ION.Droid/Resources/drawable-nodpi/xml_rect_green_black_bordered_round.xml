@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item>
+    <shape
+			android:shape="rectangle">
+    <stroke
+			android:width="@dimen/xml_border_stroke"
+			android:color="@color/black"/>
+    <padding
+			android:left="@dimen/xml_radius"
+			android:right="@dimen/xml_radius"
+			android:top="@dimen/xml_radius"
+			android:bottom="@dimen/xml_radius"/>
+    <solid
+			android:color="@color/green"/>
+    <corners
+			android:radius="@dimen/xml_radius"
+			android:topLeftRadius="@dimen/xml_radius"
+			android:topRightRadius="@dimen/xml_radius"
+			android:bottomLeftRadius="@dimen/xml_radius"
+			android:bottomRightRadius="@dimen/xml_radius"/>
+  </shape>
+  </item>
+</layer-list>

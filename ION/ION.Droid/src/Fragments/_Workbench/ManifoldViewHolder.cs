@@ -27,11 +27,12 @@
 
 		public ManifoldRecord(Manifold manifold) {
 			this.manifold = manifold;
+      this.isExpanded = false;
 		}
 	}
 
 	public class ManifoldViewHolder : SwipeRecyclerView.ViewHolder {
-		public ManifoldRecord record { 
+		public ManifoldRecord record {
 			get {
 				return __record;
 			}
@@ -49,48 +50,41 @@
 
 		private BitmapCache cache;
 
-		private TextView title;
-		private TextView measurement;
-		private TextView alarm;
+		private TextView name;
 		private TextView status;
+		private TextView measurement;
 		private TextView unit;
-		private TextView serialNumber;
+
+    private View alarm;
 
 		private ImageView battery;
 		private ImageView connection;
 		private ImageView icon;
-		private ImageView arrow;
 
 		private ProgressBar progress;
 
 		private int lastBattery;
 
-		public ManifoldViewHolder(SwipeRecyclerView parent, BitmapCache cache, Workbench workbench) : base(parent, Resource.Layout.viewer_large, Resource.Layout.list_item_button) {
+		public ManifoldViewHolder(SwipeRecyclerView parent, BitmapCache cache, Workbench workbench) : base(parent, Resource.Layout.list_item_viewer, Resource.Layout.view_delete) {
 			this.cache = cache;
 
-			title = foreground.FindViewById<TextView>(Resource.Id.name);
-			measurement = foreground.FindViewById<TextView>(Resource.Id.measurement);
-			alarm = foreground.FindViewById<TextView>(Resource.Id.alarm);
+      name = foreground.FindViewById<TextView>(Resource.Id.name);
 			status = foreground.FindViewById<TextView>(Resource.Id.status);
+			measurement = foreground.FindViewById<TextView>(Resource.Id.measurement);
+      measurement.Tag = new Java.Lang.String("Measurement");
 			unit = foreground.FindViewById<TextView>(Resource.Id.unit);
-			serialNumber = foreground.FindViewById<TextView>(Resource.Id.device_serial_number);
 
+      alarm = foreground.FindViewById(Resource.Id.alarm);
+
+			icon = foreground.FindViewById<ImageView>(Resource.Id.icon);
 			battery = foreground.FindViewById<ImageView>(Resource.Id.battery);
 			connection = foreground.FindViewById<ImageView>(Resource.Id.connection);
-			icon = foreground.FindViewById<ImageView>(Resource.Id.icon);
-			arrow = foreground.FindViewById<ImageView>(Resource.Id.arrow);
 
 			progress = foreground.FindViewById<ProgressBar>(Resource.Id.progress);
 
 			lastBattery = -1;
 
-			serialNumber.SetOnClickListener(new ViewClickAction((view) => {
-				if (onSerialNumberClicked != null) {
-					onSerialNumberClicked(record);
-				}
-			}));
-
-			var button = background as TextView;
+			var button = background as Button;
 			button.SetText(Resource.String.remove);
 			button.SetOnClickListener(new ViewClickAction((view) => {
 				workbench.Remove(record.manifold);
@@ -128,40 +122,40 @@
 			}
 
 			if (d != null) {
-				title.Text = d.serialNumber.deviceModel.GetTypeString() + ": " + s.name;
-				if (serialNumber != null) {
-					serialNumber.Text = gds.device.serialNumber.ToString();
-				}
+				name.Text = d.serialNumber.deviceModel.GetTypeString() + ": " + s.name;
 
 				progress.Visibility = ViewStates.Invisible;
 				connection.Visibility = ViewStates.Visible;
 				switch (d.connection.connectionState) {
           case EConnectionState.Connected: {
-						measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.black)));
-						unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.black)));
+            measurement.SetTextColor(Resource.Color.black.AsResourceColor(c));
+						unit.SetTextColor(Resource.Color.black.AsResourceColor(c));
 
 						connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_connected));
+            connection.SetBackgroundResource(Resource.Drawable.xml_rect_green_black_bordered_round);
 						status.Text = c.GetString(Resource.String.connected);
-						status.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.green)));
+						status.SetTextColor(Resource.Color.green.AsResourceColor(c));
 					  break;
           } // EConnectionState.Connected
           case EConnectionState.Broadcasting: {
-              measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.black)));
-//						measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
-//						unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
+            measurement.SetTextColor(Resource.Color.black.AsResourceColor(c));
 
-            connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_nearby));
+            connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_disconnected));
+            connection.SetBackgroundResource(Resource.Drawable.xml_rect_light_blue_black_bordered_round);
+            
             status.Text = c.GetString(Resource.String.long_range_mode);
-						status.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
+						status.SetTextColor(Resource.Color.light_blue.AsResourceColor(c));
 					  break;
           } // EConnectionState.Broadcasting
           case EConnectionState.Disconnected: {
-						measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.gray)));
-						unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.gray)));
+						measurement.SetTextColor(Resource.Color.gray.AsResourceColor(c));
+						unit.SetTextColor(Resource.Color.gray.AsResourceColor(c));
 
 						connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_disconnected));
+            connection.SetBackgroundResource(Resource.Drawable.xml_rect_red_black_bordered_round);
+            
 						status.Text = c.GetString(Resource.String.disconnected);
-						status.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.red)));
+						status.SetTextColor(Resource.Color.red.AsResourceColor(c));
 					  break;
           } // EConnectionState.Disconnected
           case EConnectionState.Connecting: {
@@ -179,7 +173,7 @@
 				status.Visibility = ViewStates.Visible;
 				icon.Visibility = ViewStates.Visible;
 			} else {
-				title.Text = s.type.GetSensorTypeName() + ": " + s.name;
+				name.Text = s.type.GetSensorTypeName() + ": " + s.name;
 
 				status.Visibility = ViewStates.Invisible;
 				connection.Visibility = ViewStates.Invisible;
@@ -187,43 +181,16 @@
 				progress.Visibility = ViewStates.Invisible;
 			}
 
-			if (serialNumber != null) {
-				if (gds != null) {
-					serialNumber.Text = gds.device.name + "'s Subviews";
-				} else {
-					serialNumber.Text = record.manifold.primarySensor.name + "'s Subviews";
-				}
-
-				if (this.record.manifold.secondarySensor != null) {
-					serialNumber.Text +=  " (" + c.GetString(Resource.String.workbench_linked) + ")";
-				}
-			}
-
 			InvalidateBattery(d);
-			MarkAsExpanded(record.isExpanded);
-		}
-
-		public void MarkAsExpanded(bool expanded) {
-			if (record.manifold.sensorPropertyCount <= 0) {
-				arrow.Visibility = ViewStates.Invisible;
-			} else {
-				arrow.Visibility = ViewStates.Visible;
-				if (expanded) {
-					arrow.SetImageResource(Resource.Drawable.ic_arrow_upwhite);
-				} else {
-					arrow.SetImageResource(Resource.Drawable.ic_arrow_downwhite);
-				}
-			}
 		}
 
 		private void InvalidateBattery(GaugeDevice device) {
-			if (battery == null) {
-				return;
-			}
-
 			if (device != null) {
 				var bat = device.battery;
-				if (device.isConnected) {
+        if (!device.isConnected) {
+          lastBattery = -1;
+          battery.Visibility = ViewStates.Invisible;
+        } else if (bat != lastBattery) {
 					battery.Visibility = ViewStates.Visible;
 					if (bat >= 100) {
 						battery.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_battery_horiz_100));
@@ -236,9 +203,7 @@
 					} else {
 						battery.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_battery_horiz_empty));
 					}
-				} else {
-					battery.Visibility = ViewStates.Invisible;
-					lastBattery = -1;
+          lastBattery = bat;
 				}
 			} else {
 				battery.Visibility = ViewStates.Invisible;
@@ -252,7 +217,6 @@
 					break;
 				case ManifoldEvent.EType.SensorPropertyAdded:
 				case ManifoldEvent.EType.SensorPropertyRemoved:
-//					Invalidate();
 					break;
 			}
 		}

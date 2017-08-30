@@ -17,7 +17,7 @@
         if (sensor.type == ESensorType.Pressure) {
           return manifold.ptChart.GetTemperature(sensor.measurement, sensor.isRelative).ConvertTo(unit);
         } else {
-          return manifold.ptChart.GetPressure(sensor.measurement).ConvertTo(unit);
+          return manifold.ptChart.GetRelativePressure(sensor.measurement).ConvertTo(unit);
         }
       }
     }

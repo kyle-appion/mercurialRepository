@@ -19,7 +19,7 @@ namespace ION.Droid.Fragments._Analyzer {
 
   // Using ION.Droid
   using Activity;
-  using Activity.DeviceManager;
+  using Activity.Grid;
 	using App;
   using Content;
   using Dialog;
@@ -42,7 +42,6 @@ namespace ION.Droid.Fragments._Analyzer {
     /// The constant value indicating that the fragment requested a sensor for a sensor mount. The first byte of this
     /// request will be the index of the sensor.
     /// </summary>
-    private const int REQUEST_SENSOR_MOUNT_SENSOR = unchecked((int)0x01000000);
     private const int REQUEST_SHOW_PTCHART = unchecked((int)0x02000000);
     private const int REQUEST_SHOW_SUPERHEAT_SUBCOOL = unchecked((int)0x03000000);
     private const int REQUEST_MANIFOLD_ON_SIDE = unchecked((int)0x04000000);
@@ -121,12 +120,6 @@ namespace ION.Droid.Fragments._Analyzer {
       var request = requestCode & MASK_REQUEST;
 
       switch (request) {
-				case REQUEST_SENSOR_MOUNT_SENSOR: {
-						var index = requestCode & MASK_REQUEST_PAYLOAD;
-						var sp = (SensorParcelable)data.GetParcelableExtra(DeviceManagerActivity.EXTRA_SENSOR);
-						analyzer.PutSensor(index, sp.Get(ion));
-				} break;
-
 				case REQUEST_SHOW_SUPERHEAT_SUBCOOL: {
 					var side = (Analyzer.ESide)unchecked((requestCode & MASK_SIDE) >> 8);
 
@@ -169,11 +162,14 @@ namespace ION.Droid.Fragments._Analyzer {
 				} break;
 
 				case REQUEST_MANIFOLD_ON_SIDE: {
-          var mside = (Analyzer.ESide)unchecked((requestCode & MASK_SIDE) >> 8);
+					Toast.MakeText(Activity, "DEVICE MANAGER WAS REMOVED! IMPLEMENT DEVICE SELECTION LIST", ToastLength.Short).Show();
+/*
+					var mside = (Analyzer.ESide)unchecked((requestCode & MASK_SIDE) >> 8);
           var msp = data.GetParcelableExtra(DeviceManagerActivity.EXTRA_SENSOR) as SensorParcelable;
           var s = msp.Get(ion);
 
           TrySetManifold(mside, s);
+*/
 				} break;
         default:
           L.D(this, "Unknown request: " + request);
@@ -198,7 +194,7 @@ namespace ION.Droid.Fragments._Analyzer {
     /// <returns>The sensor mount request.</returns>
     /// <param name="sensorMountIndex">Sensor mount index.</param>
     private int EncodeSensorMountRequest(int sensorMountIndex) {
-      return REQUEST_SENSOR_MOUNT_SENSOR | (MASK_REQUEST_PAYLOAD & sensorMountIndex);
+      return (MASK_REQUEST_PAYLOAD & sensorMountIndex);
     }
 
     /// <summary>
@@ -258,61 +254,77 @@ namespace ION.Droid.Fragments._Analyzer {
       ldb.SetTitle(string.Format(GetString(Resource.String.devices_actions_1arg), manifold.primarySensor.name));
 
       var dgs = manifold.primarySensor as GaugeDeviceSensor;
-      var connectionState = dgs.device.connection.connectionState;
+      
+      if (dgs != null) {
+        var connectionState = dgs.device.connection.connectionState;
+        if (connectionState == EConnectionState.Disconnected || connectionState == EConnectionState.Broadcasting) {
+          ldb.AddItem(Resource.String.reconnect, () => {
+            dgs.device.connection.Connect();
+          });
+        }
+        
+        if ((connectionState != EConnectionState.Disconnected && connectionState != EConnectionState.Broadcasting)) {
+          ldb.AddItem(Resource.String.disconnect, () => {
+            dgs.device.connection.Disconnect();
+          });
+        }
+        
+        ldb.AddItem(Resource.String.rename, () => {
+          if (manifold.primarySensor is GaugeDeviceSensor) {
+            var gds = manifold.primarySensor as GaugeDeviceSensor;
+            new RenameDialog(gds.device).Show(Activity);
+          } else {
+            new RenameDialog(manifold.primarySensor).Show(Activity);
+          }
+        });
+        
+        if (dgs != null && dgs.device.isConnected) {
+          ldb.AddItem(GetString(Resource.String.remote_change_unit), () => {
+            var device = dgs.device;
+  
+            if (device.sensorCount > 1) {
+              var d = new ListDialogBuilder(Activity);
+              d.SetTitle(Resource.String.select_a_sensor);
+  
+              for (int i = 0; i < device.sensorCount; i++) {
+                var sensor = device[i];
+                d.AddItem(i + ": " + sensor.type.GetTypeString(), () => {
+                  ShowChangeUnitDialog(sensor);
+                });
+              }
+  
+              d.Show();
+            } else {
+              ShowChangeUnitDialog(device.sensors[0]);
+            }
+          });
+        }
+        
+        ldb.AddItem(Resource.String.alarm, () => {
+          var i = new Intent(Activity, typeof(SensorAlarmActivity));
+          i.PutExtra(SensorAlarmActivity.EXTRA_SENSOR, manifold.primarySensor.ToParcelable());
+          StartActivity(i);
+        });
+      } else {
+        ldb.AddItem(Resource.String.edit_manual_entry, () => {
+          new ManualSensorEditDialog(Activity, manifold.primarySensor as ManualSensor).Show();
+        });
+      }
+      
+      /*
+      var s = analyzer[index];
+        if (s is GaugeDeviceSensor) {
+          var side = Analyzer.ESide.Low;
+          analyzer.GetSideOfIndex(index, out side);
+          new ViewerDialog(this.Activity, analyzer, analyzer[index], side).Show();
+        } else if (s is ManualSensor) {
+          new ManualSensorEditDialog(Activity, s as ManualSensor).Show();
+        }
+      */
 
-			if (dgs != null && connectionState == EConnectionState.Disconnected || connectionState == EConnectionState.Broadcasting) {
-				ldb.AddItem(Resource.String.reconnect, () => {
-					dgs.device.connection.Connect();
-				});
-			}
-
-			if (dgs != null && (connectionState != EConnectionState.Disconnected && connectionState != EConnectionState.Broadcasting)) {
-				ldb.AddItem(Resource.String.disconnect, () => {
-					dgs.device.connection.Disconnect();
-				});
-			}
-
-      ldb.AddItem(Resource.String.rename, () => {
-				ldb.AddItem(Resource.String.rename, () => {
-					if (manifold.primarySensor is GaugeDeviceSensor) {
-						var gds = manifold.primarySensor as GaugeDeviceSensor;
-						new RenameDialog(gds.device).Show(Activity);
-					} else {
-						new RenameDialog(manifold.primarySensor).Show(Activity);
-					}
-				});
-      });
-
-			if (dgs != null && dgs.device.isConnected) {
-				ldb.AddItem(GetString(Resource.String.remote_change_unit), () => {
-					var device = dgs.device;
-
-					if (device.sensorCount > 1) {
-						var d = new ListDialogBuilder(Activity);
-						d.SetTitle(Resource.String.select_a_sensor);
-
-						for (int i = 0; i < device.sensorCount; i++) {
-							var sensor = device[i];
-							d.AddItem(i + ": " + sensor.type.GetTypeString(), () => {
-								ShowChangeUnitDialog(sensor);
-							});
-						}
-
-						d.Show();
-					} else {
-						ShowChangeUnitDialog(device.sensors[0]);
-					}
-				});
-			}
 
       ldb.AddItem(Resource.String.workbench_add_viewer_sub, () => {
         ShowAddSubviewDialog(manifold);
-      });
-
-      ldb.AddItem(Resource.String.alarm, () => {
-        var i = new Intent(Activity, typeof(SensorAlarmActivity));
-        i.PutExtra(SensorAlarmActivity.EXTRA_SENSOR, manifold.primarySensor.ToParcelable());
-        StartActivity(i);
       });
 
       ldb.AddItem(Resource.String.remove, () => {
@@ -368,7 +380,7 @@ namespace ION.Droid.Fragments._Analyzer {
         });
       }
 
-      if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
+      if (!(manifold.primarySensor is ManualSensor) && !manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_roc, Resource.String.workbench_roc_abrv), () => {
           manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold, ion.preferences.device.trendInterval));
         });
@@ -467,9 +479,12 @@ namespace ION.Droid.Fragments._Analyzer {
       var ldb = new ListDialogBuilder(Activity);
       ldb.SetTitle(Resource.String.analyzer_add_from);
       ldb.AddItem(Resource.String.device_manager, () => {
-        var i = new Intent(Activity, typeof(DeviceManagerActivity));
+  		  Toast.MakeText(Activity, "DEVICE MANAGER WAS REMOVED! IMPLEMENT DEVICE SELECTION LIST", ToastLength.Short).Show();
+/*
+		    var i = new Intent(Activity, typeof(DeviceManagerActivity));
         i.SetAction(Intent.ActionPick);
         StartActivityForResult(i, EncodeSensorMountRequest(index));
+*/
       });
 			ldb.AddItem(Resource.String.sensor_create_manual_entry, () => {
 				var d = new ManualSensorCreateDialog(Activity, SensorUtils.GetSensorTypeUnitMapping()).Show((sensor) => {
@@ -488,9 +503,13 @@ namespace ION.Droid.Fragments._Analyzer {
 			var ldb = new ListDialogBuilder(Activity);
 			ldb.SetTitle(Resource.String.analyzer_add_from);
 			ldb.AddItem(Resource.String.device_manager, () => {
+				Toast.MakeText(Activity, "DEVICE MANAGER WAS REMOVED! IMPLEMENT DEVICE SELECTION LIST", ToastLength.Short).Show();
+
+/*
 				var i = new Intent(Activity, typeof(DeviceManagerActivity));
 				i.SetAction(Intent.ActionPick);
 				StartActivityForResult(i, EncodeManifoldSideRequest(side));
+*/
 			});
 			ldb.AddItem(Resource.String.sensor_create_manual_entry, () => {
 				if (analyzer.IsSideFull(side)) {
@@ -533,9 +552,14 @@ namespace ION.Droid.Fragments._Analyzer {
     /// <param name="index">Index.</param>
     private void OnSensorMountClicked(AnalyzerView view, Analyzer analyzer, int index) {
       if (analyzer.HasSensorAt(index)) {
-        var side = Analyzer.ESide.Low;
-        analyzer.GetSideOfIndex(index, out side);
-        new ViewerDialog(this.Activity, analyzer, analyzer[index], side).Show();
+        var s = analyzer[index];
+        if (s is GaugeDeviceSensor) {
+          var side = Analyzer.ESide.Low;
+          analyzer.GetSideOfIndex(index, out side);
+          new ViewerDialog(this.Activity, analyzer, analyzer[index], side).Show();
+        } else if (s is ManualSensor) {
+          new ManualSensorEditDialog(Activity, s as ManualSensor).Show();
+        }
       } else {
 				if (!analyzer.isEditable) {
 					return;

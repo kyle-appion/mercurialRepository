@@ -86,7 +86,7 @@ namespace ION.Droid.App {
       get {
         var cm = context.GetSystemService(Context.ConnectivityService) as ConnectivityManager;
         var activeNetwork = cm.ActiveNetworkInfo;
-        return activeNetwork != null && activeNetwork.IsConnectedOrConnecting;
+        return activeNetwork != null && activeNetwork.IsConnected;
       }
     }
 
@@ -114,6 +114,9 @@ namespace ION.Droid.App {
 				}
 			}
 		} Workbench __workbench;
+    
+    [Obsolete("Remove me as i am not needed!!!")]
+    public Workbench storedWorkbench { get; set; }
 
 		// Implemented From IION
 		public IFolder screenshotReportFolder { get; protected set; }

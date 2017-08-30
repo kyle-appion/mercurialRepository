@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -34,17 +34,17 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Devices\Device.cs" />
+    <Compile Include="src\Devices\DeviceExtensions.cs" />
     <Compile Include="src\Devices\DeviceManager.cs" />
     <Compile Include="src\Devices\Protocols\BleV1Protocol.cs" />
     <Compile Include="src\Devices\Protocols\Protocol.cs" />
+    <Compile Include="src\Devices\Sorters\GeneralSensorSorter.cs" />
     <Compile Include="src\Fluids\BaseFluidManager.cs" />
     <Compile Include="src\Fluids\Fluid.cs" />
     <Compile Include="src\Fluids\IFluidManager.cs" />
     <Compile Include="src\Fluids\Parser\IFluidParser.cs" />
     <Compile Include="src\Fluids\Parser\BinaryFluidParser.cs" />
     <Compile Include="src\IO\IFile.cs" />
-    <Compile Include="src\IO\Preferences\IPreferences.cs" />
-    <Compile Include="src\IO\Preferences\BasePreferences.cs" />
     <Compile Include="src\Devices\SerialNumber.cs" />
     <Compile Include="src\Sensors\Sensor.cs" />
     <Compile Include="src\App\ION.cs" />
@@ -67,7 +67,6 @@
     <Compile Include="src\Sensors\Properties\ISensorProperty.cs" />
     <Compile Include="src\Sensors\Properties\MaxSensorProperty.cs" />
     <Compile Include="src\Sensors\Properties\MinSensorProperty.cs" />
-    <Compile Include="src\Fluids\PTChart.cs" />
     <Compile Include="src\Math\Physics.cs" />
     <Compile Include="src\Alarms\IAlarm.cs" />
     <Compile Include="src\Alarms\AbstractAlarm.cs" />
@@ -94,7 +93,6 @@
     <Compile Include="src\Location\ILocationManager.cs" />
     <Compile Include="src\Sensors\Properties\RateOfChangeSensorProperty.cs" />
     <Compile Include="src\Sensors\Properties\TimerSensorProperty.cs" />
-    <Compile Include="src\Pdf\PDFTest.cs" />
     <Compile Include="src\Report\ScreenshotReport.cs" />
     <Compile Include="src\Pdf\ScreenshotReportPdfExporter.cs" />
     <Compile Include="src\Sensors\UnitLookup.cs" />
@@ -113,9 +111,6 @@
     <Compile Include="src\Location\Address.cs" />
     <Compile Include="src\App\IAppDump.cs" />
     <Compile Include="src\App\AppionConstants.cs" />
-    <Compile Include="src\App\Constants.cs" />
-    <Compile Include="src\Report\DataLoggingReport.cs" />
-    <Compile Include="src\Pdf\DataLoggingReportPdfExporter.cs" />
     <Compile Include="src\Devices\Protocols\ClassicProtocol.cs" />
     <Compile Include="src\Database\ITableRow.cs" />
     <Compile Include="src\Devices\DeviceDatabaseExtensions.cs" />
@@ -132,7 +127,6 @@
     <Compile Include="src\Report\DataLogs\SensorLog.cs" />
     <Compile Include="src\Report\DataLogs\DeviceSensorLogs.cs" />
     <Compile Include="src\Report\DataLogs\SessionResults.cs" />
-    <Compile Include="src\Database\Deprecated\Device.cs" />
     <Compile Include="src\Database\LoggingDeviceRow.cs" />
     <Compile Include="src\Content\WhatsNew.cs" />
     <Compile Include="src\Devices\GaugeSerialNumber.cs" />
@@ -161,7 +155,15 @@
     <Compile Include="src\App\IIONPreferences.cs" />
     <Compile Include="src\Content\IonState.cs" />
     <Compile Include="src\IO\RssParser.cs" />
-    <Compile Include="src\Devices\Sorters\GeneralSensorSorter.cs" />
+    <Compile Include="src\UI\IonImage.cs" />
+    <Compile Include="src\Devices\Protocols\RidgadoV5Protocol.cs" />
+    <Compile Include="src\Fluids\PTChart.cs" />
+    <Compile Include="src\Connections\DebugConnection.cs" />
+    <Compile Include="src\Report\DataLogs\SensorDataLogResults.cs" />
+    <Compile Include="src\Report\DataLogs\DataLogMeasurement.cs" />
+    <Compile Include="src\Database\SessionLinkedSensors.cs" />
+    <Compile Include="src\Report\DataLogs\DateIndexLookup.cs" />
+    <Compile Include="src\App\BaseION.cs" />
     <Compile Include="src\Sensors\Properties\TargetSuperheatSubcoolProperty.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
@@ -337,29 +339,14 @@
     <Folder Include="src\Devices\Filters\" />
     <Folder Include="src\Report\DataLogs\" />
     <Folder Include="src\Job\" />
-    <Folder Include="src\Database\Deprecated\" />
     <Folder Include="src\Devices\Sorters\" />
     <Folder Include="src\IO\Exporter\" />
     <Folder Include="src\Content\Parsers\ManifoldParsers\" />
+    <Folder Include="src\UI\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SQLite.Net">
       <HintPath>..\packages\SQLite.Net-PCL.3.1.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.core">
-      <HintPath>..\packages\NUnitTestAdapter.2.0.0\lib\nunit.core.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.core.interfaces">
-      <HintPath>..\packages\NUnitTestAdapter.2.0.0\lib\nunit.core.interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.util">
-      <HintPath>..\packages\NUnitTestAdapter.2.0.0\lib\nunit.util.dll</HintPath>
-    </Reference>
-    <Reference Include="NUnit.VisualStudio.TestAdapter">
-      <HintPath>..\packages\NUnitTestAdapter.2.0.0\lib\NUnit.VisualStudio.TestAdapter.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="MoreLinq.Portable">
       <HintPath>..\packages\MoreLinq.Portable.1.4.0\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\MoreLinq.Portable.dll</HintPath>
@@ -370,8 +357,14 @@
     <Reference Include="ICSharpCode.SharpZipLib.Portable">
       <HintPath>..\packages\SharpZipLib.Portable.0.86.0.0003\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid+Xamarin.iOS10\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
     </Reference>
+    <Reference Include="FlexCel">
+      <HintPath>..\Components\FlexCel-6.8.0\lib\android\FlexCel.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\portable-net45+win8+wp8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Xfinium.Pdf.Pcl">
-      <HintPath>..\..\..\..\..\Downloads\Xfinium\XfiniumPdf540PclProCommercial\Xfinium.Pdf.Pcl.dll</HintPath>
+      <HintPath>..\packages\Xfinium\XfiniumPdf540PclProCommercial\Xfinium.Pdf.Pcl.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
