@@ -289,6 +289,8 @@
           ion.currentWorkbench.AddSensor(sensor);
           Toast(GetString(Resource.String.workbench_added_sensor));
         }
+        
+        Activity.Finish();
       }
     }
 
@@ -302,6 +304,7 @@
         } else {
           ion.currentAnalyzer.AddSensorToSide(Analyzer.ESide.Low, sensor);
           Toast(GetString(Resource.String.analyzer_added_to_low));
+          Activity.Finish();
         }
       } else if (deviceType == EDeviceModel.P800 || deviceType == EDeviceModel.PT800) {
         if (ion.currentAnalyzer.IsSideFull(Analyzer.ESide.High)) {
@@ -311,14 +314,17 @@
         } else {
           ion.currentAnalyzer.AddSensorToSide(Analyzer.ESide.High, sensor);
 					Toast(GetString(Resource.String.analyzer_added_to_high));
+          Activity.Finish();
 				}
       } else {
         if (!ion.currentAnalyzer.IsSideFull(Analyzer.ESide.Low)) {
           ion.currentAnalyzer.AddSensorToSide(Analyzer.ESide.Low, sensor);
 					Toast(GetString(Resource.String.analyzer_added_to_low));
+          Activity.Finish();
 				} else if (!ion.currentAnalyzer.IsSideFull(Analyzer.ESide.High)) {
           ion.currentAnalyzer.AddSensorToSide(Analyzer.ESide.High, sensor);
 					Toast(GetString(Resource.String.analyzer_added_to_high));
+          Activity.Finish();
 				} else {
           Toast(GetString(Resource.String.analyzer_full));
         }

@@ -380,7 +380,7 @@ namespace ION.Droid.Fragments._Analyzer {
         });
       }
 
-      if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
+      if (!(manifold.primarySensor is ManualSensor) && !manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_roc, Resource.String.workbench_roc_abrv), () => {
           manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold, ion.preferences.device.trendInterval));
         });
