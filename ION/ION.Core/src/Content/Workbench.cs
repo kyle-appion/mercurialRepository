@@ -124,10 +124,6 @@
     /// The backing list of manifolds for the workbench.
     /// </summary>
     public readonly List<Manifold> manifolds = new List<Manifold>();
-    /// <summary>
-    /// Will store the original workbench instance for transitioning between remote viewing mode
-    /// </summary>
-    public  Workbench storedWorkbench;
 		/// <summary>
 		/// Whether or not the workbench is editable.
 		/// </summary>

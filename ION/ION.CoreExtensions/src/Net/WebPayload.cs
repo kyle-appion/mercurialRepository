@@ -470,14 +470,14 @@ namespace ION.CoreExtensions.Net {
 	public async Task DownloadLayouts(IION ion, string ID, int loggingInterval, string viewingLayout){
 		//Console.WriteLine("downloading layout");
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
-		var workbench = ion.currentWorkbench.storedWorkbench;
+		var workbench = ion.currentWorkbench;
 		var remoteAnalyzer = ion.currentAnalyzer;
 		var activeManifolds = new List<string>();
 		var activeAnalyzerSensors = new List<string>();
 		var viewingID = ID;
 		
 		try{
-				var remoteDManager = ion.deviceManager as RemoteBaseDeviceManager;
+				var remoteDManager = ion.deviceManager;
 			
 			//Create the data package to send for the post request
 			//Key value pair for post variable check
@@ -526,27 +526,19 @@ namespace ION.CoreExtensions.Net {
 					var deserializedToken = JsonConvert.DeserializeObject<connectedData>(con.ToString());
 					
 					var iserial = SerialNumberExtensions.ParseSerialNumber(deserializedToken.serialNumber);
-					var manualDevice = remoteDManager.CreateDevice(iserial, ION.Core.Devices.Protocols.EProtocolVersion.V4, Convert.ToBoolean(deserializedToken.connected));
+          var manualDevice = remoteDManager[iserial];
+          if (manualDevice == null) {
+            manualDevice = remoteDManager.CreateDevice(iserial, "", Core.Devices.Protocols.EProtocolVersion.V4);
+            remoteDManager.Register(manualDevice);
+          }
 
 					if(remoteDManager.knownDevices.Contains(manualDevice)){
-							var updateConnection = remoteDManager[iserial].connection as RemoteConnection;
-							var gDevice = remoteDManager[iserial] as GaugeDevice;
-							gDevice.SetBatteryRemoteDevice(deserializedToken.battery);
-							for(int i = 0; i < deserializedToken.sensors.Length;i++){
-								gDevice.sensors[i].ForceSetMeasurement(new Scalar(UnitLookup.GetUnit(deserializedToken.sensors[i].unit),deserializedToken.sensors[i].measurement));
-							}
-						if(Convert.ToBoolean(deserializedToken.connected)){      
-							updateConnection.Connect();
-						}  else {
-							updateConnection.Disconnect();
-						}
-					}  else {
-						var newDevice = remoteDManager.CreateDevice(iserial, ION.Core.Devices.Protocols.EProtocolVersion.V4, Convert.ToBoolean(deserializedToken.connected)) as GaugeDevice;
-						newDevice.SetBatteryRemoteDevice(deserializedToken.battery);
+						var updateConnection = remoteDManager[iserial].connection as RemoteConnection;
+						var gDevice = remoteDManager[iserial] as GaugeDevice;
+						gDevice.SetBatteryRemoteDevice(deserializedToken.battery);
 						for(int i = 0; i < deserializedToken.sensors.Length;i++){
-							newDevice.sensors[i].ForceSetMeasurement(new Scalar(UnitLookup.GetUnit(deserializedToken.sensors[i].unit),deserializedToken.sensors[i].measurement));
+							gDevice.sensors[i].ForceSetMeasurement(new Scalar(UnitLookup.GetUnit(deserializedToken.sensors[i].unit),deserializedToken.sensors[i].measurement));
 						}
-						remoteDManager.Register(newDevice);  
 					}
 				}
 				///////SET UP THE ANALYZER LOW AND HIGH SIDE
@@ -743,7 +735,7 @@ namespace ION.CoreExtensions.Net {
 	
 							///manifold has been added by the remote user but doesn't exist for viewing user so create it and add it's sensor properties
 							var newIdevice = remoteDManager[iserial];
-							var manualDevice = remoteDManager.CreateDevice(iserial, ION.Core.Devices.Protocols.EProtocolVersion.V4, newIdevice.isConnected) as GaugeDevice;
+							var manualDevice = remoteDManager[iserial] as GaugeDevice;
 	
 							var manualManifold = new ION.Core.Content.Manifold(manualDevice.sensors[deserializedToken.sensorIndex]);
 							

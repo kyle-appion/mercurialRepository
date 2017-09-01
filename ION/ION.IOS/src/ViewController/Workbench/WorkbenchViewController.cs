@@ -35,7 +35,7 @@ namespace ION.IOS.ViewController.Workbench {
     /// The workbench that we are working with.
     /// </summary>
     /// <value>The workbench.</value>
-    private ION.Core.Content.Workbench workbench { get; set; }
+    private Workbench workbench { get; set; }
     /// <summary>
     /// The source that will provide Viewer views to the table view.
     /// </summary>
@@ -80,8 +80,7 @@ namespace ION.IOS.ViewController.Workbench {
 	    AppState.onIonChanged += OnIonChanged;
 
 			if(remoteMode){
-				workbench = new Workbench(ion);
-				ion.currentWorkbench.storedWorkbench = workbench;
+        workbench = ion.currentWorkbench;
 				tableContent.Bounces = false;
 				
 				remoteBlocker = new UIScrollView(new CGRect(0,45,View.Bounds.Width,.82 * View.Bounds.Height));

@@ -55,7 +55,7 @@ namespace ION.IOS.ViewController.Workbench {
     /// The current ion instance.
     /// </summary>
     /// <value>The ion.</value>
-    private IION ion { get; set; }
+    private IosION ion { get; set; }
     /// <summary>
     /// The workbench that will provide the backend for the cells in the source.
     /// </summary>
@@ -77,7 +77,7 @@ namespace ION.IOS.ViewController.Workbench {
 
     public TargetSHSCView setTargetView;
 
-    public WorkbenchTableSource(WorkbenchViewController vc, IION ion, UITableView tableView) {
+    public WorkbenchTableSource(WorkbenchViewController vc, IosION ion, UITableView tableView) {
       this.vc = vc;
       this.ion = ion;
       this.tableView = tableView;
@@ -294,7 +294,7 @@ namespace ION.IOS.ViewController.Workbench {
           }
         });
 
-        var webIon = ion as LocalIosION;
+        var webIon = ion as IosION;
 
         if(webIon.webServices.downloading){
 					cell.Hidden = true;
