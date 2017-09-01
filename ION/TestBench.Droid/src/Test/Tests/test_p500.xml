@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<test deviceModel="P500" sensorType="pressure">
+	<targetPoints>
+    <targetPoint amount="25" unit="psig"/>
+    <targetPoint amount="50" unit="psig"/>
+    <targetPoint amount="100" unit="psig"/>
+    <targetPoint amount="150" unit="psig"/>
+    <targetPoint amount="200" unit="psig"/>
+    <targetPoint amount="250" unit="psig"/>
+    <targetPoint amount="300" unit="psig"/>
+    <targetPoint amount="400" unit="psig"/>
+    <targetPoint amount="450" unit="psig"/>
+	</targetPoints>
+
+	<gradeScale>
+    <grade errorBand="0.005" value="A" passable="true"/>
+    <grade errorBand="0.008" value="B" passable="true"/>
+    <grade errorBand="0.010" value="C" passable="true"/>
+    <grade errorBand="1.00" value="F" passable="false"/>
+	</gradeScale>
+</test>

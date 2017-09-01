@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+  <declare-styleable name="TypefaceTextView">
+    <attr name="typeface" format="enum">
+      <enum name="unknown" value="-1"/>
+      <enum name="droidsans" value="1"/>
+      <enum name="droidsans_bold" value="2"/>
+		</attr>
+  </declare-styleable>
+</resources>

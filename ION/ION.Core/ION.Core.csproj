@@ -1,0 +1,726 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>ION.Core</RootNamespace>
+    <AssemblyName>ION.Core</AssemblyName>
+    <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+    <NuGetPackageImportStamp>da5b5145</NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Devices\Device.cs" />
+    <Compile Include="src\Devices\DeviceExtensions.cs" />
+    <Compile Include="src\Devices\DeviceManager.cs" />
+    <Compile Include="src\Devices\Protocols\BleV1Protocol.cs" />
+    <Compile Include="src\Devices\Protocols\Protocol.cs" />
+    <Compile Include="src\Devices\Sorters\GeneralSensorSorter.cs" />
+    <Compile Include="src\Fluids\BaseFluidManager.cs" />
+    <Compile Include="src\Fluids\Fluid.cs" />
+    <Compile Include="src\Fluids\IFluidManager.cs" />
+    <Compile Include="src\Fluids\Parser\IFluidParser.cs" />
+    <Compile Include="src\Fluids\Parser\BinaryFluidParser.cs" />
+    <Compile Include="src\IO\IFile.cs" />
+    <Compile Include="src\Devices\SerialNumber.cs" />
+    <Compile Include="src\Sensors\Sensor.cs" />
+    <Compile Include="src\App\ION.cs" />
+    <Compile Include="src\IO\IFileManager.cs" />
+    <Compile Include="src\IO\IFolder.cs" />
+    <Compile Include="src\IO\BinaryReaderExtension.cs" />
+    <Compile Include="src\Content\Manifold.cs" />
+    <Compile Include="src\Content\Workbench.cs" />
+    <Compile Include="src\Database\IONDatabase.cs" />
+    <Compile Include="src\Devices\GaugeDeviceSensor.cs" />
+    <Compile Include="src\Devices\Protocols\BaseBinaryProtocol.cs" />
+    <Compile Include="src\IO\Properties.cs" />
+    <Compile Include="src\IO\IParser.cs" />
+    <Compile Include="src\Content\Parsers\ManifoldParser.cs" />
+    <Compile Include="src\Content\Parsers\WorkbenchParser.cs" />
+    <Compile Include="src\App\IManager.cs" />
+    <Compile Include="src\Sensors\Properties\AbstractSensorProperty.cs" />
+    <Compile Include="src\Sensors\Properties\AlternateUnitSensorProperty.cs" />
+    <Compile Include="src\Sensors\Properties\HoldSensorProperty.cs" />
+    <Compile Include="src\Sensors\Properties\ISensorProperty.cs" />
+    <Compile Include="src\Sensors\Properties\MaxSensorProperty.cs" />
+    <Compile Include="src\Sensors\Properties\MinSensorProperty.cs" />
+    <Compile Include="src\Math\Physics.cs" />
+    <Compile Include="src\Alarms\IAlarm.cs" />
+    <Compile Include="src\Alarms\AbstractAlarm.cs" />
+    <Compile Include="src\Alarms\IAlarmManager.cs" />
+    <Compile Include="src\Alarms\BaseAlarmManager.cs" />
+    <Compile Include="src\Alarms\Alerts\IAlarmAlert.cs" />
+    <Compile Include="src\Alarms\Alerts\IAlarmAlertFactory.cs" />
+    <Compile Include="src\Alarms\Alerts\CompoundAlarmAlert.cs" />
+    <Compile Include="src\Sensors\Alarms\BoundedSensorAlarm.cs" />
+    <Compile Include="src\Sensors\Alarms\HighSensorAlarm.cs" />
+    <Compile Include="src\Sensors\Alarms\LowSensorAlarm.cs" />
+    <Compile Include="src\Sensors\Alarms\SensorAlarm.cs" />
+    <Compile Include="src\Sensors\Serialization\DefaultSensorJsonConverter.cs" />
+    <Compile Include="src\IO\ISerializer.cs" />
+    <Compile Include="src\Devices\GaugeDevice.cs" />
+    <Compile Include="src\Devices\BaseDeviceManager.cs" />
+    <Compile Include="src\Devices\DeviceFactory.cs" />
+    <Compile Include="src\IO\EmbeddedResource.cs" />
+    <Compile Include="src\Sensors\Properties\PTChartSensorProperty.cs" />
+    <Compile Include="src\Sensors\Properties\SuperheatSubcoolSensorProperty.cs" />
+    <Compile Include="src\Content\Properties\AbstractManifoldSensorProperty.cs" />
+    <Compile Include="src\Devices\Certificates\ICalibrationCertificate.cs" />
+    <Compile Include="src\Sensors\Alarms\Serialization\HighSensorAlarmJsonConverter.cs" />
+    <Compile Include="src\Location\ILocationManager.cs" />
+    <Compile Include="src\Sensors\Properties\RateOfChangeSensorProperty.cs" />
+    <Compile Include="src\Sensors\Properties\TimerSensorProperty.cs" />
+    <Compile Include="src\Report\ScreenshotReport.cs" />
+    <Compile Include="src\Pdf\ScreenshotReportPdfExporter.cs" />
+    <Compile Include="src\Sensors\UnitLookup.cs" />
+    <Compile Include="src\Devices\Certificates\ICalibrationCertificateExporter.cs" />
+    <Compile Include="src\Location\ManualLocationManager.cs" />
+    <Compile Include="src\Location\SimpleLocation.cs" />
+    <Compile Include="src\Sensors\ManualSensor.cs" />
+    <Compile Include="src\Content\Analyzer.cs" />
+    <Compile Include="src\Devices\Certificates\GaugeDeviceCalibrationCertificate.cs" />
+    <Compile Include="src\Devices\Certificates\GaugeDeviceCertificatePdfExporter.cs" />
+    <Compile Include="src\Sensors\SensorTypeFilter.cs" />
+    <Compile Include="src\Sensors\Filters\SensorOfTypeFilter.cs" />
+    <Compile Include="src\Devices\Filters\HasSensorOfTypeFilter.cs" />
+    <Compile Include="src\Alarms\Alerts\AbstractAlarmAlert.cs" />
+    <Compile Include="src\Sensors\Properties\SecondarySensorProperty.cs" />
+    <Compile Include="src\Location\Address.cs" />
+    <Compile Include="src\App\IAppDump.cs" />
+    <Compile Include="src\App\AppionConstants.cs" />
+    <Compile Include="src\Devices\Protocols\ClassicProtocol.cs" />
+    <Compile Include="src\Database\ITableRow.cs" />
+    <Compile Include="src\Devices\DeviceDatabaseExtensions.cs" />
+    <Compile Include="src\Devices\SerialNumberExtensions.cs" />
+    <Compile Include="src\Report\DataLogs\DataLogManager.cs" />
+    <Compile Include="src\Report\DataLogs\LoggingSession.cs" />
+    <Compile Include="src\Job\Job.cs" />
+    <Compile Include="src\Database\JobRow.cs" />
+    <Compile Include="src\Database\SensorMeasurementRow.cs" />
+    <Compile Include="src\Database\SessionRow.cs" />
+    <Compile Include="src\Database\DeviceRow.cs" />
+    <Compile Include="src\Job\IJobManager.cs" />
+    <Compile Include="src\Report\DataLogs\DataLogReport.cs" />
+    <Compile Include="src\Report\DataLogs\SensorLog.cs" />
+    <Compile Include="src\Report\DataLogs\DeviceSensorLogs.cs" />
+    <Compile Include="src\Report\DataLogs\SessionResults.cs" />
+    <Compile Include="src\Database\LoggingDeviceRow.cs" />
+    <Compile Include="src\Content\WhatsNew.cs" />
+    <Compile Include="src\Devices\GaugeSerialNumber.cs" />
+    <Compile Include="src\Devices\Sorters\SerialNumberSorter.cs" />
+    <Compile Include="src\Devices\Sorters\DeviceSerialNumberSorter.cs" />
+    <Compile Include="src\Devices\Protocols\RidgadoV4Protocol.cs" />
+    <Compile Include="src\Connections\IConnection.cs" />
+    <Compile Include="src\Database\PreseveAttribute.cs" />
+    <Compile Include="src\IO\Exporter\Csv.cs" />
+    <Compile Include="src\Devices\RemoteBaseDeviceManager.cs" />
+    <Compile Include="src\Content\Parsers\AnalyzerParser.cs" />
+    <Compile Include="src\Content\Parsers\SensorParser.cs" />
+    <Compile Include="src\Connections\RemoteConnection.cs" />
+    <Compile Include="src\Report\DataLogs\DeviceSensorGaugeReportData.cs" />
+    <Compile Include="src\Devices\Protocols\RigadoBroadcastParser.cs" />
+    <Compile Include="src\Fluids\FluidExtensions.cs" />
+    <Compile Include="src\Content\AppVersion.cs" />
+    <Compile Include="src\Devices\RemoteDeviceManager.cs" />
+    <Compile Include="src\Content\Parsers\JsonWorkbench.cs" />
+    <Compile Include="src\Content\Parsers\JsonManifold.cs" />
+    <Compile Include="src\Content\Parsers\JsonSensor.cs" />
+    <Compile Include="src\Content\Parsers\ManifoldParsers\V1.cs" />
+    <Compile Include="src\Content\Parsers\ManifoldParsers\V2.cs" />
+    <Compile Include="src\Connections\IConnectionManager.cs" />
+    <Compile Include="src\Connections\RemoteConnectionManager.cs" />
+    <Compile Include="src\App\IIONPreferences.cs" />
+    <Compile Include="src\Content\IonState.cs" />
+    <Compile Include="src\IO\RssParser.cs" />
+    <Compile Include="src\UI\IonImage.cs" />
+    <Compile Include="src\Devices\Protocols\RidgadoV5Protocol.cs" />
+    <Compile Include="src\Fluids\PTChart.cs" />
+    <Compile Include="src\Connections\DebugConnection.cs" />
+    <Compile Include="src\Report\DataLogs\SensorDataLogResults.cs" />
+    <Compile Include="src\Report\DataLogs\DataLogMeasurement.cs" />
+    <Compile Include="src\Database\SessionLinkedSensors.cs" />
+    <Compile Include="src\Report\DataLogs\DateIndexLookup.cs" />
+    <Compile Include="src\Sensors\Properties\TargetSuperheatSubcoolProperty.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <EmbeddedResource Include="src\Fluids\Embedded\R438A.fluid">
+      <LogicalName>R438A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R429A.fluid">
+      <LogicalName>R429A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R430A.fluid">
+      <LogicalName>R430A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R431A.fluid">
+      <LogicalName>R431A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R432A.fluid">
+      <LogicalName>R432A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R433A.fluid">
+      <LogicalName>R433A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R434A.fluid">
+      <LogicalName>R434A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R702.fluid">
+      <LogicalName>R702.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R759.fluid">
+      <LogicalName>R759.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R1150.fluid">
+      <LogicalName>R1150.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R1270.fluid">
+      <LogicalName>R1270.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\refrigerantsafety.properties">
+      <LogicalName>refrigerantsafety.properties</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R1233ZDE.fluid">
+      <LogicalName>R1233ZDE.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R1234ZEE.fluid">
+      <LogicalName>R1234EE.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R1234ZEZ.fluid">
+      <LogicalName>R1234ZEZ.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R407G.fluid">
+      <LogicalName>R407G.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R417B.fluid">
+      <LogicalName>R417B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R417C.fluid">
+      <LogicalName>R417C.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R419B.fluid">
+      <LogicalName>R419B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R422E.fluid">
+      <LogicalName>R422E.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R433B.fluid">
+      <LogicalName>R433B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R433C.fluid">
+      <LogicalName>R433C.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R439A.fluid">
+      <LogicalName>R439A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R440A.fluid">
+      <LogicalName>R440A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R444B.fluid">
+      <LogicalName>R444B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R445A.fluid">
+      <LogicalName>R445A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R446A.fluid">
+      <LogicalName>R446A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R447A.fluid">
+      <LogicalName>R447A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R448A.fluid">
+      <LogicalName>R448A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R449A.fluid">
+      <LogicalName>R449A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R449B.fluid">
+      <LogicalName>R449B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R450A.fluid">
+      <LogicalName>R450A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R451A.fluid">
+      <LogicalName>R451A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R451B.fluid">
+      <LogicalName>R451B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R452A.fluid">
+      <LogicalName>R452A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R452B.fluid">
+      <LogicalName>R452B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R452C.fluid">
+      <LogicalName>R452C.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R453A.fluid">
+      <LogicalName>R453A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R454A.fluid">
+      <LogicalName>R454A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R454B.fluid">
+      <LogicalName>R454B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R454C.fluid">
+      <LogicalName>R454C.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R455A.fluid">
+      <LogicalName>R455A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R456A.fluid">
+      <LogicalName>R456A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R457A.fluid">
+      <LogicalName>R457A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R511A.fluid">
+      <LogicalName>R511A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R513A.fluid">
+      <LogicalName>R513A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R513B.fluid">
+      <LogicalName>R513B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R515A.fluid">
+      <LogicalName>R515A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R458A.fluid">
+      <LogicalName>R458A.fluid</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\Content\" />
+    <Folder Include="src\Database\" />
+    <Folder Include="src\Content\Parsers\" />
+    <Folder Include="src\Math\" />
+    <Folder Include="src\Alarms\" />
+    <Folder Include="src\Alarms\Alerts\" />
+    <Folder Include="src\Sensors\Alarms\" />
+    <Folder Include="src\Sensors\Serialization\" />
+    <Folder Include="src\Content\Properties\" />
+    <Folder Include="src\Devices\Certificates\" />
+    <Folder Include="src\Sensors\Alarms\Serialization\" />
+    <Folder Include="src\Location\" />
+    <Folder Include="src\Pdf\" />
+    <Folder Include="src\Report\" />
+    <Folder Include="src\Devices\Filters\" />
+    <Folder Include="src\Report\DataLogs\" />
+    <Folder Include="src\Job\" />
+    <Folder Include="src\Devices\Sorters\" />
+    <Folder Include="src\IO\Exporter\" />
+    <Folder Include="src\Content\Parsers\ManifoldParsers\" />
+    <Folder Include="src\UI\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="SQLite.Net">
+      <HintPath>..\packages\SQLite.Net-PCL.3.1.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="MoreLinq.Portable">
+      <HintPath>..\packages\MoreLinq.Portable.1.4.0\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\MoreLinq.Portable.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot">
+      <HintPath>..\packages\OxyPlot.Core.1.0.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1+Xamarin.iOS10\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib.Portable">
+      <HintPath>..\packages\SharpZipLib.Portable.0.86.0.0003\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid+Xamarin.iOS10\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
+    </Reference>
+    <Reference Include="FlexCel">
+      <HintPath>..\Components\FlexCel-6.8.0\lib\android\FlexCel.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\portable-net45+win8+wp8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Xfinium.Pdf.Pcl">
+      <HintPath>..\packages\Xfinium\XfiniumPdf540PclProCommercial\Xfinium.Pdf.Pcl.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="src\Devices\Devices.xml" />
+    <EmbeddedResource Include="src\Devices\Certificates\digital_gauge_cert.pdf">
+      <LogicalName>digital_gauge_cert.pdf</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Database\UpgradeDatabase.sql">
+      <LogicalName>UpgradeDatabase.sql</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R11.fluid">
+      <LogicalName>R11.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R113.fluid">
+      <LogicalName>R113.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R114.fluid">
+      <LogicalName>R114.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R115.fluid">
+      <LogicalName>R115.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R116.fluid">
+      <LogicalName>R116.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R12.fluid">
+      <LogicalName>R12.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R1216.fluid">
+      <LogicalName>R1216.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R123.fluid">
+      <LogicalName>R123.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R1233ZD.fluid">
+      <LogicalName>R1233ZD.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R1234YF.fluid">
+      <LogicalName>R1234YF.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R1234ZE.fluid">
+      <LogicalName>R1234ZE.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R124.fluid">
+      <LogicalName>R124.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R125.fluid">
+      <LogicalName>R125.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R13.fluid">
+      <LogicalName>R13.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R14.fluid">
+      <LogicalName>R14.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R141B.fluid">
+      <LogicalName>R141B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R142B.fluid">
+      <LogicalName>R142B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R143A.fluid">
+      <LogicalName>R143A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R152A.fluid">
+      <LogicalName>R152A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R161.fluid">
+      <LogicalName>R161.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R21.fluid">
+      <LogicalName>R21.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R218.fluid">
+      <LogicalName>R218.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R22.fluid">
+      <LogicalName>R22.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R227EA.fluid">
+      <LogicalName>R227EA.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R23.fluid">
+      <LogicalName>R23.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R236EA.fluid">
+      <LogicalName>R236EA.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R236FA.fluid">
+      <LogicalName>R236FA.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R245CA.fluid">
+      <LogicalName>R245CA.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R245FA.fluid">
+      <LogicalName>R245FA.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R32.fluid">
+      <LogicalName>R32.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R365MFC.fluid">
+      <LogicalName>R365MFC.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R40.fluid">
+      <LogicalName>R40.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R401A.fluid">
+      <LogicalName>R401A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R401B.fluid">
+      <LogicalName>R401B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R401C.fluid">
+      <LogicalName>R401C.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R402A.fluid">
+      <LogicalName>R402A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R402B.fluid">
+      <LogicalName>R402B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R407A.fluid">
+      <LogicalName>R407A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R407B.fluid">
+      <LogicalName>R407B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R407D.fluid">
+      <LogicalName>R407D.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R407E.fluid">
+      <LogicalName>R407E.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R407F.fluid">
+      <LogicalName>R407F.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R408A.fluid">
+      <LogicalName>R408A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R409A.fluid">
+      <LogicalName>R409A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R41.fluid">
+      <LogicalName>R41.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R410B.fluid">
+      <LogicalName>R410B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R413A.fluid">
+      <LogicalName>R413A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R415A.fluid">
+      <LogicalName>R415A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R415B.fluid">
+      <LogicalName>R415B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R419A.fluid">
+      <LogicalName>R419A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R420A.fluid">
+      <LogicalName>R420A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R421A.fluid">
+      <LogicalName>R421A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R421B.fluid">
+      <LogicalName>R421B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R422A.fluid">
+      <LogicalName>R422A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R422B.fluid">
+      <LogicalName>R422B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R422C.fluid">
+      <LogicalName>R422C.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R422D.fluid">
+      <LogicalName>R422D.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R423A.fluid">
+      <LogicalName>R423A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R424A.fluid">
+      <LogicalName>R424A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R425A.fluid">
+      <LogicalName>R425A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R427A.fluid">
+      <LogicalName>R427A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R428A.fluid">
+      <LogicalName>R428A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R436A.fluid">
+      <LogicalName>R436A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R436B.fluid">
+      <LogicalName>R436B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R441A.fluid">
+      <LogicalName>R441A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R443A.fluid">
+      <LogicalName>R443A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R500.fluid">
+      <LogicalName>R500.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R502.fluid">
+      <LogicalName>R502.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R503.fluid">
+      <LogicalName>R503.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R504.fluid">
+      <LogicalName>R504.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R508A.fluid">
+      <LogicalName>R508A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R508B.fluid">
+      <LogicalName>R508B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R509A.fluid">
+      <LogicalName>R509A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R510A.fluid">
+      <LogicalName>R510A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R512A.fluid">
+      <LogicalName>R512A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\RC318.fluid">
+      <LogicalName>RC318.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\RE143A.fluid">
+      <LogicalName>RE143A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\RE245CB2.fluid">
+      <LogicalName>RE245CB2.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\RE245FA2.fluid">
+      <LogicalName>RE245FA2.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\RE347MCC.fluid">
+      <LogicalName>RE347MCC.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\refrigerantcolors.properties">
+      <LogicalName>refrigerantcolors.properties</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R507A.fluid">
+      <LogicalName>R507A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R410A.fluid">
+      <LogicalName>R410A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R407C.fluid">
+      <LogicalName>R407C.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R404A.fluid">
+      <LogicalName>R404A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R290.fluid">
+      <LogicalName>R290.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R600.fluid">
+      <LogicalName>R600.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R170.fluid">
+      <LogicalName>R170.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R403A.fluid">
+      <LogicalName>R403A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R403B.fluid">
+      <LogicalName>R403B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R406A.fluid">
+      <LogicalName>R406A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R409B.fluid">
+      <LogicalName>R409B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R412A.fluid">
+      <LogicalName>R412A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R414A.fluid">
+      <LogicalName>R414A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R414B.fluid">
+      <LogicalName>R414B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R416A.fluid">
+      <LogicalName>R416A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R417A.fluid">
+      <LogicalName>R417A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R426A.fluid">
+      <LogicalName>R426A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R435A.fluid">
+      <LogicalName>R435A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R437A.fluid">
+      <LogicalName>R437A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R442A.fluid">
+      <LogicalName>R442A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R444A.fluid">
+      <LogicalName>R444A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R50.fluid">
+      <LogicalName>R50.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R601.fluid">
+      <LogicalName>R601.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R601a.fluid">
+      <LogicalName>R601a.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R717.fluid">
+      <LogicalName>R717.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R718.fluid">
+      <LogicalName>R718.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R720.fluid">
+      <LogicalName>R720.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R728.fluid">
+      <LogicalName>R728.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R732.fluid">
+      <LogicalName>R732.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R740.fluid">
+      <LogicalName>R740.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R744.fluid">
+      <LogicalName>R744.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R600a.fluid">
+      <LogicalName>R600a.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R134a.fluid">
+      <LogicalName>R134a.fluid</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Appion.Commons\Appion.Commons.csproj">
+      <Project>{4C9DFAAA-2322-4B5A-8DE1-AAC22E8DF716}</Project>
+      <Name>Appion.Commons</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
