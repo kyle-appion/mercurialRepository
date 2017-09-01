@@ -26,7 +26,7 @@ namespace ION.IOS.ViewController.Analyzer
 {
 	public class lowHighSensor
 	{
-    public IosION ion { get; set; }
+    public LocalIosION ion { get; set; }
     public nfloat cellHeight;
     public UILabel maxReading;
     public double max;
@@ -198,7 +198,7 @@ namespace ION.IOS.ViewController.Analyzer
       rocReading.AdjustsFontSizeToFitWidth = true;
       rocImage = new UIImageView(new CGRect(0, 36, 36, 36));
       secondaryReading = new UILabel(new CGRect(0, .5 * cellHeight, tblRect.Width, .5 * cellHeight));
-      ion = AppState.context as IosION;
+      ion = AppState.context as LocalIosION;
       __analyzerviewcontroller = ViewController;
       tUnit = Units.Temperature.FAHRENHEIT;
       pUnit = Units.Pressure.PSIG;

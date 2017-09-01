@@ -205,7 +205,7 @@
         var fn = "SystemInfo.txt";
         var file = new Java.IO.File(dest, fn);
 
-        var dump = new BaseAppDump(AppState.context, new AndroidPlatformInfo(context));
+        var dump = new BaseAppDump(AppState.context);
 
         using (var w = new StreamWriter(new FileStream(file.AbsolutePath, FileMode.OpenOrCreate))) {
           w.Write(dump.ToString());

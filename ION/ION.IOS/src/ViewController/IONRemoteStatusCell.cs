@@ -5,6 +5,8 @@ using Foundation;
 using UIKit;
 using ObjCRuntime;
 
+using Appion.Commons.Util;
+
 using ION.IOS.Util;
 using ION.IOS.App;
 using ION.Core.App;
@@ -13,7 +15,7 @@ namespace ION.IOS {
 	public partial class IONRemoteStatusCell : UITableViewCell {
 		public static readonly NSString Key = new NSString("IONRemoteStatusCell");
 		public static readonly UINib Nib;
-    public IosION ion;
+    public LocalIosION ion;
     
 		static IONRemoteStatusCell() {
 			Nib = UINib.FromName("IONRemoteStatusCell", NSBundle.MainBundle);
@@ -32,26 +34,35 @@ namespace ION.IOS {
 		}
 		
 		public void UpdateTo(string title, UIImage icon, UIColor textColor) {
-      ion = AppState.context as IosION;
-      ion.remotePlatformChanged += updateLogging;
+      var ion = AppState.context as RemoteIosION;
+      if ((ion != null).Assert(GetType().Name + " was told to update with with a local ion instance")) {
+        return;
+      }
+      
+      var pi = ion.remotePlatformInfo;
+      
+      ion.onRemoteUpdateEvent += updateLogging;
       
       this.BackgroundColor = UIColor.Clear;
       this.Layer.BorderWidth = 2f;
 			this.Layer.BorderColor = UIColor.FromRGB(255,30,30).CGColor;
 
-      if(ion.remoteDevice != null && ion.remoteDevice.loggingStatus){
-        labelTitle.Text = "Data Logging: Active";
-      } else {
-        labelTitle.Text = "Data Logging: Inactive";
-      }      
+      updateLogging();      
 
       if(textColor != null){
       	labelTitle.TextColor = textColor;
       }   
     }  
 
-    public void updateLogging(IPlatformInfo remoteInfo){
-      if(ion.remoteDevice != null && ion.remoteDevice.loggingStatus){
+    public void updateLogging() {
+      var ion = AppState.context as RemoteIosION;
+      if ((ion != null).Assert(GetType().Name + " was told to update with with a local ion instance")) {
+        return;
+      }
+      
+      var pi = ion.remotePlatformInfo;
+      
+      if(pi != null && pi.loggingStatus){
         labelTitle.Text = "Data Logging: Active";
       } else {
         labelTitle.Text = "Data Logging: Inactive";

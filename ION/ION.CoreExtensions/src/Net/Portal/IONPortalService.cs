@@ -173,7 +173,7 @@
       get {
         return __followerConnections.AsReadOnly();
       }
-      set {
+      private set {
         __followerConnections.Clear();
         __followerConnections.AddRange(value);
       }
@@ -187,7 +187,7 @@
       get {
         return __onlineConnections.AsReadOnly();
       }
-      set {
+      private set {
         __onlineConnections.Clear();
         __onlineConnections.AddRange(value);
       }
@@ -796,7 +796,7 @@
           new KeyValuePair<string, string>(JSON_CREATE_LAYOUT, TRUE),
           new KeyValuePair<string, string>(JSON_USER_ID, loginId),
           new KeyValuePair<string, string>(JSON_DEVICE_ID, ion.preferences.appId.ToString()),
-          new KeyValuePair<string, string>(JSON_DEVICE_NAME, ion.GetPlatformInformation().GetDeviceName()),
+          new KeyValuePair<string, string>(JSON_DEVICE_NAME, ion.GetPlatformInformation().deviceName),
           new KeyValuePair<string, string>(JSON_STATUS, JsonConvert.SerializeObject(new RemoteStatus(ion))),
         });
 

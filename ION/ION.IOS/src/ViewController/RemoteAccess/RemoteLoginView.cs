@@ -5,6 +5,8 @@ using CoreGraphics;
 using UIKit;
 
 using ION.IOS.ViewController.JobManager;
+using ION.Core.App;
+using ION.IOS.App;
 using ION.Core.Net;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
@@ -23,10 +25,8 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public UIButton recoveryButton;
 		public UIActivityIndicatorView loadingLogin;
 		public bool checkMark = false;	
-		public WebPayload webServices;
 		
-		public RemoteLoginView(UIView parentView, WebPayload webServices) {
-			this.webServices = webServices;
+		public RemoteLoginView(UIView parentView) {
 			loginView = new UIView(new CGRect(0,0, parentView.Bounds.Width, parentView.Bounds.Height));
 			loginView.BackgroundColor = UIColor.White;
 			loginView.AddGestureRecognizer(new UITapGestureRecognizer(() => {
@@ -145,8 +145,9 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public async void handleResetResponse(string email){
 			var window = UIApplication.SharedApplication.KeyWindow;
   		var rootVC = window.RootViewController as IONPrimaryScreenController;
-		
-			var feedback = await webServices.resetPassword(email);
+
+			var ion = AppState.context as IosION;
+			var feedback = await ion.webServices.resetPassword(email);
 			
 			if(feedback != null){
 				var textResponse = await feedback.Content.ReadAsStringAsync();

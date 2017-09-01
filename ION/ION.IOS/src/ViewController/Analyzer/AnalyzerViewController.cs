@@ -42,11 +42,9 @@ namespace ION.IOS.ViewController.Analyzer {
     public static UIImageView expansion;
     public UILabel remoteTitle;
     public UIView blockerView;
-    public RemoteControls remoteControl;
     public UITapGestureRecognizer outsideTap;
 
     private IosION ion;
-    public WebPayload webServices;
 
     /// <summary>
     /// The analyzer that we are working with.
@@ -82,9 +80,8 @@ namespace ION.IOS.ViewController.Analyzer {
       mentryView = new ManualView(viewAnalyzerContainer);
       
       InitNavigationBar("ic_nav_analyzer", false); 
-      ion = AppState.context as IosION;      
+      ion = AppState.context as LocalIosION;      
 
-      webServices = ion.webServices;
       AutomaticallyAdjustsScrollViewInsets = false;
 
       backAction = () => {
@@ -149,36 +146,12 @@ namespace ION.IOS.ViewController.Analyzer {
 				blockerView.BackgroundColor = UIColor.Clear;
 				blockerView.Hidden = true;
 
-				var remoteButton = new UIButton(new CGRect(0,0,65,35));
-				remoteButton.SetTitle(Util.Strings.Analyzer.OPTIONS, UIControlState.Normal);
-				remoteButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
-				remoteButton.TouchUpInside += (sender, e) =>{     
-					if(remoteControl.controlView.Hidden){
-						remoteControl.controlView.Hidden = false;
-					} else {
-						remoteControl.controlView.Hidden = true;
-					}
-				};
-				
-				UIBarButtonItem button = new UIBarButtonItem(remoteButton);
-				this.NavigationItem.RightBarButtonItem = button;
-				this.NavigationController.NavigationBar.BarTintColor = UIColor.Red;
-
-	   		remoteControl = new RemoteControls(0,viewAnalyzerContainer);
-	   		remoteControl.controlView.ExclusiveTouch = true;
-	   		remoteControl.disconnectButton.TouchUpInside += (sender, e) => {
-	   			blockerView.Hidden = true;
-					disconnectRemoteMode();
-				};
-						
-	   		viewAnalyzerContainer.AddSubview(remoteControl.controlView);
 	      AnalyserUtilities.confirmLayout(analyzerSensors,viewAnalyzerContainer);
 
 				refreshSensorLayout();
       	//webServices.paused += pauseRemote;
       	viewAnalyzerContainer.AddSubview(blockerView);
       	viewAnalyzerContainer.BringSubviewToFront(blockerView);
-      	viewAnalyzerContainer.BringSubviewToFront(remoteControl.controlView);
       } else {
 				if(analyzer.sensorList == null){
 		      analyzer.sensorList = new List<Sensor>();
@@ -208,7 +181,7 @@ namespace ION.IOS.ViewController.Analyzer {
 	      NavigationItem.RightBarButtonItems = new UIBarButtonItem[]{button2,button};
 				layoutAnalyzer();
 			}
-      ion.onIonStateChanged += updateLogging;
+//      ion.onIonStateChanged += updateLogging;
 			viewAnalyzerContainer.AddSubview(blockerView);
     }
 
@@ -220,13 +193,13 @@ namespace ION.IOS.ViewController.Analyzer {
     /// <param name="e">E.</param>
     public async void recordDevices(){
       var recordingMessage = "";
-      if(webServices.uploading){
+      if(ion.webServices.uploading){
         if (ion.dataLogManager.isRecording) {
-          await webServices.SetRemoteDataLog(KeychainAccess.ValueForKey("userID"),KeychainAccess.ValueForKey("layoutid"),"0");
+          await ion.webServices.SetRemoteDataLog(KeychainAccess.ValueForKey("userID"),KeychainAccess.ValueForKey("layoutid"),"0");
           ion.dataLogManager.StopRecording();
           recordingMessage = Util.Strings.Analyzer.RECORDINGSTOPPED;
         } else {
-          await webServices.SetRemoteDataLog(KeychainAccess.ValueForKey("userID"),KeychainAccess.ValueForKey("layoutid"),"1");
+          await ion.webServices.SetRemoteDataLog(KeychainAccess.ValueForKey("userID"),KeychainAccess.ValueForKey("layoutid"),"1");
           ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
           recordingMessage = Util.Strings.Analyzer.RECORDINGSTARTED;
         }
@@ -1414,7 +1387,7 @@ namespace ION.IOS.ViewController.Analyzer {
 		public async void refreshSensorLayout(){
 			await Task.Delay(TimeSpan.FromMilliseconds(1000));
 			
-			while(webServices.downloading){
+			while(ion.webServices.downloading){
 					AnalyserUtilities.confirmLayout(analyzerSensors,viewAnalyzerContainer);
 					remoteViewOrder();				
 					layoutAnalyzer();
@@ -1561,28 +1534,6 @@ namespace ION.IOS.ViewController.Analyzer {
 			}			
 		}
 		
-		//public void pauseRemote(bool paused){
-		//	if(paused == false){
-		//		refreshSensorLayout();
-		//	}
-		//}
-	
-		public async void disconnectRemoteMode(){
-      var window = UIApplication.SharedApplication.KeyWindow;
-      var rootVC = window.RootViewController as IONPrimaryScreenController;
-      
-		 	remoteControl.controlView.Hidden = true;
-
-		 	webServices.downloading = false;
-		 	webServices.remoteViewing = false;
-		 	webServices.paused = null;
-		 	
-			NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
-
-			await ion.setOriginalDeviceManager();
-			rootVC.setMainMenu();
-		}
-		
 		public void confirmSubviews(string section = "high"){
       bool subviewsChanged = false;
 			//Console.WriteLine(section + " section");
@@ -1687,20 +1638,12 @@ namespace ION.IOS.ViewController.Analyzer {
   	      }
         layoutAnalyzer();
 	    } else {
-				if(webServices.downloading){
+		    var remote = ion as RemoteIosION;
+				if(ion.webServices.downloading){
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEVIEW;
 				} else {
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEEDIT;
 				}
-				if(ion.remoteDevice != null && remoteControl != null && remoteControl.remoteLoggingButton != null){
-					if(ion.remoteDevice.loggingStatus){
-						NSUserDefaults.StandardUserDefaults.SetString("1","remoteLogging");
-						remoteControl.remoteLoggingButton.SetTitle("Stop Logging", UIControlState.Normal);
-					} else {
-						NSUserDefaults.StandardUserDefaults.SetString("","remoteLogging");					
-						remoteControl.remoteLoggingButton.SetTitle("Start Logging", UIControlState.Normal);
-					}
-				}					
 			}
     }
 	}

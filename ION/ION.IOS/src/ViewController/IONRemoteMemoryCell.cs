@@ -1,11 +1,11 @@
 ﻿using System;
 
-using CoreGraphics;
 using Foundation;
 using UIKit;
 using ObjCRuntime;
 
-using ION.IOS.Util;
+using Appion.Commons.Util;
+
 using ION.IOS.App;
 using ION.Core.App;
 
@@ -13,7 +13,6 @@ namespace ION.IOS {
   public partial class IONRemoteMemoryCell : UITableViewCell {
     public static readonly NSString Key = new NSString("IONRemoteMemoryCell");
     public static readonly UINib Nib;
-    public IosION ion;
     
     static IONRemoteMemoryCell() {
       Nib = UINib.FromName("IONRemoteMemoryCell", NSBundle.MainBundle);
@@ -32,27 +31,33 @@ namespace ION.IOS {
     }
     
     public void UpdateTo(string title, UIImage icon, UIColor textColor) {
-      ion = AppState.context as IosION;
-      ion.remotePlatformChanged += updateMemory;
+      var ion = AppState.context as RemoteIosION;
+      if ((ion != null).Assert(GetType().Name + " was told to update with with a local ion instance")) {
+        return;
+      }
+      
+      // todo ahodder@appioninc.com: this may cause a memory leak as the view is still referenced by the ion instance
+      ion.onRemoteUpdateEvent += updateMemory;
             
       this.BackgroundColor = UIColor.Clear;
       this.Layer.BorderWidth = 2f;
       this.Layer.BorderColor = UIColor.FromRGB(255,30,30).CGColor;
       
-      if(ion.remoteDevice != null){
-        labelTitle.Text = (((ion.remoteDevice.freeMemory / 1024) / 1024) / 1000) + " GB ";
-      } else {
-        labelTitle.Text = "N/A";
-      }
+      updateMemory();
       
       if(textColor != null){
         labelTitle.TextColor = textColor;
       }
     }
 
-    public void updateMemory(IPlatformInfo remoteInfo){
-      if(ion.remoteDevice != null){
-        labelTitle.Text = (((ion.remoteDevice.freeMemory / 1024) / 1024) / 1000) + " GB ";
+    public void updateMemory() {
+      var ion = AppState.context as RemoteIosION;
+      if ((ion != null).Assert(GetType().Name + " was told to update with with a local ion instance")) {
+        return;
+      }
+    
+      if(ion.remotePlatformInfo != null){
+        labelTitle.Text = (((ion.remotePlatformInfo.freeMemory / 1024) / 1024) / 1000) + " GB ";
       } else {
         labelTitle.Text = "N/A";
       }

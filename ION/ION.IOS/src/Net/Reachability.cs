@@ -1,6 +1,5 @@
 ﻿// This sample code was stolen from: https://github.com/xamarin/ios-samples/blob/master/ReachabilitySample/reachability.cs
-
-namespace ION.Net {
+namespace ION.IOS.Net {
 
   using System;
   using System.Net;

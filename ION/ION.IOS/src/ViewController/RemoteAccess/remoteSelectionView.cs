@@ -29,13 +29,11 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public List<accessData> onlineUsers;
 		public ObservableCollection<accessData> selectedUser;
 		public IosION ion;
-		public WebPayload webServices;
 		
 		public remoteSelectionView(UIView parentView) {
 			ion = AppState.context as IosION; 
 
-      this.webServices = ion.webServices;
-      webServices.timedOut += timeOutAlert;
+      ion.webServices.timedOut += timeOutAlert;
 			// Perform any additional setup after loading the view, typically from a nib.
 			selectedUser = new ObservableCollection<accessData>();
 			selectedUser.CollectionChanged += checkForSelected;
@@ -78,7 +76,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			remoteMenuButton.TouchUpInside += async (sender, e) => {
 				remoteMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
 				var checkSource = onlineTable.Source as RemoteAccessTableSource;
-				if(webServices.uploading && checkSource.selectedUser[0].deviceID == UIDevice.CurrentDevice.IdentifierForVendor.ToString()){
+				if(ion.webServices.uploading && checkSource.selectedUser[0].deviceID == UIDevice.CurrentDevice.IdentifierForVendor.ToString()){
 					checkSource.selectedUser.Clear();
 					var alert = UIAlertController.Create ("Unable to View", "You cannot view your current layout while uploading from the same device", UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
@@ -97,16 +95,16 @@ namespace ION.IOS.ViewController.RemoteAccess {
 						remoteMenuButton.Hidden = true;
 						fullMenuButton.Hidden = false;
 						onlineTable.UserInteractionEnabled = false;
-						webServices.remoteViewing = true;
+						ion.webServices.remoteViewing = true;
 						
 						///CHANGE THE APP MENU AND DEVICE MANAGER TO REFLECT REMOTE VIEWING OPTIONS
-						await ion.setRemoteDeviceManager();
+						AppState.context = new RemoteIosION(ion.webServices);
 	        	rootVC.setRemoteMenu();
-						webServices.downloading = true;
+						ion.webServices.downloading = true;
 						///START THE LAYOUT DOWNLOADING PROCESS
 						startDownloading();
 						onlineTable.ReloadData();
-						webServices.timedOut += timeOutAlert;					
+						ion.webServices.timedOut += timeOutAlert;					
 	        } else {
 						var alert = UIAlertController.Create ("Unable to View", "User is not available. Please try again.", UIAlertControllerStyle.Alert);
 						alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
@@ -135,9 +133,9 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				fullMenuButton.Hidden = true;
 				remoteMenuButton.Hidden = false;
 				onlineTable.UserInteractionEnabled = true;
-				webServices.remoteViewing = false;
-				webServices.downloading = false;
-				webServices.paused = null;
+				ion.webServices.remoteViewing = false;
+				ion.webServices.downloading = false;
+				ion.webServices.paused = null;
 				await Task.Delay(TimeSpan.FromMilliseconds(1));
 				
 				NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
@@ -146,9 +144,9 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				onlineTable.ReloadData();						
 				
 				///SET THE APP MENU AND DEVICE MANAGER BACK TO THE LOCAL DEVICE'S SETTINGS
-				await ion.setOriginalDeviceManager();
+				AppState.context = new LocalIosION(ion.webServices);
 				rootVC.setMainMenu();
-				webServices.timedOut -= timeOutAlert;
+				ion.webServices.timedOut -= timeOutAlert;
 			};
 			
 			loadingUsers = new UIActivityIndicatorView(new CGRect(0, 0, parentView.Bounds.Width, parentView.Bounds.Height));
@@ -171,7 +169,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			onlineUsers = new List<accessData>();
 			var ID = KeychainAccess.ValueForKey("userID");
 
-			var feedback = await webServices.GetAccessList(ID);
+			var feedback = await ion.webServices.GetAccessList(ID);
 			
 			var window = UIApplication.SharedApplication.KeyWindow;
   		var rootVC = window.RootViewController as IONPrimaryScreenController;
@@ -205,7 +203,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
 			}
 			
-			onlineTable.Source = new RemoteAccessTableSource(onlineUsers, selectedUser, webServices.webClient);
+			onlineTable.Source = new RemoteAccessTableSource(onlineUsers, selectedUser, ion.webServices.webClient);
 			onlineTable.ReloadData();
 			
 			loadingUsers.StopAnimating();
@@ -223,22 +221,22 @@ namespace ION.IOS.ViewController.RemoteAccess {
     }
     
 		public async void timeOutAlert(string offlineMessage){
-			if(webServices.downloading == false){
+			if(ion.webServices.downloading == false){
 				return;
 			}		
-			webServices.timedOut -= timeOutAlert;
+			ion.webServices.timedOut -= timeOutAlert;
 
       var window = UIApplication.SharedApplication.KeyWindow;
       var rootVC = window.RootViewController as IONPrimaryScreenController;
       
-		 	webServices.downloading = false;
-		 	webServices.remoteViewing = false;
-		 	webServices.paused = null;
+		 	ion.webServices.downloading = false;
+		 	ion.webServices.remoteViewing = false;
+		 	ion.webServices.paused = null;
 		 	
 			NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
 			NSUserDefaults.StandardUserDefaults.SetString("","viewedLayout");
 
-			await ion.setOriginalDeviceManager();
+			AppState.context = new LocalIosION(ion.webServices);
 			rootVC.setMainMenu();   
 			
 			var alert = UIAlertController.Create ("Viewing User", offlineMessage, UIAlertControllerStyle.Alert);
@@ -253,9 +251,9 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				
 			var loggedUser = KeychainAccess.ValueForKey("userID");
 			var loggingInterval = Convert.ToInt32(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval"));
-			webServices.paused += pauseRemote;
-			while(webServices.downloading){
-				await webServices.DownloadLayouts(viewingID, loggingInterval, viewingLayout);
+			ion.webServices.paused += pauseRemote;
+			while(ion.webServices.downloading){
+				await ion.webServices.DownloadLayouts(ion, viewingID, loggingInterval, viewingLayout);
 			}
 			//webServices.StartLayoutDownload(viewingID,loggedUser,loggingInterval,viewingLayout);
 		}
@@ -269,7 +267,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				var loggedUser = KeychainAccess.ValueForKey("userID");
 				var loggingInterval = Convert.ToInt32(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval"));
 				
-				webServices.StartLayoutDownload(viewingID,loggedUser,loggingInterval,viewingLayout);
+				ion.webServices.StartLayoutDownload(ion, viewingID,loggedUser,loggingInterval,viewingLayout);
 			}
 		}
 	}

@@ -18,7 +18,6 @@ namespace ION.IOS.ViewController.AccessRequest {
 		public AccessSettings settingsManager;
 		public UILabel loggedOutLabel;
 		public UIBarButtonItem settingsButton;
-		public WebPayload webServices; 
 		public IosION ion;
 		public DateTime startedViewing;
 		
@@ -31,8 +30,6 @@ namespace ION.IOS.ViewController.AccessRequest {
       };
 			ion = AppState.context as IosION;
       NavigationItem.Title = Strings.AccessManager.SELF.FromResources();
-      
-      webServices = ion.webServices;
       
       var button  = new UIButton(new CGRect(0, 0, 40, 40));
 			button.SetImage(UIImage.FromBundle("ic_settings"),UIControlState.Normal);

@@ -32,8 +32,22 @@
     int batteryPercentage { get; set; }
     long freeMemory { get; set; }
     bool loggingStatus { get; set; }
-
-    string GetDeviceName();
+  }
+  
+  /// <summary>
+  /// A simple implementation of PlatformInfo that allows for manual modification.
+  /// </summary>
+  public class BasePlatformInfo : IPlatformInfo {
+    public string manufacturer { get; set; }
+    public string deviceName { get; set; }
+    public string model { get; set; }
+    public string version { get; set; }
+    public string api { get; set; }
+    public string chipset { get; set; }
+    public bool wifiConnected { get; set; }
+    public int batteryPercentage { get; set; }
+    public long freeMemory { get; set; }
+    public bool loggingStatus { get; set; }
   }
 
   /// <summary>
@@ -44,10 +58,10 @@
     public IDeviceInfo deviceInfo { get; set; }
     public IPlatformInfo platformInfo { get; set; }
 
-    public BaseAppDump(IION ion, IPlatformInfo pi) {
+    public BaseAppDump(IION ion) {
       appVersion = ion.version;
       deviceInfo = new BaseDeviceInfo(ion);
-      platformInfo = pi;
+      platformInfo = ion.GetPlatformInformation();
     }
 
 		public override string ToString() {

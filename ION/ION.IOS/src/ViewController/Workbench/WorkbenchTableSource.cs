@@ -294,7 +294,7 @@ namespace ION.IOS.ViewController.Workbench {
           }
         });
 
-        var webIon = ion as IosION;
+        var webIon = ion as LocalIosION;
 
         if(webIon.webServices.downloading){
 					cell.Hidden = true;

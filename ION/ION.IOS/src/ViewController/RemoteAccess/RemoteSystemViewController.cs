@@ -22,7 +22,6 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public IosION ion;
 		public UIBarButtonItem settingsButton;
 		public UIBarButtonItem register;
-		WebPayload webServices;
 		WebClient wc;
 		public RemoteSystemViewController(IntPtr handle) : base(handle) {
 		}
@@ -40,8 +39,6 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			wc = new WebClient(); 
 			wc.Proxy = null;
 
-      webServices = ion.webServices;
-            
       var button  = new UIButton(new CGRect(0, 0, 40, 40));
 			button.SetImage(UIImage.FromBundle("ic_settings"),UIControlState.Normal);
 			button.BackgroundColor = UIColor.Clear;
@@ -72,7 +69,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			
       if(string.IsNullOrEmpty(checkLogin) || checkLogin == "no"){
 				
-      	loginView = new RemoteLoginView(remoteHolderView, webServices);
+      	loginView = new RemoteLoginView(remoteHolderView);
 	      loginView.submitButton.TouchUpInside += credentialsCheck;
 	      
 				remoteHolderView.AddSubview(loginView.loginView);
@@ -86,7 +83,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				portalControl.remoteButton.TouchUpInside += showRemoteViewing;
 				remoteHolderView.AddSubview(portalControl.portalView);		
 				
-				profileView = new RemoteUserProfileView(remoteHolderView,KeychainAccess.ValueForKey("userDisplay"), KeychainAccess.ValueForKey("userEmail"),webServices);
+				profileView = new RemoteUserProfileView(remoteHolderView,KeychainAccess.ValueForKey("userDisplay"), KeychainAccess.ValueForKey("userEmail"));
 				remoteHolderView.AddSubview(profileView.profileView);
 				this.NavigationItem.RightBarButtonItem = settingsButton;
 				profileView.logoutButton.TouchUpInside += LogOutUser;
@@ -101,14 +98,14 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public void LogOutUser(object sender, EventArgs e){
 			var userID = KeychainAccess.ValueForKey("userID");
 		
-	  	webServices.updateOnlineStatus("0", userID);
+	  	ion.webServices.updateOnlineStatus("0", userID);
 			KeychainAccess.SetValueForKey("no", "stayLogged");
 			KeychainAccess.SetValueForKey(null,"userID");
 			KeychainAccess.SetValueForKey(null,"userName");
 			KeychainAccess.SetValueForKey(null,"userPword");
 			//Console.WriteLine("Completed logout");
 			
-			loginView = new RemoteLoginView(remoteHolderView, webServices);
+			loginView = new RemoteLoginView(remoteHolderView);
       loginView.submitButton.TouchUpInside += credentialsCheck;
 			remoteHolderView.AddSubview(loginView.loginView);
 			portalControl.portalView.RemoveFromSuperview();
@@ -180,7 +177,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			var window = UIApplication.SharedApplication.KeyWindow;
     	var rootVC = window.RootViewController as IONPrimaryScreenController;
     		
-			var feedback = await webServices.userLogin(loginView.userName.Text,loginView.password.Text);
+			var feedback = await ion.webServices.userLogin(loginView.userName.Text,loginView.password.Text);
 			if(feedback != null){
 				var textResponse = await feedback.Content.ReadAsStringAsync();
 				Console.WriteLine(textResponse);
@@ -215,7 +212,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 					portalControl.remoteButton.TouchUpInside += showRemoteViewing;
 				
 					remoteHolderView.AddSubview(portalControl.portalView);
-					profileView = new RemoteUserProfileView(remoteHolderView, KeychainAccess.ValueForKey("userDisplay"), KeychainAccess.ValueForKey("userEmail"),webServices);
+					profileView = new RemoteUserProfileView(remoteHolderView, KeychainAccess.ValueForKey("userDisplay"), KeychainAccess.ValueForKey("userEmail"));
 					profileView.logoutButton.TouchUpInside += LogOutUser;
 					
 					remoteHolderView.AddSubview(profileView.profileView);
@@ -320,7 +317,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			registerView.regView.BringSubviewToFront(registerView.loadingRegistration);
 			registerView.loadingRegistration.StartAnimating();
 			
-			var registered = await webServices.RegisterUser(registerView.password.Text,registerView.email.Text);
+			var registered = await ion.webServices.RegisterUser(registerView.password.Text,registerView.email.Text);
 			registerView.loadingRegistration.StopAnimating();
 			
 			if(registered != null){

@@ -17,7 +17,7 @@ using System.Collections.ObjectModel;
 using Appion.Commons.Measure;
 using System.Text.RegularExpressions;
 
-namespace ION.Core.Net {
+namespace ION.CoreExtensions.Net {
 	public sealed class PreserveAttribute : System.Attribute 
 	{
 	    public bool AllMembers;
@@ -26,7 +26,6 @@ namespace ION.Core.Net {
 	public delegate void webOfflineEvent(string offlineMessage);
 	public delegate void webPauseEvent(bool paused);
 	public class WebPayload {
-		public IION ion;
 		public WebClient webClient;
 		HttpClient client;
 		public bool remoteViewing = false;   
@@ -69,7 +68,6 @@ namespace ION.Core.Net {
 		public sessionStateInfo stateInfo; 
 		
 		public WebPayload() {
-			ion = AppState.context;
 			webClient = new WebClient();
 			webClient.Proxy = null;
 			client = new HttpClient();
@@ -79,7 +77,7 @@ namespace ION.Core.Net {
 		/// Packages the session information for any session chosen by the user to be uploaded
 		/// </summary>
 		/// <param name="sessionList">Session list.</param>
-		public async Task<HttpResponseMessage> getSession(ObservableCollection<int> sessionList, string ID){
+		public async Task<HttpResponseMessage> getSession(IION ion, ObservableCollection<int> sessionList, string ID){
 			
 		  var paramList = new List<string>();
 
@@ -232,7 +230,7 @@ namespace ION.Core.Net {
 			}
 	}
 	
-	public async Task<HttpResponseMessage> createSystemLayout(string ID, string uniqueID, string deviceName){
+	public async Task<HttpResponseMessage> createSystemLayout(IION ion, string ID, string uniqueID, string deviceName){
 		Console.WriteLine("Going to grab a layout id or create a new one for the unique device id " + uniqueID + " belonging to account " + ID + " and named " + deviceName);
 			try{
       ////UPDATE THE DEVICE INFORMATION BEFORE SENDING UP REMOTE STATE INFORMATION
@@ -267,13 +265,13 @@ namespace ION.Core.Net {
 			return null;
 		}		
 	}
-	
+  
 	/// <summary>
 	/// Uploads the devices a user has connected and their relative layout for
 	/// the workbench and analyzer
 	/// </summary>
 	/// <returns>The system layout.</returns>
-	public async Task<HttpResponseMessage> uploadSystemLayout(string ID, string layoutID){
+	public async Task<HttpResponseMessage> uploadSystemLayout(IION ion, string ID, string layoutID){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		var uploadAnalyzer = ion.currentAnalyzer;
 		var uploadWorkbench = ion.currentWorkbench;
@@ -463,12 +461,13 @@ namespace ION.Core.Net {
 			return null;
 		}
 	}
+
 	/// <summary>
 	/// Pulls the layout for a selected user and is parsed
 	/// to update the workbench,analyzer, and device manager
 	/// </summary>
 	/// <returns>The layouts.</returns>
-	public async Task DownloadLayouts(string ID, int loggingInterval, string viewingLayout){
+	public async Task DownloadLayouts(IION ion, string ID, int loggingInterval, string viewingLayout){
 		//Console.WriteLine("downloading layout");
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		var workbench = ion.currentWorkbench.storedWorkbench;
@@ -730,7 +729,7 @@ namespace ION.Core.Net {
 							}				
 							////////
 							/// add any sensor properties that a remote user has added only if they don't exist already
-							SetupNewManifoldProperties(updateManifold,deserializedToken);			
+							SetupNewManifoldProperties(ion, updateManifold,deserializedToken);			
 	
 							///Remove any subviews a remote user has removed
 							foreach(var sp in updateManifold.sensorProperties.ToArray()){
@@ -753,7 +752,7 @@ namespace ION.Core.Net {
 							var manifoldFluid = await ion.fluidManager.LoadFluidAsync(deserializedToken.fluidname);
               manualManifold.ptChart = new PTChart(manifoldFluid, ptstate);
 							workbench.Add(manualManifold);
-							SetupNewManifoldProperties(manualManifold,deserializedToken);
+							SetupNewManifoldProperties(ion, manualManifold,deserializedToken);
 						}					
 					}
 					///REMOVE ANY WORKBENCH MANIFOLDS THAT ARE NOT IN THE REMOTE LIST
@@ -778,7 +777,7 @@ namespace ION.Core.Net {
 		//Console.WriteLine("Finished layout download");
 	}
 
-	public async void SetupNewManifoldProperties(Manifold manualManifold, workbenchSetup deserializedToken){
+	public async void SetupNewManifoldProperties(IION ion, Manifold manualManifold, workbenchSetup deserializedToken){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		foreach(var sub in deserializedToken.subviews){
 			switch(sub){
@@ -1128,13 +1127,13 @@ namespace ION.Core.Net {
 	/// <summary>
 	/// Kicks off the download process for remote viewing and manages it based on if a user quits or not
 	/// </summary>
-	public async void StartLayoutDownload(string viewingID, string userID, int loggingInterval, string viewingLayout){
+	public async void StartLayoutDownload(IION ion, string viewingID, string userID, int loggingInterval, string viewingLayout){
 		//startedViewing = DateTime.Now;
 		while(downloading){
 		  //var timeDifference = DateTime.Now.Subtract(startedViewing).Minutes;
 
 			if(!string.IsNullOrEmpty(userID)){
-				await DownloadLayouts(viewingID,loggingInterval,viewingLayout);
+				await DownloadLayouts(ion, viewingID,loggingInterval,viewingLayout);
 				await Task.Delay(TimeSpan.FromSeconds(1));
 			}  else {
 				downloading = false;

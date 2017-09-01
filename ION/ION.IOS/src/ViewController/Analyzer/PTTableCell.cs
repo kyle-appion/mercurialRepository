@@ -14,11 +14,11 @@ namespace ION.IOS.ViewController.Analyzer {
     private UILabel cellHeader;
     private UILabel fluidType;
     private UILabel tempReading;
-    public IosION ion;
+    public LocalIosION ion;
 
 
     public PTTableCell(IntPtr handle) {
-    	ion = AppState.context as IosION;
+    	ion = AppState.context as LocalIosION;
     }
 
     public void makeEvents(lowHighSensor lhSensor, CGRect tableRect){

@@ -72,7 +72,6 @@ namespace ION.Droid.Activity.Portal {
 
 			// TODO-Localize ahodder@appioninc.com:
 			var startRemote = FindViewById<Button>(Resource.Id.button);
-      startRemote.Visibility = ViewStates.Gone;
 			startRemote.Click += (sender, e) => {
 				StartActivity(new Intent(this, typeof(PortalRemoteViewingManagerActivity)));
 			};

@@ -1,4 +1,6 @@
-﻿ namespace ION.IOS.App {
+﻿ using ION.CoreExtensions.Net;
+
+namespace ION.IOS.App {
 
  	using System;
 
@@ -9,6 +11,7 @@
 
 	using ION.Core.App;
 	using ION.Core.Net;
+  using ION.IOS.Net;
   using ION.IOS.UI;
 	using ION.IOS.ViewController.Walkthrough;
 	using ION.IOS.ViewController;
@@ -25,7 +28,7 @@
     /// The current ion context for the application.
     /// </summary>
     /// <value>The ion.</value>
-    public IosION ion { get; private set; }
+    public LocalIosION ion { get; private set; }
 
     public bool intervalWarning = false;
 
@@ -33,14 +36,13 @@
       // Initialize the application state.
       // Set Navigation Bar preferences
 
-      AppState.context = ion = new IosION();
+      AppState.context = ion = new LocalIosION(new WebPayload());
       try {
-        ion.Init().Wait();
+        ion.InitAsync().Wait();
       } catch (Exception e) {
         Log.E(this, "Failed to initialize ion.", e);
         Environment.Exit(1);
       }
-      ion.webServices = new WebPayload();
       // create a new window instance based on the screen size
       Window = new UIWindow(UIScreen.MainScreen.Bounds);
 
@@ -159,7 +161,7 @@
     public override void WillEnterForeground(UIApplication application) {
       // Called as part of the transiton from background to active state.
       // Here you can undo many of the changes made on entering the background.
-			var ion = AppState.context as IosION;
+			var ion = AppState.context as LocalIosION;
 
       if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") == 1) {
         if (intervalWarning == true) {

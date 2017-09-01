@@ -21,15 +21,13 @@ namespace ION.IOS.ViewController.AccessRequest {
 		public UITableView allowingTable;
     public UIRefreshControl followingRefresh;
     public UIRefreshControl followerRefresh;
-		public WebPayload webServices;
 		public IosION ion;
 		public UIActivityIndicatorView loadingRequests;
 		public List<accessUserData> followingUsers;
 		public List<accessUserData> followerUsers;
 	
 		public AccessUsers(UIView parentView) {
-			ion = AppState.context as IosION;
-			webServices = ion.webServices;
+			ion = AppState.context as LocalIosION;
 		
 			accessView = new UIView(new CGRect(0,0,parentView.Bounds.Width, parentView.Bounds.Height));
 			accessView.BackgroundColor = UIColor.White;
@@ -110,7 +108,7 @@ namespace ION.IOS.ViewController.AccessRequest {
   		var rootVC = window.RootViewController as IONPrimaryScreenController;
 			var ID = KeychainAccess.ValueForKey("userID");
 			
-			var feedback = await webServices.GetAccessList(ID);
+			var feedback = await ion.webServices.GetAccessList(ID);
 			
 			if(feedback != null){
 				var textResponse = await feedback.Content.ReadAsStringAsync();

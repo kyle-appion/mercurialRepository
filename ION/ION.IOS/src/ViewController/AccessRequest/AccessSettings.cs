@@ -21,14 +21,12 @@ namespace ION.IOS.ViewController.AccessRequest {
     public List<SessionData> allSessions;
     public ObservableCollection<int> selectedSessions;
 		public IosION ion;
-		public WebPayload webServices;
 		UIActivityIndicatorView uploadActivity;
 		public nfloat cellHeight;
 		
 		public AccessSettings(UIView parentView) {
 		
 			ion = AppState.context as IosION;  
-			webServices = ion.webServices;
 			
 			settingsView = new UIView(new CGRect(0,0,parentView.Bounds.Width, parentView.Bounds.Height));
 			settingsView.BackgroundColor = UIColor.White;
@@ -126,7 +124,7 @@ namespace ION.IOS.ViewController.AccessRequest {
     	
 			var ID = KeychainAccess.ValueForKey("userID");
     	
-			var uploadResponse = await webServices.getSession(selectedSessions,ID);
+			var uploadResponse = await ion.webServices.getSession(ion, selectedSessions,ID);
     	uploadActivity.StopAnimating();
 	
 			if(uploadResponse != null){

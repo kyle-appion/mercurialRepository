@@ -6,6 +6,7 @@ using ION.Core.Net;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using ION.IOS.App;
+using ION.Core.App;
 
 namespace ION.IOS.ViewController.RemoteAccess {
 
@@ -25,10 +26,12 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public UITextField lastNameField;
 		public UITextField passwordField;
 		public UITextField confirmPasswordField;
-		public WebPayload webServices;
+
+		private IosION ion;
 		
-		public RemoteUserProfileView(UIView parentView, string dName, string uEmail, WebPayload webServices) {
-			this.webServices = webServices;
+		public RemoteUserProfileView(UIView parentView, string dName, string uEmail) {
+			ion = AppState.context as IosION;
+			
 			var splitName = dName.Split(' ');
 			
 			var viewTap = new UITapGestureRecognizer(() => {
@@ -184,7 +187,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				var window = UIApplication.SharedApplication.KeyWindow;
   			var rootVC = window.RootViewController as IONPrimaryScreenController;
 					
-				var updateResponse = await webServices.updatePassword(passwordField.Text,userID);
+				var updateResponse = await ion.webServices.updatePassword(passwordField.Text,userID);
 				updatingLabel.Hidden = true;
 				
 				if(updateResponse != null){
@@ -217,7 +220,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
   		var rootVC = window.RootViewController as IONPrimaryScreenController;
 			var userID = KeychainAccess.ValueForKey("userID");
 					
-			var updateResponse = await webServices.updateDisplayName(firstNameField.Text, lastNameField.Text, userID);
+			var updateResponse = await ion.webServices.updateDisplayName(firstNameField.Text, lastNameField.Text, userID);
 				
 			if(updateResponse != null){
 				var textResponse = await updateResponse.Content.ReadAsStringAsync();

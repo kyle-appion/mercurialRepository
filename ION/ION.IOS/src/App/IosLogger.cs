@@ -129,7 +129,7 @@
         var fn = "SystemInfo.txt";
         var file = Path.Combine(dest, fn);
 
-        var dump = new BaseAppDump(AppState.context, new IOSPlatformInfo());
+        var dump = new BaseAppDump(AppState.context);
 
         using (var w = new StreamWriter(new FileStream(file, FileMode.OpenOrCreate))) {
           w.Write(dump.ToString());

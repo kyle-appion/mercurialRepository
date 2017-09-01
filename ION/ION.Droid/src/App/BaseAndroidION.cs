@@ -55,10 +55,6 @@ namespace ION.Droid.App {
 		public event OnWorkbenchChanged onWorkbenchChanged;
 		// Implemented for IION
 		public event OnAnalyzerChanged onAnalyzerChanged;
-    // Implemented for IION
-    public event RemotePlatformChanged remotePlatformChanged;
-    // Implemented for IION
-    public event OnIonStateChanged onIonStateChanged;
 
 		// Implemented for IION
 		public string name { get { return context.GetString(Resource.String.app_name); } }
@@ -357,7 +353,7 @@ namespace ION.Droid.App {
 
 		// Implemented for IION
 		public IAppDump CreateApplicationDump() {
-			return new BaseAppDump(this, new AndroidPlatformInfo(context));
+			return new BaseAppDump(this);
 		}
 
     // Implemented for IION
@@ -378,13 +374,6 @@ namespace ION.Droid.App {
 		public Task setOriginalDeviceManager() {
 			return null;
 		}
-
-    // Implemented for IION
-    public void NotifyStateChanged(IonState.EType e) {
-      if (onIonStateChanged != null) {
-        onIonStateChanged(e);
-      }
-    }
 
 		/// <summary>
 		/// Override this methos to initialize entities that have no dependencies.

@@ -14,8 +14,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public UILabel header;
 		public UILabel deviceInfo;
 		public UILabel status;
-		IosION ion;
-		WebPayload webServices;		
+		private IosION ion;
 		
 		public RemoteAccessTableCell(IntPtr handle) {
 		} 
@@ -25,7 +24,6 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		} 		
 		public void makeCellData(double cellWidth,double cellHeight, accessData user){
 			ion = AppState.context as IosION;
-			webServices = ion.webServices;
 			
 			var currentlyViewing = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
 	
@@ -47,7 +45,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			
 			if(Convert.ToInt32(KeychainAccess.ValueForKey("userID")) == user.id){
 				header.Text = " Your Account";
-				if(webServices.uploading && UIDevice.CurrentDevice.IdentifierForVendor.ToString() == user.deviceID){   
+				if(ion.webServices.uploading && UIDevice.CurrentDevice.IdentifierForVendor.ToString() == user.deviceID){   
 					status.TextColor = UIColor.Red;
 					status.Text = "Uploading";
 				} else {

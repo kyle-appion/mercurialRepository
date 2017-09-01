@@ -23,12 +23,10 @@ namespace ION.IOS.ViewController.AccessRequest {
 		public UITableView pendingTable;
 		public List<requestData> pendingUsers;
 		public UIActivityIndicatorView loadingRequests;
-		public WebPayload webServices;
 		public IosION ion;
 		
 		public AccessRequestManager(UIView parentView) {		
 			ion = AppState.context as IosION;  
-			webServices = ion.webServices;
 
 			var viewTap = new UITapGestureRecognizer(() => {
 				submitCodeField.ResignFirstResponder();
@@ -115,7 +113,7 @@ namespace ION.IOS.ViewController.AccessRequest {
 			if(submitCodeField.Text.Length >= 8 && submitCodeField.Text.Length <= 10){
 				var userID = KeychainAccess.ValueForKey("userID");
 			
-				var feedback = await webServices.submitAccessCode(submitCodeField.Text,userID);
+				var feedback = await ion.webServices.submitAccessCode(submitCodeField.Text,userID);
 
 				var window = UIApplication.SharedApplication.KeyWindow;
 				var rootVC = window.RootViewController as IONPrimaryScreenController;
@@ -158,7 +156,7 @@ namespace ION.IOS.ViewController.AccessRequest {
 			pendingUsers = new List<requestData>();
 			var userID = KeychainAccess.ValueForKey("userID");
 			
-			var feedback = await webServices.getAllRequests(userID);
+			var feedback = await ion.webServices.getAllRequests(userID);
 			var window = UIApplication.SharedApplication.KeyWindow;
   		var rootVC = window.RootViewController as IONPrimaryScreenController;
   		
@@ -209,7 +207,7 @@ namespace ION.IOS.ViewController.AccessRequest {
 			}
 			var userID = KeychainAccess.ValueForKey("userID");
 			
-			var feedback = await webServices.GenerateAccessCode(userID);
+			var feedback = await ion.webServices.GenerateAccessCode(userID);
 			var window = UIApplication.SharedApplication.KeyWindow;
   		var rootVC = window.RootViewController as IONPrimaryScreenController;
 			

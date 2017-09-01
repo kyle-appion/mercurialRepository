@@ -12,6 +12,8 @@ namespace ION.IOS.ViewController.Workbench {
 	using ION.Core.App;
 	using ION.Core.Content;
 	using ION.Core.Devices;
+  
+  using ION.CoreExtensions.Net;
 
 	using ION.IOS.Util;
 	using ION.IOS.ViewController.DeviceManager;
@@ -28,7 +30,7 @@ namespace ION.IOS.ViewController.Workbench {
     /// The current ion context.
     /// </summary>
     /// <value>The ion.</value>
-    public IION ion { get; private set; }
+    public IosION ion { get; private set; }
     /// <summary>
     /// The workbench that we are working with.
     /// </summary>
@@ -41,11 +43,10 @@ namespace ION.IOS.ViewController.Workbench {
     private WorkbenchTableSource source { get; set; }
 
     public UIButton recordButton;
-		public WebPayload webServices;    
     public bool remoteMode = false;
     public UIScrollView remoteBlocker;
     public UILabel remoteTitle;
-		RemoteControls remoteControl;
+	  
     public WorkbenchViewController (IntPtr handle) : base (handle) {
       // Nope
     }
@@ -75,9 +76,8 @@ namespace ION.IOS.ViewController.Workbench {
       	Title = Strings.Workbench.SELF.FromResources();
 			}
 
-      ion = AppState.context; 			
-     	var webIon = ion as IosION;
-     	webServices = webIon.webServices;
+      ion = AppState.context as IosION;
+	    AppState.onIonChanged += OnIonChanged;
 
 			if(remoteMode){
 				workbench = new Workbench(ion);
@@ -90,33 +90,13 @@ namespace ION.IOS.ViewController.Workbench {
 				remoteBlocker.Bounces = false;
 				remoteBlocker.ShowsVerticalScrollIndicator = false;
 				
-				var remoteButton = new UIButton(new CGRect(0,0,65,35));
-				remoteButton.SetTitle("Options", UIControlState.Normal);
-				remoteButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
-				remoteButton.TouchUpInside += (sender, e) =>{
-					if(remoteControl.controlView.Hidden){
-						remoteControl.controlView.Hidden = false;
-					} else {
-						remoteControl.controlView.Hidden = true;
-					}
-				};
-				
-				UIBarButtonItem button = new UIBarButtonItem(remoteButton);
-				NavigationItem.RightBarButtonItem = button;
 				NavigationController.NavigationBar.BarTintColor = UIColor.Red;
-				
-				remoteControl = new RemoteControls(45,View);
-				remoteControl.disconnectButton.TouchUpInside += (sender, e) => {
-					disconnectRemoteMode();
-				};
 				
 				remoteBlocker.Scrolled += (sender, e) => {
 					tableContent.SetContentOffset(remoteBlocker.ContentOffset,false);		
 				};
 				
 				View.AddSubview(remoteBlocker);
-				View.AddSubview(remoteControl.controlView);
-				View.BringSubviewToFront(remoteControl.controlView);
 				workbench.onWorkbenchEvent += updateBlockerHeight;
 				initializeBlockerHeight();
 			} else {
@@ -150,17 +130,12 @@ namespace ION.IOS.ViewController.Workbench {
       tableContent.Source = source;
 
 			AppState.context.onWorkbenchChanged += this.OnWorkbenchChanged;
-			if(workbench == null){
-				Console.WriteLine("workbench for ion isn't created for some reason");
-			}
 			workbench.onWorkbenchEvent += OnWorkbenchEvent;
-      ion.onIonStateChanged += updateLogging;
     }    
 
     // Overridden from BaseIONViewController
     public override void ViewDidAppear(bool animated) {
       base.ViewDidAppear(animated);
-      Console.WriteLine("Workbench view did appear");
       tableContent.ReloadData();
       
       if(!ion.deviceManager.connectionManager.isEnabled){
@@ -179,21 +154,11 @@ namespace ION.IOS.ViewController.Workbench {
 	        recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
 	      }
 	    } else {
-				if(webServices.downloading){
+				if(ion.webServices.downloading){
 					remoteTitle.Text = "Workbench\nRemote Viewing";
 				} else {
 					remoteTitle.Text = "Workbench\nRemote Editing";
 				}
-				
-				if(ion.remoteDevice != null && remoteControl != null && remoteControl.remoteLoggingButton != null){
-					if(ion.remoteDevice.loggingStatus){
-						NSUserDefaults.StandardUserDefaults.SetString("1","remoteLogging");
-						remoteControl.remoteLoggingButton.SetTitle("Stop Logging", UIControlState.Normal);
-					} else {
-						NSUserDefaults.StandardUserDefaults.SetString("","remoteLogging");					
-						remoteControl.remoteLoggingButton.SetTitle("Start Logging", UIControlState.Normal);
-					}
-				}			
 			}
     }
 
@@ -238,7 +203,7 @@ namespace ION.IOS.ViewController.Workbench {
     	await Task.Delay(TimeSpan.FromMilliseconds(1));
       switch (workbenchEvent.type) {
         case WorkbenchEvent.EType.Added:
-goto case WorkbenchEvent.EType.Swapped;
+					goto case WorkbenchEvent.EType.Swapped;
         case WorkbenchEvent.EType.Removed:
           goto case WorkbenchEvent.EType.Swapped;
         case WorkbenchEvent.EType.Swapped:
@@ -266,14 +231,14 @@ goto case WorkbenchEvent.EType.Swapped;
 
     private async void RecordDevices(){
       var recordingMessage = "";
-      if(webServices.uploading){
+      if(ion.webServices.uploading){
         Console.WriteLine("Workbench currently uploading and want to update datalogging for userid " + KeychainAccess.ValueForKey("userID") + " and layoutid " + KeychainAccess.ValueForKey("layoutid"));
         if (ion.dataLogManager.isRecording) {
-          await webServices.SetRemoteDataLog(KeychainAccess.ValueForKey("userID"),KeychainAccess.ValueForKey("layoutid"),"0");
+          await ion.webServices.SetRemoteDataLog(KeychainAccess.ValueForKey("userID"),KeychainAccess.ValueForKey("layoutid"),"0");
           ion.dataLogManager.StopRecording();
           recordingMessage = "Session recording has stopped";
         } else {
-          await webServices.SetRemoteDataLog(KeychainAccess.ValueForKey("userID"),KeychainAccess.ValueForKey("layoutid"),"1");
+          await ion.webServices.SetRemoteDataLog(KeychainAccess.ValueForKey("userID"),KeychainAccess.ValueForKey("layoutid"),"1");
           ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
           recordingMessage = "Session recording has started";
         }
@@ -292,6 +257,10 @@ goto case WorkbenchEvent.EType.Swapped;
        }
       showRecordingToast(recordingMessage);
     }
+
+	  private void OnIonChanged(IION ion) {
+		  updateLogging();
+	  }
 
     public async void showRecordingToast(string recordingMessage){
       UIAlertView messageBox = new UIAlertView(recordingMessage, null,null,null);
@@ -329,21 +298,8 @@ goto case WorkbenchEvent.EType.Swapped;
 			tableContent.LayoutSubviews();
 			remoteBlocker.ContentSize = new CGSize(tableContent.ContentSize.Width,tableContent.ContentSize.Height - 68);
 		}
-
-		public async void disconnectRemoteMode(){    
-      var window = UIApplication.SharedApplication.KeyWindow;
-      var rootVC = window.RootViewController as IONPrimaryScreenController;
-      
-		 	remoteControl.controlView.Hidden = true;
-		 	webServices.downloading = false;
-		 	webServices.remoteViewing = false;
-			webServices.paused = null;
-			
-			await ion.setOriginalDeviceManager();
-			rootVC.setMainMenu();
-		}
     
-     public void updateLogging(IonState.EType eventType){
+     public void updateLogging(){
       InvokeOnMainThread ( () => {
         if (ion.dataLogManager.isRecording) {
           recordButton.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);

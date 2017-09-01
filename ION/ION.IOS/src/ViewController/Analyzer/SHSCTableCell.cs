@@ -15,10 +15,10 @@ namespace ION.IOS.ViewController.Analyzer {
     public UILabel cellHeader;
     private UILabel fluidType;
     private UILabel tempReading;
-    public IosION ion;
+    public LocalIosION ion;
 
     public SHSCTableCell(IntPtr handle) {
-      ion = AppState.context as IosION;
+      ion = AppState.context as LocalIosION;
     }
 
     public void makeEvents(lowHighSensor lhSensor, CGRect tableRect){

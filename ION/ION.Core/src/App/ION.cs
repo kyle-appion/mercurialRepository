@@ -4,6 +4,8 @@
 	using System.Threading.Tasks;
 
   using Newtonsoft.Json;
+  
+  using Appion.Commons.Util;
 
 	using ION.Core.Alarms;
 	using ION.Core.Content;
@@ -20,17 +22,38 @@
 	/// </summary>
 	public static class AppState {
     /// <summary>
+    /// The event that is called when the ION is changed.
+    /// </summary>
+    public static event Action<IION> onIonChanged;
+  
+    /// <summary>
     /// The current app state. If the current app state has not been set,
     /// then we will throw an exception when the property is fetched.
     /// </summary>
     /// <value>The App.</value>
-    public static IION context { get; set; }
+    public static IION context { 
+      get {
+        return _context;
+      }
+      set {
+        if (_context != null) {
+          try {
+            _context.Dispose();
+          } catch (Exception e) {
+            Log.E(typeof(AppState).Name, "Failed to dispose old ion context", e);
+          }
+        }
+        
+        _context = value;
+        if (onIonChanged != null) {
+          onIonChanged(value);
+        }
+      }
+    } static IION _context;
   } // End ION
 
 	public delegate void OnWorkbenchChanged(Workbench workbench);
 	public delegate void OnAnalyzerChanged(Analyzer analyzer);
-  public delegate void RemotePlatformChanged(IPlatformInfo platformInfo);
-	public delegate void OnIonStateChanged(IonState.EType eventType);
   
   /// <summary>
   /// The interface that describes an ION application context.
@@ -44,22 +67,14 @@
 		/// The event that is notified when the ion's analyzer changes.
 		/// </summary>
 		event OnAnalyzerChanged onAnalyzerChanged;
-		/// <summary>
-		/// The event that is notified when remote viewing platform information is updated
-		/// </summary>
-		event RemotePlatformChanged remotePlatformChanged;    
-    /// <summary>
-    /// Occurs when on ion state changed. This can be workbench, analyzer, remote, etc... changes.
-    /// Basically anything that deals with core updates/changes
-    /// </summary>
-    event OnIonStateChanged onIonStateChanged;		
+
     /// <summary>
     /// Queries the build name of the ion instance. (ie. ION HVAC/r for android of ION Viewer for iOS)
     /// </summary>
     /// <value>The name.</value>
     string name { get; }
     /// <summary>
-    /// The current application version.
+    /// The current version of the application.
     /// </summary>
     /// <value>The version.</value>
     string version { get; }
@@ -122,12 +137,6 @@
     /// <value>The current workbench.</value>
     Workbench currentWorkbench { get; set; }
 
-		/// <summary>
-		/// The stored remote workbench for the ION context.
-		/// </summary>
-		/// <value>The remote workbench.</value>
-		Workbench storedWorkbench { get; set; }
-
     /// <summary>
     /// Queries the screenshot report folder.
     /// </summary>
@@ -140,6 +149,13 @@
     /// </summary>
     /// <value>The calibraaction certificate folder.</value>
     IFolder calibrationCertificateFolder { get; }
+    
+    /// <summary>
+    /// Begins the ION instance initialization. This method will inflate all of the manager to their proper states and
+    /// ensure that the ION instance is ready for use.
+    /// </summary>
+    /// <returns>The async.</returns>
+    Task<bool> InitAsync();
 
     /// <summary>
     /// Posts the action to the main message pump for execution on the main thread.
@@ -178,6 +194,7 @@
     Task<Workbench> LoadWorkbenchAsync(IFile file);
 		Task<Analyzer> LoadAnalyzerAsync(IFile file);
 
+
     /// <summary>
     /// Creates a new application dump object.
     /// </summary>
@@ -189,27 +206,6 @@
     /// </summary>
     /// <returns>The platform info.</returns>
     IPlatformInfo GetPlatformInformation();
-    /// <summary>
-    /// Sets the platform information for a remote device.
-    /// </summary>
-    /// <returns>The remote platform information.</returns>
-    void SetRemotePlatformInformation(sessionStateInfo remoteState);
-    /// <summary>
-    /// Gets or sets the local device platform information.
-    /// </summary>
-    /// <value>The local device.</value>
-    IPlatformInfo localDevice {get; set;}
-    /// <summary>
-    /// Gets or sets the remote device platform information.
-    /// </summary>
-    /// <value>The remote device.</value>
-    IPlatformInfo remoteDevice {get; set;}   
-    
-    Task setRemoteDeviceManager();
-    Task setOriginalDeviceManager();
-    
-    
-    void NotifyStateChanged(IonState.EType eventType);
   } // End IION
 
   	[Preserve(AllMembers = true)]

@@ -18,7 +18,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 	  
 		List<accessData> tableItems;
     nfloat cellHeight;
-		IosION ion;
+		LocalIosION ion;
     public ObservableCollection<accessData> selectedUser;
     WebClient webServices;
     public const string deleteUserUrl = "http://portal.appioninc.com/App/deleteAccess.php";
@@ -26,7 +26,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public RemoteAccessTableSource(List<accessData> accessItems, ObservableCollection<accessData> selected, WebClient webClient) {
 			tableItems = accessItems;
 			selectedUser = selected;
-			ion = AppState.context as IosION;
+			ion = AppState.context as LocalIosION;
 			webServices = webClient;
 			tableItems.Sort((x, y) => y.online.CompareTo(x.online));
 		}

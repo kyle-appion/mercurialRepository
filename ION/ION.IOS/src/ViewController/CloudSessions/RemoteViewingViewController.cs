@@ -18,7 +18,6 @@ namespace ION.IOS.ViewController.CloudSessions {
 	public partial class RemoteViewingViewController : BaseIONViewController {
 		remoteSelectionView selectionView;
 		public UIBarButtonItem uploadButton;
-		public WebPayload webServices;
 		public IosION ion;	
 		UIButton startButton;
 		UIButton stopButton;
@@ -32,7 +31,6 @@ namespace ION.IOS.ViewController.CloudSessions {
 			View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
 			
 			ion = AppState.context as IosION;
-			webServices = ion.webServices;
 			
 			///////THIS BUTTON WILL BEGIN UPLOADING A USER'S LAYOUT AND THEN BE REPLACED BY THE SECOND BUTTON
       startButton  = new UIButton(new CGRect(0, 0, 120, 30));
@@ -58,7 +56,7 @@ namespace ION.IOS.ViewController.CloudSessions {
 			stopButton.TouchUpInside += (sender, e) => {stopButton.BackgroundColor = UIColor.Clear; selectionView.remoteMenuButton.Enabled = true;};
 			stopButton.TouchUpInside += (sender, e) => {stopUploadStatus();};
 			
-			if(webServices.uploading){
+			if(ion.webServices.uploading){
 				uploadButton = new UIBarButtonItem(stopButton);
 			}else {
 				uploadButton = new UIBarButtonItem(startButton);
@@ -94,7 +92,7 @@ namespace ION.IOS.ViewController.CloudSessions {
 				uniqueIdentifier = UIDevice.CurrentDevice.IdentifierForVendor.ToString(),
 			};
 			////CREATE OR UPDATE A LAYOUT ENTRY FOR A DEVICE UNDER THE LOGGED IN ACCOUNT AND SET THAT LAYOUT ENTRY TO BE UPDATED THIS SESSION
-			var feedback = await webServices.createSystemLayout(userID, uploadingDevice.uniqueIdentifier, uploadingDevice.name);
+			var feedback = await ion.webServices.createSystemLayout(ion, userID, uploadingDevice.uniqueIdentifier, uploadingDevice.name);
 			
 			if(feedback != null){				
 				var textResponse = await feedback.Content.ReadAsStringAsync();
@@ -109,7 +107,7 @@ namespace ION.IOS.ViewController.CloudSessions {
 					var layoutID = response.GetValue("layoutid").ToString();
 					KeychainAccess.SetValueForKey(layoutID,"layoutid");
 					
-					webServices.uploading = true;
+					ion.webServices.uploading = true;
 				
 					var alert = UIAlertController.Create ("Begin Upload", errorMessage, UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
@@ -141,7 +139,7 @@ namespace ION.IOS.ViewController.CloudSessions {
 			var userID = KeychainAccess.ValueForKey("userID");		
 			var layoutID = KeychainAccess.ValueForKey("layoutid");		
 		
-			var feedback = await webServices.updateOnlineStatus(userID, layoutID);
+			var feedback = await ion.webServices.updateOnlineStatus(userID, layoutID);
 			
 			if(feedback != null){
 				KeychainAccess.SetValueForKey(null,"layoutid");
@@ -151,7 +149,7 @@ namespace ION.IOS.ViewController.CloudSessions {
 				//parse the text string into a json object to be deserialized
 				JObject response = JObject.Parse(textResponse);
 
-				webServices.uploading = false;
+				ion.webServices.uploading = false;
 				uploadButton = new UIBarButtonItem(startButton);
 				this.NavigationItem.RightBarButtonItem = uploadButton;
 
@@ -171,7 +169,7 @@ namespace ION.IOS.ViewController.CloudSessions {
 		
 		public override void ViewDidAppear(bool animated) {
 			if(selectionView != null){
-				if(webServices.remoteViewing){
+				if(ion.webServices.remoteViewing){
 					selectionView.fullMenuButton.Hidden = false;
 					selectionView.remoteMenuButton.Hidden = true;
 				} else {
@@ -187,8 +185,8 @@ namespace ION.IOS.ViewController.CloudSessions {
 			var layoutID = KeychainAccess.ValueForKey("layoutid");		
 			
 			/////A LAYOUT ID WAS CREATED OR RETRIEVED AND CAN BE USED FOR UPLOADING THE CURRENT DEVICE LAYOUT
-			while(webServices.uploading){
-				var feedback = await webServices.uploadSystemLayout(userID, layoutID);
+			while(ion.webServices.uploading){
+				var feedback = await ion.webServices.uploadSystemLayout(ion, userID, layoutID);
 				if(feedback != null){
 					var textResponse = await feedback.Content.ReadAsStringAsync();
 					JObject response = JObject.Parse(textResponse);
@@ -198,7 +196,7 @@ namespace ION.IOS.ViewController.CloudSessions {
 						var window = UIApplication.SharedApplication.KeyWindow;
 			    	var rootVC = window.RootViewController as IONPrimaryScreenController;
 					
-						webServices.uploading = false;
+						ion.webServices.uploading = false;
 						
 						var errorMessage = response.GetValue("message").ToString();   
 						
@@ -221,7 +219,7 @@ namespace ION.IOS.ViewController.CloudSessions {
 						}
 					}
 				} else {
-					webServices.uploading = false;
+					ion.webServices.uploading = false;
 				}
 				await Task.Delay(TimeSpan.FromSeconds(1));
 			}

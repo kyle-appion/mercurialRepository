@@ -142,7 +142,7 @@ namespace ION.IOS.ViewController {
 				if(ion.dataLogManager.isRecording){
 					ion.dataLogManager.StopRecording();
 				}
-				var ioion = ion as IosION;
+				var ioion = ion as LocalIosION;
 				if(ioion.webServices.uploading){
 					ioion.webServices.updateOnlineStatus("0",userID);
 					ioion.webServices.uploading = false;					
@@ -153,7 +153,7 @@ namespace ION.IOS.ViewController {
 					ioion.webServices.downloading = false;
 					ioion.webServices.paused = null;
 					///SET THE APP MENU AND DEVICE MANAGER BACK TO THE LOCAL DEVICE'S SETTINGS
-					ioion.setOriginalDeviceManager();
+					AppState.context = new LocalIosION(ioion.webServices);
 					setMainMenu();
 				}
         
