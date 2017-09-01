@@ -98,7 +98,12 @@ namespace ION.IOS.ViewController.RemoteAccess {
 						ion.webServices.remoteViewing = true;
 						
 						///CHANGE THE APP MENU AND DEVICE MANAGER TO REFLECT REMOTE VIEWING OPTIONS
-						AppState.context = new RemoteIosION(ion.webServices);
+            var rion = new RemoteIosION(ion.webServices);
+            if (!await rion.InitAsync()) {
+              // todo ahoder@appioninc.com: do an actual error dialog here
+              throw new Exception("Failed to initialize remote ion");
+            }
+						AppState.context = rion;
 	        	rootVC.setRemoteMenu();
 						ion.webServices.downloading = true;
 						///START THE LAYOUT DOWNLOADING PROCESS
@@ -144,7 +149,12 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				onlineTable.ReloadData();						
 				
 				///SET THE APP MENU AND DEVICE MANAGER BACK TO THE LOCAL DEVICE'S SETTINGS
-				AppState.context = new LocalIosION(ion.webServices);
+        var lion = new LocalIosION(ion.webServices);
+        if (!await lion.InitAsync()) {
+          // todo ahoder@appioninc.com: do an actual error dialog here
+          throw new Exception("Failed to initialize local ion");
+        }
+        AppState.context = lion;
 				rootVC.setMainMenu();
 				ion.webServices.timedOut -= timeOutAlert;
 			};
@@ -236,7 +246,12 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
 			NSUserDefaults.StandardUserDefaults.SetString("","viewedLayout");
 
-			AppState.context = new LocalIosION(ion.webServices);
+			var lion = new LocalIosION(ion.webServices);
+        if (!await lion.InitAsync()) {
+          // todo ahoder@appioninc.com: do an actual error dialog here
+          throw new Exception("Failed to initialize local ion");
+        }
+        AppState.context = lion;
 			rootVC.setMainMenu();   
 			
 			var alert = UIAlertController.Create ("Viewing User", offlineMessage, UIAlertControllerStyle.Alert);

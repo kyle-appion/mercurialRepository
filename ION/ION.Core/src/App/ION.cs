@@ -83,7 +83,7 @@
     /// </summary>
     /// <value>The preferences.</value>
     IIONPreferences preferences { get; }
-
+    
     /// <summary>
     /// The database that will store all of the application data.
     /// </summary>
@@ -120,6 +120,7 @@
     /// </summary>
     /// <value>The data log manager.</value>
     DataLogManager dataLogManager { get; }
+    
     /// <summary>
     /// Whether or not the ion instance has access to the network.
     /// </summary>
