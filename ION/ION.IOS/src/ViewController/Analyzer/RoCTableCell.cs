@@ -43,7 +43,9 @@ namespace ION.IOS.ViewController.Analyzer {
     }
 
     public void makeEvents(lowHighSensor lhSensor, CGRect tableRect){
+
       cellRoc = lhSensor.roc;
+
       cellManifold = lhSensor.manifold;
 
       cellRoc.onSensorPropertyChanged += OnSensorPropertyChanged;
@@ -120,7 +122,9 @@ namespace ION.IOS.ViewController.Analyzer {
       isUpdating = true;
 			if (plotView == null) {
 				return;
-			}
+      } else if (plotView.Hidden){
+        plotView.Hidden = false;
+      }
 
 			var device = (cellManifold.primarySensor as GaugeDeviceSensor)?.device;
 			isConnected = device.isConnected;

@@ -255,7 +255,7 @@
     /// <summary>
     /// The array of sensors that comprise the analyzer. Null indicates an empty slot.
     /// </summary>
-    private Sensor[] sensors;
+    public Sensor[] sensors;
 		/// <summary>
 		/// Whether or not the analyzer is editable.
 		/// </summary>
@@ -265,8 +265,6 @@
     public List<Sensor> sensorList;
 		public List<int> sensorPositions = new List<int>(){1,2,3,4,5,6,7,8};
 		public List<int> revertPositions = new List<int>(){1,2,3,4,5,6,7,8};
-		public List<string> lowSubviews = new List<string>();
-		public List<string> highSubviews = new List<string>();
 		public string lowAccessibility ="low";
 		public string highAccessibility ="high";
 		
