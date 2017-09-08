@@ -372,6 +372,10 @@
     </Reference>
     <Reference Include="Xfinium.Pdf.Pcl">
       <HintPath>..\..\..\..\..\Downloads\Xfinium\XfiniumPdf540PclProCommercial\Xfinium.Pdf.Pcl.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xfinium.Pdf.Xamarin.iOS">
+      <HintPath>..\packages\Xfinium\XFINIUM.PDF 5.4.0 Mobile Professional Edition Commercial Version\Redist\iOS-Unified\Xfinium.Pdf.Xamarin.iOS.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

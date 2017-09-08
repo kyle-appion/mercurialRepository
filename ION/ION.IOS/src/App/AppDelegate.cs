@@ -30,8 +30,10 @@
     public bool intervalWarning = false;
 
     public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions) {
-      // Initialize the application state.
-      // Set Navigation Bar preferences
+			// Initialize the application state.
+			// Set Navigation Bar preferences
+			UILabel.Appearance.Font = UIFont.FromName("DroidSans", 20f);
+
 
       AppState.context = ion = new IosION();
       try {

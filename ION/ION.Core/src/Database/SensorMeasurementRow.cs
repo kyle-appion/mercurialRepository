@@ -48,12 +48,13 @@
     /// </summary>
     /// <value>The measurement.</value>
     public double measurement { get; set; }
+
+    public byte LID { get; set; }
     /// <summary>
-    /// The unit code for the sensor measurement. The measurement's unit can be retreived from
-    /// ION.Core.Sensors.UnitLookup.GetUnit(int)
+    /// Gets or sets the type of the link.
     /// </summary>
-    /// <value>The unit code.</value>
-//    public int unitCode { get; set; }
+    /// <value>What type of link do the sensors have</value>   
+    public byte linkType { get; set; }
 
     /// <summary>
     /// Serves as a hash function for a <see cref="ION.Core.Database.SensorMeasurementRow"/> object.
@@ -85,7 +86,7 @@
 */
 
     public override string ToString() {
-      return string.Format("[SensorMeasurementRow: id={0}, sessionId={1}, deviceId={2}, sensorIndex={3}, recordedDate={4}, measurement={5}]", MID, frn_SID, serialNumber, sensorIndex, recordedDate, measurement);
+      return string.Format("[SensorMeasurementRow: id={0}, sessionId={1}, deviceId={2}, sensorIndex={3}, recordedDate={4}, measurement={5}, linkedSerial = {6}, linkedMeasurement={7}]", MID, frn_SID, serialNumber, sensorIndex, recordedDate, measurement, linkedSerial, linkedMeasurement);
     }
   }
 }

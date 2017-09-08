@@ -6,24 +6,31 @@ using CoreGraphics;
 using ION.Core.Sensors.Properties;
 using ION.Core.App;
 using ION.IOS.ViewController.Workbench;
+using ION.Core.Content;
 
 namespace ION.IOS.ViewController.Analyzer
 {
 	public class AnalyzerTableSource : UITableViewSource
 	{
-		//string cellIdentifier;
-		List<string> tableItems;
+    Manifold tableManifold;
+		//List<string> tableItems;
     lowHighSensor tableSensors;
 		public IION ion = AppState.context;
 
-    public AnalyzerTableSource (List<string> items, lowHighSensor lhSensor){
-			tableItems = items;
+    public AnalyzerTableSource (Manifold manifold, lowHighSensor lhSensor){
+      //tableItems = items;
+      tableManifold = manifold;
       tableSensors = lhSensor;
 		}
 			
 		public override nint RowsInSection (UITableView tableview, nint section)
 		{
-				return tableItems.Count;
+      //return tableItems.Count;
+      if (tableManifold != null) {
+        return tableManifold.sensorProperties.Count;
+      } else {
+        return 0;
+      }
 		}
 
 		public override nint NumberOfSections (UITableView tableView)
@@ -41,7 +48,7 @@ namespace ION.IOS.ViewController.Analyzer
     }
 
     public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath) {
-      if (tableItems[indexPath.Row].Contains("Trending")){
+      if (tableManifold.sensorProperties[indexPath.Row] is RateOfChangeSensorProperty){
         return 144f;
       } else {
         return 72f;
@@ -52,10 +59,11 @@ namespace ION.IOS.ViewController.Analyzer
     {
       switch (editingStyle) {
         case UITableViewCellEditingStyle.Delete:
-          // remove the item from the underlying data source
-          tableItems.RemoveAt(indexPath.Row);
-
-          if (tableItems.Count.Equals(0)) {           
+				// remove the item from the underlying data source
+				//tableItems.RemoveAt(indexPath.Row);
+        tableManifold.RemoveSensorProperty(tableManifold.sensorProperties[indexPath.Row]);
+				//if (tableItems.Count.Equals(0)) {
+					if (tableManifold.sensorProperties.Count.Equals(0)) {           
             tableSensors.subviewHide.SetImage(null, UIControlState.Normal);
           }
           // delete the row from the table
@@ -75,8 +83,8 @@ namespace ION.IOS.ViewController.Analyzer
 
 		public override UITableViewCell GetCell (UITableView tableView, Foundation.NSIndexPath indexPath)
 		{
-		
-      if (tableItems[indexPath.Row].Contains("Maximum")) {
+		  Console.WriteLine("Get Cell is call for analyzer");
+      if (tableManifold.sensorProperties[indexPath.Row] is MaxSensorProperty) {
         var cell = tableView.DequeueReusableCell("Maximum") as maximumTableCell;
         if (cell == null) {
           cell = new UITableViewCell(UITableViewCellStyle.Default, "Maximum") as maximumTableCell; 
@@ -85,7 +93,7 @@ namespace ION.IOS.ViewController.Analyzer
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         cell.Layer.BorderWidth = 1f;
         return cell;
-      } else if (tableItems[indexPath.Row].Contains("Minimum")) {
+      } else if (tableManifold.sensorProperties[indexPath.Row] is MinSensorProperty) {
         var cell = tableView.DequeueReusableCell("Minimum") as minimumTableCell;
         if (cell == null)
           cell = new UITableViewCell(UITableViewCellStyle.Default, "Minimum") as minimumTableCell;
@@ -94,7 +102,7 @@ namespace ION.IOS.ViewController.Analyzer
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         cell.Layer.BorderWidth = 1f;
         return cell;
-      } else if (tableItems[indexPath.Row].Contains("Hold")) {
+      } else if (tableManifold.sensorProperties[indexPath.Row] is HoldSensorProperty) {
         var cell = tableView.DequeueReusableCell("Hold") as holdTableCell;
         if (cell == null)
           cell = new UITableViewCell(UITableViewCellStyle.Default, "Hold") as holdTableCell;
@@ -103,7 +111,7 @@ namespace ION.IOS.ViewController.Analyzer
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         cell.Layer.BorderWidth = 1f;
         return cell;
-      } else if (tableItems[indexPath.Row].Contains("Trending") || tableItems[indexPath.Row].Contains("Rate")) {
+      } else if (tableManifold.sensorProperties[indexPath.Row] is RateOfChangeSensorProperty) {
         var cell = tableView.DequeueReusableCell("Rate") as RoCTableCell;
         if (cell == null)
           cell = new UITableViewCell(UITableViewCellStyle.Default, "Rate") as RoCTableCell;
@@ -113,7 +121,7 @@ namespace ION.IOS.ViewController.Analyzer
         cell.Layer.BorderWidth = 1f;
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         return cell;
-      } else if (tableItems[indexPath.Row].Contains("Superheat")) {
+      } else if (tableManifold.sensorProperties[indexPath.Row] is SuperheatSubcoolSensorProperty) {
         var cell = tableView.DequeueReusableCell("Superheat") as SHSCTableCell;
         if (cell == null)
           cell = new UITableViewCell(UITableViewCellStyle.Default, "Superheat") as SHSCTableCell;
@@ -122,7 +130,7 @@ namespace ION.IOS.ViewController.Analyzer
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         cell.Layer.BorderWidth = 1f;
         return cell;
-      } else if (tableItems[indexPath.Row].Contains("Pressure")) {
+      } else if (tableManifold.sensorProperties[indexPath.Row] is PTChartSensorProperty) {
         var cell = tableView.DequeueReusableCell("Pressure") as PTTableCell;
         if (cell == null)
           cell = new UITableViewCell(UITableViewCellStyle.Default, "Pressure") as PTTableCell;
@@ -131,7 +139,7 @@ namespace ION.IOS.ViewController.Analyzer
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         cell.Layer.BorderWidth = 1f;
         return cell;
-      } else if (tableItems[indexPath.Row].Contains("Linked")){
+      } else if (tableManifold.sensorProperties[indexPath.Row] is SecondarySensorProperty){
         var cell = tableView.DequeueReusableCell("Linked") as secondarySensorCell;
         if (cell == null)
           cell = new UITableViewCell(UITableViewCellStyle.Default, "Linked") as secondarySensorCell;
@@ -140,7 +148,7 @@ namespace ION.IOS.ViewController.Analyzer
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         cell.Layer.BorderWidth = 1f;
         return cell;
-      }else {
+      } else {
         var cell = tableView.DequeueReusableCell("Alternate") as altTableCell;
         if (cell == null)
           cell = new UITableViewCell(UITableViewCellStyle.Default, "Alternate") as altTableCell;        
@@ -174,7 +182,7 @@ namespace ION.IOS.ViewController.Analyzer
 		}
 		
     public override void MoveRow(UITableView tableView, NSIndexPath sourceIndexPath, NSIndexPath destinationIndexPath) {
-      var item = tableItems[sourceIndexPath.Row];
+      var item = tableManifold.sensorProperties[sourceIndexPath.Row];
       var deleteAt = sourceIndexPath.Row;
       var insertAt = destinationIndexPath.Row;
 
@@ -186,17 +194,17 @@ namespace ION.IOS.ViewController.Analyzer
         // add one to where we insert, because we haven't deleted the original yet
         insertAt += 1;
       }
-      tableItems.Insert (insertAt, item);
-      tableItems.RemoveAt (deleteAt);
+      tableManifold.sensorProperties.Insert (insertAt, item);
+      tableManifold.sensorProperties.RemoveAt (deleteAt);
 
       tableView.SetEditing(false, true);
     }
 
 		public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
 		{
-			Console.WriteLine ("Clicked: " + tableItems[indexPath.Row]);
-      if(tableItems[indexPath.Row].Contains("Trending")){
-        var clickedRecord = new RateOfChangeRecord(tableSensors.manifold,tableSensors.roc);
+			Console.WriteLine ("Clicked: " + tableManifold.sensorProperties[indexPath.Row]);
+      if(tableManifold.sensorProperties[indexPath.Row] is RateOfChangeSensorProperty){
+        var clickedRecord = new RateOfChangeRecord(tableManifold,tableManifold.sensorProperties[indexPath.Row]);
 
 				var rocvc = tableSensors.__analyzerviewcontroller.InflateViewController<RateofChangeSettingsViewController>(BaseIONViewController.VC_RATEOFCHANGE);
 				var passingRecord = clickedRecord;

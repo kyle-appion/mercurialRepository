@@ -10,6 +10,8 @@ using ION.Core.Devices.Sorters;
 using ION.IOS.ViewController.Workbench;
 using ION.IOS.ViewController.Analyzer;
 using ION.IOS.Util;
+using ION.Core.Connections;
+using ION.Core.Devices.Protocols;
 
 namespace ION.IOS.ViewController.DeviceGrid {
   public partial class DeviceGridViewController : BaseIONViewController {
@@ -28,7 +30,8 @@ namespace ION.IOS.ViewController.DeviceGrid {
 		SensorStatusPopup selectedSensor;
     IION ion;
     bool updatingGrid = false;
-    public int fromAnalyzer = -1;
+		public int fromAnalyzer = -1;
+    public bool fromAnalyzerLH = false;
     public bool fromWorkbench = false;
 
 		private List<GaugeDeviceSensor> connectedSensors = new List<GaugeDeviceSensor>();
@@ -44,7 +47,7 @@ namespace ION.IOS.ViewController.DeviceGrid {
       base.ViewDidLoad();
       View.BackgroundColor = UIColor.FromPatternImage(UIImage.FromBundle("CarbonBackground"));
 
-      if (fromAnalyzer == -1 && !fromWorkbench) {
+      if (fromAnalyzer == -1 && !fromWorkbench && !fromAnalyzerLH) {
         InitNavigationBar("ic_job_settings", false);
         backAction = () => {
           root.navigation.ToggleMenu();
@@ -55,7 +58,7 @@ namespace ION.IOS.ViewController.DeviceGrid {
 			NavigationItem.Title = Strings.Device.Grid.SELF;
 			AutomaticallyAdjustsScrollViewInsets = false;
 
-			foreach (var device in ion.deviceManager.knownDevices) {
+			foreach (var device in ion.deviceManager.devices) {
 				var holder = device as GaugeDevice;
 				if (holder.connection.connectionState == Core.Connections.EConnectionState.Connected || holder.connection.connectionState == Core.Connections.EConnectionState.Broadcasting) {
 					foreach (var sensor in holder.sensors) {
@@ -64,7 +67,9 @@ namespace ION.IOS.ViewController.DeviceGrid {
 				} else {
           if (holder.isNearby) {
 						foreach (var sensor in holder.sensors) {
-							disconnectedSensors.Add(sensor);
+              if (!connectedSensors.Contains(sensor)) {
+                connectedSensors.Add(sensor);
+              }
 						}
           } else {
             foreach (var sensor in holder.sensors) {
@@ -74,9 +79,9 @@ namespace ION.IOS.ViewController.DeviceGrid {
 				}
 			}
 
-      foreach (var device in ion.deviceManager.foundDevices){
+      foreach (var device in ion.deviceManager.devices){
 				var holder = device as GaugeDevice;
-        if(holder.isNearby){
+        if(holder.isNearby == true){
 					foreach (var sensor in holder.sensors) {
             if(!connectedSensors.Contains(sensor)){
 							connectedSensors.Add(sensor);
@@ -126,37 +131,35 @@ namespace ION.IOS.ViewController.DeviceGrid {
     }
 
 		private void OnDeviceManagerEvent(DeviceManagerEvent dme) {
-      Console.WriteLine("DM Event: " + dme.type + " etype: " + dme.deviceEvent.type);
-      if (DeviceManagerEvent.EType.DeviceEvent == dme.type && updatingGrid == false) {
-				if (DeviceEvent.EType.ConnectionChange == dme.deviceEvent.type) {
-          updatingGrid = true;
-          Console.WriteLine("Device connection change occurred");
-					connectedSensors.Clear();
-					disconnectedSensors.Clear();
+      if (updatingGrid == false) {
+        updatingGrid = true;
+				connectedSensors.Clear();
+				disconnectedSensors.Clear();
 
-					foreach (var device in ion.deviceManager.knownDevices) {
-						var holder = device as GaugeDevice;
-						if (holder.connection.connectionState == Core.Connections.EConnectionState.Connected || holder.connection.connectionState == Core.Connections.EConnectionState.Broadcasting) {
+        foreach (var device in ion.deviceManager.devices) {
+					var holder = device as GaugeDevice;
+					if (holder.connection.connectionState == Core.Connections.EConnectionState.Connected || holder.connection.connectionState == Core.Connections.EConnectionState.Broadcasting) {
+						foreach (var sensor in holder.sensors) {
+							connectedSensors.Add(sensor);
+						}
+					} else {
+						if (holder.isNearby == true) {
 							foreach (var sensor in holder.sensors) {
-								connectedSensors.Add(sensor);
+                if (!connectedSensors.Contains(sensor)) {
+                  connectedSensors.Add(sensor);
+                }
 							}
 						} else {
-							if (holder.isNearby) {
-								foreach (var sensor in holder.sensors) {
-									disconnectedSensors.Add(sensor);
-								}
-							} else {
-								foreach (var sensor in holder.sensors) {
-									disconnectedSensors.Add(sensor);
-								}
+							foreach (var sensor in holder.sensors) {
+								disconnectedSensors.Add(sensor);
 							}
 						}
 					}
-
-					connectedSensors.Sort(new GeneralSensorSorter());
-					disconnectedSensors.Sort(new GeneralSensorSorter());
-          spaceSensors();
 				}
+
+				connectedSensors.Sort(new GeneralSensorSorter());
+				disconnectedSensors.Sort(new GeneralSensorSorter());
+        spaceSensors();
 			}
 		}
 
@@ -199,13 +202,15 @@ namespace ION.IOS.ViewController.DeviceGrid {
     }
 
     public override void ViewDidAppear(bool animated) {
-      
-			gridView.ReloadData();
+      StartScan();
 		}
+
     public override void ViewWillDisappear(bool animated) {
       fromAnalyzer = -1;
 			fromWorkbench = false;
+      StopScan();
 		}
+
     public override void DidReceiveMemoryWarning() {
       base.DidReceiveMemoryWarning();
       // Release any cached data, images, etc that aren't in use.
@@ -230,17 +235,27 @@ namespace ION.IOS.ViewController.DeviceGrid {
 		public void inflateAnalyzer(GaugeDeviceSensor sensor = null) {
 			var window = UIApplication.SharedApplication.KeyWindow;
 			var vc = window.RootViewController as IONPrimaryScreenController;
-      if (fromAnalyzer == -1) {
+      if (fromAnalyzer == -1 && fromAnalyzerLH == false) {
 				//TODO This is wholely dependent upon the flyoutnavigation controller library being used for the menu. Any updates will also affect how the grid view navigates for its sensor
 				NavigationController.PopViewController(true);
 				vc.navigation.GetType().InvokeMember("NavigationItemSelected", System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Static, Type.DefaultBinder, vc.navigation, new object[] { 1 });
       } else {
 				fromAnalyzer = -1;
+				fromAnalyzerLH = false;
 				fromWorkbench = false;
 				onSensorReturnDelegate(sensor);
         NavigationController.PopViewController(true);
       }
     }
+
+		private void StartScan() {
+      ion.deviceManager.connectionManager.StartScan();
+		}
+
+		private void StopScan() {
+			ion.deviceManager.connectionManager.StopScan();
+		}
+
   }
 }
 

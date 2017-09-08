@@ -55,9 +55,15 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
     public void UpdateTo(IION ion, Manifold manifold) {
-			this.BackgroundColor = UIColor.White;
+			this.BackgroundColor = UIColor.Clear;
       this.ion = ion;
       this.manifold = manifold;
+      this.Layer.BorderWidth = 1f;
+      labelMeasurement.Font = UIFont.FromName("DroidSans-Bold", 36f);
+
+      labelMeasurement.AdjustsFontSizeToFitWidth = true;
+      batteryImage.Layer.BorderWidth = 1f;
+      buttonConnection.Layer.CornerRadius = 5f;
      
       buttonConnection.TouchUpInside -= changeConnectionStatus;
       buttonConnection.TouchUpInside += changeConnectionStatus;
@@ -67,7 +73,6 @@ namespace ION.IOS.ViewController.Workbench {
       if(labelHeader == null){
         return;
       }
-      Console.WriteLine("Update cell bounds: " + this.Bounds);
       var device = sensor.device;
       var state = device.connection.connectionState;
 
@@ -82,13 +87,10 @@ namespace ION.IOS.ViewController.Workbench {
       UpdateAlarm(sensor);
 
       if (device.isConnected) {
-        Console.WriteLine("Device is connected so updating battery to " + device.battery);
         UpdateBatteryIcon(device.battery);
 
-//        if (lastConnectionState != state) {
-          buttonConnection.SetBackgroundImage(UIImage.FromBundle("np_green_background_bordered").AsNinePatch(), UIControlState.Normal);
-          buttonConnection.SetImage(UIImage.FromBundle("ic_bluetooth_connected"), UIControlState.Normal);
-//        }
+        buttonConnection.SetImage(UIImage.FromBundle("ic_bluetooth_connected"), UIControlState.Normal);
+        buttonConnection.BackgroundColor = UIColor.Green;
 
         labelMeasurement.TextColor = new UIColor(Colors.BLACK);
         labelUnit.TextColor = new UIColor(Colors.BLACK);
@@ -105,16 +107,13 @@ namespace ION.IOS.ViewController.Workbench {
 					UpdateBatteryIcon(-1);
         }
 
-//        if (lastConnectionState != state) {
-          buttonConnection.SetBackgroundImage(UIImage.FromBundle("np_red_background_bordered").AsNinePatch(), UIControlState.Normal);
-          buttonConnection.SetImage(UIImage.FromBundle("ic_bluetooth_disconnected"), UIControlState.Normal);
-//        }
+        buttonConnection.SetImage(UIImage.FromBundle("ic_bluetooth_disconnected"), UIControlState.Normal);
+			  buttonConnection.BackgroundColor = UIColor.Red;
 
-        labelMeasurement.TextColor = new UIColor(Colors.LIGHT_GRAY);
+				labelMeasurement.TextColor = new UIColor(Colors.LIGHT_GRAY);
         labelUnit.TextColor = new UIColor(Colors.LIGHT_GRAY);
       }
 
-//      lastConnectionState = state;
     }
 
     private void OnManifoldUpdated(Manifold manifold) {
@@ -144,41 +143,35 @@ namespace ION.IOS.ViewController.Workbench {
     /// </summary>
     /// <param name="percent">Percent.</param>
     private void UpdateBatteryIcon(int percent) {
-      Console.WriteLine("Updating battery with " + percent);  
       if (lastBatteryLevel == percent && percent != -1 && lastBatteryLevel != -1) {
-        return;
+        batteryImage.Hidden = false;
+				batteryImage.Image = UIImage.FromBundle("img_battery_0");
+				return;
       }
 
-      imageBattery.Hidden = false;
-      imageBattery.TintColor = new UIColor(Colors.BLACK);
+      batteryImage.Hidden = false;
+      batteryImage.TintColor = new UIColor(Colors.BLACK);
 
       if (percent >= 100) {
-        Console.WriteLine("Setting battery level to 100");
-        imageBattery.Image = UIImage.FromBundle("img_battery_100");
+        batteryImage.Image = UIImage.FromBundle("img_battery_100");
       } else if (percent >= 75) {
-				Console.WriteLine("Setting battery level to 75");
-				imageBattery.Image = UIImage.FromBundle("img_battery_75");
-      } else if (percent >= 50) {
-				Console.WriteLine("Setting battery level to 50");
-				imageBattery.Image = UIImage.FromBundle("img_battery_50");
-      } else if (percent >= 25) {
-				Console.WriteLine("Setting battery level to 25");
-				imageBattery.Image = UIImage.FromBundle("img_battery_25");
-        imageBattery.TintColor = new UIColor(Colors.RED);
+				batteryImage.Image = UIImage.FromBundle("img_battery_75");
+			} else if (percent >= 50) {
+				batteryImage.Image = UIImage.FromBundle("img_battery_50");
+			} else if (percent >= 25) {
+				batteryImage.Image = UIImage.FromBundle("img_battery_25");
+				//batteryImage.TintColor = new UIColor(Colors.RED);
       } else if (percent >= 0) {
-				Console.WriteLine("Setting battery level to 0");
-				imageBattery.Image = UIImage.FromBundle("img_battery_0");
-        imageBattery.TintColor = new UIColor(Colors.RED);
+				batteryImage.Image = UIImage.FromBundle("img_battery_0");
+				//batteryImage.TintColor = new UIColor(Colors.RED);
       } else {
-        Console.WriteLine("Hiding battery");
-				imageBattery.Hidden = true;
+				batteryImage.Hidden = true;
 			}
 
       lastBatteryLevel = percent;
     }
 
    public void changeConnectionStatus(object sender, EventArgs eww){
-      Console.WriteLine("conDis button clicked");
       var gaugeSensor = manifold.primarySensor as GaugeDeviceSensor;
 	    activityConnectStatus.StartAnimating();
       if (gaugeSensor.device.isConnected) {

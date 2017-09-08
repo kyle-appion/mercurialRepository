@@ -618,10 +618,8 @@ namespace ION.IOS.ViewController.Workbench {
       if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
         addAction(Strings.Workbench.Viewer.ROC_DESC, (UIAlertAction action) => {
           manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold,ion.preferences.device.trendInterval));
-          //manifold.AddSensorProperty(new RateOfChangeSensorProperty(sensor));
         });
       }
-
       
       if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
         addAction(Strings.Workbench.Viewer.ALT_DESC, (UIAlertAction action) => {

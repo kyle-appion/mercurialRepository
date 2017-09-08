@@ -238,7 +238,7 @@ namespace ION.IOS.ViewController.Workbench {
     	await Task.Delay(TimeSpan.FromMilliseconds(1));
       switch (workbenchEvent.type) {
         case WorkbenchEvent.EType.Added:
-goto case WorkbenchEvent.EType.Swapped;
+          goto case WorkbenchEvent.EType.Swapped;
         case WorkbenchEvent.EType.Removed:
           goto case WorkbenchEvent.EType.Swapped;
         case WorkbenchEvent.EType.Swapped:

@@ -358,8 +358,7 @@ namespace ION.Core.Net {
 			highSerialIndex = 0,
 			lowAccessibility = uploadAnalyzer.lowAccessibility,
 			highAccessibility = uploadAnalyzer.highAccessibility,
-			lowSubviews = uploadAnalyzer.lowSubviews.ToArray(),		
-			highSubviews = uploadAnalyzer.highSubviews.ToArray(),		
+	
 		};
 		//////SET LOW SIDE ATTACHED SENSOR		
 		if(uploadAnalyzer.lowAccessibility != "low"){
@@ -648,9 +647,8 @@ namespace ION.Core.Net {
 				remoteAnalyzer.sensorPositions = new List<int>(deserializedPositions.sensorPositions);
 				remoteAnalyzer.revertPositions = new List<int>(deserializedPositions.sensorPositions);
 				remoteAnalyzer.lowAccessibility = deserializedLowHigh.lowAccessibility;
-				remoteAnalyzer.lowSubviews = new List<string>(deserializedLowHigh.lowSubviews);
 				remoteAnalyzer.highAccessibility = deserializedLowHigh.highAccessibility;
-				remoteAnalyzer.highSubviews = new List<string>(deserializedLowHigh.highSubviews);
+
 				
 				////REMOVE ANY SENSORS FROM THE ANALYZER THAT THE REMOTE DEVICE HAS REMOVED
 				foreach(var aSensor in remoteAnalyzer.sensorList.ToArray()){

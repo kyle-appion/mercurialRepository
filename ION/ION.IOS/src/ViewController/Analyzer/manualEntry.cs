@@ -39,6 +39,10 @@ namespace ION.IOS.ViewController.Analyzer
 		public List<string> vacuum = new List<string> {
 			"micron", "inHg", "mTorr", "mbar", "psia", "kPa"
 		};
+
+    public void setupManual(){
+      
+    }
 	}
 }
 

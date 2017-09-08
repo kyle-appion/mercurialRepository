@@ -181,7 +181,17 @@
       } else {
         manifolds.Add(manifold);
         manifold.onManifoldEvent += OnManifoldEvent;
-        NotifyOfEvent(WorkbenchEvent.EType.Added, manifold, manifolds.Count - 1);
+				var GaugeSensor = manifold.primarySensor as GaugeDeviceSensor;
+
+				NotifyOfEvent(WorkbenchEvent.EType.Added, manifold, manifolds.Count - 1);
+
+				if (GaugeSensor.device.serialNumber.deviceModel == EDeviceModel.AV760) {
+					manifold.AddSensorProperty(new Sensors.Properties.RateOfChangeSensorProperty(manifold, TimeSpan.FromSeconds(1)));
+				} else if (GaugeSensor.device.serialNumber.deviceModel == EDeviceModel.PT500 || GaugeSensor.device.serialNumber.deviceModel == EDeviceModel.PT800) {
+					manifold.AddSensorProperty(new Sensors.Properties.SuperheatSubcoolSensorProperty(manifold));
+					manifold.AddSensorProperty(new Sensors.Properties.SecondarySensorProperty(manifold));
+				}
+
         return true;
       } 
     }
@@ -198,6 +208,7 @@
       } else {
         var m = new Manifold(sensor);
         m.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+
         return Add(m);
       }
     }

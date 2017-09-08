@@ -22,7 +22,8 @@ namespace ION.IOS.ViewController.Workbench {
 		public UIButton closeButton;
 		public UIButton setButton;
     public Manifold targetManifold;
-    public UITapGestureRecognizer toggleTap;
+		public UITapGestureRecognizer toggleTap;
+		public UITapGestureRecognizer keyboardTap;
     public IION ion;
 
     public TargetSHSCView(UIView containerView) {
@@ -48,13 +49,11 @@ namespace ION.IOS.ViewController.Workbench {
       nameLabel.TextAlignment = UITextAlignment.Center;
       nameLabel.Text = "PT500: S516H123";
       nameLabel.Font = UIFont.BoldSystemFontOfSize(20f);
-			nameLabel.Layer.BorderWidth = 1f;
 
 			directionsLabel = new UILabel(new CGRect(.05 * tView.Bounds.Width,.2 * tView.Bounds.Height,.9 * tView.Bounds.Width, .3 * tView.Bounds.Height));
       directionsLabel.Font = UIFont.ItalicSystemFontOfSize(20f);
       directionsLabel.Lines = 0;
       directionsLabel.Text = "Enter the target SH/SC value as provided by the system manufacturer";
-			directionsLabel.Layer.BorderWidth = 1f;
 
 			targetInput = new UITextField(new CGRect(.05 * tView.Bounds.Width, .5 * tView.Bounds.Height, .3 * tView.Bounds.Width, .15 * tView.Bounds.Height));
       targetInput.Text = "0.0";
@@ -62,7 +61,6 @@ namespace ION.IOS.ViewController.Workbench {
 
 			unitLabel = new UILabel(new CGRect(.35 * tView.Bounds.Width, .5 * tView.Bounds.Height,.1 * tView.Bounds.Width,.15 * tView.Bounds.Height));
       unitLabel.Text = "°F";
-      unitLabel.Layer.BorderWidth = 1f;
 
       slideLabel = new UILabel(new CGRect(.6 * tView.Bounds.Width,.55 * tView.Bounds.Height, .3 * tView.Bounds.Width, .05 * tView.Bounds.Height));
       slideLabel.BackgroundColor = UIColor.LightGray;
@@ -79,19 +77,24 @@ namespace ION.IOS.ViewController.Workbench {
       toggleTap = new UITapGestureRecognizer((obj) => {
         Console.WriteLine("Toggling the slider");
         if(targetManifold.ptChart.state == Core.Fluids.Fluid.EState.Dew){
-  			  toggleLabel.Frame = new CGRect(.55 * tView.Bounds.Width, .5 * tView.Bounds.Height, .2 * tView.Bounds.Width, .15 * tView.Bounds.Height);
+  			  toggleLabel.Frame = new CGRect(.75 * tView.Bounds.Width, .5 * tView.Bounds.Height, .2 * tView.Bounds.Width, .15 * tView.Bounds.Height);
           toggleLabel.BackgroundColor = UIColor.Red;
   				toggleLabel.Text = "S/C";
           targetManifold.ptChart = PTChart.New(ion, Fluid.EState.Bubble);
         } else {
-  			  toggleLabel.Frame = new CGRect(.75 * tView.Bounds.Width, .5 * tView.Bounds.Height, .2 * tView.Bounds.Width, .15 * tView.Bounds.Height);
+  			  toggleLabel.Frame = new CGRect(.55 * tView.Bounds.Width, .5 * tView.Bounds.Height, .2 * tView.Bounds.Width, .15 * tView.Bounds.Height);
   			  toggleLabel.BackgroundColor = UIColor.Blue;
   			  toggleLabel.Text = "S/H";
           targetManifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
 		    } 
       });
 
+      keyboardTap = new UITapGestureRecognizer((obj) => {
+        targetInput.ResignFirstResponder();
+      });
+
       toggleLabel.AddGestureRecognizer(toggleTap);
+      tView.AddGestureRecognizer(keyboardTap);
 
       setButton = new UIButton(new CGRect(.45 * tView.Bounds.Width, .8 * tView.Bounds.Height, .1 * tView.Bounds.Width, .1 * tView.Bounds.Width));
       setButton.Layer.CornerRadius = 5f;
@@ -104,8 +107,9 @@ namespace ION.IOS.ViewController.Workbench {
         if(targetManifold != null){
           targetManifold.targetSHSC = double.Parse(targetInput.Text);
         }
+		    targetInput.ResignFirstResponder();
 
-        tView.Hidden = true;
+		    tView.Hidden = true;
       };
 
 			tView.AddSubview(headerLabel);

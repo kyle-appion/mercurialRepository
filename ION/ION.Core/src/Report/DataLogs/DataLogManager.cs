@@ -146,6 +146,7 @@
         Log.D(this, "Cancelling current logging session.");
 
         currentSession.session.sessionEnd = DateTime.Now;
+        currentSession.session.frn_JID = ion.preferences.jobs.activeJob;
 
         //if (!ion.database.SaveAsync<SessionRow>(currentSession.session).Result) {
         //  Log.E(this, "Failed to update session end time.");

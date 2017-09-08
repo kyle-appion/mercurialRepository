@@ -246,8 +246,8 @@ namespace ION.IOS.ViewController {
       if(!ion.currentAnalyzer.sensorList.Contains(sensor.device.sensors[0])){
         if(analyzerSlot == -1){
           Console.WriteLine("No specific analyzer slot set");
-					updateAnalyzer(sensor.device.sensors[0]);
-					gridVC.inflateAnalyzer();
+					//updateAnalyzer(sensor.device.sensors[0]);
+					gridVC.inflateAnalyzer(sensor.device.sensors[0]);
 				} else {
           sensor.device.sensors[0].analyzerSlot = analyzerSlot;
           ion.currentAnalyzer.sensorList.Add(sensor.device.sensors[0]);
@@ -265,8 +265,8 @@ namespace ION.IOS.ViewController {
 				if (!ion.currentAnalyzer.sensorList.Contains(sensor.device.sensors[0])) {
 					if (analyzerSlot == -1) {
 						Console.WriteLine("No specific analyzer2 slot set");
-						updateAnalyzer(sensor.device.sensors[0]);
-						gridVC.inflateAnalyzer();
+						//updateAnalyzer(sensor.device.sensors[0]);
+						gridVC.inflateAnalyzer(sensor.device.sensors[0]);
 					} else {
 						Console.WriteLine("Requested slot is available so adding sensor to that slot");
 						sensor.device.sensors[0].analyzerSlot = analyzerSlot;
@@ -281,8 +281,8 @@ namespace ION.IOS.ViewController {
 				if (!ion.currentAnalyzer.sensorList.Contains(sensor.device.sensors[1])) {
 					if (analyzerSlot == -1) {
 						Console.WriteLine("No specific analyzer2 slot set");
-						updateAnalyzer(sensor.device.sensors[1]);
-						gridVC.inflateAnalyzer();
+						//updateAnalyzer(sensor.device.sensors[1]);
+						gridVC.inflateAnalyzer(sensor.device.sensors[1]);
 					} else {
 						Console.WriteLine("Requested slot is available so adding sensor to that slot");
 						sensor.device.sensors[1].analyzerSlot = analyzerSlot;

@@ -75,9 +75,9 @@ namespace ION.IOS.ViewController.DeviceGrid {
       sensorStatusView.Layer.CornerRadius = 5;
       sensorStatusView.ClipsToBounds = true;
 
-			connectionImage = new UIImageView(new CGRect(.05 * sensorStatusView.Bounds.Width, .25 * sensorStatusView.Bounds.Height, .1 * sensorStatusView.Bounds.Width, .45 * sensorStatusView.Bounds.Height));
-      connectionImage.Layer.CornerRadius = 8f;
-      connectionImage.Layer.MasksToBounds = true;
+			connectionImage = new UIImageView(new CGRect(.05 * sensorStatusView.Bounds.Width, .25 * sensorStatusView.Bounds.Height, .7 * sensorStatusView.Bounds.Height, .6 * sensorStatusView.Bounds.Height));
+			connectionImage.Image = UIImage.FromBundle("ic_radio_blank");
+			connectionImage.Image = connectionImage.Image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
 
 			extraImage = new UIImageView(new CGRect(.25 * sensorStatusView.Bounds.Width, .1 * sensorStatusView.Bounds.Height, .25 * sensorStatusView.Bounds.Width, sensorStatusView.Bounds.Height));
       extraImage.BackgroundColor = UIColor.Black;
@@ -92,6 +92,14 @@ namespace ION.IOS.ViewController.DeviceGrid {
 			analyzerImage.Image = analyzerImage.Image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
 			analyzerImage.TintColor = UIColor.White;
 
+			pressureLinkImage = new UIImageView(new CGRect(ContentView.Bounds.Width, .3 * ContentView.Bounds.Height, .23 * ContentView.Bounds.Width, .12 * ContentView.Bounds.Height));
+			pressureLinkImage.Image = UIImage.FromBundle("gold_arrow_right");
+			pressureLinkImage.BackgroundColor = UIColor.Clear;
+
+			tempLinkImage = new UIImageView(new CGRect(-.23 * ContentView.Bounds.Width, .5 * ContentView.Bounds.Height, .23 * ContentView.Bounds.Width, .12 * ContentView.Bounds.Height));
+			tempLinkImage.Image = UIImage.FromBundle("gold_arrow_left");
+			tempLinkImage.BackgroundColor = UIColor.Clear;
+
 			sensorStatusView.AddSubview(connectionImage);
 			sensorStatusView.AddSubview(extraImage);
 			sensorStatusView.AddSubview(workbenchImage);
@@ -101,36 +109,36 @@ namespace ION.IOS.ViewController.DeviceGrid {
 			ContentView.AddSubview(sensorInfoView);
 			ContentView.AddSubview(sensorStatusView);
       ContentView.BringSubviewToFront(sensorInfoView);
-    }
+			ContentView.AddSubview(pressureLinkImage);
+			ContentView.AddSubview(tempLinkImage);
+		}
 
     public void UpdateCell(GaugeDeviceSensor sensor){
-			slotSensor.onSensorStateChangedEvent -= gaugeUpdating;
-			slotSensor = sensor;
-			if(slotSensor == null){
+
+			if(sensor == null){
 				ContentView.Hidden = true;
 				BackgroundView.Hidden = true;
       } else {
+        if (slotSensor != null) {
+          slotSensor.onSensorStateChangedEvent -= gaugeUpdating;
+        }
+				slotSensor = sensor;
 				slotSensor.onSensorStateChangedEvent += gaugeUpdating;
-
+				linkLabel1.Hidden = true;
 				typeLabel.Text = slotSensor.device.serialNumber.deviceModel.GetTypeString();
-				measurementLabel.Text = slotSensor.measurement.amount.ToString();
-				unitLabel.Text = slotSensor.measurement.unit.ToString();
 
 				if(slotSensor.type == Core.Sensors.ESensorType.Pressure){
-          pressureLinkImage = new UIImageView(new CGRect(ContentView.Bounds.Width, .3 * ContentView.Bounds.Height,.23 * ContentView.Bounds.Width, .12 * ContentView.Bounds.Height));
-          pressureLinkImage.Image = UIImage.FromBundle("gold_arrow_right");
-          pressureLinkImage.BackgroundColor = UIColor.Clear;
-					ContentView.AddSubview(pressureLinkImage);
-          linkLabel1.Hidden = true;
+					pressureLinkImage.Hidden = false;
+					tempLinkImage.Hidden = true;
 				} else if (slotSensor.type == Core.Sensors.ESensorType.Temperature && slotSensor.index != 0) {
-					tempLinkImage = new UIImageView(new CGRect(-.23 * ContentView.Bounds.Width, .5 * ContentView.Bounds.Height, .23 * ContentView.Bounds.Width, .12 * ContentView.Bounds.Height));
-					tempLinkImage.Image = UIImage.FromBundle("gold_arrow_left");
-					tempLinkImage.BackgroundColor = UIColor.Clear;
-					ContentView.AddSubview(tempLinkImage);
+					pressureLinkImage.Hidden = true;
+          tempLinkImage.Hidden = false;
           linkLabel1.Hidden = false;
-				} else if (slotSensor.type == Core.Sensors.ESensorType.Vacuum){
-					linkLabel1.Hidden = true;
-				}
+        } else {
+					pressureLinkImage.Hidden = true;
+					tempLinkImage.Hidden = true;
+        }
+
 				ContentView.Hidden = false;
 				BackgroundView.Hidden = false;
 
@@ -145,6 +153,18 @@ namespace ION.IOS.ViewController.DeviceGrid {
 				} else {
 					analyzerImage.Hidden = true;
 				}
+
+        if(sensor.device.isConnected){
+					measurementLabel.Text = slotSensor.measurement.amount.ToString();
+					unitLabel.Text = slotSensor.measurement.unit.ToString();
+        } else {
+					connectionImage.TintColor = UIColor.Yellow;
+					measurementLabel.Text = "---";
+					unitLabel.Text = "";
+					linkLabel1.Hidden = true;
+				}
+
+				slotSensor.NotifySensorStateChanged();
 			}
     }
 
@@ -153,21 +173,21 @@ namespace ION.IOS.ViewController.DeviceGrid {
       var gaugeSensor = sensor as GaugeDeviceSensor;
 
       if (gaugeSensor.device.isConnected) {
-        connectionImage.BackgroundColor = UIColor.Green;
+        connectionImage.TintColor = UIColor.Green;
         measurementLabel.Text = sensor.measurement.amount.ToString();
         unitLabel.Text = sensor.measurement.unit.ToString();
       } else if (gaugeSensor.device.connection.connectionState == Core.Connections.EConnectionState.Broadcasting) {
-				connectionImage.BackgroundColor = UIColor.Blue;
+				connectionImage.TintColor = UIColor.Blue;
 				measurementLabel.Text = sensor.measurement.amount.ToString();
 				unitLabel.Text = sensor.measurement.unit.ToString();
       } else {
         if (gaugeSensor.device.isNearby) {
-					connectionImage.BackgroundColor = UIColor.Yellow;
+					connectionImage.TintColor = UIColor.Yellow;
 					measurementLabel.Text = "---";
 					unitLabel.Text = "";
         } else {
-          connectionImage.BackgroundColor = UIColor.Red;
-          measurementLabel.Text = "---";
+					connectionImage.TintColor = UIColor.Red;
+					measurementLabel.Text = "---";
           unitLabel.Text = "";
         }
 			}

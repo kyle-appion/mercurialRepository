@@ -181,16 +181,16 @@
         }
 
         __secondarySensor = value;
-        if (__secondarySensor != null) {
-					var s = __secondarySensor as GaugeDeviceSensor;
-					if (s != null) {
-						s.device.onDeviceEvent += OnDeviceEvent;
-					}
+        if (__secondarySensor != null && __secondarySensor is GaugeDeviceSensor) {
+          var s = __secondarySensor as GaugeDeviceSensor;
+          if (s != null) {
+            s.device.onDeviceEvent += OnDeviceEvent;
+          }
 
           __secondarySensor.onSensorStateChangedEvent += OnManifoldSensorChanged;
           OnManifoldSensorChanged(__secondarySensor);
-          NotifyOfEvent(ManifoldEvent.EType.SecondarySensorAdded);
-        } 
+				  NotifyOfEvent(ManifoldEvent.EType.SecondarySensorAdded);
+				} 
 
         //NotifyOfEvent(ManifoldEvent.EType.Invalidated);
       }
