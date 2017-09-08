@@ -360,9 +360,11 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       SynchronizePressureIcons();
       SynchronizeTemperatureIcons();
 
-      if (ptChart != null) {
-        ptChart = PTChart.New(ion, ptChart.state);
-      }
+			if (ptChart != null) {
+				if (!ptChart.fluid.Equals(ion.fluidManager.lastUsedFluid)) {
+					ptChart = new PTChart(ion.fluidManager.lastUsedFluid, ptChart.state);
+				}
+			}
 
       OnSettingsChanged(null);
       settingsObserver = NSNotificationCenter.DefaultCenter.AddObserver(NSUserDefaults.DidChangeNotification, OnSettingsChanged);
@@ -448,7 +450,8 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       viewFluidHeader.AddGestureRecognizer(new UITapGestureRecognizer(() => {
         var sb = InflateViewController<FluidManagerViewController>(VC_FLUID_MANAGER);
         sb.onFluidSelectedDelegate = (Fluid fluid) => {
-          ptChart = PTChart.New(ion, ptChart.state, fluid);
+          ptChart = new PTChart(fluid, ptChart.state);
+          ion.preferences.fluid.preferredFluid = fluid.name;
           if (ptSlider != null) {
             ptSlider.Chart = ptChart;
           }
@@ -485,10 +488,10 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       switchFluidState.ValueChanged += (object sender, EventArgs e) => {
         switch ((int)switchFluidState.SelectedSegment) {
           case SECTION_BUBBLE:
-            ptChart.state = Fluid.EState.Bubble;
+            ptChart = new PTChart(ptChart.fluid, Fluid.EState.Bubble);
             break;
           case SECTION_DEW:
-            ptChart.state = Fluid.EState.Dew;
+			      ptChart = new PTChart(ptChart.fluid, Fluid.EState.Dew);
             break;
         }
         if (pressureSensor != null) {
@@ -845,12 +848,12 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         Scalar measurement;
         switch (sensor.type) {
           case ESensorType.Pressure:
-            measurement = ptChart.GetTemperature(sensor).ConvertTo(otherUnit);
+            measurement = ptChart.GetTemperature(sensor.measurement, sensor.isRelative).ConvertTo(otherUnit);
             derivedTextView.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, measurement); 
             vc.pressureUnit = sensor.unit;
             break;
           case ESensorType.Temperature:
-            measurement = ptChart.GetPressure(sensor).ConvertTo(otherUnit);
+            measurement = ptChart.GetPressure(sensor.measurement, sensor.isRelative).ConvertTo(otherUnit);
             derivedTextView.Text = SensorUtils.ToFormattedString(ESensorType.Pressure, measurement); 
             vc.temperatureUnit = sensor.unit;
             break;

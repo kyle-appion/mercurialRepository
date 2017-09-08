@@ -1,9 +1,12 @@
-﻿namespace ION.Droid.Activity.Job {
+﻿using Javax.Microedition.Khronos.Egl;
+
+namespace ION.Droid.Activity.Job {
 
   using System;
   using System.Collections.Generic;
   using System.Linq;
   using System.Text;
+  using System.Threading;
   using System.Threading.Tasks;
 
   using Android.App;
@@ -21,13 +24,13 @@
 
   using ION.Core.Database;
 
-	[Activity(Label = "@string/job_edit", Icon="@drawable/ic_job", Theme = "@style/TerminalActivityTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
+	[Activity(Label = "@string/job_edit", Icon="@drawable/ic_job", Theme = "@style/AppTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
   public class EditJobActivity : IONActivity, ViewPager.IOnPageChangeListener {
 
     public const string EXTRA_JOB_ID = "ION.Droid.extra.job_id";
 
-    private NavButton info;
-    private NavButton sessions;
+    private Button info;
+    private Button data;
 
     private ViewPager pager;
     private JobFragmentAdapter adapter;
@@ -37,7 +40,7 @@
     protected override void OnCreate(Bundle savedInstanceState) {
       base.OnCreate(savedInstanceState);
 
-      SetContentView(Resource.Layout.activity_edit_job);
+      SetContentView(Resource.Layout.activity_job_edit);
 
 			ActionBar.SetDisplayHomeAsUpEnabled(true);
 			ActionBar.SetHomeButtonEnabled(true);
@@ -45,14 +48,16 @@
 
       pager = FindViewById<ViewPager>(Resource.Id.content);
 
-      info = new NavButton(FindViewById(Resource.Id.edit), () => {
+      info = FindViewById<Button>(Resource.Id.info);
+      data = FindViewById<Button>(Resource.Id.data);
+      
+      info.Click += (s, e) => {
         pager.SetCurrentItem(0, true);
-
-      });
-
-      sessions = new NavButton(FindViewById(Resource.Id.report_sessions), () => {
+      };
+      
+      data.Click += (s, e) => {
         pager.SetCurrentItem(1, true);
-      });
+      };
 
 
       adapter = new JobFragmentAdapter(FragmentManager);
@@ -66,7 +71,7 @@
       base.OnResume();
       LoadJobAsync();
 			pager.SetCurrentItem(0, false);
-		}
+    }
 
     public override bool OnCreateOptionsMenu(IMenu menu) {
       base.OnCreateOptionsMenu(menu);
@@ -111,17 +116,17 @@
     public void OnPageSelected(int position) {
       switch (position) {
         case 0:
-          info.SetColor(new Color(GetColor(Resource.Color.black)));
-          sessions.SetColor(new Color(GetColor(Resource.Color.gray)));
-           break;
+          info.SetBackgroundResource(Resource.Drawable.xml_tab_white_light_blue);
+          data.SetBackgroundResource(Resource.Drawable.xml_tab_gray_black);
+          break;
         case 1:
-          info.SetColor(new Color(GetColor(Resource.Color.gray)));
-          sessions.SetColor(new Color(GetColor(Resource.Color.black)));
+          info.SetBackgroundResource(Resource.Drawable.xml_tab_gray_black);
+          data.SetBackgroundResource(Resource.Drawable.xml_tab_white_light_blue);
 					HideKeyboard();
           break;
       }
     }
-
+    
     /// <summary>
     /// Attempts to pull the job from the activity's Intent. If a job is not
     /// present, we will simply create a new one.
@@ -132,13 +137,15 @@
       progress.SetTitle(Resource.String.please_wait);
       progress.SetMessage(GetString(Resource.String.job_loading));
       progress.Indeterminate = true;
+      progress.SetCancelable(false);
       progress.Show();
 
       return Task.Factory.StartNew(() => {
+        var delayTask = Task.Delay(TimeSpan.FromSeconds(0.5));
+      
         try {
           if (Intent.HasExtra(EXTRA_JOB_ID)) {
             var task = ion.database.QueryForAsync<JobRow>(Intent.GetIntExtra(EXTRA_JOB_ID, -1));
-            task.Wait();
             if (task.IsCompleted && !(task.IsCanceled || task.IsFaulted)) {
               job = task.Result;
             }
@@ -150,12 +157,12 @@
         if (job == null) {
           job = new JobRow();
         }
-
-        ion.PostToMainDelayed(() => {
-          progress.Dismiss();
-          adapter.Present(job);
-        }, TimeSpan.FromSeconds(1));
-      });
+        
+        var _ = adapter.LoadAsync(job).Result;
+      }).ContinueWith((result) => {
+        progress.Dismiss();
+        adapter.Present(job);
+      }, TaskScheduler.FromCurrentSynchronizationContext());
     }
 
     private async Task SaveJobAsync() {
@@ -166,15 +173,13 @@
 
 			var success = await adapter.SaveAsync(job);
 
-			ion.PostToMain(() => {
-				if (success) {
-					Alert(Resource.String.job_saved);
-				} else {
-					Error(GetString(Resource.String.job_error_failed_to_save));
-				}
+			if (success) {
+				Alert(Resource.String.job_saved);
+			} else {
+				Error(GetString(Resource.String.job_error_failed_to_save));
+			}
 
-				progress.Dismiss();
-			});
+			progress.Dismiss();
     }
 
     private class JobFragmentAdapter : FragmentStatePagerAdapter {
@@ -183,13 +188,16 @@
           return fragments.Length;
         }
       }
+      
+      public EditJobFragment edit { get; private set; }
+      public EditJobSessionsFragment sessions { get; private set; }
 
       private Fragment[] fragments;
 
       public JobFragmentAdapter(FragmentManager fm) : base(fm) {
         fragments = new Fragment[] { 
-          new EditJobFragment(),
-          new EditJobSessionsFragment(),
+          edit = new EditJobFragment(),
+          sessions = new EditJobSessionsFragment(),
         };
       }
 
@@ -199,8 +207,22 @@
 
       public void Present(JobRow job) {
         foreach (var presenter in Presenters()) {
-          presenter.Present(job);
+          try {
+            presenter.Present(job);
+          } catch (Exception e) {
+            Log.E(this, "Failed to present display for job manager", e);
+          }
         }
+      }
+      
+      public async Task<bool> LoadAsync(JobRow job) {
+        foreach (var presenter in Presenters()) {
+          if (!await presenter.LoadAsync(job)) {
+            return false;
+          }
+        }
+
+        return true;
       }
 
       public async Task<bool> SaveAsync(JobRow job) {
@@ -226,31 +248,12 @@
         return ret;
       }
     }
-
-
-    private class NavButton {
-      ImageView icon;
-      TextView text;
-
-      public NavButton(View contentView, Action clickAction) {
-        icon = contentView.FindViewById<ImageView>(Resource.Id.icon);
-        text = contentView.FindViewById<TextView>(Resource.Id.text);
-        contentView.Click += (sender, e) => {
-          clickAction();
-        };
-      }
-
-      public void SetColor(Color color) {
-        icon.SetColorFilter(color);
-        text.SetTextColor(color);
-      }
-    }
   }
 
   public interface IJobPresenter {
-    void Present(JobRow job);
+    Task<bool> LoadAsync(JobRow job);
     Task<bool> SaveAsync(JobRow job);
-    
+    void Present(JobRow job);
   }
 }
 

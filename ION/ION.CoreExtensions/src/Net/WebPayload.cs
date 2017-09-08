@@ -698,7 +698,7 @@ namespace ION.Core.Net {
 								var	ptstate = (Fluid.EState)deserializedToken.fluidState;
 	
 								var manifoldFluid = await ion.fluidManager.LoadFluidAsync(deserializedToken.fluidname);
-								updateManifold.ptChart = PTChart.New(ion,ptstate,manifoldFluid);
+                updateManifold.ptChart = new PTChart(manifoldFluid, ptstate);
 							}   
 							
 							if(deserializedToken.linkedSerial != null && deserializedToken.linkedSerial != "null" ){ 
@@ -749,7 +749,7 @@ namespace ION.Core.Net {
 							var	ptstate = (Fluid.EState)deserializedToken.fluidState;  
 	
 							var manifoldFluid = await ion.fluidManager.LoadFluidAsync(deserializedToken.fluidname);
-							manualManifold.ptChart = PTChart.New(AppState.context,ptstate,manifoldFluid);
+              manualManifold.ptChart = new PTChart(manifoldFluid, ptstate);
 							workbench.Add(manualManifold);
 							SetupNewManifoldProperties(manualManifold,deserializedToken);
 						}					

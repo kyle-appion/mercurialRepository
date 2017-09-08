@@ -23,7 +23,13 @@
 	<string name="pkey_device_long_range">device_long_range</string>
 	<string name="pkey_device_trend_interval">device_trend_interval</string>
 
+	<string name="pkey_fluid_preferred">fluid_last</string>
+	<string name="pkey_fluid_favorites">fluid_favorites</string>
+  
+  
   <string name="pkey_help_walkthrough">help_walkthrough</string>
+  
+  <string name="pkey_job_active">job_active</string>
 
 	<string name="pkey_location_ask_for_permissions">location_ask_for_permissions</string>
   <string name="pkey_location_elevation">location_elevation</string>

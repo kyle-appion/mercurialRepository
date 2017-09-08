@@ -46,6 +46,10 @@
       AppDomain.CurrentDomain.UnhandledException += (sender, e) => {
         Log.E(this, "Uncaught Exception", e.ExceptionObject as Exception);
       };
+      Android.Runtime.AndroidEnvironment.UnhandledExceptionRaiser += (sender, e) => {
+        Log.E(this, "Unhandled exception", e.Exception);
+        e.Handled = true;
+      };
 		}
 
     public void UncaughtException(Java.Lang.Thread thread, Java.Lang.Throwable e) {
@@ -107,6 +111,7 @@
           return true;
         } else {
           // Revert to previous ion.
+          Log.E(this, "Ion failed to init async...");
           ion = AppState.context = null;
           return false;
         }
@@ -141,13 +146,12 @@
 			}
 			var total = ion.deviceManager.devices.Count;
 
-			var ic = Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop ? Resource.Drawable.ic_nav_analyzer : Resource.Drawable.ic_nav_analyzer_white;
-			var bitmap = Android.Graphics.BitmapFactory.DecodeResource(Resources, ic);
+			var bitmap = Android.Graphics.BitmapFactory.DecodeResource(Resources, Resource.Drawable.ic_nav_analyzer);
 
 			var note = new NotificationCompat.Builder(this)
 			                                 .SetColor(Resource.Color.gold)
 			                                 .SetLargeIcon(bitmap)
-			                                 .SetSmallIcon(ic)
+			                                 .SetSmallIcon(Resource.Drawable.ic_nav_analyzer_white)
 			                                 .SetContentTitle(GetString(Resource.String.app_name))
 			                                 .SetContentText(string.Format(GetString(Resource.String.devices_connected_2arg), connected, total))
 			                                 .SetContentIntent(pi)

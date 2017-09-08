@@ -87,6 +87,16 @@
     }
 
     /// <summary>
+    /// Wraps the fluid in a pt chart.
+    /// </summary>
+    /// <returns>The point chart.</returns>
+    /// <param name="state">State.</param>
+    /// <param name="elevationProvider">Elevation provider.</param>
+    public PTChart GetPtChart(EState state, ElevationProvider elevationProvider = null) {
+      return new PTChart(this, state, elevationProvider);
+    }
+
+    /// <summary>
     /// Queries the minimum temperature of the fluid.
     /// </summary>
     /// <returns>The minimum temperature.</returns>
@@ -101,6 +111,28 @@
     public Scalar GetMaximumTemperature() {
       return TEMPERATURE.OfScalar(tmax);
     }
+
+    /// <summary>
+    /// Queries the minimum pressure of the fluid regardless of state.
+    /// </summary>
+    /// <returns>The minimum pressure.</returns>
+    public Scalar GetMinimumPressure() {
+      var dewLow = GetMinimumPressure(EState.Dew);
+			var bubLow = GetMinimumPressure(EState.Bubble);
+
+      return Scalar.Min(dewLow, bubLow);
+		}
+
+		/// <summary>
+		/// Queries the maximum pressure of the fluid regardless of state.
+		/// </summary>
+		/// <returns>The maximum pressure.</returns>
+		public Scalar GetMaximumPressure() {
+			var dewLow = GetMaximumPressure(EState.Dew);
+			var bubLow = GetMaximumPressure(EState.Bubble);
+
+			return Scalar.Max(dewLow, bubLow);
+		}
 
     /// <summary>
     /// Queries the minimum pressure of the fluid in the given state.

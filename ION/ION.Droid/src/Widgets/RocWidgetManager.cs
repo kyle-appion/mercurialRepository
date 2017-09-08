@@ -265,7 +265,7 @@
 
 			var minMax = roc.GetSecondaryMinMax();
 
-			UpdateAxis(secondaryAxis, manifold.primarySensor, minMax.min, minMax.max, manifold.secondarySensor.unit, 1, 5);
+			UpdateAxis(secondaryAxis, manifold.secondarySensor, minMax.min, minMax.max, manifold.secondarySensor.unit, 1, 5);
 
 			var secondaryBuffer = roc.secondarySensorPoints;
 			var l = secondaryBuffer.Count;

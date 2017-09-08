@@ -133,6 +133,11 @@
 		/// </summary>
 		/// <value><c>true</c> if is editable; otherwise, <c>false</c>.</value>
 		public bool isEditable { get; set; }
+    /// <summary>
+    /// Whether or not the workbench is empty.
+    /// </summary>
+    /// <value><c>true</c> if is empty; otherwise, <c>false</c>.</value>
+    public bool isEmpty { get { return manifolds.Count <= 0; } }
 
     public Workbench(IION ion) {
       this.ion = ion;
@@ -207,8 +212,7 @@
         return false;
       } else {
         var m = new Manifold(sensor);
-        m.ptChart = PTChart.New(ion, Fluid.EState.Dew);
-
+        m.ptChart = ion.fluidManager.lastUsedFluid.GetPtChart(Fluid.EState.Dew);
         return Add(m);
       }
     }

@@ -96,13 +96,17 @@
   <!-- The icon height for the battery icon within the manifold for the analyzer. -->
   <dimen name="analyzer_battery_icon_height">24dp</dimen>
   <!-- The icon size for the device icon in the manifold within the anlyzer. -->
-  <dimen name="analyzer_icon_size">24dp</dimen>
-  <!-- The icon size for the device icon in the manifold within the anlyzer. -->
   <dimen name="analyzer_device_icon_size">32dp</dimen>
+  <!-- The icon size for the device icon in the manifold within the anlyzer. -->
+  <dimen name="analyzer_icon_size">24dp</dimen>
+  <!-- The text size for the measurement text view in the sensor mount header within the analyzer. -->
+  <dimen name="analyzer_sensor_mount_header">4dp</dimen>
+  <!-- The text size for the measurement text view in the sensor mount measurement within the analyzer. -->
+  <dimen name="analyzer_sensor_mount_measurement">6dp</dimen>
   <!-- The text size for the measurement text view in the manifold within the analyzer. -->
-  <dimen name="analyzer_viewer_text_size">18sp</dimen>
+  <dimen name="analyzer_viewer_text_size">14sp</dimen>
   <!-- The text size for the measurement text view in the manifold within the analyzer. -->
-  <dimen name="analyzer_viewer_measurement_text_size">24sp</dimen>
+  <dimen name="analyzer_viewer_measurement_text_size">20sp</dimen>
 
   <!--
   Device Manager dimensions
@@ -157,6 +161,13 @@
   <!-- The width and height of the clear button in the ptchart activity. -->
   <dimen name="ptchart_clear_size">12dp</dimen>
 
+	<!--
+  Report dimensions
+	-->
+  <!-- The width of the check area used in report graphing. -->
+  <dimen name="report_include_width">64dp</dimen>
+  <dimen name="report_include_height">96dp</dimen>
+
   <!--
   Viewer dimensions
   -->
@@ -177,12 +188,28 @@
   <!-- The text size for the measurement view in the viewer's content. -->
   <dimen name="viewer_measurement_text_size">64sp</dimen>
   <!-- The size of the icons in the large subview list item. -->
-  <dimen name="viewer_subview_large">48dp</dimen>
+  <dimen name="viewer_subview_large">40dp</dimen>
   <!-- The size of the icons in the large subview list item. -->
-  <dimen name="viewer_subview_huge">90dp</dimen>
+  <dimen name="viewer_subview_huge">80dp</dimen>
   <!-- The size of the icons in the large subview list item. -->
   <dimen name="viewer_subview_large_icon_size">32dp</dimen>
   <!-- The text size for the unit view in the viewer's footer. -->
   <dimen name="viewer_text_size">24sp</dimen>
 
+  <!-- The radius applied to the corners of xml shapes. -->
+	<dimen name="xml_radius">5dp</dimen>
+	<!-- The thickness of the border stroke applied to xml shapes. -->
+	<dimen name="xml_border_stroke">2dp</dimen>
+
+  <!--
+  Workbench Dimensions
+  -->
+  <dimen name="workbench_viewer_battery_icon_height">12dp</dimen>
+  <dimen name="workbench_viewer_device_icon_width">28dp</dimen>
+  <dimen name="workbench_viewer_device_icon_height">48dp</dimen>
+  <dimen name="workbench_viewer_header_text_size">18sp</dimen>
+  <dimen name="workbench_viewer_measurement_text_size">54sp</dimen>
+  <dimen name="workbench_viewer_status_icon_width">32dp</dimen>
+  <dimen name="workbench_viewer_status_icon_height">32dp</dimen>
+  <dimen name="workbench_viewer_unit_text_size">20sp</dimen>
 </resources>

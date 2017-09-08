@@ -20,7 +20,7 @@
     [PrimaryKey, AutoIncrement]
     public int MID { get; set; }
     [Ignore]
-    public int _id {get { return MID;} set { MID = value;}}
+    public int _id { get { return MID; } set { MID = value; } }
     /// <summary>
     /// The id of the session that the measurement was recorded under.
     /// </summary>
