@@ -391,14 +391,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     // Overridden from BaseIONViewController
     public override void ViewWillDisappear(bool animated) {
       base.ViewWillDisappear(animated);
-
-			if(lowHigh == 0){
-				Console.WriteLine("SHSC Set low fluid to " +this.ptChart.fluid.name);
-				ion.currentAnalyzer.lowFluid = this.ptChart.fluid;	
-			} else {
-				Console.WriteLine("SHSC Set high fluid to " +this.ptChart.fluid.name);
-				ion.currentAnalyzer.highFluid = this.ptChart.fluid;	
-			}
 			
       if (IsMovingFromParentViewController) {
         if (initialManifold != null) {

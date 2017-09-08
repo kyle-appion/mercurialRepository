@@ -66,9 +66,7 @@ namespace ION.IOS.ViewController.Logging
 		public UITableView extraInfoTable;
 
 		public UIPanGestureRecognizer lTrackerDrag;
-		public UIPanGestureRecognizer lViewDrag;
     public UIPanGestureRecognizer rTrackerDrag;
-		public UIPanGestureRecognizer rViewDrag;
 
 		public UIImageView leftTrackerCircle;
 		public UIImageView rightTrackerCircle;

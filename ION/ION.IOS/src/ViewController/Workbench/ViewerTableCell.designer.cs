@@ -16,19 +16,16 @@ namespace ION.IOS.ViewController.Workbench
 		UIKit.UIActivityIndicatorView activityConnectStatus { get; set; }
 
 		[Outlet]
+		UIKit.UIImageView batteryImage { get; set; }
+
+		[Outlet]
 		UIKit.UIButton buttonConnection { get; set; }
 
 		[Outlet]
 		UIKit.UIImageView imageAlarmIcon { get; set; }
 
 		[Outlet]
-		UIKit.UIImageView imageBattery { get; set; }
-
-		[Outlet]
 		UIKit.UIImageView imageSensorIcon { get; set; }
-
-		[Outlet]
-		UIKit.UILabel labelAlarm { get; set; }
 
 		[Outlet]
 		UIKit.UILabel labelConnectionStatus { get; set; }
@@ -37,22 +34,13 @@ namespace ION.IOS.ViewController.Workbench
 		UIKit.UILabel labelHeader { get; set; }
 
 		[Outlet]
-		UIKit.UILabel labelLinked { get; set; }
-
-		[Outlet]
 		UIKit.UILabel labelMeasurement { get; set; }
-
-		[Outlet]
-		UIKit.UILabel labelSerialNumber { get; set; }
 
 		[Outlet]
 		UIKit.UILabel labelUnit { get; set; }
 
 		[Outlet]
 		UIKit.UIView viewBackground { get; set; }
-
-		[Outlet]
-		UIKit.UIView viewDivider { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
@@ -71,19 +59,9 @@ namespace ION.IOS.ViewController.Workbench
 				imageAlarmIcon = null;
 			}
 
-			if (imageBattery != null) {
-				imageBattery.Dispose ();
-				imageBattery = null;
-			}
-
 			if (imageSensorIcon != null) {
 				imageSensorIcon.Dispose ();
 				imageSensorIcon = null;
-			}
-
-			if (labelAlarm != null) {
-				labelAlarm.Dispose ();
-				labelAlarm = null;
 			}
 
 			if (labelConnectionStatus != null) {
@@ -96,19 +74,9 @@ namespace ION.IOS.ViewController.Workbench
 				labelHeader = null;
 			}
 
-			if (labelLinked != null) {
-				labelLinked.Dispose ();
-				labelLinked = null;
-			}
-
 			if (labelMeasurement != null) {
 				labelMeasurement.Dispose ();
 				labelMeasurement = null;
-			}
-
-			if (labelSerialNumber != null) {
-				labelSerialNumber.Dispose ();
-				labelSerialNumber = null;
 			}
 
 			if (labelUnit != null) {
@@ -121,9 +89,9 @@ namespace ION.IOS.ViewController.Workbench
 				viewBackground = null;
 			}
 
-			if (viewDivider != null) {
-				viewDivider.Dispose ();
-				viewDivider = null;
+			if (batteryImage != null) {
+				batteryImage.Dispose ();
+				batteryImage = null;
 			}
 		}
 	}

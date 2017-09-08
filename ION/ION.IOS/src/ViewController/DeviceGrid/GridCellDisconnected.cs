@@ -53,8 +53,9 @@ namespace ION.IOS.ViewController.DeviceGrid {
       sensorStatusMask = new UILabel(new CGRect(0,.5 * ContentView.Bounds.Height,sensorStatusView.Bounds.Width, .2 * sensorStatusView.Bounds.Height));
       sensorStatusMask.BackgroundColor = UIColor.Black;
 
-			connectionImage = new UIImageView(new CGRect(.05 * sensorStatusView.Bounds.Width, .25 * sensorStatusView.Bounds.Height, .1 * sensorStatusView.Bounds.Width, .45 * sensorStatusView.Bounds.Height));
-      connectionImage.Layer.CornerRadius = 8f;
+			connectionImage = new UIImageView(new CGRect(.05 * sensorStatusView.Bounds.Width, .25 * sensorStatusView.Bounds.Height, .7 * sensorStatusView.Bounds.Height, .6 * sensorStatusView.Bounds.Height));
+			connectionImage.Image = UIImage.FromBundle("ic_radio_blank");
+			connectionImage.Image = connectionImage.Image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
 			connectionImage.Layer.MasksToBounds = true;
 
 			extraImage = new UIImageView(new CGRect(.25 * sensorStatusView.Bounds.Width, .1 * sensorStatusView.Bounds.Height, .25 * sensorStatusView.Bounds.Width, sensorStatusView.Bounds.Height));
@@ -82,19 +83,17 @@ namespace ION.IOS.ViewController.DeviceGrid {
 		}
 
 		public void UpdateCell(GaugeDeviceSensor sensor) {
-			//slotSensor.onSensorStateChangedEvent -= gaugeUpdating;
 			slotSensor = sensor;
 			if (slotSensor == null) {
 				ContentView.Hidden = true;
 				BackgroundView.Hidden = true;
 			} else {
-				//slotSensor.onSensorStateChangedEvent += gaugeUpdating;
 				typeLabel.Text = " " + slotSensor.device.serialNumber.deviceModel.GetTypeString();
 
         if(slotSensor.device.isConnected){
-					connectionImage.BackgroundColor = UIColor.Green;
+					connectionImage.TintColor = UIColor.Green;
 				} else {
-					connectionImage.BackgroundColor = UIColor.Red;
+					connectionImage.TintColor = UIColor.Red;
 				}
 				ContentView.Hidden = false;
 				BackgroundView.Hidden = false;
@@ -112,39 +111,5 @@ namespace ION.IOS.ViewController.DeviceGrid {
 				}
 			}
 		}
-
-		//public async void gaugeUpdating(Sensor sensor) {
-			//await Task.Delay(TimeSpan.FromMilliseconds(1));
-			//var gaugeSensor = sensor as GaugeDeviceSensor;
-
-
-		//}
-
-		//private UIImage GetColoredImage(string imageName, UIColor color) {
-		//	UIImage image = UIImage.FromBundle(imageName);
-		//	UIImage coloredImage = null;
-
-		//	UIGraphics.BeginImageContext(image.Size);
-		//	using (CGContext context = UIGraphics.GetCurrentContext()) {
-
-		//		context.TranslateCTM(0, image.Size.Height);
-		//		context.ScaleCTM(1.0f, -1.0f);
-
-		//		var rect = new RectangleF(0, 0, (float)image.Size.Width, (float)image.Size.Height);
-
-		//		// draw image, (to get transparancy mask)
-		//		context.SetBlendMode(CGBlendMode.Normal);
-		//		context.DrawImage(rect, image.CGImage);
-
-		//		// draw the color using the sourcein blend mode so its only draw on the non-transparent pixels
-		//		context.SetBlendMode(CGBlendMode.SourceIn);
-		//		context.SetFillColor(color.CGColor);
-		//		context.FillRect(rect);
-
-		//		coloredImage = UIGraphics.GetImageFromCurrentImageContext();
-		//		UIGraphics.EndImageContext();
-		//	}
-		//	return coloredImage;
-		//}
 	}
 }
