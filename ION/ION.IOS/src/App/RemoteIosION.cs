@@ -12,7 +12,7 @@ using ION.Core.Fluids;
 using ION.Core.IO;
 using ION.Core.Report.DataLogs;
 
-using ION.CoreExtensions.Net;
+using ION.CoreExtensions.Net.Portal;
 
 using ION.IOS.Alarms.Alerts;
 using ION.IOS.IO;
@@ -31,7 +31,7 @@ namespace ION.IOS.App {
     public IPlatformInfo remotePlatformInfo { get; private set; }
   
 
-    public RemoteIosION(WebPayload webServices) : base(webServices) {
+    public RemoteIosION(IONPortalService portal) : base(portal) {
     }
 
     protected override void OnCreateManagers() {

@@ -56,7 +56,7 @@ namespace ION.IOS.ViewController.CloudSessions {
 			stopButton.TouchUpInside += (sender, e) => {stopButton.BackgroundColor = UIColor.Clear; selectionView.remoteMenuButton.Enabled = true;};
 			stopButton.TouchUpInside += (sender, e) => {stopUploadStatus();};
 			
-			if(ion.webServices.uploading){
+			if(ion is RemoteIosION){
 				uploadButton = new UIBarButtonItem(stopButton);
 			}else {
 				uploadButton = new UIBarButtonItem(startButton);
@@ -92,8 +92,9 @@ namespace ION.IOS.ViewController.CloudSessions {
 				uniqueIdentifier = UIDevice.CurrentDevice.IdentifierForVendor.ToString(),
 			};
 			////CREATE OR UPDATE A LAYOUT ENTRY FOR A DEVICE UNDER THE LOGGED IN ACCOUNT AND SET THAT LAYOUT ENTRY TO BE UPDATED THIS SESSION
-			var feedback = await ion.webServices.createSystemLayout(ion, userID, uploadingDevice.uniqueIdentifier, uploadingDevice.name);
-			
+      var response = ion.portal.BeginAppStateUpload(ion);
+      // todo ahodder@appioninc.com: this needs to be localized. also, we can use error codes instead of strings
+/*			
 			if(feedback != null){				
 				var textResponse = await feedback.Content.ReadAsStringAsync();
 				Console.WriteLine(textResponse);
@@ -107,8 +108,6 @@ namespace ION.IOS.ViewController.CloudSessions {
 					var layoutID = response.GetValue("layoutid").ToString();
 					KeychainAccess.SetValueForKey(layoutID,"layoutid");
 					
-					ion.webServices.uploading = true;
-				
 					var alert = UIAlertController.Create ("Begin Upload", errorMessage, UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
@@ -128,6 +127,7 @@ namespace ION.IOS.ViewController.CloudSessions {
 				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 				rootVC.PresentViewController (alert, animated: true, completionHandler: null);			
 			}
+*/
 			
 			selectionView.GetAccessList();			
 		}
@@ -139,6 +139,16 @@ namespace ION.IOS.ViewController.CloudSessions {
 			var userID = KeychainAccess.ValueForKey("userID");		
 			var layoutID = KeychainAccess.ValueForKey("layoutid");		
 		
+      // todo ahodder@appioninc.com: this needs to be localized. also, we can use error codes instead of strings
+      // todo ahodder@appioninc.com: are we changing the fact that they are logging in or that they are uploading?
+/*
+      online and uploading should be distinct. for instance, i can envision a situation in which a amanager or
+      employee would like to ping an account requsting remote access. this would require that that we maintain the
+      distinction between online and uploading
+*/
+      ion.portal.EndAppStateUpload();
+
+/*
 			var feedback = await ion.webServices.updateOnlineStatus(userID, layoutID);
 			
 			if(feedback != null){
@@ -149,7 +159,6 @@ namespace ION.IOS.ViewController.CloudSessions {
 				//parse the text string into a json object to be deserialized
 				JObject response = JObject.Parse(textResponse);
 
-				ion.webServices.uploading = false;
 				uploadButton = new UIBarButtonItem(startButton);
 				this.NavigationItem.RightBarButtonItem = uploadButton;
 
@@ -163,13 +172,14 @@ namespace ION.IOS.ViewController.CloudSessions {
 				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 				rootVC.PresentViewController (alert, animated: true, completionHandler: null);			
 			}
+*/
 			selectionView.GetAccessList();		
 			
 		}
 		
 		public override void ViewDidAppear(bool animated) {
 			if(selectionView != null){
-				if(ion.webServices.remoteViewing){
+        if(ion is RemoteIosION){
 					selectionView.fullMenuButton.Hidden = false;
 					selectionView.remoteMenuButton.Hidden = true;
 				} else {
@@ -185,6 +195,9 @@ namespace ION.IOS.ViewController.CloudSessions {
 			var layoutID = KeychainAccess.ValueForKey("layoutid");		
 			
 			/////A LAYOUT ID WAS CREATED OR RETRIEVED AND CAN BE USED FOR UPLOADING THE CURRENT DEVICE LAYOUT
+      // todo ahodder@appioninc.com: this needs to be localized. also, we can use error codes instead of strings
+      ion.portal.BeginAppStateUpload(ion);
+/*
 			while(ion.webServices.uploading){
 				var feedback = await ion.webServices.uploadSystemLayout(ion, userID, layoutID);
 				if(feedback != null){
@@ -223,6 +236,7 @@ namespace ION.IOS.ViewController.CloudSessions {
 				}
 				await Task.Delay(TimeSpan.FromSeconds(1));
 			}
+*/
 		}
 
 		public override void DidReceiveMemoryWarning() {

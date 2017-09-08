@@ -187,7 +187,7 @@ namespace ION.Droid.Activity.Portal {
 			pd.SetCancelable(false);
 			pd.Show();
 
-			await ion.portal.Logout();
+			await ion.portal.LogoutAsync();
 			pd.Dismiss();
 
 			Finish();

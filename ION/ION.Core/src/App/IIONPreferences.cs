@@ -133,6 +133,7 @@
 
   public interface IPortalPreferences {
     bool rememberMe { get; set; }
+    int userId { get; set; }
     string username { get; set; }
     string password { get; set; }
   }

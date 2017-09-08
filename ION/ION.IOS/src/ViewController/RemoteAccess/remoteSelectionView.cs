@@ -8,6 +8,10 @@ using Newtonsoft.Json;
 
 using ION.Core.App;
 using ION.Core.Net;
+
+
+using ION.CoreExtensions.Net.Portal;
+
 using Foundation;
 using ION.IOS.App;
 using AudioToolbox;
@@ -26,16 +30,16 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public UITableView onlineTable;
 		public UIActivityIndicatorView loadingUsers;
 		public UIRefreshControl reloadOnline;
-		public List<accessData> onlineUsers;
-		public ObservableCollection<accessData> selectedUser;
+		public List<ConnectionData> onlineUsers;
+		public ObservableCollection<ConnectionData> selectedUser;
 		public IosION ion;
 		
 		public remoteSelectionView(UIView parentView) {
 			ion = AppState.context as IosION; 
 
-      ion.webServices.timedOut += timeOutAlert;
+//      ion.webServices.timedOut += timeOutAlert;
 			// Perform any additional setup after loading the view, typically from a nib.
-			selectedUser = new ObservableCollection<accessData>();
+			selectedUser = new ObservableCollection<ConnectionData>();
 			selectedUser.CollectionChanged += checkForSelected;
 			selectionView = new UIView(new CGRect(0,0,parentView.Bounds.Width, parentView.Bounds.Height));
 			selectionView.BackgroundColor = UIColor.White;
@@ -76,6 +80,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			remoteMenuButton.TouchUpInside += async (sender, e) => {
 				remoteMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
 				var checkSource = onlineTable.Source as RemoteAccessTableSource;
+/*
 				if(ion.webServices.uploading && checkSource.selectedUser[0].deviceID == UIDevice.CurrentDevice.IdentifierForVendor.ToString()){
 					checkSource.selectedUser.Clear();
 					var alert = UIAlertController.Create ("Unable to View", "You cannot view your current layout while uploading from the same device", UIAlertControllerStyle.Alert);
@@ -95,27 +100,28 @@ namespace ION.IOS.ViewController.RemoteAccess {
 						remoteMenuButton.Hidden = true;
 						fullMenuButton.Hidden = false;
 						onlineTable.UserInteractionEnabled = false;
-						ion.webServices.remoteViewing = true;
+//						ion.webServices.remoteViewing = true;
 						
 						///CHANGE THE APP MENU AND DEVICE MANAGER TO REFLECT REMOTE VIEWING OPTIONS
-            var rion = new RemoteIosION(ion.webServices);
+            var rion = new RemoteIosION(ion.portal);
             if (!await rion.InitAsync()) {
               // todo ahoder@appioninc.com: do an actual error dialog here
               throw new Exception("Failed to initialize remote ion");
             }
 						AppState.context = rion;
 	        	rootVC.setRemoteMenu();
-						ion.webServices.downloading = true;
+//						ion.webServices.downloading = true;
 						///START THE LAYOUT DOWNLOADING PROCESS
 						startDownloading();
 						onlineTable.ReloadData();
-						ion.webServices.timedOut += timeOutAlert;					
+//						ion.webServices.timedOut += timeOutAlert;					
 	        } else {
 						var alert = UIAlertController.Create ("Unable to View", "User is not available. Please try again.", UIAlertControllerStyle.Alert);
 						alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 						rootVC.PresentViewController (alert, animated: true, completionHandler: null);
 					}
 				}
+*/
 			};
 			
 			fullMenuButton = new UIButton(new CGRect(.3 * selectionView.Bounds.Width, .87 * selectionView.Bounds.Height, .4 * selectionView.Bounds.Width, .1 * selectionView.Bounds.Height));
@@ -138,9 +144,12 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				fullMenuButton.Hidden = true;
 				remoteMenuButton.Hidden = false;
 				onlineTable.UserInteractionEnabled = true;
+        // todo ahodder@appioninc.com: ensure that these features are not needed. 
+/*
 				ion.webServices.remoteViewing = false;
 				ion.webServices.downloading = false;
 				ion.webServices.paused = null;
+*/
 				await Task.Delay(TimeSpan.FromMilliseconds(1));
 				
 				NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
@@ -149,14 +158,15 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				onlineTable.ReloadData();						
 				
 				///SET THE APP MENU AND DEVICE MANAGER BACK TO THE LOCAL DEVICE'S SETTINGS
-        var lion = new LocalIosION(ion.webServices);
+        var lion = new LocalIosION(ion.portal);
         if (!await lion.InitAsync()) {
-          // todo ahoder@appioninc.com: do an actual error dialog here
+          // todo ahodder@appioninc.com: do an actual error dialog here
           throw new Exception("Failed to initialize local ion");
         }
         AppState.context = lion;
 				rootVC.setMainMenu();
-				ion.webServices.timedOut -= timeOutAlert;
+        // todo ahodder@appioninc.com: this is a note for andy: we need to implement timeouts and the passive service maintainer
+//				ion.webServices.timedOut -= timeOutAlert;
 			};
 			
 			loadingUsers = new UIActivityIndicatorView(new CGRect(0, 0, parentView.Bounds.Width, parentView.Bounds.Height));
@@ -175,45 +185,32 @@ namespace ION.IOS.ViewController.RemoteAccess {
 
 		public async void GetAccessList(){
 			loadingUsers.StartAnimating();
-			await Task.Delay(TimeSpan.FromMilliseconds(1));
-			onlineUsers = new List<accessData>();
-			var ID = KeychainAccess.ValueForKey("userID");
-
-			var feedback = await ion.webServices.GetAccessList(ID);
+			onlineUsers = new List<ConnectionData>();
+      
+      var response = await ion.portal.RequestConnectionData();
+      if (response.success) {
+        onlineUsers.Clear();
+        onlineUsers.AddRange(ion.portal.onlineConnections);
+      } else {
+        var window = UIApplication.SharedApplication.KeyWindow;
+        var rootVC = window.RootViewController as IONPrimaryScreenController;
+        // TODO ahodder@appioninc.com: localize errors
+        switch (response.error) {
+          case IONPortalService.EError.InternalError: {
+            var alert = UIAlertController.Create ("Remote Viewing", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
+            alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+            rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+          } break;
+          default: {
+            var errorMessage = "US UNKNOWN ERROR";
+            var alert = UIAlertController.Create ("Remote Viewing", errorMessage, UIAlertControllerStyle.Alert);
+            alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+            rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+          } break;
+        }
+      }
 			
-			var window = UIApplication.SharedApplication.KeyWindow;
-  		var rootVC = window.RootViewController as IONPrimaryScreenController;
-  		
-			if(feedback != null){
-			
-				var textResponse = await feedback.Content.ReadAsStringAsync();
-				////parse the text string into a json object to be deserialized
-				JObject response = JObject.Parse(textResponse);
-				var success = response.GetValue("success");
-	
-				if(success.ToString() == "true"){
-					var viewing = response.GetValue("online");
-
-					foreach(var user in viewing){
-						var deserializedToken = JsonConvert.DeserializeObject<accessData>(user.ToString());	
-              if(deserializedToken.online	== 1){			
-							  onlineUsers.Add(deserializedToken);
-              }
-					}
-				}  else {
-					var errorMessage = response.GetValue("message").ToString();
-					
-					var alert = UIAlertController.Create ("Remote Viewing", errorMessage, UIAlertControllerStyle.Alert);
-					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
-					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-				}
-			} else {
-				var alert = UIAlertController.Create ("Remote Viewing", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
-				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
-				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-			}
-			
-			onlineTable.Source = new RemoteAccessTableSource(onlineUsers, selectedUser, ion.webServices.webClient);
+			onlineTable.Source = new RemoteAccessTableSource(onlineUsers, selectedUser);
 			onlineTable.ReloadData();
 			
 			loadingUsers.StopAnimating();
@@ -231,22 +228,24 @@ namespace ION.IOS.ViewController.RemoteAccess {
     }
     
 		public async void timeOutAlert(string offlineMessage){
+/*
 			if(ion.webServices.downloading == false){
 				return;
 			}		
 			ion.webServices.timedOut -= timeOutAlert;
 
-      var window = UIApplication.SharedApplication.KeyWindow;
-      var rootVC = window.RootViewController as IONPrimaryScreenController;
-      
 		 	ion.webServices.downloading = false;
 		 	ion.webServices.remoteViewing = false;
 		 	ion.webServices.paused = null;
+*/
+
+      var window = UIApplication.SharedApplication.KeyWindow;
+      var rootVC = window.RootViewController as IONPrimaryScreenController;
 		 	
 			NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
 			NSUserDefaults.StandardUserDefaults.SetString("","viewedLayout");
 
-			var lion = new LocalIosION(ion.webServices);
+			var lion = new LocalIosION(ion.portal);
         if (!await lion.InitAsync()) {
           // todo ahoder@appioninc.com: do an actual error dialog here
           throw new Exception("Failed to initialize local ion");
@@ -261,9 +260,12 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		}
 		
 		public async void startDownloading(){
+      // todo ahodder@appioninc.com: this needs to be localized. also, we can use error codes instead of strings
+
+      /*
 			var viewingID = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
 			var viewingLayout =	NSUserDefaults.StandardUserDefaults.StringForKey("viewedLayout");
-				
+
 			var loggedUser = KeychainAccess.ValueForKey("userID");
 			var loggingInterval = Convert.ToInt32(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval"));
 			ion.webServices.paused += pauseRemote;
@@ -271,8 +273,9 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				await ion.webServices.DownloadLayouts(ion, viewingID, loggingInterval, viewingLayout);
 			}
 			//webServices.StartLayoutDownload(viewingID,loggedUser,loggingInterval,viewingLayout);
+*/
 		}
-		
+/*
 		public void pauseRemote(bool paused){
 			if(paused == false){
 				Console.WriteLine("Should be starting the download now");
@@ -285,24 +288,6 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				ion.webServices.StartLayoutDownload(ion, viewingID,loggedUser,loggingInterval,viewingLayout);
 			}
 		}
-	}
-	
-	[Foundation.Preserve(AllMembers = true)]
-	public class accessData{
-		public accessData(){}
-		[JsonProperty("display")]
-		public string displayName { get; set; }
-		[JsonProperty("email")]
-		public string email { get; set; }
-		[JsonProperty("ID")]
-		public int id { get; set; }
-		[JsonProperty("online")]
-		public int online { get; set; }
-		[JsonProperty("devicename")]
-		public string deviceName { get; set; }
-		[JsonProperty("deviceid")]
-		public string deviceID { get; set; }		
-		[JsonProperty("layoutid")]
-		public int layoutid { get; set; }
+*/
 	}
 }

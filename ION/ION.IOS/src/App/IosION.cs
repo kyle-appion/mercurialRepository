@@ -21,7 +21,7 @@ using ION.Core.IO;
 using ION.Core.Location;
 using ION.Core.Report.DataLogs;
 
-using ION.CoreExtensions.Net;
+using ION.CoreExtensions.Net.Portal;
 
 using ION.IOS.Alarms.Alerts;
 using ION.IOS.IO;
@@ -96,7 +96,7 @@ namespace ION.IOS.App {
     /// <summary>
     /// The interface that will allow the ion instance to communicate with the Appion web services.
     /// </summary>
-    public WebPayload webServices { get; private set; }
+    public IONPortalService portal { get; private set; }
     
     /// <summary>
     /// The mapping to the type secured settings.
@@ -159,8 +159,8 @@ namespace ION.IOS.App {
     /// Creates a new BaseION.
     /// </summary>
     /// <param name="name">Name.</param>
-    public IosION(WebPayload webServices) {
-      this.webServices = webServices;
+    public IosION(IONPortalService portal) {
+      this.portal = portal;
     }
     
     // Implemented From IION

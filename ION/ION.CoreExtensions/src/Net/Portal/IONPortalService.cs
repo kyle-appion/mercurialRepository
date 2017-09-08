@@ -47,6 +47,7 @@
 		private const string URL_ACCESS_CODE_CREATE = "http://portal.appioninc.com/App/requestAccess.php";
 		private const string URL_ACCESS_CODE_DELETE = "http://portal.appioninc.com/App/deleteAccess.php";
 		private const string URL_ACCESS_CODE_PENDING = "http://portal.appioninc.com/App/getRequests.php";
+    private const string URL_ACCOUNT_STATUS = "http://portal.appioninc.com/App/setAccountStatus.php";
 		private const string URL_CHANGE_STATUS = "http://portal.appioninc.com/App/changeOnlineStatus.php";
 		private const string URL_CLONE_REMOTE = "http://portal.appioninc.com/App/downloadLayouts.php";
     private const string URL_RSS_FEED = "http://portal.appioninc.com/RSS/feed.xml";
@@ -122,6 +123,13 @@
     private const string JSON_LAYOUT_ID = "layoutID";
     private const string JSON_LAYOUT_ID_LOWER = "layoutid";
     private const string JSON_LOGGING = "logging";
+    private const string JSON_UPDATE_LOGGING = "updateLogging";
+    private const string JSON_UPDATE_DISPLAY = "updateDisplay";
+    private const string JSON_LOG_STATUS = "logState";
+    [Obsolete("This NEEDS to be changed to 'user.id'")]
+    private const string JSON_VIEWED_USER = "viewedUser";
+    [Obsolete("This NEEDS to be changed to 'layoutId'")]
+    private const string JSON_VIEWED_LAYOUT = "viewedLayout";
 
     private const string JSON_ACTION_CLONE_REMOTE = "downloadLayouts";
 
@@ -139,7 +147,7 @@
 		/// Whether or not a user is logged into the portal service.
 		/// </summary>
 		/// <value><c>true</c> if is logged in; otherwise, <c>false</c>.</value>
-		public bool isLoggedIn { get; private set; }
+		public bool isLoggedIn { get { return user != null; } }
 		/// <summary>
 		/// Gets the logged in time.
 		/// </summary>
@@ -196,7 +204,7 @@
 		public string loginPortalUrl {
 			get {
 				if (isLoggedIn) {
-					return string.Format(URL_LOGIN_USER_2_ARG, userEmail, userPassword);
+					return string.Format(URL_LOGIN_USER_2_ARG, user.email, user.password);
 				} else {
 					return "";
 				}
@@ -205,16 +213,12 @@
 
 		private WebClient web;
 		private HttpClient client;
-
-		public string loginId { get; private set; }
-		public string displayName { get; private set; }
-		public string userEmail { get; private set; }
-
+    
     /// <summary>
-    /// The user's password. 
+    /// The parameters describing the current user.
     /// </summary>
-    // TODO ahodder@appioninc.com: think of a way to get rid of this.
-    private string userPassword;
+    public UserParameters user;
+    
     /// <summary>
     /// The current layout if for the device. Used to identify the current layout for the user.
     /// If null, then RequestLayoutIdAsync must be called.
@@ -259,16 +263,13 @@
 		/// <summary>
 		/// Logs the current user out.
 		/// </summary>
-		public async Task Logout() {
-			isLoggedIn = false;
-			loginId = null;
-			displayName = null;
-			userEmail = null;
+		public async Task LogoutAsync() {
+      user = null;
 
 			try {
 				var data = new NameValueCollection();
 				data.Add(JSON_CHANGE_STATUS, TRUE);
-				data.Add(JSON_ID_CAP, loginId);
+				data.Add(JSON_ID_CAP, user.id);
 				data.Add(JSON_STATUS, "0");
 
 				var response = await web.UploadValuesTaskAsync(URL_CHANGE_STATUS, data);
@@ -281,7 +282,6 @@
 			} catch (Exception e) {
 				Log.E(this, "Failed to properly logout the user.", e);
 			}
-
 		}
 
 		/// <summary>
@@ -299,7 +299,7 @@
 		/// <returns>The user.</returns>
 		/// <param name="password">Password.</param>
 		/// <param name="email">Email.</param>
-		public async Task<PortalResponse> RegisterUser(string email, string password) {
+		public async Task<PortalResponse<string>> RegisterUser(string email, string password) {
 			try {
 				var formContent = new FormUrlEncodedContent(new [] {
 					new KeyValuePair<string, string>(JSON_REGISTER_USER, JSON_NEW_USER),
@@ -313,14 +313,13 @@
 				var json = JObject.Parse(content);
 
 				if (CheckResponseForSuccess(json)) {
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString());
+					return new PortalResponse<string>(response, json.GetValue(JSON_MESSAGE).ToString());
 				} else {
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString(), EError.ServerError);
+					return new PortalResponse<string>(response, json.GetValue(JSON_MESSAGE).ToString(), EError.ServerError);
 				}
 
 			} catch (Exception e) {
-				Log.E(this, "Failed to register user", e);
-				return new PortalResponse(null, "", EError.InternalError);
+				return new PortalResponse<string>(null, EError.InternalError).WithErrorMessage("Failed to register user", e);
 			}
 		}
 
@@ -329,7 +328,11 @@
 		/// </summary>
 		/// <param name="username">Username.</param>
 		/// <param name="password">Password.</param>
-		public async Task<PortalResponse> RequestLoginAsync(string username, string password) {
+		public async Task<PortalResponse<UserParameters>> RequestLoginAsync(string username, string password) {
+      if (isLoggedIn) {
+        await LogoutAsync();
+      }
+    
 			// The form that is used to login to the remote server
 			var formContent = new FormUrlEncodedContent(new[] {
 				new KeyValuePair<string, string>(LOGIN_USER, RETURNING),
@@ -344,24 +347,56 @@
 				var isUserFound = json[JSON_FOUND].ToString();
 
 				if (isUserFound.Equals(TRUE)) {
-					loginId  = json[JSON_MESSAGE].ToString();
-					displayName = json[JSON_DISPLAY].ToString();
-					userEmail = json[JSON_EMAIL].ToString();
-					userPassword = password;
-
-					isLoggedIn = true;
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString());
+          var user = new UserParameters();
+					user.id  = json[JSON_MESSAGE].ToString();
+					user.displayName = json[JSON_DISPLAY].ToString();
+					user.email = json[JSON_EMAIL].ToString();
+          user.username = username;
+					user.password = password;
+          this.user = user;
+					return new PortalResponse<UserParameters>(response, user);
 				} else {
-					Log.E(this, "Failed to log user into the portal: " + json[JSON_MESSAGE].ToString());
 					// We did not find the user
-					isLoggedIn = false;
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString(), EError.ServerError);
+          this.user = null;
+					return new PortalResponse<UserParameters>(response, null, EError.ServerError).WithErrorMessage(json.GetValue(JSON_MESSAGE).ToString());
 				}
 			} catch (Exception e) {
-				Log.E(this, "Failed to log user in.", e);
-				return new PortalResponse(null, "", EError.InternalError);
+				return new PortalResponse<UserParameters>(null, EError.InternalError).WithErrorMessage("Failed to login", e);
 			}
 		}
+
+    /// <summary>
+    /// Posts a request to the Appion Portal that the user's first and last name be updated.
+    /// </summary>
+    /// <returns>The change display name.</returns>
+    /// <param name="firstName">First name.</param>
+    /// <param name="lastName">Last name.</param>
+    public async Task<PortalResponse> RequestChangeDisplayName(string firstName, string lastName) {
+      if (!isLoggedIn) {
+        return new PortalResponse(EError.NotLoggedIn);
+      }
+
+      var formContent = new FormUrlEncodedContent(new[] {
+        new KeyValuePair<string, string>(JSON_UPDATE_DISPLAY, TRUE),
+        new KeyValuePair<string, string>(JSON_FIRST_NAME, firstName),
+        new KeyValuePair<string, string>(JSON_LAST_NAME, lastName),
+        new KeyValuePair<string, string>(JSON_USER_ID, user.id),
+  	  });
+
+      try {
+        var response = await client.PostAsync(URL_UPDATE_ACCOUNT, formContent);
+        var content = await response.Content.ReadAsStringAsync();
+        var json = JObject.Parse(content);
+
+        if (CheckResponseForSuccess(json)) {
+          return new PortalResponse(response, EError.Success);          
+        } else {
+          return new PortalResponse(response, EError.ServerError);
+        }
+      } catch (Exception e) {
+        return new PortalResponse(EError.InternalError).WithErrorMessage("Failed to RequestChangeDisplayName", e);
+      }
+    }
 
 		/// <summary>
 		/// Posts a request to the Portal server that a user wishes to reset their password.
@@ -380,14 +415,13 @@
 				var json = JObject.Parse(content);
 
 				if (CheckResponseForSuccess(json)) {
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString());
+					return new PortalResponse(response);
 				} else {
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString(), EError.ServerError);
+					return new PortalResponse(response, EError.ServerError).WithErrorMessage(json.GetValue(JSON_MESSAGE).ToString());
 				}
 
 			} catch (Exception e) {
-				Log.E(this, "Failed to reset user password", e);
-				return new PortalResponse(null, "", EError.InternalError);
+				return new PortalResponse(null, EError.InternalError).WithErrorMessage("Failed to reset user password", e);
 			}
 		}
 
@@ -398,14 +432,14 @@
 		/// <param name="newPassword">New password.</param>
 		public async Task<PortalResponse> RequestUpdatePassword(string newPassword) {
 			if (!isLoggedIn) {
-				return new PortalResponse(null, "", EError.NotLoggedIn);
+				return new PortalResponse(EError.NotLoggedIn);
 			}
 
 			try {
 				var formContent = new FormUrlEncodedContent(new[] {
 					new KeyValuePair<string, string>(JSON_UPDATE_PASSWORD, NEW),
 					new KeyValuePair<string, string>(JSON_NEW_PASSWORD, newPassword),
-					new KeyValuePair<string, string>(JSON_USER_ID, loginId),
+					new KeyValuePair<string, string>(JSON_USER_ID, user.id),
 				});
 
 				var response = await client.PostAsync(URL_UPDATE_ACCOUNT, formContent);
@@ -413,15 +447,33 @@
 				var json = JObject.Parse(content);
 
 				if (CheckResponseForSuccess(json)) {
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString());
+					return new PortalResponse(response);
 				} else {
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString(), EError.ServerError);
+					return new PortalResponse(response, EError.ServerError).WithErrorMessage(json.GetValue(JSON_MESSAGE).ToString());
 				}
 			} catch (Exception e) {
-				Log.E(this, "Failed to update password", e);
-				return new PortalResponse(null, "", EError.InternalError);
+				return new PortalResponse(null, EError.InternalError).WithErrorMessage("Failed to update password", e);
 			}
 		}
+
+    /// <summary>
+    /// Uploads the given sessions to the ION server.
+    /// </summary>
+    /// <returns>The upload sessions async.</returns>
+    /// <param name="ion">Ion.</param>
+    /// <param name="sessionIds">Session identifiers.</param>
+    public async Task<PortalResponse> RequestUploadSessionsAsync(IION ion, IEnumerable<int> sessionIds) {
+      var srs = new List<SessionRow>();
+
+      foreach (var id in sessionIds) {
+        var sr = await ion.database.QueryForAsync<SessionRow>(id);
+        if (sr != null) {
+          srs.Add(sr);
+        }
+      }
+
+      return await RequestUploadSessionsAsync(ion, srs);
+    }
 
 		/// <summary>
 		/// Uploads the given sessions to the ION server. If there is an internal (client packaging) error, then the portal
@@ -431,7 +483,7 @@
 		/// <param name="sessions">Sessions.</param>
 		public async Task<PortalResponse> RequestUploadSessionsAsync(IION ion, IEnumerable<SessionRow> sessions) {
 			if (!isLoggedIn) {
-				return new PortalResponse(null, "", EError.NotLoggedIn);
+				return new PortalResponse(EError.NotLoggedIn);
 			}
 
 			// TODO ahodder@appioninc.com: The webservice currently only supports one upload at a time.
@@ -469,7 +521,7 @@
 
 				package[JSON_UPLOAD_SESSION] = true;
 				package[JSON_SESSION_DATA] = root.ToString();
-				package[JSON_USER_ID] = loginId;
+				package[JSON_USER_ID] = user.id;
 
 				var p = new JObject();
 				p[JSON_UPLOAD_PACKAGE] = package;
@@ -480,16 +532,15 @@
 				var response = await client.PostAsync(URL_UPLOAD_SESSION, postContent);
 
 				if (response == null) {
-					return new PortalResponse(null, "", EError.ServerError);
+					return new PortalResponse(null, EError.ServerError);
 				}
 
 				var content = await response.Content.ReadAsStringAsync();
 				var json = JObject.Parse(content);
 
-				return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString());
+				return new PortalResponse(response);
 			} catch (Exception e) {
-				Log.E(this, "Failed to upload sessions", e);
-				return new PortalResponse(null, "", EError.InternalError);
+				return new PortalResponse(null, EError.InternalError).WithErrorMessage("Failed to upload session", e);
 			}
 		}
 
@@ -499,15 +550,15 @@
 		/// <returns>The access code async.</returns>
 		// TODO ahodder@appioninc.com: This query could use error codes.
 		// Ie. currently, if the user mashes generate new access codes, then we will fail with no relavent [localized] message.
-		public async Task<PortalResponse> RequestAccessCodeAsync() {
+		public async Task<PortalResponse<string>> RequestAccessCodeAsync() {
 			if (!isLoggedIn) {
-				return new PortalResponse(null, "", EError.NotLoggedIn);
+				return new PortalResponse<string>(null, EError.NotLoggedIn);
 			}
 
 			try {
 				var formContent = new FormUrlEncodedContent(new [] {
 					new KeyValuePair<string, string>(JSON_ACCESS_CODE_CREATE, TRUE),
-					new KeyValuePair<string, string>(JSON_USER_ID, loginId),
+					new KeyValuePair<string, string>(JSON_USER_ID, user.id),
 					new KeyValuePair<string, string>(JSON_PERMANENT, "1"),
 				});
 
@@ -516,13 +567,12 @@
 				var json = JObject.Parse(content);
 
 				if (CheckResponseForSuccess(json)) {
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString());
+					return new PortalResponse<string>(response, json.GetValue(JSON_MESSAGE).ToString());
 				} else {
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString(), EError.ServerError);
+					return new PortalResponse<string>(response, null, EError.ServerError).WithErrorMessage(json.GetValue(JSON_MESSAGE).ToString());
 				}
 			} catch (Exception e) {
-				Log.E(this, "Failed to generate access code.", e);
-				return new PortalResponse(null, "", EError.InternalError);
+				return new PortalResponse<string>(null, EError.InternalError).WithErrorMessage("Failed to generate access code", e);
 			}
 		}
 
@@ -532,13 +582,13 @@
 		/// <returns>The pending access codes async.</returns>
 		public async Task<PortalResponse<List<AccessCode>>> RequestPendingAccessCodesAsync() {
 			if (!isLoggedIn) {
-				return new PortalResponse<List<AccessCode>>(null, "", EError.NotLoggedIn);
+				return new PortalResponse<List<AccessCode>>(null, EError.NotLoggedIn);
 			}
 
 			try {
 				var formContent = new FormUrlEncodedContent(new [] {
 					new KeyValuePair<string, string>(JSON_ACCESS_CODE_PENDING, JSON_MANAGER),
-					new KeyValuePair<string, string>(JSON_USER_ID, loginId),
+					new KeyValuePair<string, string>(JSON_USER_ID, user.id),
 				});
 
 				var response = await client.PostAsync(URL_ACCESS_CODE_PENDING, formContent);
@@ -563,13 +613,12 @@
 						}
 						codes.Add(new AccessCode(id, ac, dn));
 					}
-					return new PortalResponse<List<AccessCode>>(response, json.GetValue(JSON_MESSAGE)?.ToString(), codes, EError.Success);
+					return new PortalResponse<List<AccessCode>>(response, codes, EError.Success);
 				} else {
-					return new PortalResponse<List<AccessCode>>(response, json.GetValue(JSON_MESSAGE)?.ToString(), EError.ServerError);
+					return new PortalResponse<List<AccessCode>>(response, null, EError.ServerError).WithErrorMessage(json.GetValue(JSON_MESSAGE)?.ToString());
 				}
 			} catch (Exception e) {
-				Log.E(this, "Failed to query pending access codes", e);
-				return new PortalResponse<List<AccessCode>>(null, "", EError.InternalError);
+				return new PortalResponse<List<AccessCode>>(null, EError.InternalError).WithErrorMessage("Failed to query pending access codes", e);
 			}
 		}
 
@@ -580,13 +629,13 @@
 		/// <param name="accessCode">Access code.</param>
 		public async Task<PortalResponse> RequestDeleteAccessCodeAsync(string accessCode) {
 			if (!isLoggedIn) {
-				return new PortalResponse(null, "", EError.NotLoggedIn);
+				return new PortalResponse(EError.NotLoggedIn);
 			}
 
 			try {
 				var formContent = new FormUrlEncodedContent(new[] {
 					new KeyValuePair<string, string>(JSON_ACCESS_CODE_DELETE, TRUE),
-					new KeyValuePair<string, string>(JSON_USER_ID, loginId),
+					new KeyValuePair<string, string>(JSON_USER_ID, user.id),
 					new KeyValuePair<string, string>(JSON_ACCESS_CODE, accessCode),
 				});
 
@@ -594,13 +643,12 @@
 				var content = await response.Content.ReadAsStringAsync();
 				var json = JObject.Parse(content);
 				if (CheckResponseForSuccess(json)) {
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString());
+					return new PortalResponse(response);
 				} else {
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString(), EError.ServerError);
+					return new PortalResponse(response, EError.ServerError).WithErrorMessage(json.GetValue(JSON_MESSAGE).ToString());
 				}
 			} catch (Exception e) {
-				Log.E(this, "Failed to delete access code", e);
-				return new PortalResponse(null, "", EError.ServerError);
+				return new PortalResponse(null, EError.ServerError).WithErrorMessage("Failed to delete access code", e);
 			}
 		}
 
@@ -612,13 +660,13 @@
 		/// <param name="accessCode">Access code.</param>
 		public async Task<PortalResponse> SubmitAccessCodeAsync(string accessCode) {
 			if (!isLoggedIn) {
-				return new PortalResponse(null, "", EError.NotLoggedIn);
+				return new PortalResponse(EError.NotLoggedIn);
 			}
 
 			try {
 				var formContent = new FormUrlEncodedContent(new[] {
 					new KeyValuePair<string, string>(JSON_ACCESS_CODE_CONFIRM, "true"),
-					new KeyValuePair<string, string>(JSON_USER_ID, loginId),
+					new KeyValuePair<string, string>(JSON_USER_ID, user.id),
 					new KeyValuePair<string, string>(JSON_ACCESS_CODE, accessCode),
 				});
 
@@ -626,13 +674,12 @@
 				var content = await response.Content.ReadAsStringAsync();
 				var json = JObject.Parse(content);
 				if (CheckResponseForSuccess(json)) {
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString());
+					return new PortalResponse(response);
 				} else {
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString(), EError.ServerError);
+					return new PortalResponse(response, EError.ServerError).WithErrorMessage(json.GetValue(JSON_MESSAGE).ToString());
 				}
 			} catch (Exception e) {
-				Log.E(this, "Failed to submit access code: " + accessCode, e);
-				return new PortalResponse(null, "", EError.InternalError);
+				return new PortalResponse(EError.InternalError).WithErrorMessage("Failed to submit access code: " + accessCode, e);
 			}
 		}
 
@@ -643,13 +690,13 @@
 		/// <param name="code">Code.</param>
 		public async Task<PortalResponse> RequestConfirmAccessCodeAsync(AccessCode code) {
 			if (!isLoggedIn) {
-				return new PortalResponse(null, "", EError.NotLoggedIn);
+				return new PortalResponse(EError.NotLoggedIn);
 			}
 
 			try {
 				var formContent = new FormUrlEncodedContent(new[] {
 					new KeyValuePair<string, string>(JSON_CONFIRM_ACCESS, TRUE),
-					new KeyValuePair<string, string>(JSON_USER_ID, loginId),
+					new KeyValuePair<string, string>(JSON_USER_ID, user.id),
 					new KeyValuePair<string, string>(JSON_ACCESS_CODE, code.code),
 					new KeyValuePair<string, string>(JSON_ACCESS_ID, code.acceptId.ToString()),
 				});
@@ -659,13 +706,12 @@
 				var json = JObject.Parse(content);
 
 				if (CheckResponseForSuccess(json) || "duplicate".Equals(json.GetValue(JSON_SUCCESS).ToString())) {
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString());
+					return new PortalResponse(response);
 				} else {
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString(), EError.ServerError);
+					return new PortalResponse(response, EError.ServerError).WithErrorMessage(json.GetValue(JSON_MESSAGE).ToString());
 				}
 			} catch (Exception e) {
-				Log.E(this, "Failed to confirm access code", e);
-				return new PortalResponse(null, "", EError.InternalError);
+				return new PortalResponse(EError.InternalError).WithErrorMessage("Failed to confirm access code", e);
 			}
 		}
 
@@ -676,13 +722,13 @@
 		/// <param name="data">Data.</param>
 		public async Task<PortalResponse> RequestRemoveFollowingAsync(ConnectionData data) {
 			if (!isLoggedIn) {
-				return new PortalResponse(null, "", EError.NotLoggedIn);
+				return new PortalResponse(null, EError.NotLoggedIn);
 			}
 
 			try {
 				var formContent = new FormUrlEncodedContent(new[] {
 					new KeyValuePair<string, string>(JSON_ACCESS_CODE_DELETE_USER, TRUE),
-					new KeyValuePair<string, string>(JSON_USER_ID, loginId),
+					new KeyValuePair<string, string>(JSON_USER_ID, user.id),
 					new KeyValuePair<string, string>(JSON_ACCESS_ID, data.id.ToString()),
 				});
 
@@ -691,13 +737,12 @@
 				var json = JObject.Parse(content);
 
 				if (CheckResponseForSuccess(json)) {
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString());
+					return new PortalResponse(response);
 				} else {
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString(), EError.ServerError);
+					return new PortalResponse(response, EError.ServerError).WithErrorMessage(json.GetValue(JSON_MESSAGE).ToString());
 				}
 			} catch (Exception e) {
-				Log.E(this, "Failed to confirm access code", e);
-				return new PortalResponse(null, "", EError.InternalError);
+				return new PortalResponse(EError.InternalError).WithErrorMessage("Failed to confirm access code", e);
 			}
 		}
 
@@ -708,13 +753,13 @@
 		/// <param name="data">Data.</param>
 		public async Task<PortalResponse> RequestRemoveFollowerAsync(ConnectionData data) {
 			if (!isLoggedIn) {
-				return new PortalResponse(null, "", EError.NotLoggedIn);
+				return new PortalResponse(EError.NotLoggedIn);
 			}
 
 			try {
 				var formContent = new FormUrlEncodedContent(new[] {
 					new KeyValuePair<string, string>(JSON_ACCESS_CODE_DELETE_VIEWER, TRUE),
-					new KeyValuePair<string, string>(JSON_USER_ID, loginId),
+					new KeyValuePair<string, string>(JSON_USER_ID, user.id),
 					new KeyValuePair<string, string>(JSON_ACCESS_ID, data.id.ToString()),
 				});
 
@@ -723,13 +768,13 @@
 				var json = JObject.Parse(content);
 
 				if (CheckResponseForSuccess(json)) {
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString());
+					return new PortalResponse(response);
 				} else {
-					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString(), EError.ServerError);
+					return new PortalResponse(response, EError.ServerError).WithErrorMessage(json.GetValue(JSON_MESSAGE).ToString());
 				}
 			} catch (Exception e) {
 				Log.E(this, "Failed to confirm access code", e);
-				return new PortalResponse(null, "", EError.InternalError);
+				return new PortalResponse(EError.InternalError);
 			}
 		}
 
@@ -739,19 +784,21 @@
     /// <returns>The connection data.</returns>
     public async Task<PortalResponse> RequestConnectionData() {
       if (!isLoggedIn) {
-        return new PortalResponse(null, null, EError.NotLoggedIn);
+        return new PortalResponse(EError.NotLoggedIn);
       }
 
       try {
         var formContent = new FormUrlEncodedContent(new [] {
           new KeyValuePair<string, string>(JSON_RETRIEVE_ACCESS, JSON_MANAGER),
-          new KeyValuePair<string, string>(JSON_USER_ID, loginId),
+          new KeyValuePair<string, string>(JSON_USER_ID, user.id),
         });
 
         var response = await client.PostAsync(URL_RETRIEVE_ACCESS, formContent);
         var content = await response.Content.ReadAsStringAsync();
 
         var json = JObject.Parse(content);
+        var cd = new ConnectionData();
+        cd.deviceId = "";
 
         if (CheckResponseForSuccess(json)) {
           JToken viewingToken;
@@ -772,13 +819,45 @@
             onlineConnections = data;
           }
 
-          return new PortalResponse(response, null, EError.Success);
+          return new PortalResponse(response, EError.Success);
         } else {
-          return new PortalResponse(response, null, EError.ServerError);
+          return new PortalResponse(response, EError.ServerError);
         }
       } catch (Exception e) {
-        Log.E(this, "Failed to RequestConnectionData.", e);
-        return new PortalResponse(null, null, EError.InternalError);
+        return new PortalResponse(EError.InternalError).WithErrorMessage("Failed to request connection data", e);
+      }
+    }
+
+    /// <summary>
+    /// Requests the given connection starts or stops data logging.
+    /// </summary>
+    /// <returns>The remote set data logging.</returns>
+    /// <param name="dataLoggingState">True requests that data logging starts, false will request data logging to stop.</param>
+    public async Task<PortalResponse> RequestRemoteSetDataLoggingAsync(bool dataLoggingState) {
+      if (!isLoggedIn) {
+        return new PortalResponse(EError.NotLoggedIn);
+      }
+
+      try {
+        var formContent = new FormUrlEncodedContent(new [] {
+          new KeyValuePair<string, string>(JSON_UPDATE_LOGGING, TRUE),
+          new KeyValuePair<string, string>(JSON_LOG_STATUS, dataLoggingState ? TRUE : FALSE),
+          new KeyValuePair<string, string>(JSON_VIEWED_USER, user.id),
+          new KeyValuePair<string, string>(JSON_VIEWED_LAYOUT, layoutId),
+        });
+
+        var response = await client.PostAsync(URL_ACCOUNT_STATUS, formContent);
+        var content = await response.Content.ReadAsStringAsync();
+        var json = JObject.Parse(content);
+
+        if (CheckResponseForSuccess(json)) {
+          return new PortalResponse(response, EError.Success);
+        } else {
+          return new PortalResponse(response, EError.ServerError);
+        }
+      } catch (Exception e) {
+        var msg = "Failed to RequestRemoteSetDataLogging[" + dataLoggingState + "]";
+        return new PortalResponse(EError.InternalError).WithErrorMessage(msg, e);
       }
     }
 
@@ -794,7 +873,7 @@
       try {
         var formContent = new FormUrlEncodedContent(new[] {
           new KeyValuePair<string, string>(JSON_CREATE_LAYOUT, TRUE),
-          new KeyValuePair<string, string>(JSON_USER_ID, loginId),
+          new KeyValuePair<string, string>(JSON_USER_ID, user.id),
           new KeyValuePair<string, string>(JSON_DEVICE_ID, ion.preferences.appId.ToString()),
           new KeyValuePair<string, string>(JSON_DEVICE_NAME, ion.GetPlatformInformation().deviceName),
           new KeyValuePair<string, string>(JSON_STATUS, JsonConvert.SerializeObject(new RemoteStatus(ion))),
@@ -807,14 +886,14 @@
         if (CheckResponseForSuccess(json)) {
           JToken errorMessage;
           if (!json.TryGetValue(JSON_MESSAGE, out errorMessage)) {
-            Log.E(this, "Did not receive an error message from RequestLayoutIdAsync");
-            return new PortalResponse<string>(response, null, EError.ServerError);
+            return new PortalResponse<string>(response, null, EError.ServerError)
+              .WithErrorMessage("Did not receive an error message from RequestLayoutIdAsync");
           }
 
           JToken layoutIdToken;
           if (!json.TryGetValue(JSON_LAYOUT_ID_LOWER, out layoutIdToken)) {
-            Log.E(this, "Did not receive a layout id from RequestLayoutIdAsync");
-            return new PortalResponse<string>(response, null, EError.ServerError);
+            return new PortalResponse<string>(response, null, EError.ServerError)
+              .WithErrorMessage("Did not receive a layout id from RequestLayoutIdAsync");
           } else {
             layoutId = layoutIdToken.ToString();
           }
@@ -825,8 +904,7 @@
           return new PortalResponse<string>(response, null, EError.ServerError);
         }
       } catch (Exception e) {
-        Log.E(this, "Failed to request layout id.", e);
-        return new PortalResponse<string>(null, null, EError.InternalError);
+        return new PortalResponse<string>(null, EError.InternalError).WithErrorMessage("Failed to request layout id", e);
       }
     }
 
@@ -834,7 +912,7 @@
 		/// Downloads and inflates the given remote user's ION instance into this instance.
 		/// </summary>
 		/// <returns>The from remote.</returns>
-		/// <param name="userId">User identifier.</param>
+		/// <param name="user.id">User identifier.</param>
 		public async Task<PortalResponse> RequestCloneFromRemote(IION ion, ConnectionData connection) {
 			try {
 				var formContent = new FormUrlEncodedContent(new[] {
@@ -864,10 +942,9 @@
 					});
 				}
 
-				return new PortalResponse(null, "", EError.InternalError);
+				return new PortalResponse(null, EError.InternalError);
 			} catch (Exception e) {
-				Log.E(this, "Failed to clone ion instance from remote", e);
-				return new PortalResponse(null, "", EError.InternalError);
+				return new PortalResponse(null, EError.InternalError).WithErrorMessage("Failed to clone ion instance from remote ion", e);
 			}
 		}
 
@@ -886,7 +963,7 @@
                 var appState = RemoteAppState.CreateOrThrow(ion);
                 var response = await PerformAppStateUpload(ion, appState);
                 if (!response.success) {
-                  Log.E(this, "Failed to upload state. Message: {" + response.message + "}");
+                  Log.E(this, "Failed to upload state. Message: {" + response.errorMessage + "\n" + response.exception + "}");
                 }
               } catch (Exception e) {
                 Log.E(this, "Failed to upload app state", e);
@@ -930,7 +1007,7 @@
           var layoutResponse = await RequestLayoutIdAsync(ion);
           if (!layoutResponse.success) {
             Log.E(this, "PerformAppStateUpload: failed to get layout id: cannot upload layout.");
-            return new PortalResponse(layoutResponse.response, null, EError.InternalError);
+            return new PortalResponse(layoutResponse.response, EError.InternalError);
           }
         }
 
@@ -938,7 +1015,7 @@
 
 				var formContent = new FormUrlEncodedContent(new[] {
 					new KeyValuePair<string, string>(JSON_UPLOAD_LAYOUTS, JSON_MANAGER),
-					new KeyValuePair<string, string>(JSON_USER_ID, loginId),
+					new KeyValuePair<string, string>(JSON_USER_ID, user.id),
 					new KeyValuePair<string, string>(JSON_LAYOUT_JSON, layout.ToString()),
           new KeyValuePair<string, string>(JSON_LAYOUT_ID, layoutId),
           new KeyValuePair<string, string>(JSON_STATUS, JsonConvert.SerializeObject(new RemoteStatus(ion))),
@@ -967,10 +1044,10 @@
           }
         }
 
-				return new PortalResponse(response, "Ok", EError.Success);
+				return new PortalResponse(response, EError.Success);
 			} catch (Exception e) {
 				Log.E(this, "Failed to perform app state upload", e);
-				return new PortalResponse(null, "", EError.InternalError);
+				return new PortalResponse(null, EError.InternalError);
 			}
 		}
 
@@ -1284,25 +1361,49 @@
 		public class PortalResponse {
 			public HttpResponseMessage response { get; private set; }
 			public EError error { get; private set; }
-			public string message { get; private set; }
 			public bool success { get { return EError.Success == error; } }
+      public string errorMessage { get; private set; }
+      public Exception exception { get; private set; }
 
-			internal PortalResponse(HttpResponseMessage response, string message, EError error=EError.Success) {
+			internal PortalResponse(HttpResponseMessage response, EError error=EError.Success) {
 				this.response = response;
-				this.message = message;
 				this.error = error;
 			}
+      
+      internal PortalResponse(EError error = EError.InternalError) : this(null, error) {
+      }
+      
+      /// <summary>
+      /// Adds an error message to the response
+      /// </summary>
+      /// <returns>The error message.</returns>
+      /// <param name="errorMessage">Error message.</param>
+      internal PortalResponse WithErrorMessage(string errorMessage, Exception e=null) {
+        this.errorMessage = errorMessage;
+        this.exception = e;
+        return this;
+      }
 		}
 
 		public class PortalResponse<RESULT> : PortalResponse {
 			public RESULT result { get; private set; }
 
-			internal PortalResponse(HttpResponseMessage response, string message, EError error=EError.Success) : base(response, message, error) {
-			}
-
-			internal PortalResponse(HttpResponseMessage response, string message, RESULT result, EError error=EError.Success) : base(response, message, error) {
+			internal PortalResponse(HttpResponseMessage response, RESULT result, EError error=EError.Success) : base(response, error) {
 				this.result = result;
 			}
+      
+      internal PortalResponse(RESULT result, EError error=EError.InternalError) : this(null, result, error) {
+      }
+      
+      /// <summary>
+      /// Adds an error message to the response
+      /// </summary>
+      /// <returns>The error message.</returns>
+      /// <param name="errorMessage">Error message.</param>
+      internal PortalResponse<RESULT> WithErrorMessage(string errorMessage, Exception e=null) {
+        base.WithErrorMessage(errorMessage, e);
+        return this;
+      }
 		}
 
 		/// <summary>

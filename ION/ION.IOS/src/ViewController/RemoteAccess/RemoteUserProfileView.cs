@@ -29,10 +29,15 @@ namespace ION.IOS.ViewController.RemoteAccess {
 
 		private IosION ion;
 		
-		public RemoteUserProfileView(UIView parentView, string dName, string uEmail) {
+		public RemoteUserProfileView(UIView parentView) {
 			ion = AppState.context as IosION;
 			
-			var splitName = dName.Split(' ');
+      string[] splitName;
+      if (ion.portal.isLoggedIn) {
+        splitName = ion.portal.user.displayName.Split(' ');
+      } else {
+        splitName = new[] { "", "" };
+      }
 			
 			var viewTap = new UITapGestureRecognizer(() => {
 				profileView.EndEditing(true);
@@ -45,6 +50,8 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			
 			profileScroll = new UIScrollView(new CGRect(0,0,parentView.Bounds.Width, parentView.Bounds.Height));
 			profileScroll.ContentSize = new CGSize(parentView.Bounds.Width, 1.4 * parentView.Bounds.Height);
+      
+      // todo ahodder@appioninc.com: this needs to be localized
 			
 			settingsHeader = new UILabel(new CGRect(0,0,profileView.Bounds.Width, .08 * profileView.Bounds.Height));
 			settingsHeader.Text = "User Profile";
@@ -52,7 +59,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			settingsHeader.Font = UIFont.BoldSystemFontOfSize(20f);
 			
 			emailLabel = new UILabel(new CGRect(.05 * profileView.Bounds.Width,.08 * profileView.Bounds.Height,.9 * profileView.Bounds.Width,.05 * profileView.Bounds.Height));
-			emailLabel.Text = "Email: " + uEmail;
+			emailLabel.Text = "Email: " + ion.portal.user.email;
 			emailLabel.TextAlignment = UITextAlignment.Left;
 			emailLabel.AdjustsFontSizeToFitWidth = true;
 			emailLabel.Font = UIFont.BoldSystemFontOfSize(20f);			
@@ -186,17 +193,21 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				
 				var window = UIApplication.SharedApplication.KeyWindow;
   			var rootVC = window.RootViewController as IONPrimaryScreenController;
-					
-				var updateResponse = await ion.webServices.updatePassword(passwordField.Text,userID);
+
+        var response = await ion.portal.RequestUpdatePassword(passwordField.Text);
 				updatingLabel.Hidden = true;
 				
-				if(updateResponse != null){
-					var textResponse = await updateResponse.Content.ReadAsStringAsync();
-					Console.WriteLine(textResponse);
-					//parse the text string into a json object to be deserialized
-					JObject response = JObject.Parse(textResponse);
-		
-					var errorMessage = response.GetValue("message").ToString();
+        if(response.success){
+          // todo ahodder@appioninc.com: this needs to be localized. also, we can use error codes instead of strings
+/*
+          var textResponse = await updateResponse.Content.ReadAsStringAsync();
+          Console.WriteLine(textResponse);
+          //parse the text string into a json object to be deserialized
+          JObject response = JObject.Parse(textResponse);
+
+          var errorMessage = response.GetValue("message").ToString();
+*/
+          var errorMessage = "null";
 					
 					var alert = UIAlertController.Create ("Password Update", errorMessage, UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
@@ -219,16 +230,20 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			var window = UIApplication.SharedApplication.KeyWindow;
   		var rootVC = window.RootViewController as IONPrimaryScreenController;
 			var userID = KeychainAccess.ValueForKey("userID");
-					
-			var updateResponse = await ion.webServices.updateDisplayName(firstNameField.Text, lastNameField.Text, userID);
+
+      var response = await ion.portal.RequestChangeDisplayName(firstNameField.Text, lastNameField.Text);
 				
-			if(updateResponse != null){
-				var textResponse = await updateResponse.Content.ReadAsStringAsync();
-				Console.WriteLine(textResponse);
-				//parse the text string into a json object to be deserialized
-				JObject response = JObject.Parse(textResponse);
-	
-				var errorMessage = response.GetValue("message").ToString();
+      if(response.success){
+        // TODO ahodder@appioninc.com: this needs to be localized. Also, we can return error codes instead of strings.
+/*
+        var textResponse = await updateResponse.Content.ReadAsStringAsync();
+        Console.WriteLine(textResponse);
+        //parse the text string into a json object to be deserialized
+        JObject response = JObject.Parse(textResponse);
+
+        var errorMessage = response.GetValue("message").ToString();
+*/
+        var errorMessage = "null";
 				
 				var alert = UIAlertController.Create ("Name Update", errorMessage, UIAlertControllerStyle.Alert);
 				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));

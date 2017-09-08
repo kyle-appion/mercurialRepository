@@ -153,7 +153,7 @@ namespace ION.IOS.ViewController.Workbench {
 	        recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
 	      }
 	    } else {
-				if(ion.webServices.downloading){
+				if(ion is RemoteIosION) {
 					remoteTitle.Text = "Workbench\nRemote Viewing";
 				} else {
 					remoteTitle.Text = "Workbench\nRemote Editing";
@@ -230,15 +230,15 @@ namespace ION.IOS.ViewController.Workbench {
 
     private async void RecordDevices(){
       var recordingMessage = "";
-      if(ion.webServices.uploading){
+      if(ion.portal.isUploading){
         Console.WriteLine("Workbench currently uploading and want to update datalogging for userid " + KeychainAccess.ValueForKey("userID") + " and layoutid " + KeychainAccess.ValueForKey("layoutid"));
         if (ion.dataLogManager.isRecording) {
-          await ion.webServices.SetRemoteDataLog(KeychainAccess.ValueForKey("userID"),KeychainAccess.ValueForKey("layoutid"),"0");
+					await ion.portal.RequestRemoteSetDataLoggingAsync(false);
           ion.dataLogManager.StopRecording();
           recordingMessage = "Session recording has stopped";
         } else {
-          await ion.webServices.SetRemoteDataLog(KeychainAccess.ValueForKey("userID"),KeychainAccess.ValueForKey("layoutid"),"1");
-          ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
+					await ion.portal.RequestRemoteSetDataLoggingAsync(false);
+					ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
           recordingMessage = "Session recording has started";
         }
       } else {

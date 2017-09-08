@@ -599,38 +599,52 @@
   }
 
   public class PortalPreferences : DerivedPreferences, IPortalPreferences {
+    private const string KEY_REMEMBER_ME = "settings_portal_remember_me";
+    private const string KEY_USER_ID = "settings_portal_user_id";
+    private const string KEY_USERNAME = "settings_portal_username";
+    private const string KEY_PASSWORD = "settings_portal_password";
+  
     // Implemented for IPortalPreferences
     public bool rememberMe {
       get {
-//        return GetBool(Key_, false);
-        return false;
+        return GetBool(KEY_REMEMBER_ME);
       }
       set {
-//      PutBool(Resource.String.pkey_portal_rememberme, value);
+        PutBool(KEY_REMEMBER_ME, value);
+      }
+    }
+    
+    // Implemented for IPortalPreferences
+    public int userId {
+      get {
+        return GetInt(KEY_USER_ID);
+      }
+      set {
+        PutInt(KEY_USER_ID, value);
       }
     }
 
     // Implemented for IPortalPreferences
     public string username {
       get {
-//        return GetString(Resource.String.pkey_portal_username, "");
-        return "";
+        var ret = KeychainAccess.ValueForKey(KEY_USER_ID);
+        return ret;
       }
 
       set {
-//        PutString(Resource.String.pkey_portal_username, value);
+        KeychainAccess.SetValueForKey(value, KEY_USER_ID);
       }
     }
 
     // Implemented for IPortalPreferences
     public string password {
       get {
-//        return GetString(Resource.String.pkey_portal_password, "");
-        return "";
+        var passwordKey = KeychainAccess.ValueForKey(KEY_PASSWORD);
+        return passwordKey;
       }
 
       set {
-//        PutString(Resource.String.pkey_portal_password, value);
+        KeychainAccess.SetValueForKey(value, KEY_PASSWORD);
       }
     }
 

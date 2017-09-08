@@ -8,10 +8,13 @@ using ION.Core.App;
 using ION.IOS.App;
 using Newtonsoft.Json.Linq;
 using System.Text;
+using Appion.Commons.Util;
 using ION.Core.Net;
+using ION.CoreExtensions.Net.Portal;
 using ION.IOS.ViewController.AccessRequest;
 using ION.IOS.ViewController.CloudSessions;
 using System.Linq;
+using ION.IOS.Util;
 
 namespace ION.IOS.ViewController.RemoteAccess {
 	public partial class RemoteSystemViewController : BaseIONViewController {
@@ -65,28 +68,17 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		/// </summary>
 		public async void setupInitialView(){
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
-			var checkLogin = KeychainAccess.ValueForKey("stayLogged");
-			
-      if(string.IsNullOrEmpty(checkLogin) || checkLogin == "no"){
-				
-      	loginView = new RemoteLoginView(remoteHolderView);
-	      loginView.submitButton.TouchUpInside += credentialsCheck;
-	      
-				remoteHolderView.AddSubview(loginView.loginView);
-				this.NavigationItem.RightBarButtonItem = register;
-      } else {
       
-				portalControl = new PortalMenu(remoteHolderView);
-				portalControl.uploadButton.TouchUpInside += showUploads;
-				portalControl.codeButton.TouchUpInside += showCodeManager;
-				portalControl.accessButton.TouchUpInside += showAccessManager;
-				portalControl.remoteButton.TouchUpInside += showRemoteViewing;
-				remoteHolderView.AddSubview(portalControl.portalView);		
-				
-				profileView = new RemoteUserProfileView(remoteHolderView,KeychainAccess.ValueForKey("userDisplay"), KeychainAccess.ValueForKey("userEmail"));
-				remoteHolderView.AddSubview(profileView.profileView);
-				this.NavigationItem.RightBarButtonItem = settingsButton;
-				profileView.logoutButton.TouchUpInside += LogOutUser;
+      var needsLogin = true;
+      if (ion.settings.portal.rememberMe) {
+        needsLogin = !await CredentialsCheck(ion.settings.portal.rememberMe, ion.settings.portal.username, ion.settings.portal.password);
+      }
+			
+      if(needsLogin) {
+        loginView = new RemoteLoginView(remoteHolderView);
+        loginView.submitButton.TouchUpInside += credentialsCheck;
+        remoteHolderView.AddSubview(loginView.loginView);
+        this.NavigationItem.RightBarButtonItem = register;
 			};
 		}			
 		
@@ -95,15 +87,15 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		public void LogOutUser(object sender, EventArgs e){
+		public async void LogOutUser(object sender, EventArgs e){
 			var userID = KeychainAccess.ValueForKey("userID");
-		
-	  	ion.webServices.updateOnlineStatus("0", userID);
-			KeychainAccess.SetValueForKey("no", "stayLogged");
-			KeychainAccess.SetValueForKey(null,"userID");
-			KeychainAccess.SetValueForKey(null,"userName");
-			KeychainAccess.SetValueForKey(null,"userPword");
-			//Console.WriteLine("Completed logout");
+
+      await ion.portal.LogoutAsync();
+
+      ion.settings._portal.rememberMe = false;
+      ion.settings._portal.userId = 0;
+      ion.settings._portal.username = "";
+      ion.settings._portal.password = "";
 			
 			loginView = new RemoteLoginView(remoteHolderView);
       loginView.submitButton.TouchUpInside += credentialsCheck;
@@ -159,86 +151,76 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		public async void credentialsCheck(object sender, EventArgs e){
-			loginView.loadingLogin = null;
-	
-			loginView.loadingLogin = new UIActivityIndicatorView(new CGRect(0,0, loginView.loginView.Bounds.Width, loginView.loginView.Bounds.Height));
-			loginView.loadingLogin.BackgroundColor = UIColor.Black;
-			loginView.loadingLogin.Alpha = .8f;
-			loginView.loginView.AddSubview(loginView.loadingLogin);
-			loginView.loginView.BringSubviewToFront(loginView.loadingLogin);
-			loginView.loadingLogin.StartAnimating();
-    	await Task.Delay(TimeSpan.FromMilliseconds(1));
-    	
-    	if(string.IsNullOrEmpty(loginView.userName.Text) || string.IsNullOrEmpty(loginView.password.Text)){
-				loginView.loadingLogin.StopAnimating();
-				return; 
-			}
-			var window = UIApplication.SharedApplication.KeyWindow;
-    	var rootVC = window.RootViewController as IONPrimaryScreenController;
-    		
-			var feedback = await ion.webServices.userLogin(loginView.userName.Text,loginView.password.Text);
-			if(feedback != null){
-				var textResponse = await feedback.Content.ReadAsStringAsync();
-				Console.WriteLine(textResponse);
-				await Task.Delay(TimeSpan.FromSeconds(1));
-				JObject response = JObject.Parse(textResponse);
-				var userFound = response.GetValue("found").ToString();
-				
-				if(userFound == "true"){
-					var loginID = response.GetValue("message").ToString();
-					var userDisplay = response.GetValue("display").ToString();
-					var userEmail = response.GetValue("email").ToString();
-					
-					if(loginView.checkMark){
-						KeychainAccess.SetValueForKey("yes","stayLogged");
-					} else {
-						KeychainAccess.SetValueForKey("no","stayLogged"); 
-					}
-					
-					KeychainAccess.SetValueForKey(loginID,"userID");
-					KeychainAccess.SetValueForKey(loginView.userName.Text,"userName");
-					KeychainAccess.SetValueForKey(loginView.password.Text,"userPword");
-					KeychainAccess.SetValueForKey(userEmail,"userEmail");
-					KeychainAccess.SetValueForKey(userDisplay,"userDisplay");
-					
-					//remoteView = new remoteSelectionView(remoteHolderView, ion,webServices);
-					//remoteHolderView.AddSubview(remoteView.selectionView);
-					portalControl = new PortalMenu(remoteHolderView);
-					portalControl.uploadButton.TouchUpInside += showUploads;
-					portalControl.codeButton.TouchUpInside += showCodeManager;
-					portalControl.accessButton.TouchUpInside += showAccessManager;   
-					portalControl.remoteButton.TouchUpInside -= showRemoteViewing;
-					portalControl.remoteButton.TouchUpInside += showRemoteViewing;
-				
-					remoteHolderView.AddSubview(portalControl.portalView);
-					profileView = new RemoteUserProfileView(remoteHolderView, KeychainAccess.ValueForKey("userDisplay"), KeychainAccess.ValueForKey("userEmail"));
-					profileView.logoutButton.TouchUpInside += LogOutUser;
-					
-					remoteHolderView.AddSubview(profileView.profileView);
-					loginView.loadingLogin.StopAnimating();
-					loginView.loginView.RemoveFromSuperview();
-					loginView = null;
-					this.NavigationItem.RightBarButtonItem = settingsButton;
-
-
-
-				} else {
-					loginView.loadingLogin.StopAnimating();
-					var failMessage = response.GetValue("message").ToString();
-					
-					var alert = UIAlertController.Create ("Log In", failMessage, UIAlertControllerStyle.Alert);
-					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
-					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-				}		
-			}	else {
-
-				
-				var alert = UIAlertController.Create ("Log In", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
-				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
-				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-				loginView.loadingLogin.StopAnimating();
-			}	
+ 		public async void credentialsCheck(object sender, EventArgs e){
+      loginView.loadingLogin = null;
+  
+      loginView.loadingLogin = new UIActivityIndicatorView(new CGRect(0,0, loginView.loginView.Bounds.Width, loginView.loginView.Bounds.Height));
+      loginView.loadingLogin.BackgroundColor = UIColor.Black;
+      loginView.loadingLogin.Alpha = .8f;
+      loginView.loginView.AddSubview(loginView.loadingLogin);
+      loginView.loginView.BringSubviewToFront(loginView.loadingLogin);
+      loginView.loadingLogin.StartAnimating();
+      
+      if(string.IsNullOrEmpty(loginView.userName.Text) || string.IsNullOrEmpty(loginView.password.Text)){
+        loginView.loadingLogin.StopAnimating();
+        return; 
+      }
+        
+      await CredentialsCheck(loginView.checkMark, loginView.userName.Text, loginView.password.Text);
+      
+      loginView.loadingLogin.StopAnimating();
+      loginView.loginView.RemoveFromSuperview();
+      loginView = null;
+    }
+    
+    private async Task<bool> CredentialsCheck(bool remember, string username, string password) {
+      try {
+        var response = await ion.portal.RequestLoginAsync(username, password);
+        
+        if (response.success) {
+          if (remember) {
+            ion.settings.portal.rememberMe = true;
+            ion.settings.portal.username = response.result.username;
+            ion.settings.portal.password = response.result.password;
+          }
+          
+          portalControl = new PortalMenu(remoteHolderView);
+          portalControl.uploadButton.TouchUpInside += showUploads;
+          portalControl.codeButton.TouchUpInside += showCodeManager;
+          portalControl.accessButton.TouchUpInside += showAccessManager;   
+          portalControl.remoteButton.TouchUpInside -= showRemoteViewing;
+          portalControl.remoteButton.TouchUpInside += showRemoteViewing;
+          
+          remoteHolderView.AddSubview(portalControl.portalView);
+          profileView = new RemoteUserProfileView(remoteHolderView);
+          profileView.logoutButton.TouchUpInside += LogOutUser;
+          
+          remoteHolderView.AddSubview(profileView.profileView);
+          this.NavigationItem.RightBarButtonItem = settingsButton;
+          return true;
+        } else {
+          var window = UIApplication.SharedApplication.KeyWindow;
+          var rootVC = window.RootViewController as IONPrimaryScreenController;
+          switch (response.error) {
+            case IONPortalService.EError.InternalError: {
+              var alert = UIAlertController.Create ("Log In", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
+              alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+              rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+            } break;
+            default: {
+              var failMessage = "US Failed to login: US";
+              ion.settings.portal.rememberMe = false;
+              var alert = UIAlertController.Create ("Log In", failMessage, UIAlertControllerStyle.Alert);
+              alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+              rootVC.PresentViewController (alert, animated: true, completionHandler: null);  
+            } break;
+          }
+          return false;
+        }
+      } catch (Exception e) {
+        Log.E(this, "Failed to validate credentials", e);
+        return false;
+      }
 		}
 
 		/// <summary>
@@ -316,34 +298,35 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			registerView.regView.AddSubview(registerView.loadingRegistration);
 			registerView.regView.BringSubviewToFront(registerView.loadingRegistration);
 			registerView.loadingRegistration.StartAnimating();
-			
-			var registered = await ion.webServices.RegisterUser(registerView.password.Text,registerView.email.Text);
-			registerView.loadingRegistration.StopAnimating();
-			
-			if(registered != null){
-				var textResponse = await registered.Content.ReadAsStringAsync();
-				Console.WriteLine(textResponse);
-				//parse the text string into a json object to be deserialized
-				JObject response = JObject.Parse(textResponse);
-				var isregistered = response.GetValue("success").ToString();
-				var message = response.GetValue("message").ToString();
-	    					
-				if(isregistered == "true"){			
-					var alert = UIAlertController.Create ("User Registration", message, UIAlertControllerStyle.Alert);
-					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
-					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-					
-					loginView.userName.Text = registerView.email.Text;
-					loginView.password.Text = registerView.password.Text;			
-					registerView.regView.RemoveFromSuperview();
-					registerView = null;
-					this.NavigationItem.RightBarButtonItem = register;
-				} else {
-					var alert = UIAlertController.Create ("User Registration", message, UIAlertControllerStyle.Alert);
-					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
-					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-				}
-			}
+
+      // todo ahodder@appioninc.com: this needs to be localized. also, we can use error codes instead of strings
+      var response = await ion.portal.RegisterUser(registerView.email.Text, registerView.password.Text);
+      
+      registerView.loadingRegistration.StopAnimating();
+      
+      if (response.success) {
+        var alert = UIAlertController.Create("US User Registration", "US Success", UIAlertControllerStyle.Alert);
+        alert.AddAction(UIAlertAction.Create(Strings.OK, UIAlertActionStyle.Cancel, null));
+        rootVC.PresentViewController(alert, animated: true, completionHandler: null);
+        
+        loginView.userName.Text = registerView.email.Text;
+        loginView.password.Text = registerView.password.Text;
+      } else {
+        switch (response.error) {
+          case IONPortalService.EError.InternalError: {
+            var alert = UIAlertController.Create("US Internal Error", "US There was an internal error", UIAlertControllerStyle.Alert);
+            alert.AddAction(UIAlertAction.Create(Strings.OK, UIAlertActionStyle.Cancel, null));
+            rootVC.PresentViewController(alert, animated: true, completionHandler: null);
+            break;
+          }
+          case IONPortalService.EError.ServerError: {
+            var alert = UIAlertController.Create("US Server Error", "US There was a server error", UIAlertControllerStyle.Alert);
+            alert.AddAction(UIAlertAction.Create(Strings.OK, UIAlertActionStyle.Cancel, null));
+            rootVC.PresentViewController(alert, animated: true, completionHandler: null);
+            break;
+          }
+        }
+      }
 		}
 
 		public void showUploads(object sender, EventArgs e){
@@ -380,17 +363,6 @@ namespace ION.IOS.ViewController.RemoteAccess {
 	
 		public override void ViewWillAppear(bool animated) {
 			base.ViewWillAppear(animated);
-
-			var loggedIn = KeychainAccess.ValueForKey("userID");
-			if(!string.IsNullOrEmpty(loggedIn)){
-				//if(remoteView != null && remoteView.fullMenuButton.Hidden){
-				//	remoteView.GetAccessList();
-				//}
-				//if(!webServices.remoteViewing && remoteView != null){
-				//	remoteView.fullMenuButton.Hidden = true;
-				//	remoteView.remoteMenuButton.Hidden = false;
-				//}
-			}
 		}
     
 		public override void DidReceiveMemoryWarning() {
