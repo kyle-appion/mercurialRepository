@@ -147,6 +147,9 @@ namespace ION.IOS.ViewController.RemoteAccess {
   		var rootVC = window.RootViewController as IONPrimaryScreenController;
 
 			var ion = AppState.context as IosION;
+      var response = await ion.portal.RequestResetUserPasswordAsync(email);
+
+/*
 			var feedback = await ion.webServices.resetPassword(email);
 			
 			if(feedback != null){
@@ -163,6 +166,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				resetAlert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 				rootVC.PresentViewController (resetAlert, animated: true, completionHandler: null);
 			}
+*/
 		}
 	}
 }

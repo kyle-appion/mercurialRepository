@@ -14,15 +14,15 @@ namespace ION.IOS.ViewController.Analyzer {
     private UILabel cellHeader;
     private UILabel fluidType;
     private UILabel tempReading;
-    public LocalIosION ion;
+    public IosION ion;
 
 
     public PTTableCell(IntPtr handle) {
-    	ion = AppState.context as LocalIosION;
+    	ion = AppState.context as IosION;
     }
 
     public void makeEvents(lowHighSensor lhSensor, CGRect tableRect){
-      if (!ion.webServices.downloading && lhSensor.manifold.ptChart.fluid != AppState.context.fluidManager.lastUsedFluid) {
+      if (!(ion is RemoteIosION) && lhSensor.manifold.ptChart.fluid != AppState.context.fluidManager.lastUsedFluid) {
         lhSensor.manifold.ptChart = PTChart.New(AppState.context, lhSensor.manifold.ptChart.state);
       }
 

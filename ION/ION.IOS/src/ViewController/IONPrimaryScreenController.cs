@@ -131,7 +131,7 @@ namespace ION.IOS.ViewController {
 	    var alert = UIAlertController.Create(Strings.Exit.SHUTDOWN, "This will disconnect all gauges, end data logging, and disconnect any remote operations", UIAlertControllerStyle.Alert);
 	    alert.AddAction(UIAlertAction.Create(Strings.OK, UIAlertActionStyle.Default, (action) => {
         Console.WriteLine("Turn everything off");
-        var ion = AppState.context;
+        var ion = AppState.context as IosION;
        	var userID = KeychainAccess.ValueForKey("userID");
 				foreach(var device in ion.deviceManager.devices){
        		if(device.isConnected){
@@ -142,20 +142,17 @@ namespace ION.IOS.ViewController {
 				if(ion.dataLogManager.isRecording){
 					ion.dataLogManager.StopRecording();
 				}
-				var ioion = ion as LocalIosION;
-				if(ioion.webServices.uploading){
-					ioion.webServices.updateOnlineStatus("0",userID);
-					ioion.webServices.uploading = false;					
+
+				if(ion.portal.isUploading){
+          ion.portal.EndAppStateUpload();
 				}
 				
-				if(ioion.webServices.downloading){
-					ioion.webServices.remoteViewing = false;
-					ioion.webServices.downloading = false;
-					ioion.webServices.paused = null;
-					///SET THE APP MENU AND DEVICE MANAGER BACK TO THE LOCAL DEVICE'S SETTINGS
-					AppState.context = new LocalIosION(ioion.webServices);
+				if(ion is RemoteIosION){
+          AppState.context = new LocalIosION(ion.portal);
 					setMainMenu();
 				}
+        
+        ion.portal.LogoutAsync();
         
       }));
       alert.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, (action) => {

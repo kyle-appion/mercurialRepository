@@ -7,6 +7,8 @@ using ION.IOS.App;
 using ION.Core.Net;
 using ION.Core.App;
 
+using ION.CoreExtensions.Net.Portal;
+
 namespace ION.IOS.ViewController.RemoteAccess {
 
 	public class RemoteAccessTableCell : UITableViewCell{
@@ -22,7 +24,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public RemoteAccessTableCell() {
 		
 		} 		
-		public void makeCellData(double cellWidth,double cellHeight, accessData user){
+		public void makeCellData(double cellWidth,double cellHeight, ConnectionData user){
 			ion = AppState.context as IosION;
 			
 			var currentlyViewing = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
@@ -45,17 +47,17 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			
 			if(Convert.ToInt32(KeychainAccess.ValueForKey("userID")) == user.id){
 				header.Text = " Your Account";
-				if(ion.webServices.uploading && UIDevice.CurrentDevice.IdentifierForVendor.ToString() == user.deviceID){   
+				if(ion is RemoteIosION && UIDevice.CurrentDevice.IdentifierForVendor.ToString() == user.deviceId){   
 					status.TextColor = UIColor.Red;
 					status.Text = "Uploading";
 				} else {
 					status.Text = "Viewable";
 				}
-			} else if (ion.webServices.remoteViewing && !String.IsNullOrEmpty(currentlyViewing) && currentlyViewing == user.id.ToString()){
+			} else if (ion is RemoteIosION && !String.IsNullOrEmpty(currentlyViewing) && currentlyViewing == user.id.ToString()){
 				status.Text += "Viewing";
 				status.TextColor = UIColor.Blue;
 			} else {
-				if(user.online == 1){
+				if(user.isUserOnline){
 					status.Text += "Viewable";
 				}
 			}
@@ -64,6 +66,5 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			this.AddSubview(deviceInfo);
 			this.AddSubview(status);
 		}
-		
 	}
 }

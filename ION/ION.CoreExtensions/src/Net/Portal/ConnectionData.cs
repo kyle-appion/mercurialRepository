@@ -21,5 +21,9 @@
     public string deviceId { get; set; }
     [JsonProperty("layoutid")]
     public string layoutId { get; set; }
+    
+    [JsonConstructor]
+    public ConnectionData() {
+    }
 	}
 }

@@ -80,7 +80,7 @@ namespace ION.IOS.ViewController.Analyzer {
       mentryView = new ManualView(viewAnalyzerContainer);
       
       InitNavigationBar("ic_nav_analyzer", false); 
-      ion = AppState.context as LocalIosION;      
+      ion = AppState.context as IosION;      
 
       AutomaticallyAdjustsScrollViewInsets = false;
 
@@ -193,13 +193,19 @@ namespace ION.IOS.ViewController.Analyzer {
     /// <param name="e">E.</param>
     public async void recordDevices(){
       var recordingMessage = "";
-      if(ion.webServices.uploading){
+      if(ion.portal.isUploading){
+        var response = await ion.portal.RequestRemoteSetDataLoggingAsync(!ion.dataLogManager.isRecording);
+        if (response.success) {
+        } else {
+          // todo ahodder@appioninc.com: we need a proper error dialog here
+          
+        }
         if (ion.dataLogManager.isRecording) {
-          await ion.webServices.SetRemoteDataLog(KeychainAccess.ValueForKey("userID"),KeychainAccess.ValueForKey("layoutid"),"0");
+          await ion.portal.RequestRemoteSetDataLoggingAsync(false);
           ion.dataLogManager.StopRecording();
           recordingMessage = Util.Strings.Analyzer.RECORDINGSTOPPED;
         } else {
-          await ion.webServices.SetRemoteDataLog(KeychainAccess.ValueForKey("userID"),KeychainAccess.ValueForKey("layoutid"),"1");
+					await ion.portal.RequestRemoteSetDataLoggingAsync(true);
           ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
           recordingMessage = Util.Strings.Analyzer.RECORDINGSTARTED;
         }
@@ -1387,7 +1393,7 @@ namespace ION.IOS.ViewController.Analyzer {
 		public async void refreshSensorLayout(){
 			await Task.Delay(TimeSpan.FromMilliseconds(1000));
 			
-			while(ion.webServices.downloading){
+      while(ion is RemoteIosION){
 					AnalyserUtilities.confirmLayout(analyzerSensors,viewAnalyzerContainer);
 					remoteViewOrder();				
 					layoutAnalyzer();
@@ -1639,7 +1645,7 @@ namespace ION.IOS.ViewController.Analyzer {
         layoutAnalyzer();
 	    } else {
 		    var remote = ion as RemoteIosION;
-				if(ion.webServices.downloading){
+        if(ion != null){
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEVIEW;
 				} else {
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEEDIT;

@@ -26,7 +26,7 @@ namespace ION.IOS.ViewController.Analyzer
 {
 	public class lowHighSensor
 	{
-    public LocalIosION ion { get; set; }
+    public IosION ion { get; set; }
     public nfloat cellHeight;
     public UILabel maxReading;
     public double max;
@@ -198,7 +198,7 @@ namespace ION.IOS.ViewController.Analyzer
       rocReading.AdjustsFontSizeToFitWidth = true;
       rocImage = new UIImageView(new CGRect(0, 36, 36, 36));
       secondaryReading = new UILabel(new CGRect(0, .5 * cellHeight, tblRect.Width, .5 * cellHeight));
-      ion = AppState.context as LocalIosION;
+      ion = AppState.context as IosION;
       __analyzerviewcontroller = ViewController;
       tUnit = Units.Temperature.FAHRENHEIT;
       pUnit = Units.Pressure.PSIG;
@@ -366,7 +366,7 @@ namespace ION.IOS.ViewController.Analyzer
     /// <param name="manifold">Manifold.</param>
     public void manifoldUpdating(ManifoldEvent Event){
     	////MANIFOLD UPDATES FOR REMOTE VIEWING
-    	if(ion.webServices.downloading){
+    	if(ion is RemoteIosION){
 	    	if(LabelSubview.BackgroundColor == UIColor.Blue){
 					if(ion.currentAnalyzer.lowSideManifold != null && manifold.ptChart != null &&  manifold.ptChart.fluid != ion.currentAnalyzer.lowSideManifold.ptChart.fluid){
 	    			Console.WriteLine("Manifold is updating low side fluid");
@@ -420,7 +420,7 @@ namespace ION.IOS.ViewController.Analyzer
 						}
 					}
 					///SET THE CURRENT ANALYZER MANIFOLD SECONDARY SENSOR TO THE ATTACHED SENSOR FOR REMOTE VIEWING	
-					if(!ion.webServices.downloading){
+					if(!(ion is RemoteIosION)){
 						if(LabelSubview.BackgroundColor == UIColor.Blue){
 							if(ion.currentAnalyzer.lowSideManifold == null){
 								Console.WriteLine("lowHighSensor low side manifold was  null when adding a secondary sensor");
@@ -444,7 +444,7 @@ namespace ION.IOS.ViewController.Analyzer
 					
 			} else if ( Event.type == ManifoldEvent.EType.SecondarySensorRemoved){
 			
-				if(!ion.webServices.downloading){
+				if(!(ion is RemoteIosION)){
 					if(attachedSensor != null){
 						attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
 						attachedSensor.topLabel.TextColor = UIColor.Gray;

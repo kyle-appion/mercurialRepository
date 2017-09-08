@@ -27,7 +27,7 @@ namespace ION.IOS.ViewController.AccessRequest {
 		public List<accessUserData> followerUsers;
 	
 		public AccessUsers(UIView parentView) {
-			ion = AppState.context as LocalIosION;
+			ion = AppState.context as IosION;
 		
 			accessView = new UIView(new CGRect(0,0,parentView.Bounds.Width, parentView.Bounds.Height));
 			accessView.BackgroundColor = UIColor.White;
@@ -108,8 +108,11 @@ namespace ION.IOS.ViewController.AccessRequest {
   		var rootVC = window.RootViewController as IONPrimaryScreenController;
 			var ID = KeychainAccess.ValueForKey("userID");
 			
-			var feedback = await ion.webServices.GetAccessList(ID);
+      var connectionData = await ion.portal.RequestConnectionData();
+      // At this point we can call ion.portal.followingConnections to get the list
+      // todo ahodder@appioninc.com: this needs to be localized. also, we can use error codes instead of strings
 			
+/*
 			if(feedback != null){
 				var textResponse = await feedback.Content.ReadAsStringAsync();
 				//parse the text string into a json object to be deserialized
@@ -146,6 +149,7 @@ namespace ION.IOS.ViewController.AccessRequest {
 				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
 			}
+*/
 			followingRefresh.EndRefreshing();
 			followerRefresh.EndRefreshing();
 			loadingRequests.StopAnimating();

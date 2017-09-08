@@ -123,7 +123,9 @@ namespace ION.IOS.ViewController.AccessRequest {
     	var rootVC = window.RootViewController as IONPrimaryScreenController;
     	
 			var ID = KeychainAccess.ValueForKey("userID");
-    	
+      // todo ahodder@appioninc.com: this needs to be localized. also, we can use error codes instead of strings
+      var response = await ion.portal.RequestUploadSessionsAsync(ion, selectedSessions);
+/*
 			var uploadResponse = await ion.webServices.getSession(ion, selectedSessions,ID);
     	uploadActivity.StopAnimating();
 	
@@ -144,6 +146,7 @@ namespace ION.IOS.ViewController.AccessRequest {
 				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
 			}
+*/
 		}
 	}
 }

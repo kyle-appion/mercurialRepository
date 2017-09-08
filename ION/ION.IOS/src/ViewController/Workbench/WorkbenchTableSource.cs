@@ -296,7 +296,7 @@ namespace ION.IOS.ViewController.Workbench {
 
         var webIon = ion as IosION;
 
-        if(webIon.webServices.downloading){
+        if(webIon is RemoteIosION) {
 					cell.Hidden = true;
 				} else {
 					cell.Hidden = false;

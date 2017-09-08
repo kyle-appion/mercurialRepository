@@ -1,5 +1,4 @@
-﻿ using ION.CoreExtensions.Net;
-
+﻿
 namespace ION.IOS.App {
 
  	using System;
@@ -10,7 +9,9 @@ namespace ION.IOS.App {
 	using Appion.Commons.Util;
 
 	using ION.Core.App;
-	using ION.Core.Net;
+  
+  using ION.CoreExtensions.Net.Portal;
+  
   using ION.IOS.Net;
   using ION.IOS.UI;
 	using ION.IOS.ViewController.Walkthrough;
@@ -28,7 +29,7 @@ namespace ION.IOS.App {
     /// The current ion context for the application.
     /// </summary>
     /// <value>The ion.</value>
-    public LocalIosION ion { get; private set; }
+    public IosION ion { get; private set; }
 
     public bool intervalWarning = false;
 
@@ -36,7 +37,7 @@ namespace ION.IOS.App {
       // Initialize the application state.
       // Set Navigation Bar preferences
 
-      AppState.context = ion = new LocalIosION(new WebPayload());
+      AppState.context = ion = new LocalIosION(new IONPortalService());
       try {
         ion.InitAsync().Wait();
       } catch (Exception e) {
@@ -151,7 +152,7 @@ namespace ION.IOS.App {
 
       ion.locationManager.StopAutomaticLocationPolling();
 
-      if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") == 1) {
+      if (ion.settings.report.dataLoggingInterval.Seconds == 1) {
         intervalWarning = false;
       } else {
         intervalWarning = true;
@@ -161,9 +162,9 @@ namespace ION.IOS.App {
     public override void WillEnterForeground(UIApplication application) {
       // Called as part of the transiton from background to active state.
       // Here you can undo many of the changes made on entering the background.
-			var ion = AppState.context as LocalIosION;
+			var ion = AppState.context as IosION;
 
-      if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") == 1) {
+      if (ion.settings.report.dataLoggingInterval.Seconds == 1) {
         if (intervalWarning == true) {
 					//UIAlertView loggingWarning = new UIAlertView(Util.Strings.Report.LOGGINGINTERVAL, Util.Strings.Report.LOWINTERVAL, null, Util.Strings.CLOSE, Util.Strings.RETURNSETTINGS);
 					UIAlertController loggingWarning = UIAlertController.Create(Util.Strings.Report.LOGGINGINTERVAL, Util.Strings.Report.LOWINTERVAL, UIAlertControllerStyle.Alert);
@@ -212,10 +213,10 @@ namespace ION.IOS.App {
         if(ion.dataLogManager.isRecording){
           var done = ion.dataLogManager.StopRecording().Result;
         }
-        if(KeychainAccess.ValueForKey("stayLogged") == "no"){
-					KeychainAccess.SetValueForKey(null,"userID");
-					KeychainAccess.SetValueForKey(null,"userName");
-					KeychainAccess.SetValueForKey(null,"userPword");
+        if(!ion.preferences.portal.rememberMe) {
+          ion.preferences.portal.userId = -1;
+          ion.preferences.portal.username = "";
+          ion.preferences.portal.password = "";
 				}
 
         if (Reachability.LocalWifiConnectionStatus() == NetworkStatus.ReachableViaWiFiNetwork) {
@@ -226,10 +227,12 @@ namespace ION.IOS.App {
           }
         }
 
-
-  			var userID = KeychainAccess.ValueForKey("userID");
-			  ion.webServices.updateOnlineStatus("0",userID);
-        ion.SaveWorkbenchAsync().Wait();
+        if (ion is RemoteIosION) {
+          var remote = ion as RemoteIosION;
+			    ion.portal.LogoutAsync().Wait();
+        } else {
+          ion.SaveWorkbenchAsync().Wait();
+        }
         ion.Dispose();
       } catch (Exception e) {
         Log.E(this, "Failed to terminate ion instance", e);

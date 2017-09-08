@@ -23,7 +23,7 @@
 	using ION.Core.Location;
 	using ION.Core.Report.DataLogs;
 	
-	using ION.CoreExtensions.Net;
+	using ION.CoreExtensions.Net.Portal;
 
 	using ION.IOS.Alarms.Alerts;
 	using ION.IOS.IO;
@@ -35,7 +35,7 @@
 	/// </summary>
 	public class LocalIosION : IosION {
 
-		public LocalIosION(WebPayload webServices) : base(webServices) {
+		public LocalIosION(IONPortalService portal) : base(portal) {
 		}
 		
     protected override void OnCreateManagers() {

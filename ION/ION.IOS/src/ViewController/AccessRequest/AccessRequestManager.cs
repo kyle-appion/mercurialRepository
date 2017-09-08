@@ -113,6 +113,9 @@ namespace ION.IOS.ViewController.AccessRequest {
 			if(submitCodeField.Text.Length >= 8 && submitCodeField.Text.Length <= 10){
 				var userID = KeychainAccess.ValueForKey("userID");
 			
+        // todo ahodder@appioninc.com: this needs to be localized. also, we can use error codes instead of strings
+        var response = await ion.portal.SubmitAccessCodeAsync(submitCodeField.Text);
+/*
 				var feedback = await ion.webServices.submitAccessCode(submitCodeField.Text,userID);
 
 				var window = UIApplication.SharedApplication.KeyWindow;
@@ -134,6 +137,7 @@ namespace ION.IOS.ViewController.AccessRequest {
 					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
 				}
 				submitCodeField.Text = "";
+*/
 			} else {
 				var window = UIApplication.SharedApplication.KeyWindow;
 				var rootVC = window.RootViewController as IONPrimaryScreenController;
@@ -155,6 +159,10 @@ namespace ION.IOS.ViewController.AccessRequest {
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
 			pendingUsers = new List<requestData>();
 			var userID = KeychainAccess.ValueForKey("userID");
+
+      // todo ahodder@appioninc.com: this needs to be localized. also, we can use error codes instead of strings
+      var response = await ion.portal.RequestPendingAccessCodesAsync();
+/*
 			
 			var feedback = await ion.webServices.getAllRequests(userID);
 			var window = UIApplication.SharedApplication.KeyWindow;
@@ -186,6 +194,7 @@ namespace ION.IOS.ViewController.AccessRequest {
 				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
 			}
+*/
 			
 			pendingTable.Source = new AccessRequestTableSource(pendingUsers, .1 * accessView.Bounds.Height);
 			pendingTable.ReloadData();
@@ -205,8 +214,11 @@ namespace ION.IOS.ViewController.AccessRequest {
 			if(pendingUsers == null){
 				pendingUsers = new List<requestData>();
 			}
-			var userID = KeychainAccess.ValueForKey("userID");
-			
+
+      // todo ahodder@appioninc.com: this needs to be localized. also, we can use error codes instead of strings
+      var response = ion.portal.RequestAccessCodeAsync();
+
+/*
 			var feedback = await ion.webServices.GenerateAccessCode(userID);
 			var window = UIApplication.SharedApplication.KeyWindow;
   		var rootVC = window.RootViewController as IONPrimaryScreenController;
@@ -233,6 +245,7 @@ namespace ION.IOS.ViewController.AccessRequest {
 				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
 			}
+*/
 			
 			pendingTable.Source = new AccessRequestTableSource(pendingUsers, .1 * accessView.Bounds.Height);
 			pendingTable.ReloadData();			

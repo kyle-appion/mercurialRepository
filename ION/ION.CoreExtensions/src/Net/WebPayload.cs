@@ -28,8 +28,9 @@ namespace ION.CoreExtensions.Net {
 	public class WebPayload {
 		public WebClient webClient;
 		HttpClient client;
-		public bool remoteViewing = false;   
+    
 		public bool uploading = false;
+    // remote download
 		public bool downloading 
 		{
 			get{
@@ -63,6 +64,9 @@ namespace ION.CoreExtensions.Net {
 		public const string forgotAccountUrl = "http://portal.appioninc.com/App/forgotUserPass.php";
 		public const string updateAccountUrl = "http://portal.appioninc.com/App/updateAccount.php";
 		public const string accountStatusUrl = "http://portal.appioninc.com/App/setAccountStatus.php";
+    /// <summary>
+    /// checks the last date that someone upload > 30 is disconnect
+    /// </summary>
 		public webOfflineEvent timedOut;
 		public webPauseEvent paused;
 		public sessionStateInfo stateInfo; 

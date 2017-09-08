@@ -10,25 +10,24 @@ using System.Net;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using ION.Core.App;
+using ION.CoreExtensions.Net.Portal;
 
 
 namespace ION.IOS.ViewController.RemoteAccess {
 
 	public class RemoteAccessTableSource : UITableViewSource {
 	  
-		List<accessData> tableItems;
+		List<ConnectionData> tableItems;
     nfloat cellHeight;
-		LocalIosION ion;
-    public ObservableCollection<accessData> selectedUser;
-    WebClient webServices;
+		IosION ion;
+    public ObservableCollection<ConnectionData> selectedUser;
     public const string deleteUserUrl = "http://portal.appioninc.com/App/deleteAccess.php";
     
-		public RemoteAccessTableSource(List<accessData> accessItems, ObservableCollection<accessData> selected, WebClient webClient) {
+		public RemoteAccessTableSource(List<ConnectionData> accessItems, ObservableCollection<ConnectionData> selected) {
 			tableItems = accessItems;
 			selectedUser = selected;
-			ion = AppState.context as LocalIosION;
-			webServices = webClient;
-			tableItems.Sort((x, y) => y.online.CompareTo(x.online));
+			ion = AppState.context as IosION;
+			tableItems.Sort((x, y) => y.isUserOnline.CompareTo(x.isUserOnline));
 		}
 		
 		public override nint NumberOfSections(UITableView tableView) {
@@ -119,11 +118,11 @@ namespace ION.IOS.ViewController.RemoteAccess {
 
     public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
     {
-			if(!ion.webServices.remoteViewing){
+			if(!(ion is RemoteIosION)){
 				var userID = KeychainAccess.ValueForKey("userID");
 
 	    	if(selectedUser != null){
-	    		if(tableItems[indexPath.Row].deviceID == UIDevice.CurrentDevice.IdentifierForVendor.ToString() && ion.webServices.uploading){
+	    		if(tableItems[indexPath.Row].deviceId == UIDevice.CurrentDevice.IdentifierForVendor.ToString() && ion.portal.isUploading){
 						return;
 					}
 					
@@ -131,11 +130,11 @@ namespace ION.IOS.ViewController.RemoteAccess {
 						selectedUser.Clear();
 						NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
 						NSUserDefaults.StandardUserDefaults.SetString("","viewedLayout");
-					} else if (tableItems[indexPath.Row].online == 1) {
+					} else if (tableItems[indexPath.Row].isUserOnline) {
 						selectedUser.Clear();
 						selectedUser.Add(tableItems[indexPath.Row]);
 						NSUserDefaults.StandardUserDefaults.SetString(tableItems[indexPath.Row].id.ToString(),"viewedUser");
-						NSUserDefaults.StandardUserDefaults.SetString(tableItems[indexPath.Row].layoutid.ToString(),"viewedLayout");
+						NSUserDefaults.StandardUserDefaults.SetString(tableItems[indexPath.Row].layoutId.ToString(),"viewedLayout");
 					}
 					
 					tableView.ReloadData();
@@ -144,6 +143,8 @@ namespace ION.IOS.ViewController.RemoteAccess {
     }
     
 		public async Task DeleteUserAccess(UITableView tableView, Foundation.NSIndexPath indexPath){
+      // todo ahodder@appioninc.com: localize string. also, we can use error codes instead of strings
+/*
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
 			
 			var userID = KeychainAccess.ValueForKey("userID");
@@ -172,7 +173,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 					var alert = UIAlertController.Create ("Delete User", responseMessage.ToString(), UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-					tableItems.Add(new accessData(){displayName = tableItems[indexPath.Row].displayName, id = tableItems[indexPath.Row].id});
+					tableItems.Add(new ConnectionData(){displayName = tableItems[indexPath.Row].displayName, id = tableItems[indexPath.Row].id});
 					tableView.ReloadData();
 				}
 			} catch (Exception exception){
@@ -184,6 +185,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
 			}			
+*/
 		} 
 	}
 }
