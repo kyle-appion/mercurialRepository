@@ -454,7 +454,7 @@ namespace ION.IOS.ViewController.Analyzer
           shFluidType.Text = manifold.ptChart.fluid.name;
           var shname = manifold.ptChart.fluid.name;
           shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(shname));
-          var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.primarySensor.measurement, manifold.secondarySensor.measurement, manifold.primarySensor.isRelative);
+          var calculation = manifold.ptChart.CalculateTemperatureDelta(manifold.primarySensor.measurement, manifold.secondarySensor.measurement, manifold.primarySensor.isRelative);
           ptAmount = calculation.magnitude;
           if (!manifold.ptChart.fluid.mixture && calculation < 0) {
             calculation = calculation * -1;
@@ -464,7 +464,7 @@ namespace ION.IOS.ViewController.Analyzer
           shFluidType.Text = manifold.ptChart.fluid.name;
           var shname = manifold.ptChart.fluid.name;
           shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(shname));
-          var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.secondarySensor.measurement, manifold.primarySensor.measurement, manifold.secondarySensor.isRelative);
+          var calculation = manifold.ptChart.CalculateTemperatureDelta(manifold.secondarySensor.measurement, manifold.primarySensor.measurement, manifold.secondarySensor.isRelative);
 					ptAmount = calculation.magnitude;
           if (!manifold.ptChart.fluid.mixture && calculation < 0) {
             calculation = calculation * -1;
@@ -472,7 +472,7 @@ namespace ION.IOS.ViewController.Analyzer
 					shReading.Text = calculation.magnitude.ToString("N") + calculation.unit.ToString();
         } else {
           manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
-          var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.primarySensor.measurement, manifold.secondarySensor.measurement, manifold.primarySensor.isRelative);
+          var calculation = manifold.ptChart.CalculateTemperatureDelta(manifold.primarySensor.measurement, manifold.secondarySensor.measurement, manifold.primarySensor.isRelative);
 					ptAmount = calculation.magnitude;
           if (!manifold.ptChart.fluid.mixture && calculation < 0) {
             calculation = calculation * -1;
@@ -512,7 +512,7 @@ namespace ION.IOS.ViewController.Analyzer
         ptFluidType.Text = manifold.ptChart.fluid.name;
         var ptname = manifold.ptChart.fluid.name;
         ptFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(ptname));
-        var ptcalc = manifold.ptChart.GetTemperature(manifold.primarySensor).ConvertTo(tUnit);
+        var ptcalc = manifold.ptChart.GetTemperature(manifold.primarySensor.measurement, manifold.primarySensor.isRelative).ConvertTo(tUnit);
         if (!manifold.ptChart.fluid.mixture) {
           ptFluidState.Text = "PT";
         } else if (manifold.ptChart.state.Equals(Fluid.EState.Bubble)) {
@@ -525,7 +525,7 @@ namespace ION.IOS.ViewController.Analyzer
         ptFluidType.Text = manifold.ptChart.fluid.name;
         var ptname = manifold.ptChart.fluid.name;
         ptFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(ptname));
-        var ptcalc = manifold.ptChart.GetPressure(manifold.primarySensor).ConvertTo(pUnit);
+        var ptcalc = manifold.ptChart.GetPressure(manifold.primarySensor.measurement, manifold.primarySensor.isRelative).ConvertTo(pUnit);
 
         if (!manifold.ptChart.fluid.mixture) {
           ptFluidState.Text = "PT";

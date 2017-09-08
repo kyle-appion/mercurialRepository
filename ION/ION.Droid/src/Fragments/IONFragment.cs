@@ -20,6 +20,7 @@ namespace ION.Droid.Fragments {
 
   using ION.Droid.Activity;
 	using ION.Droid.App;
+  using ION.Droid.Dialog;
   using ION.Droid.Util;
 
   public class IONFragment : Fragment {
@@ -106,7 +107,7 @@ namespace ION.Droid.Fragments {
 
       var ss = menu.FindItem(Resource.Id.screenshot);
       var icon = ss.Icon;
-      icon.Mutate().SetColorFilter(GetColor(Resource.Color.gray), PorterDuff.Mode.SrcIn);
+      icon.Mutate().SetColorFilter(Resource.Color.gray.AsResourceColor(Activity), PorterDuff.Mode.SrcIn);
       ss.SetIcon(icon);
     }
 
@@ -166,17 +167,8 @@ namespace ION.Droid.Fragments {
     /// <param name="drawableRes">Drawable res.</param>
     public Drawable GetColoredDrawable(int drawableRes, int colorRes) {
       var ret = new BitmapDrawable(cache.GetBitmap(drawableRes));
-      ret.SetColorFilter(new Color(Resources.GetColor(colorRes)), PorterDuff.Mode.SrcAtop);
+      ret.SetColorFilter(colorRes.AsResourceColor(Activity), PorterDuff.Mode.SrcAtop);
       return ret;
-    }
-
-    /// <summary>
-    /// Queries the color for the given resource.
-    /// </summary>
-    /// <returns>The color.</returns>
-    /// <param name="colorRes">Color res.</param>
-    public Color GetColor(int colorRes) {
-      return new Color(Resources.GetColor(colorRes));
     }
 
 		/// <summary>
@@ -287,10 +279,20 @@ namespace ION.Droid.Fragments {
           Log.D(this, "Failed to stop recording");
         }
       } else {
+        if (ion.currentWorkbench.isEmpty && ion.currentAnalyzer.isEmpty) {
+          var adb = new IONAlertDialog(Activity);
+          adb.SetTitle(Resource.String.report_data_logging);
+          adb.SetMessage(Resource.String.report_error_workbench_and_analyzer_empty);
+          adb.SetPositiveButton(Resource.String.close, (sender, e) => { });
+          adb.Show();
+          return;
+        }
+
         var interval = ion.preferences.report.dataLoggingInterval;
 				Log.D(this, "Starting record with an interval of: " + interval.ToString());
 
 				if (!await ion.dataLogManager.BeginRecording(interval)) {
+          Error(Resource.String.report_error_failed_to_start_recording);
           Log.D(this, "Failed to begin recording");
         }
       }
@@ -314,6 +316,10 @@ namespace ION.Droid.Fragments {
       ion.PostToMain(() => {
         Toast.MakeText(Activity, message, ToastLength.Short).Show();
       });
+    }
+    
+    public void Error(int stringResource, Exception e = null) {
+      Error(GetString(stringResource), e);
     }
 
     /// <summary>

@@ -58,6 +58,13 @@
 		public override bool Equals(object obj) {
 			if (obj != null) {
 				var s = (Scalar)obj;
+
+        if (unit == null && s.unit == null) {
+          return true;
+        } else if (unit == null || s.unit == null) {
+          return false;
+        }
+
 				AssertCompatible(unit, s.unit);
 				return DEquals(amount, s.ConvertTo(unit).amount);
 			} else {
@@ -109,7 +116,7 @@
 		/// <param name="o1">The first unit.</param>
 		/// <param name="o2">The second unit.</param>
 		private static void AssertCompatible(Unit o1, Unit o2) {
-			if (!o1.IsCompatible(o2)) {
+      if (!(o1 == null && o2 == null) && !o1.IsCompatible(o2)) {
 				throw new ArithmeticException("Cannot perform operation: " + o1 + " is incompatible with " + o2);
 			}
 		}
@@ -201,6 +208,36 @@
 
 		public static bool operator ==(Scalar o1, Scalar o2) {
 			return (!object.ReferenceEquals(o1, null) && !object.ReferenceEquals(o2, null)) && (o1.amount == o2.amount && o1.unit.Equals(o2.unit));
+		}
+
+    public static Scalar Min(params Scalar[] scalars) {
+      var lowest = scalars[0];
+
+      for (int i = 1; i < scalars.Length; i++) {
+        var s = scalars[i];
+        AssertCompatible(lowest.unit, s.unit);
+
+        if (s < lowest) {
+          lowest = s;
+        }
+      }
+
+      return lowest;
+		}
+
+		public static Scalar Max(params Scalar[] scalars) {
+			var highest = scalars[0];
+
+			for (int i = 1; i < scalars.Length; i++) {
+				var s = scalars[i];
+				AssertCompatible(highest.unit, s.unit);
+
+				if (s > highest) {
+					highest = s;
+				}
+			}
+
+      return highest;
 		}
   }
 }

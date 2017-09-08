@@ -38,6 +38,16 @@
 		}
 
     /// <summary>
+    /// Queries the pressure adjustment that must be made for relative pressures to convert them to absolute.
+    /// </summary>
+    /// <returns>The span adjustment for elevation.</returns>
+    /// <param name="elevation">Elevation.</param>
+    public static ScalarSpan GetSpanAdjustmentForElevation(Scalar elevation) {
+      var kpa = Units.Pressure.KILOPASCAL;
+      return (PRESSURE_AT_SEA_LEVEL - AtmosphericPressureFromElevation(elevation)).ConvertTo(kpa);
+    }
+
+    /// <summary>
     /// Converts the given relative pressure to an absolute pressure.
     /// </summary>
     /// <remarks>

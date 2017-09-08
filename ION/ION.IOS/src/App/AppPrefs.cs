@@ -58,12 +58,19 @@
     public AlarmPreferences _alarm { get; private set; }
     // Implemented for IPreferences
     public IAlarmPreferences alarm { get { return _alarm; } }
+    
 		// Implemented for IPreferences
-    public JobPreferences _jobs { get; private set; }
+    public JobPreferences _job { get; private set; }
 		// Implemented for IPreferences
-		public IJobPreferences jobs { get { return _jobs; } }
-
-		public LocationPreferences _location { get; private set; }
+		public IJobPreferences job { get { return _job; } }
+    
+    // Implemented for IPreferences
+    public FluidPreferences _fluid { get; private set; }
+    // Implemented for IPreferences
+    public IFluidPreferences fluid { get { return _fluid; } }
+    
+    // Implemented for IPreferences
+    public LocationPreferences _location { get; private set; }
     // Implemented for IPreferences
     public ILocationPreferences location { get { return _location; } }
 
@@ -106,11 +113,12 @@
     private AppPrefs() {
       _device = new DevicePreferences(this);
       _alarm = new AlarmPreferences(this);
+      _job = new JobPreferences(this);
+      _fluid = new FluidPreferences(this);
       _location = new LocationPreferences(this);
       _units = new UnitPreferences(this);
       _report =  new ReportPreferences(this);
       _portal = new PortalPreferences(this);
-      _jobs = new JobPreferences(this);
 
       NSNotificationCenter.DefaultCenter.AddObserver(NSUserDefaults.DidChangeNotification, OnSettingsChanged);
       if (!initialized) {
@@ -129,7 +137,7 @@
       _units.InitDefaults();
       _report.InitDefaults();
       _portal.InitDefaults();
-      _jobs.InitDefaults();
+      _job.InitDefaults();
     }
 
     private void OnSettingsChanged(NSNotification defaults) {
@@ -244,22 +252,6 @@
       NSUserDefaults.StandardUserDefaults.SetDouble(setting, key);
       Sync();
     }
-    /// <summary>
-    /// Sets the active job a user has for managing sessions.
-    /// </summary>
-    /// <param name="key">Key.</param>
-    /// <param name="jobid">Jobid.</param>
-    public void PutActiveJob(string key, int jobid){
-			NSUserDefaults.StandardUserDefaults.SetInt(jobid, key);
-		}
-		/// <summary>
-		/// Gets the active job a user has for managing sessions.
-		/// </summary>
-		/// <param name="key">Key.</param>
-		/// <param name="jobid">Jobid.</param>
-		public void GetActiveJob(string key) {
-			NSUserDefaults.StandardUserDefaults.IntForKey(key);
-		}
   }
 
   public abstract class DerivedPreferences : BasePreferences {
@@ -358,26 +350,64 @@
       allowsSounds = true;
 		}
   }
-
+  
   public class JobPreferences : DerivedPreferences, IJobPreferences {
-		private const string KEY_JOB_ACTIVE = "settings_job_active";
+    private const string KEY_JOB_ACTIVE = "settings_job_active";
+    
+    public int activeJob {
+      get {
+        return GetInt(KEY_JOB_ACTIVE);
+      } 
+      set {
+        PutInt(KEY_JOB_ACTIVE, value);
+      }     
+    }
+    
+    public JobPreferences(AppPrefs prefs) : base(prefs) {
+    }
+    
+    public override void InitDefaults() {
+      activeJob = 0;
+    }
+  }
 
-		public int activeJob {
-			get {
-				return GetInt(KEY_JOB_ACTIVE);
-			}
-			set {
-				PutInt(KEY_JOB_ACTIVE, value);
-			}
-		}
+  public class FluidPreferences : DerivedPreferences, IFluidPreferences {
+    private const string KEY_FLUID_PREFERRED = "settings_fluid_preferred";
+    private const string KEY_FLUID_FAVORITES = "settings_fluid_favorites";
 
-		public JobPreferences(AppPrefs prefs) : base(prefs) {
-		}
+    public string preferredFluid {
+      get {
+        return GetString(KEY_FLUID_PREFERRED);
+      } 
+      set {
+        PutString(KEY_FLUID_PREFERRED, value);
+      }
+    }
 
-		public override void InitDefaults() {
-			activeJob = 0;
-		}
-	}
+    public string[] favorites {
+      get {
+        var tok = GetString(KEY_FLUID_FAVORITES);
+        if (tok != null) {
+          var ret = tok.Split(',');
+          return ret;
+        } else {
+          return null;
+        }
+      }
+      set {
+        var data = string.Join(",", value);
+        PutString(KEY_FLUID_FAVORITES, data);
+      }
+    }
+
+    public FluidPreferences(AppPrefs prefs) : base(prefs) {
+    }
+
+    public override void InitDefaults() {
+      preferredFluid = "R22";
+      favorites = new string[] { "R22", "R134a", "R407C", "R410A" };
+    }
+  }
 
   public class LocationPreferences : DerivedPreferences, ILocationPreferences {
     private const string KEY_USE_GEO_LOCATION = "settings_location_use_geolocation";

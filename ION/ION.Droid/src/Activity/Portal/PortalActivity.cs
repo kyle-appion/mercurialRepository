@@ -36,10 +36,15 @@ namespace ION.Droid.Activity.Portal {
 		protected override void OnCreate(Bundle savedInstanceState) {
 			base.OnCreate(savedInstanceState);
 
-			if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
+			try {
+				if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
+					SetContentView(Resource.Layout.activity_portal_4_4);
+				} else {
+					SetContentView(Resource.Layout.activity_portal);
+				}
+			} catch (Exception e) {
+				Log.E(this, "Failed to set layout. Defaulting to old version", e);
 				SetContentView(Resource.Layout.activity_portal_4_4);
-			} else {
-				SetContentView(Resource.Layout.activity_portal);
 			}
 
 			ActionBar.SetDisplayHomeAsUpEnabled(true);
@@ -67,6 +72,7 @@ namespace ION.Droid.Activity.Portal {
 
 			// TODO-Localize ahodder@appioninc.com:
 			var startRemote = FindViewById<Button>(Resource.Id.button);
+      startRemote.Visibility = ViewStates.Gone;
 			startRemote.Click += (sender, e) => {
 				StartActivity(new Intent(this, typeof(PortalRemoteViewingManagerActivity)));
 			};

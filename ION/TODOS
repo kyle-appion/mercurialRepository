@@ -1,6 +1,11 @@
 TODOS
 
 CORE
+  Database
+    * Upgrade the database to be more sane than it currently is. 
+      - For example, the device table should have the last date that the device
+        was certified.
+
   UnitLookup
     * Using Unitlookup to find the code of a pressure kPa returns the vacuum kPa
       unit code. This is easily replicated by Adding a manual sensor to the

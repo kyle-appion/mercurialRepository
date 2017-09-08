@@ -1,11 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="0.9.51">
+	<display version="1.0.0">
 		<new>Added Real Time TREND logging to Rate of Change</new>
 		<new>Added optional app analytics (found in settings)</new>
 		<new>Known gauges will now automatically connect when in range (if enabled in settings)</new>
 		<new>Added current elevation display to PTChart and Superheat/Subcool calculators (if enabled in settings and supported by device)</new>
-		<new>Added remote viewing (found in Appion Portal)</new>
     <update>Updated Rate of Change to be more responsive and predictive</update>
 		<fixed>Fixed some graphical bugs in workbench</fixed>
 		<fixed>Fixed app not completely shutting down</fixed>

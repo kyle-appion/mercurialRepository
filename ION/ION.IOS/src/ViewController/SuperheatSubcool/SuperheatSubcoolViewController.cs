@@ -363,9 +363,11 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       if (temperatureSensor != null && pressureSensor != null) {
         OnTemperatureSensorChanged(temperatureSensor);
       }
-      if (ptChart != null) {
-        ptChart = PTChart.New(ion, ptChart.state);
-      }
+			if (ptChart != null) {
+				if (!ptChart.fluid.Equals(ion.fluidManager.lastUsedFluid)) {
+					ptChart = new PTChart(ion.fluidManager.lastUsedFluid, ptChart.state);
+				}
+			}
 
       OnSettingsChanged(null);
       settingsObserver = NSNotificationCenter.DefaultCenter.AddObserver(NSUserDefaults.DidChangeNotification, OnSettingsChanged);
@@ -421,8 +423,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       viewFluidHeader.AddGestureRecognizer(new UITapGestureRecognizer(() => {
         var sb = InflateViewController<FluidManagerViewController>(VC_FLUID_MANAGER);
         sb.onFluidSelectedDelegate = (Fluid fluid) => {
-          ptChart = PTChart.New(ion, ptChart.state, fluid);
-          if (pressureSensor != null) {
+          ptChart = new PTChart(fluid, ptChart.state);
+			    if (pressureSensor != null) {
             OnPressureSensorChanged(pressureSensor);
           }
         };
@@ -488,7 +490,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       var pressureScalar = pressureSensor.measurement;
       var temperatureScalar = temperatureSensor.measurement;
 
-      var calculation = ptChart.CalculateSystemTemperatureDelta(pressureScalar, temperatureScalar, pressureSensor.isRelative).ConvertTo(temperatureUnit);
+      var calculation = ptChart.CalculateTemperatureDelta(pressureScalar, temperatureScalar, pressureSensor.isRelative).ConvertTo(temperatureUnit);
 
       if (ptChart.fluid.mixture) {
         switch (ptChart.state) {
@@ -596,7 +598,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       pressureUnit = measurement.unit;
 
       if (sensor != null) {
-        var temp = ptChart.GetTemperature(sensor).ConvertTo(temperatureUnit);
+        var temp = ptChart.GetTemperature(sensor.measurement, sensor.isRelative).ConvertTo(temperatureUnit);
 	      labelSatTempMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, temp, false);
 	      labelSatTempUnit.Text = temp.unit.ToString();
 			}
@@ -620,7 +622,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       if(pressureSensor == null){
         pressureSensor = new ManualSensor(ESensorType.Pressure, new Scalar(pressureUnit, 0.0));
       }
-      var temp = ptChart.GetTemperature(pressureSensor).ConvertTo(temperatureUnit);
+      var temp = ptChart.GetTemperature(pressureSensor.measurement, sensor.isRelative).ConvertTo(temperatureUnit);
       labelSatTempUnit.Text = temp.unit.ToString();
 
       UpdateDelta();

@@ -24,6 +24,11 @@
     /// </summary>
     public Analyzer.ESide side { get; private set; }
     /// <summary>
+    /// The sensor that cause the event.
+    /// </summary>
+    /// <value>The sensor.</value>
+    public Sensor sensor { get; private set; }
+    /// <summary>
     /// The index that is used for almost all sensor events. In the case of a swap event, this is the first sensor.
     /// </summary>
     /// <value>The index.</value>
@@ -44,8 +49,9 @@
     /// </summary>
     /// <param name="type">Type.</param>
     /// <param name="index">Index.</param>
-    public AnalyzerEvent(EType type, int index) {
+    public AnalyzerEvent(EType type, Sensor sensor, int index) {
       this.type = type;
+      this.sensor = sensor;
       this.index = index;
     }
 
@@ -175,6 +181,11 @@
 				return GetSensorsInSideCount(ESide.Low) + GetSensorsInSideCount(ESide.High);
 			}
 		}
+    /// <summary>
+    /// Whether or not the analyzer is empty.
+    /// </summary>
+    /// <value><c>true</c> if is empty; otherwise, <c>false</c>.</value>
+    public bool isEmpty { get { return count <= 0; } }
     /// <summary>
     /// The number of sensors that the analyzer supports per side.
     /// </summary>
@@ -349,7 +360,7 @@
       }
 
       for (int i = 0; i < sensors.Length; i++) {
-        if (sensor == sensors[i]) {//sensor.Equals(sensors[i])) {
+        if (sensor == sensors[i]) {
           return i;
         }
       }
@@ -520,7 +531,7 @@
       sensors[index] = sensor;
       //sensor.onSensorStateChangedEvent += OnSensorChangedEvent;
 
-      var ae = new AnalyzerEvent(AnalyzerEvent.EType.Added, index);
+      var ae = new AnalyzerEvent(AnalyzerEvent.EType.Added, sensor, index);
       NotifyOfAnalyzerEvent(ae);
       return true;
     }
@@ -564,7 +575,7 @@
 				}
 			}
 
-      var ae = new AnalyzerEvent(AnalyzerEvent.EType.Removed, index);
+      var ae = new AnalyzerEvent(AnalyzerEvent.EType.Removed, sensor, index);
       NotifyOfAnalyzerEvent(ae);
 
       return true;
@@ -602,13 +613,13 @@
         case ESide.Low:
           RemoveManifold(ESide.Low);
           lowSideManifold = new Manifold(sensor);
-          lowSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Bubble);
+          lowSideManifold.ptChart = ion.fluidManager.lastUsedFluid.GetPtChart(Fluid.EState.Bubble);
           NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.Low));
           return true;
         case ESide.High:
           RemoveManifold(ESide.High);
           highSideManifold = new Manifold(sensor);
-          highSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+          highSideManifold.ptChart = ion.fluidManager.lastUsedFluid.GetPtChart(Fluid.EState.Dew);
           NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
           return true;
         default:
@@ -629,21 +640,20 @@
 					RemoveManifold(ESide.Low);
 					lowSideManifold = manifold;
 					if (manifold != null && manifold.ptChart == null) {
-						manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+          manifold.ptChart = ion.fluidManager.lastUsedFluid.GetPtChart(Fluid.EState.Dew);
 					}
 					NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.Low));
-				return true;
+				  return true;
 				case ESide.High:
 					RemoveManifold(ESide.High);
 					highSideManifold = manifold;
 					if (manifold != null && manifold.ptChart == null) {
-						manifold.ptChart = PTChart.New(ion, Fluid.EState.Bubble);
+						manifold.ptChart = ion.fluidManager.lastUsedFluid.GetPtChart(Fluid.EState.Bubble);
 					}
 					NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
-				return true;
+				  return true;
 				default:
           return false;
-					//throw new Exception("Cannot set primary manifold: unknown side: " + side);
 			}
 		}
 
@@ -662,13 +672,13 @@
         case ESide.Low:
           RemoveManifold(ESide.Low);
           lowSideManifold = new Manifold(sensor);
-          lowSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Bubble, remoteFluid);
+          lowSideManifold.ptChart = remoteFluid.GetPtChart(Fluid.EState.Bubble);
           NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.Low));
           return true;
         case ESide.High:
           RemoveManifold(ESide.High);
           highSideManifold = new Manifold(sensor);
-          highSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Dew, remoteFluid);
+          highSideManifold.ptChart = remoteFluid.GetPtChart(Fluid.EState.Dew);
           NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
           return true;
         default:
@@ -856,8 +866,9 @@
         lowSideManifold = high;
         highSideManifold = low;
 
-				lowSideManifold.ptChart = PTChart.New(this.ion, Fluid.EState.Dew, lowSideManifold.ptChart.fluid);
-				highSideManifold.ptChart = PTChart.New(this.ion, Fluid.EState.Bubble, highSideManifold.ptChart.fluid);
+        // Update the systems sides for the ptchart.
+        lowSideManifold.ptChart = lowSideManifold.ptChart.fluid.GetPtChart(Fluid.EState.Dew);
+        highSideManifold.ptChart = highSideManifold.ptChart.fluid.GetPtChart(Fluid.EState.Bubble);
 
 				lowSideManifold.SetSecondarySensor(null);
 				highSideManifold.SetSecondarySensor(null);
@@ -949,7 +960,7 @@
       for (int i = startInclusive; i < endExclusive; i++) {
         if (sensors[i] == null) {
           sensors[i] = sensor;
-          NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.Added, i));
+          NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.Added, sensor, i));
           return true;
         }
       }
@@ -972,7 +983,7 @@
     /// </summary>
     /// <param name="sensor">Sensor.</param>
     private void OnSensorChangedEvent(Sensor sensor) {
-      NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.SensorChanged, IndexOfSensor(sensor)));
+      NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.SensorChanged, sensor, IndexOfSensor(sensor)));
     }
 
     /// <summary>
@@ -1005,5 +1016,3 @@
 		}
 	}
 }
-
- 

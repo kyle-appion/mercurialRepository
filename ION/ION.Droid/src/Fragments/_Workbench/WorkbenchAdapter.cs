@@ -29,7 +29,7 @@
 		private ItemTouchHelper dragger;
 		private HashSet<ManifoldRecord> dragCollapsedManifoldRecords = new HashSet<ManifoldRecord>();
 
-		public WorkbenchAdapter(Action onAddViewer, Workbench workbench) {
+    public WorkbenchAdapter(Action onAddViewer, Workbench workbench, bool hideAdd) {
 			this.onAddViewer = onAddViewer;
 			this.workbench = workbench;
 			dragger = new ItemTouchHelper(new Dragger(this));
@@ -39,10 +39,11 @@
 				var mr = new ManifoldRecord(manifold);
 				records.Add(mr);
 				ExpandManifold(mr);
-				records.Add(new SpaceRecord());
 			}
 
-			records.Add(new AddViewerRecord(onAddViewer));
+      if (!hideAdd) {
+        records.Add(new AddViewerRecord(onAddViewer));
+      }
 		}
 
 		protected override void Dispose(bool disposing) {
@@ -90,9 +91,6 @@
 			var rv = recyclerView as SwipeRecyclerView;
 
 			switch ((EViewType)viewType) {
-				case EViewType.Space: {
-					return new SpaceViewHolder(parent);
-				} // EViewType.Space
 				case EViewType.Add: {
 					return new AddViewerViewHolder(parent);
 				} // EViewType.Add
@@ -243,7 +241,7 @@
 		/// <returns>The size for manifold.</returns>
 		/// <param name="manifold">Manifold.</param>
 		private int AdapterSizeForManifold(ManifoldRecord mr) {
-			return 1 + (mr.isExpanded ? mr.manifold.sensorPropertyCount : 0) + 1;
+			return 1 + (mr.isExpanded ? mr.manifold.sensorPropertyCount : 0);
 		}
 
 		private IRecord CreateSensorPropertyRecord(Manifold manifold, ISensorProperty sp) {
@@ -264,7 +262,7 @@
 		}
 
 		private void BeginDrag(RecyclerView.ViewHolder vh) {
-			if (vh is ManifoldViewHolder) {
+      if (vh is ManifoldViewHolder) {
 				for (int i = records.Count - 1; i  >= 0; i--) {
 					var mr = records[i] as ManifoldRecord;
 					if (mr != null) {
@@ -322,13 +320,11 @@
 						var i = 0;
 						var mr = new ManifoldRecord(e.manifold);
 						if (e.index == 0) {
-							records.Insert(i, new SpaceRecord());
 							records.Insert(i, mr);
 							NotifyItemRangeInserted(i, 2);
 						} else {
 							i = AdapterIndexForManifold(workbench[e.index - 1]);
 							i += AdapterSizeForManifold(records[i] as ManifoldRecord);
-							records.Insert(i, new SpaceRecord());
 							records.Insert(i, mr);
 							NotifyItemRangeInserted(i, 2);
 						}
@@ -394,12 +390,6 @@
 					var i1 = mi + e.index;
 					var i2 = mi + e.otherIndex;
 					SwapRecords(i1, i2);
-/*
-					var vh1 = recyclerView.FindViewHolderForAdapterPosition(i1) as SensorPropertyViewHolder;
-					var vh2 = recyclerView.FindViewHolderForAdapterPosition(i2) as SensorPropertyViewHolder;
-					vh1.Invalidate();
-					vh2.Invalidate();
-*/
 				} break; // ManifoldEvent.EType.SensorPropertySwapped
 			}
 		}
@@ -417,8 +407,6 @@
 		}
 
 		public enum EViewType {
-			Space,
-
 			Add,
 			Manifold,
 

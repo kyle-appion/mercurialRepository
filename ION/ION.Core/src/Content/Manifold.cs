@@ -232,6 +232,9 @@
     /// </summary>
     public PTChart ptChart {
       get {
+        if (__ptChart == null) {
+          __ptChart = new PTChart(AppState.context.fluidManager.lastUsedFluid, Fluid.EState.Dew);
+        }
         return __ptChart;
       }
       set {
@@ -254,6 +257,15 @@
 				s.device.onDeviceEvent += OnDeviceEvent;
         s.onSensorStateChangedEvent += OnManifoldSensorChanged;
 			}
+    }
+
+    /// <summary>
+    /// Creates a new manifold with the given sensors as the primary and sencondary sensors.
+    /// </summary>
+    /// <param name="primarySensor">Primary sensor.</param>
+    /// <param name="secondarySensor">Secondary sensor.</param>
+    public Manifold(Sensor primarySensor, Sensor secondarySensor) : this(primarySensor) {
+      this.secondarySensor = secondarySensor;
     }
 
     /// <summary>

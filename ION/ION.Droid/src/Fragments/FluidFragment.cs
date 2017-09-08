@@ -163,20 +163,20 @@
     }
 
     // Overridden from BaseAdapter
-    public override View GetView(int position, View convert, ViewGroup parent) {
+    public override View GetView(int position, View convertView, ViewGroup parent) {
       var fm = fragment.ion.fluidManager;
       var c = parent.Context;
-      ViewHolder vh = convert?.Tag as ViewHolder;
+      ViewHolder vh = convertView?.Tag as ViewHolder;
 
       if (vh == null) {
-        convert = LayoutInflater.From(c).Inflate(Resource.Layout.fluid, parent, false);
-        convert.Tag = vh = new ViewHolder();
+        convertView = LayoutInflater.From(c).Inflate(Resource.Layout.fluid, parent, false);
+        convertView.Tag = vh = new ViewHolder();
 
-        vh.color = convert.FindViewById(Resource.Id.color);
-				vh.safetyColor = convert.FindViewById(Resource.Id.view);
-        vh.name = convert.FindViewById<TextView>(Resource.Id.name);
-				vh.safety = convert.FindViewById<TextView>(Resource.Id.text);
-        vh.perferred = convert.FindViewById<ImageView>(Resource.Id.preferred);
+        vh.color = convertView.FindViewById(Resource.Id.color);
+				vh.safetyColor = convertView.FindViewById(Resource.Id.view);
+        vh.name = convertView.FindViewById<TextView>(Resource.Id.name);
+				vh.safety = convertView.FindViewById<TextView>(Resource.Id.text);
+        vh.perferred = convertView.FindViewById<ImageView>(Resource.Id.preferred);
 
 				vh.safetyColor.Background = new ShapeDrawable(new Android.Graphics.Drawables.Shapes.OvalShape());
       }
@@ -187,15 +187,15 @@
       vh.name.Text = fluidName;
 
       if (fluidName.Equals(selectedFluid)) {
-				convert.SetBackgroundColor(c.Resources.GetColor(Resource.Color.light_gray));
+        convertView.SetBackgroundColor(Resource.Color.light_gray.AsResourceColor(c));
       } else {
-				convert.SetBackgroundColor(c.Resources.GetColor(Resource.Color.white));
+        convertView.SetBackgroundColor(Resource.Color.white.AsResourceColor(c));
       }
 
       if (fm.IsFluidPreferred(fluidName)) {
-        vh.perferred.SetColorFilter(new Color(c.Resources.GetColor(Resource.Color.gold)));
+        vh.perferred.SetColorFilter(Resource.Color.gold.AsResourceColor(c));
       } else {
-        vh.perferred.SetColorFilter(new Color(c.Resources.GetColor(Resource.Color.black)));
+        vh.perferred.SetColorFilter(Resource.Color.black.AsResourceColor(c));
       }
 
 
@@ -216,7 +216,7 @@
         fm.MarkFluidAsPreferred(fluidName, !fm.IsFluidPreferred(fluidName));
       }));
 
-      return convert;
+      return convertView;
     }
 
     private class ViewHolder : Java.Lang.Object {

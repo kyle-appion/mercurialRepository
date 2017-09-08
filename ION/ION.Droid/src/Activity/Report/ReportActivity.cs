@@ -1,330 +1,273 @@
-﻿namespace ION.Droid.Activity.Report {
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-	using System;
-	using System.Collections.Generic;
+using Android.App;
+using Android.Content;
+using Android.Content.PM;
+using Android.OS;
+using Android.Runtime;
+using Android.Views;
+using Android.Widget;
 
-	using Android.App;
-	using Android.Content;
-	using Android.Content.PM;
-	using Android.OS;
-	using Android.Views;
-	using Android.Widget;
+using Appion.Commons.Util;
 
-	using Appion.Commons.Util;
+using ION.Core.Database;
+using ION.Core.IO;
 
-	using ION.Core.Database;
+using ION.Droid.Activity;
+using ION.Droid.Dialog;
+using ION.Droid.Fragments;
+using ION.Droid.IO;
+using ION.Droid.Views;
+using ION.Droid.Widgets.RecyclerViews;
 
-	using ION.Droid.Activity;
-	using ION.Droid.Dialog;
-	using ION.Droid.Fragments;
-	using ION.Droid.Views;
+namespace ION.Droid.Activity.Report {
 
-	/// <summary>
-	/// The activity that will walk a user through viewing and selecting reports for export.
-	/// </summary>
-	[Activity(Label="@string/reports", Icon="@drawable/ic_nav_reporting", Theme="@style/AppTheme", LaunchMode=LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
-	public class ReportActivity : IONActivity {
+  [Activity(Label = "@string/reporting", Icon="@drawable/ic_nav_reporting", Theme="@style/AppTheme", LaunchMode=LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
+  public class ReportActivity : IONActivity {
 
-		public const string EXTRA_SHOW_SAVED_SPREADSHEETS = "ION.Droid.Activity.Report.extra.SHOW_SAVED_SPREADSHEETS";
-		public const string EXTRA_SHOW_SAVED_PDF = "ION.Droid.Activity.Report.extra.SHOW_SAVED_PDF";
-
+    public const string EXTRA_SHOW_ARCHIVE_VIEW = "ION.Droid.Activity.Report.extra.SHOW_ARCHIVE_VIEW";
+		public const string SPREADSHEETS = "spreadsheet";
+		public const string PDF = "pdf";
+    
+    public const int REQUEST_REPORT = 1;
 
 		private const string MIME_EXCEL = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 		private const string MIME_PDF = "application/pdf";
+    
+    public readonly HashSet<int> checkedSessions = new HashSet<int>();
+    
+    private ReportByJobFragment byJob;
+    private ReportByDateFragment byDate;
+    private FileBrowserFragment spreadsheets;
+    private FileBrowserFragment pdfs;
 
-		private const int REQUEST_EXPORT = 1;
+    private Fragment activeFragment;
+    
+    private View newReport;
+    private View savedReports;
+    
+    private TextView header;
+    
+    private Button tab1;
+    private Button tab2;
+    
+    protected override void OnCreate(Bundle savedInstanceState) {
+      base.OnCreate(savedInstanceState);
+      SetContentView(Resource.Layout.activity_report);
 
-		/// <summary>
-		/// The current active fragment.
-		/// </summary>
-		private Fragment activeFragment;
-
-		/// <summary>
-		/// The header that show the 
-		/// </summary>
-		private TextView header;
-
-		/// <summary>
-		/// The button that will show the new report fragments.
-		/// </summary>
-		private ActionBar.Tab newReportTab;
-		/// <summary>
-		/// The button that will show the saved report fragments.
-		/// </summary>
-		private ActionBar.Tab savedReportsTab;
-
-		/// <summary>
-		/// The button that will show the jobs fragment.
-		/// </summary>
-		private Button tab1Button;
-		/// <summary>
-		/// The button that will show the sessions fragment.
-		/// </summary>
-		private Button tab2Button;
-		/// <summary>
-		/// The button that will graph the selected sessions.
-		/// </summary>
-		private Button graphButtonButton;
-
-		private HashSet<int> checkedSessions = new HashSet<int>();
-
-		protected override void OnCreate(Bundle state) {
-			base.OnCreate(state);
-
-			SetContentView(Resource.Layout.activity_report);
-
-			ActionBar.SetDisplayHomeAsUpEnabled(true);
-			ActionBar.SetHomeButtonEnabled(true);
-			ActionBar.NavigationMode = ActionBarNavigationMode.Tabs;
-			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_reporting, Resource.Color.gray));
-
-			header = FindViewById<TextView>(Resource.Id.text);
-
-			tab1Button = FindViewById<Button>(Resource.Id.tab_1);
-			tab2Button = FindViewById<Button>(Resource.Id.tab_2);
-
-			graphButtonButton = FindViewById<Button>(Resource.Id.report_graph);
-
-			tab1Button.Click += (sender, e) => {
-				ShowByJobFragment();
-			};
-
-			tab2Button.Click += (sender, e) => {
-				ShowBySessionFragment();
-			};
-
-			graphButtonButton.Click += (sender, e) => {
-				var i = new Intent(this, typeof(GraphReportSessionsActivity));
-        i.PutExtra(GraphReportSessionsActivity.EXTRA_SESSIONS, new List<int>(checkedSessions).ToArray());
-				StartActivityForResult(i, REQUEST_EXPORT);
-			};
-
-			newReportTab = ActionBar.NewTab();
-			newReportTab.SetText(Resource.String.report_new);
-			newReportTab.TabSelected += (sender, e) => {
-				PrepareNewReportFragments();
-			};
-
-			savedReportsTab = ActionBar.NewTab();
-			savedReportsTab.SetText(Resource.String.report_saved);
-			savedReportsTab.TabSelected += (sender, e) => {
-				PrepareShowReportsFragments();
-			};
-
-			ActionBar.AddTab(newReportTab);
-			ActionBar.AddTab(savedReportsTab);
-
-			PrepareNewReportFragments();
-		}
-
-		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data) {
-			switch (requestCode) {
-				case REQUEST_EXPORT:
-					if (data != null) {
-						if (data.GetBooleanExtra(EXTRA_SHOW_SAVED_SPREADSHEETS, false)) {
-							ShowSpreadsheetFragment();
-						} else if (data.GetBooleanExtra(EXTRA_SHOW_SAVED_PDF, false)) {
-							ShowPDFFragment();
-						}
-					}
-					break;
-				default:
-					base.OnActivityResult(requestCode, resultCode, data);
-					break;
-			}
-			base.OnActivityResult(requestCode, resultCode, data);
-		}
-
-		public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
-			switch (item.ItemId) {
-				case Android.Resource.Id.Home:
-					SetResult(Result.Canceled);
-					Finish();
-					return true;
-				default:
+      ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_reporting, Resource.Color.gray));
+      ActionBar.SetDisplayHomeAsUpEnabled(true);
+      ActionBar.SetHomeButtonEnabled(true);
+      
+      newReport = FindViewById(Resource.Id.report_new);
+      savedReports = FindViewById(Resource.Id.report_saved);
+      
+      header = FindViewById<TextView>(Resource.Id.title);
+      tab1 = FindViewById<Button>(Resource.Id.tab_1);
+      tab2 = FindViewById<Button>(Resource.Id.tab_2);
+      
+      newReport.Click += (sender, e) => {
+        NavigateToByJob();
+      };
+      
+      savedReports.Click += (sender, e) => {
+        NavigateToSpreadsheets();
+      };
+      
+      NavigateToByJob();
+    }
+    
+    protected override void OnActivityResult(int requestCode, Result resultCode, Intent data) {
+      if (Result.Ok != resultCode) {
+        base.OnActivityResult(requestCode, resultCode, data);
+      }
+      
+      switch (requestCode) {
+        case REQUEST_REPORT:
+          if (data != null) {
+            var archive = data.GetStringExtra(EXTRA_SHOW_ARCHIVE_VIEW);
+            if (SPREADSHEETS.Equals(archive)) {
+              NavigateToSpreadsheets();
+            } else if (PDF.Equals(archive)) {
+              NavigateToPdf();
+            }
+          }
+          break;
+        default:
+          base.OnActivityResult(requestCode, resultCode, data);
+          break;
+      }
+    }
+    
+    public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
+      switch (item.ItemId) {
+        case Android.Resource.Id.Home:
+          SetResult(Result.Canceled);
+          Finish();
+          return true;
+        default:
 					return base.OnMenuItemSelected(featureId, item);
 			}
-		}
+    }
+    
+    private void NavigateToByJob() {
+      if (byJob == null) {
+        byJob = new ReportByJobFragment(this);
+      }
+    
+      newReport.SetBackgroundResource(Resource.Drawable.xml_tab_gold_white);
+      savedReports.SetBackgroundResource(Resource.Drawable.xml_tab_gray_black);
+      
+      header.SetText(Resource.String.report_session_selection);
+      header.SetBackgroundColor(Resource.Color.green.AsResourceColor(this));
+      
+      tab1.SetBackgroundResource(Resource.Drawable.xml_tab_white_light_blue);
+      tab1.SetText(Resource.String.report_by_job);
+      
+      tab2.SetBackgroundResource(Resource.Drawable.xml_tab_gray_black);
+      tab2.SetText(Resource.String.report_by_date);
+      
+      tab1.SetOnClickListener(new ViewClickAction((view) => {
+        NavigateToByJob();
+      }));
+      
+      tab2.SetOnClickListener(new ViewClickAction((view) => {
+        NavigateToByDate();
+      }));
+      
+      NavigateToFragment(byJob);
+    }
+    
+    private void NavigateToByDate() {
+      if (byDate == null) {
+        byDate = new ReportByDateFragment(this);
+      }
+      
+      newReport.SetBackgroundResource(Resource.Drawable.xml_tab_gold_white);
+      savedReports.SetBackgroundResource(Resource.Drawable.xml_tab_gray_black);
+      
+      header.SetText(Resource.String.report_session_selection);
+      header.SetBackgroundColor(Resource.Color.green.AsResourceColor(this));
+      
+      tab1.SetBackgroundResource(Resource.Drawable.xml_tab_gray_black);
+      tab1.SetText(Resource.String.report_by_job);
+      
+      tab2.SetBackgroundResource(Resource.Drawable.xml_tab_white_light_blue);
+      tab2.SetText(Resource.String.report_by_date);
+      
+      tab1.SetOnClickListener(new ViewClickAction((view) => {
+        NavigateToByJob();
+      }));
+      
+      tab2.SetOnClickListener(new ViewClickAction((view) => {
+        NavigateToByDate();
+      }));
+      
+      NavigateToFragment(byDate);
+    }
+    
+    private void NavigateToSpreadsheets() {
+      if (spreadsheets == null) {
+        spreadsheets = new FileBrowserFragment(GetString(Resource.String.report_archive_empty));
+        spreadsheets.folder = ion.dataLogReportFolder;
+        spreadsheets.filter = new FileExtensionFilter(true, new string[] { FileExtensions.EXT_EXCEL, FileExtensions.EXT_CSV });
+        spreadsheets.onFileClicked = (file) => {
+          try {
+            var i = new Intent(Intent.ActionView);
+            i.SetDataAndType(Android.Net.Uri.FromFile(new Java.IO.File(file.fullPath)), MIME_EXCEL);
+            i.SetFlags(ActivityFlags.NoHistory);
+            StartActivity(Intent.CreateChooser(i, GetString(Resource.String.open_with)));
+          } catch (Exception e) {
+            Log.E(this, "Failed to start Excel activity chooser", e);
+            var adb = new IONAlertDialog(this);
+            adb.SetTitle(Resource.String.error_failed_to_open_file);
+            adb.SetMessage(Resource.String.error_excel_viewer_missing);
+            adb.SetNegativeButton(Resource.String.cancel, (sender, ex) => {
+            });
+            adb.Show();
+          }
+        };
+      }
+      newReport.SetBackgroundResource(Resource.Drawable.xml_tab_gray_black);
+      savedReports.SetBackgroundResource(Resource.Drawable.xml_tab_gold_white);
+      
+      header.SetText(Resource.String.report_archive);
+      header.SetBackgroundColor(Resource.Color.orange.AsResourceColor(this));
+      
+      tab1.SetBackgroundResource(Resource.Drawable.xml_tab_white_light_blue);
+      tab1.SetText(Resource.String.spreadsheet);
+      
+      tab2.SetBackgroundResource(Resource.Drawable.xml_tab_gray_black);
+      tab2.SetText(Resource.String.pdf);
+      
+      tab1.SetOnClickListener(new ViewClickAction((view) => {
+        NavigateToSpreadsheets();
+      }));
+      
+      tab2.SetOnClickListener(new ViewClickAction((view) => {
+        NavigateToPdf();
+      }));
+      
+      NavigateToFragment(spreadsheets);
+    }
+    
+    private void NavigateToPdf() {
+      if (pdfs == null) {
+        pdfs = new FileBrowserFragment(GetString(Resource.String.report_archive_empty));
+        pdfs.folder = ion.dataLogReportFolder;
+        pdfs.filter = new FileExtensionFilter(true, new string[] { FileExtensions.EXT_PDF });
+        pdfs.onFileClicked = (file) => {
+          try {
+            var i = new Intent(Intent.ActionView);
+            i.SetDataAndType(Android.Net.Uri.FromFile(new Java.IO.File(file.fullPath)), MIME_PDF);
+            i.SetFlags(ActivityFlags.NoHistory);
+            StartActivity(Intent.CreateChooser(i, GetString(Resource.String.open_with)));
+          } catch (Exception e) {
+            Log.E(this, "Failed to start pdf activity chooser", e);
+            var adb = new IONAlertDialog(this);
+            adb.SetTitle(Resource.String.error_failed_to_open_file);
+            adb.SetMessage(Resource.String.error_pdf_viewer_missing);
+            adb.SetNegativeButton(Resource.String.cancel, (sender, ex) => {
+            });
+            adb.Show();
+          }
+        };
+      }
+      newReport.SetBackgroundResource(Resource.Drawable.xml_tab_gray_black);
+      savedReports.SetBackgroundResource(Resource.Drawable.xml_tab_gold_white);
+      
+      header.SetText(Resource.String.report_archive);
+      header.SetBackgroundColor(Resource.Color.orange.AsResourceColor(this));
+      
+      tab1.SetBackgroundResource(Resource.Drawable.xml_tab_gray_black);
+      tab1.SetText(Resource.String.spreadsheet);
+      
+      tab2.SetBackgroundResource(Resource.Drawable.xml_tab_white_light_blue);
+      tab2.SetText(Resource.String.pdf);
+      
+      tab1.SetOnClickListener(new ViewClickAction((view) => {
+        NavigateToSpreadsheets();
+      }));
+      
+      tab2.SetOnClickListener(new ViewClickAction((view) => {
+        NavigateToPdf();
+      }));
+      
+      NavigateToFragment(pdfs);
+    }
+    
+    private void NavigateToFragment(Fragment frag) {
+      var ft = FragmentManager.BeginTransaction();
 
-		private void PrepareNewReportFragments() {
-			tab1Button.SetOnClickListener(new ViewClickAction((view) => {
-				ShowByJobFragment();
-			}));
+      ft.Replace(Resource.Id.content, frag);
+      ft.SetCustomAnimations(Resource.Animation.card_flip_left_in, Resource.Animation.card_flip_left_out);
+      activeFragment = frag;
 
-			tab2Button.SetOnClickListener(new ViewClickAction((view) => {
-				ShowBySessionFragment();
-			}));
-
-			tab1Button.Text = GetString(Resource.String.report_by_job);
-			tab2Button.Text = GetString(Resource.String.report_by_date);
-			graphButtonButton.Visibility = ViewStates.Visible;
-
-			ShowByJobFragment();
-
-			header.SetText(Resource.String.report_session_selection);
-		}
-
-		private void PrepareShowReportsFragments() {
-			tab1Button.SetOnClickListener(new ViewClickAction((view) => {
-				ShowSpreadsheetFragment();
-			}));
-
-			tab2Button.SetOnClickListener(new ViewClickAction((view) => {
-				ShowPDFFragment();
-			}));
-
-			tab1Button.Text = GetString(Resource.String.spreadsheet);
-			tab2Button.Text = GetString(Resource.String.pdf);
-			graphButtonButton.Visibility = ViewStates.Gone;
-
-			ShowSpreadsheetFragment();
-			header.SetText(Resource.String.report_selection);
-		}
-
-		private void ShowByJobFragment() {
-			newReportTab.Select();
-			var frag = new ByJobFragment();
-			frag.sessions = checkedSessions;
-			frag.onSessionChecked = OnSessionChecked;
-			GotoFragment(frag, Resource.Animation.enter_left, Resource.Animation.exit_right);
-
-			tab1Button.SetBackgroundResource(Resource.Drawable.tab_selected_ion_action_bar);
-			tab2Button.SetBackgroundResource(Resource.Drawable.tab_unselected_ion_action_bar);
-
-			if (checkedSessions.Count == 0) {
-				graphButtonButton.Visibility = ViewStates.Invisible;
-			} else {
-				graphButtonButton.Visibility = ViewStates.Visible;
-			}
-		}
-
-		private void ShowBySessionFragment() {
-			newReportTab.Select();
-			var frag = new BySessionFragment();
-			frag.sessions = checkedSessions;
-			frag.onSessionChecked = OnSessionChecked;
-			GotoFragment(frag, Resource.Animation.enter_right, Resource.Animation.exit_left);
-
-			tab1Button.SetBackgroundResource(Resource.Drawable.tab_unselected_ion_action_bar);
-			tab2Button.SetBackgroundResource(Resource.Drawable.tab_selected_ion_action_bar);
-
-			if (checkedSessions.Count == 0) {
-				graphButtonButton.Visibility = ViewStates.Invisible;
-			} else {
-				graphButtonButton.Visibility = ViewStates.Visible;
-			}
-		}
-
-		/// <summary>
-		/// Shows the new/saved report fragment.
-		/// </summary>
-		/// <returns>The new saved fragment.</returns>
-		private void ShowSpreadsheetFragment() {
-			savedReportsTab.Select();
-			var frag = new FileViewerFragment();
-			frag.folder = ion.dataLogReportFolder;
-			frag.filter = new FileExtensionFilter(true, new string[] { ".xlsx" });
-			frag.onFileClicked = (file) => {
-				try {
-					var i = new Intent(Intent.ActionView);
-					i.SetDataAndType(Android.Net.Uri.FromFile(new Java.IO.File(file.fullPath)), MIME_EXCEL);
-					i.SetFlags(ActivityFlags.NoHistory);
-					StartActivity(Intent.CreateChooser(i, GetString(Resource.String.open_with)));
-				} catch (Exception e) {
-					Log.E(this, "Failed to start Excel activity chooser", e);
-					var adb = new IONAlertDialog(this);
-					adb.SetTitle(Resource.String.error_failed_to_open_file);
-					adb.SetMessage(Resource.String.error_excel_viewer_missing);
-					adb.SetNegativeButton(Resource.String.cancel, (sender, ex) => {
-						var dialog = sender as Dialog;
-						if (dialog != null) {
-							dialog.Dismiss();
-						}
-					});
-					adb.Show();
-				}
-			};
-			GotoFragment(frag, Resource.Animation.enter_left, Resource.Animation.exit_right);
-
-			tab1Button.SetBackgroundResource(Resource.Drawable.tab_selected_ion_action_bar);
-			tab2Button.SetBackgroundResource(Resource.Drawable.tab_unselected_ion_action_bar);
-
-			graphButtonButton.Visibility = ViewStates.Invisible;
-		}
-
-		/// <summary>
-		/// Shows the export fragment.
-		/// </summary>
-		/// <returns>The export fragment.</returns>
-		private void ShowPDFFragment() {
-			savedReportsTab.Select();
-			var frag = new FileViewerFragment();
-			frag.folder = ion.dataLogReportFolder;
-			frag.filter = new FileExtensionFilter(true, new string[] { ".pdf" });
-			frag.onFileClicked = (file) => {
-				try {
-					var i = new Intent(Intent.ActionView);
-					i.SetDataAndType(Android.Net.Uri.FromFile(new Java.IO.File(file.fullPath)), MIME_PDF);
-					i.SetFlags(ActivityFlags.NoHistory);
-					StartActivity(Intent.CreateChooser(i, GetString(Resource.String.open_with)));
-				} catch (Exception e) {
-					Log.E(this, "Failed to start Excel activity chooser", e);
-					var adb = new IONAlertDialog(this);
-					adb.SetTitle(Resource.String.error_failed_to_open_file);
-					adb.SetMessage(Resource.String.error_pdf_viewer_missing);
-					adb.SetNegativeButton(Resource.String.cancel, (sender, ex) => {
-						var dialog = sender as Dialog;
-						if (dialog != null) {
-							dialog.Dismiss();
-						}
-					});
-					adb.Show();
-				}
-			};
-			GotoFragment(frag, Resource.Animation.enter_left, Resource.Animation.exit_left);
-
-			tab1Button.SetBackgroundResource(Resource.Drawable.tab_unselected_ion_action_bar);
-			tab2Button.SetBackgroundResource(Resource.Drawable.tab_selected_ion_action_bar);
-
-			graphButtonButton.Visibility = ViewStates.Invisible;
-		}
-
-		/// <summary>
-		/// Navigates to the given fragment.
-		/// </summary>
-		/// <returns>The fragment.</returns>
-		/// <param name="fragment">Fragment.</param>
-		private void GotoFragment(Fragment fragment, int enter, int exit) {
-			if (activeFragment == fragment) {
-				return;
-			}
-
-			var ft = FragmentManager.BeginTransaction();
-
-			if (activeFragment != null) {
-//				ft.SetCustomAnimations(enter, exit);
-				ft.Remove(activeFragment);
-				activeFragment = null;
-			}
-
-			ft.Add(Resource.Id.content, fragment, null);
-			ft.Commit();
-			activeFragment = fragment;
-		}
-
-		private void OnSessionChecked(SessionRow session, bool isChecked) {
-			if (isChecked) {
-				checkedSessions.Add(session._id);
-			} else {
-				checkedSessions.Remove(session._id);
-			}
-
-			if (checkedSessions.Count == 0) {
-				graphButtonButton.Visibility = ViewStates.Invisible;
-			} else {
-				graphButtonButton.Visibility = ViewStates.Visible;
-			}
-		}
-	}
+      ft.Commit();
+    }
+  }
 }
-

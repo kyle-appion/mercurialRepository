@@ -34,7 +34,7 @@
 		[JsonProperty("lsi")]
 		public int linkedIndex;
 		[JsonProperty("fl")]
-		public string fluid;
+		public string fluidName;
 		[JsonProperty("fls")]
 		public int fluidState;
 		[JsonProperty("sub")]
@@ -50,14 +50,14 @@
 		/// <param name="ion">Ion.</param>
 		public async Task<Manifold> InflateManifoldOrThrowAsync(IION ion) {
 			// Start loading the fluid
-			var fluidTask = ion.fluidManager.LoadFluidAsync(fluid);
+      var fluid = await ion.fluidManager.LoadFluidAsync(fluidName);
 
 			var sn = serialNumber.ParseSerialNumber();
 			var device = ion.deviceManager[sn] as GaugeDevice;
 			if (device != null) {
 				var ret = new Manifold(device[index]);
 
-				ret.ptChart = PTChart.New(ion, (Fluid.EState)fluidState, await fluidTask);
+        ret.ptChart = fluid.GetPtChart((Fluid.EState)fluidState);
 
 				if (linkedSerialNumber != null) {
 					var lsn = linkedSerialNumber.ParseSerialNumber();
@@ -94,7 +94,7 @@
 			if (gds != null) {
 				ret.serialNumber = gds.device.serialNumber.ToString();
 				ret.index = gds.index;
-				ret.fluid = manifold.ptChart.fluid.name;
+				ret.fluidName = manifold.ptChart.fluid.name;
 				ret.fluidState = (int)manifold.ptChart.state;
 
 				// Save the manifold's subviews.

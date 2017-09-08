@@ -2,266 +2,205 @@
 
   using System;
 
-	using Appion.Commons.Measure;
+  using Appion.Commons.Measure;
 
   using ION.Core.App;
   using ION.Core.Math;
   using ION.Core.Sensors;
 
+
+	/// <summary>
+	/// A simple delegate that is used to retrieve the desired elevation for the pt chart.
+	/// </summary>
+	public delegate Scalar ElevationProvider();
+
+
   public class PTChart {
 
-    /// <summary>
-    /// Creates a new PTChart.
-    /// </summary>
-    /// <param name="ion">Ion.</param>
-    /// <param name="state">State.</param>
-    /// <param name="fluid">Fluid.</param>
-    public static PTChart New(IION ion, Fluid.EState state) {
-      return New(ion, state, ion.fluidManager.lastUsedFluid); 
-    }
-
-    /// <summary>
-    /// Creates a new PTChart.
-    /// </summary>
-    /// <param name="ion">Ion.</param>
-    /// <param name="state">State.</param>
-    /// <param name="fluid">Fluid.</param>
-    public static PTChart New(IION ion, Fluid.EState state, Fluid fluid) {
-      var elevation = Units.Length.METER.OfScalar(0);
-
-      if (ion.locationManager.allowLocationTracking) {
-        elevation = ion.locationManager.lastKnownLocation.altitude;
+    public static PTChart New(IION ion, Fluid.EState state, Fluid fluid = null) {
+      if (fluid == null) {
+        fluid = ion.fluidManager.lastUsedFluid;
       }
-
-      return new PTChart(ion, state, fluid);//, elevation);
+      return new PTChart(fluid, state);
     }
 
+    public Scalar minAbsolutePressure { get { return fluid.GetMinimumPressure(state); } }
+    public Scalar minRelativePressure {
+      get {
+        var relPressure = Physics.ConvertAbsolutePressureToRelative(minAbsolutePressure, elevationProvider());
+        return relPressure;
+      }
+    }
+
+    public Scalar maxAbsolutePressure { get { return fluid.GetMaximumPressure(state); } }
+    public Scalar maxRelativePressure {
+      get {
+				var relPressure = Physics.ConvertAbsolutePressureToRelative(maxAbsolutePressure, elevationProvider());
+        return relPressure;
+      }
+    }
+
+
+    public Scalar minTemperature { get { return fluid.GetMinimumTemperature(); } }
+    public Scalar maxTemperature { get { return fluid.GetMaximumTemperature(); } }
+
     /// <summary>
-    /// The state that the fluid is in.
-    /// </summary>
-    /// <value>The state.</value>
-    public Fluid.EState state { get; set; }
-    /// <summary>
-    /// The fluid that the ptchart is using for calculations.
+    /// The fluid that the pt chart is wrapping.
     /// </summary>
     /// <value>The fluid.</value>
     public Fluid fluid { get; private set; }
     /// <summary>
-    /// The elevation above sea level. This will affect end calculations by a
-    /// small, but significant amount.
+    /// The fluid state for the pt chart.
     /// </summary>
-    /// <value>The elevation.</value>
-    public Scalar elevation {
-      get {
-        return ion.locationManager.lastKnownLocation.altitude; 
-      }
-    }
+    /// <value>The state.</value>
+    public Fluid.EState state { get; private set; }
+    /// <summary>
+    /// The callback that will return elevations for calculating absolute pressures.
+    /// </summary>
+    public ElevationProvider elevationProvider { get; private set; }
 
-    private IION ion { get; set; } 
-		 
-    private PTChart(IION ion, Fluid.EState state, Fluid fluid) {
-      if (fluid == null) {
-				fluid = ion.fluidManager.lastUsedFluid;
-				if (fluid == null) {
-					fluid = ion.fluidManager.LoadFluidAsync("R22").Result;
-        	//throw new Exception("Cannot create a PTChart with a null fluid");       
-				}
-      }
-      this.ion = ion;
-      this.state = state;
+    /// <summary>
+    /// Creates a new PT chart.
+    /// </summary>
+    /// <param name="fluid">The fluid to have the pt chart manage.</param>
+    /// <param name="state">The initial state of the fluid.</param>
+    /// <param name="elevationProvider">The delegate that will provide current elevations for pt chart calculations.</param>
+    public PTChart(Fluid fluid, Fluid.EState state, ElevationProvider elevationProvider = null) {
       this.fluid = fluid;
-    }
+      this.state = state;
 
-    /// <summary>
-    /// Queries the temperature for the given sensor.
-    /// </summary>
-    /// <returns>The temperature.</returns>
-    /// <param name="temperatureSensor">Temperature sensor.</param>
-    public Scalar GetTemperature(Sensor pressureSensor) {
-        return GetTemperature(pressureSensor.measurement, pressureSensor.isRelative);
-    }
-
-    /// <summary>
-    /// Queries the temperature of the fluid at the given state provided a pressure.
-    /// </summary>
-    /// <remarks>
-    /// IsRelative is used to indicate that the pressure measurement is a relative
-    /// measurement. If you don't know whether or not the measurement is relative, then
-    /// it most likely is.
-    /// </remarks>
-    /// <returns>The temperature.</returns>
-    /// <param name="state">State.</param>
-    /// <param name="pressure">Pressure.</param>
-    /// <param name="isRelative">Is relative.</param>
-    public Scalar GetTemperature(Scalar pressure, bool isRelative = true) {
-      if (isRelative && !pressure.unit.Equals(Units.Pressure.PSIA)) {
-        pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
+      if (elevationProvider == null) {
+        elevationProvider = () => {
+          var ion = AppState.context;
+          return ion.locationManager.lastKnownLocation.altitude;
+        };
       }
 
-      return fluid.GetTemperatureFromAbsolutePressure(state, pressure);
-    }
+			this.elevationProvider = elevationProvider;
+		}
 
-    /// <summary>
-    /// Queries the pressure of the fluid at the given temperature
-    /// </summary>
-    /// <returns>The pressure.</returns>
-    /// <param name="pressureSensor">Pressure sensor.</param>
-    public Scalar GetPressure(Sensor temperatureSensor) {
-      return GetPressure(temperatureSensor.measurement, temperatureSensor.isRelative);
-    }
-
-    /// <summary>
-    /// Queries the absolute pressure of the fluid at the given temperature.
-    /// </summary>
-    /// <remarks>
-    /// IsRelative is used to indicate whether or not the returned pressure should
-    /// be relative.
-    /// </remarks>
-    /// <returns>The pressure.</returns>
-    /// <param name="state">State.</param>
-    /// <param name="temperature">Temperature.</param>
-    /// <param name="isRelative">If set to <c>true</c> is relative.</param>
-    public Scalar GetPressure(Scalar temperature, bool isRelative = true) {
-      Scalar ret = fluid.GetPressureFromTemperature(state, temperature);
-
+    public Scalar GetPressure(Scalar temperature, bool isRelative) {
       if (isRelative) {
-        ret = Physics.ConvertAbsolutePressureToRelative(ret, elevation);
+        return GetRelativePressure(temperature);
+      } else {
+        return GetAbsolutePressure(temperature);
       }
-
-      return ret;
     }
 
     /// <summary>
-    /// Calculates the systems superheat or subcool based on the given inputs
-    /// and the state of the pt chart.
+    /// Queries the absolute pressure for the fluid at the given temperature.
     /// </summary>
-    /// <returns>The system temperature delta.</returns>
-    /// <param name="pressure">Pressure.</param>
+    /// <returns>The absolute pressure.</returns>
     /// <param name="temperature">Temperature.</param>
+    public Scalar GetAbsolutePressure(Scalar temperature) {
+      return fluid.GetPressureFromTemperature(state, temperature);
+    }
+
+		/// <summary>
+		/// Queries the relative [gauge] pressure for the fluid at the given temperature. 
+		/// </summary>
+		/// <returns>The relative pressure.</returns>
+		/// <param name="temperature">Temperature.</param>
+		public Scalar GetRelativePressure(Scalar temperature) {
+      var absPressure = fluid.GetPressureFromTemperature(state, temperature);
+      var relPressure = Physics.ConvertAbsolutePressureToRelative(absPressure, elevationProvider());
+      return relPressure;
+    }
+
+    /// <summary>
+    /// Queries the saturated temperature for the given pressure using isRelative to properly adjust the pressure as necessary.
+    /// </summary>
+    /// <returns>The temperature.</returns>
+    /// <param name="pressure">Pressure.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
-    public ScalarSpan CalculateSystemTemperatureDelta(Scalar pressure, Scalar temperature, bool isRelative = true) {
+    public Scalar GetTemperature(Scalar pressure, bool isRelative) {
+      if (isRelative) {
+        return GetTemperatureFromRelativePressure(pressure);
+      } else {
+        return GetTemperatureFromAbsolutePressure(pressure);
+      }
+    }
+
+		/// <summary>
+		/// Queries the saturated temperature of a fluid at the given absolute pressure.
+		/// </summary>
+		/// <returns>The temperature from absolute pressure.</returns>
+		/// <param name="absolutePressure">Pressure.</param>
+    public Scalar GetTemperatureFromAbsolutePressure(Scalar absolutePressure) {
+      return fluid.GetTemperatureFromAbsolutePressure(state, absolutePressure);
+    }
+
+		/// <summary>
+		/// Queries the saturated temperature of a fluid at the given relative pressure.
+		/// </summary>
+		/// <returns>The temperature from relative pressure.</returns>
+		/// <param name="relativePressure">Pressure.</param>
+    public Scalar GetTemperatureFromRelativePressure(Scalar relativePressure) {
+      var absPressure = Physics.ConvertRelativePressureToAbsolute(relativePressure, elevationProvider());
+      return GetTemperatureFromAbsolutePressure(absPressure);
+    }
+
+    public ScalarSpan CalculateTemperatureDelta(Scalar pressure, Scalar temperature, bool isRelative) {
+      if (isRelative) {
+        return CalculateTemperatureDeltaRelative(pressure, temperature);
+      } else {
+				return CalculateTemperatureDeltaAbsolute(pressure, temperature);
+			}
+    }
+
+    /// <summary>
+    /// Calculates the effective superheat or subcool of the fluid given the two gauge measurements.
+    /// </summary>
+    /// <returns>The temperature delta absolute.</returns>
+    /// <param name="absolutePressure">Absolute pressure.</param>
+    /// <param name="measuredTemperature">Measured temperature.</param>
+    public ScalarSpan CalculateTemperatureDeltaAbsolute(Scalar absolutePressure, Scalar measuredTemperature) {
       if (fluid.mixture) {
         switch (state) {
-          case Fluid.EState.Bubble: // Subcool
-            return CalculateSubcool(pressure, temperature, isRelative);
-          case Fluid.EState.Dew: // Superheat
-            return CalculateSuperheat(pressure, temperature, isRelative);
+					case Fluid.EState.Dew:
+            return CalculateSuperheatAbsolute(absolutePressure, measuredTemperature);
+					case Fluid.EState.Bubble:
+  					return CalculateSubcoolAbsolute(absolutePressure, measuredTemperature);
           default:
-            throw new Exception("Unknown ptchart state: " + state);
-        }
+            throw new Exception("Cannot calculate temperature delta with unknown fluid state: " + state);
+				}        
       } else {
-        return temperature - GetTemperature(pressure).ConvertTo(temperature.unit);
+        var satTemp = GetTemperature(absolutePressure, false).ConvertTo(measuredTemperature.unit);
+        return measuredTemperature - satTemp;
       }
     }
 
+		/// <summary>
+		/// Calculates the effective superheat or subcool of the fluid given the two gauge measurements.
+		/// </summary>
+		/// <returns>The temperature delta relative.</returns>
+		/// <param name="relativePressure">Relative pressure.</param>
+		/// <param name="measuredTemperature">Measured temperature.</param>
+		public ScalarSpan CalculateTemperatureDeltaRelative(Scalar relativePressure, Scalar measuredTemperature) {
+			var absPressure = Physics.ConvertRelativePressureToAbsolute(relativePressure, elevationProvider());
+			return CalculateTemperatureDeltaAbsolute(absPressure, measuredTemperature);
+		}
+
     /// <summary>
-    /// Calculates the superheat of the fluid.
+    /// Calculates the superheat for the fluid.
     /// </summary>
-    /// <remarks>
-    /// Superheat is the difference between the measured temperature and
-    /// the dew point of a fluid at a given temperature.
-    /// </remarks>
     /// <returns>The superheat.</returns>
-    /// <param name="pressure">Pressure.</param>
-    /// <param name="temperature">Temperature.</param>
-    /// <param name="isRelative">If set to <c>true</c> is relative.</param>
-    public ScalarSpan CalculateSuperheat(Scalar pressure, Scalar temperature, bool isRelative = true) {
-			if (isRelative && !pressure.unit.Equals(Units.Pressure.PSIA)) {
-				// If the pressure is relative, then calculate the difference from sea level.
-				var newPressure = Physics.GetGaugePressureAdjustedForElevation(pressure, Units.Length.FOOT.OfScalar(5000));
-			} 
-/*
-      if (isRelative && !pressure.unit.Equals(Units.Pressure.PSIA)) {
-        pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
-      }
-*/
-
-      Scalar saturatedTemperature = GetTemperature(pressure).ConvertTo(temperature.unit);
-      return temperature - saturatedTemperature;
+    /// <param name="absolutePressure">Absolute pressure.</param>
+    /// <param name="measuredTemperature">Measured temperature.</param>
+    public ScalarSpan CalculateSuperheatAbsolute(Scalar absolutePressure, Scalar measuredTemperature) {
+      var satTemp = GetTemperature(absolutePressure, false).ConvertTo(measuredTemperature.unit);
+      return measuredTemperature - satTemp;
     }
 
-    /// <summary>
-    /// Calculates the subcool of the fluid.
-    /// </summary>
-    /// <remarks>
-    /// Subcool is the difference between the measured temperature and
-    /// the bubble point of a fluid at a given temperature.
-    /// </remarks>
-    /// <returns>The subcool.</returns>
-    /// <param name="pressure">Pressure.</param>
-    /// <param name="temperature">Temperature.</param>
-    /// <param name="isRelative">If set to <c>true</c> is relative.</param>
-    public ScalarSpan CalculateSubcool(Scalar pressure, Scalar temperature, bool isRelative = true) {
-			if (isRelative && !pressure.unit.Equals(Units.Pressure.PSIA)) {
-				// If the pressure is relative, then calculate the difference from sea level.
-				var newPressure = Physics.GetGaugePressureAdjustedForElevation(pressure, Units.Length.FOOT.OfScalar(5000));
-			} 
-/*
-      if (isRelative && !pressure.unit.Equals(Units.Pressure.PSIA)) {
-        pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
-      }
-*/
-
-      Scalar saturatedTemperature = GetTemperature(pressure).ConvertTo(temperature.unit);
-      return saturatedTemperature - temperature;
-    }
-
-    /// <summary>
-    /// Queries whether or not the given pressure is within the ptchart's fluid bounds.
-    /// </summary>
-    /// <returns><c>true</c> if this instance is pressure within bounds the specified pressure; otherwise, <c>false</c>.</returns>
-    /// <param name="pressure">Pressure.</param>
-    public bool IsPressureWithinBounds(Scalar pressure) {
-      return !IsPressureAboveBounds(pressure) && !IsPressureBelowBounds(pressure);
-    }
-
-    /// <summary>
-    /// Queries whether or not the given temperature is within the ptchart's fluid bounds.
-    /// </summary>
-    /// <returns><c>true</c> if this instance is temperature within bounds the specified temperature; otherwise, <c>false</c>.</returns>
-    /// <param name="temperature">Temperature.</param>
-    public bool IsTemperatureWithinBounds(Scalar temperature) {
-      return !IsTemperatureAboveBounds(temperature) && !IsTemperatureBelowBounds(temperature);
-    }
-
-    /// <summary>
-    /// Queries whether or not the given pressure measurement is above the bounds
-    /// of the ptchart's fluid bounds.
-    /// </summary>
-    public bool IsPressureAboveBounds(Scalar pressure) {
-      return pressure > fluid.GetMaximumPressure(state);
-    }
-
-    /// <summary>
-    /// Queries whether or not the given pressure measurement is below the bounds
-    /// of the ptchart's fluid bounds.
-    /// </summary>
-    public bool IsPressureBelowBounds(Scalar pressure) {
-      return pressure < fluid.GetMaximumPressure(state);
-    }
-
-    /// <summary>
-    /// Queries whether or not the given temperature measurement is above the bounds
-    /// of the ptchart's fluid bounds.
-    /// </summary>
-    public bool IsTemperatureAboveBounds(Scalar temperature) {
-      return temperature > fluid.GetMaximumTemperature();
-    }
-
-    /// <summary>
-    /// Queries whether or not the given temperature measurement is below the bounds
-    /// of the ptchart's fluid bounds.
-    /// </summary>
-    public bool IsTemperatureBelowBounds(Scalar temperature) {
-      return temperature < fluid.GetMinimumTemperature();
-    }
-    /// <summary>
-    /// Sets the fluid for a low or high manifold based on the fluid sent from a remote layout
-    /// </summary>
-    /// <param name="remoteFluid">Remote fluid.</param>
-    public void setRemoteFluid(Fluid remoteFluid){
-			fluid = remoteFluid;
+		/// <summary>
+		/// Calculates the subcool for the fluid.
+		/// </summary>
+		/// <returns>The subcool.</returns>
+		/// <param name="absolutePressure">Absolute pressure.</param>
+		/// <param name="measuredTemperature">Measured temperature.</param>
+		public ScalarSpan CalculateSubcoolAbsolute(Scalar absolutePressure, Scalar measuredTemperature) {
+			var satTemp = GetTemperature(absolutePressure, false).ConvertTo(measuredTemperature.unit);
+			return satTemp - measuredTemperature;
 		}
   }
 }
-

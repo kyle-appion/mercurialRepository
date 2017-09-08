@@ -14,8 +14,6 @@ namespace TestBench.Droid {
 
 	using Appion.Commons.Util;
 
-	using ION.Core.Devices.Connections;
-
 	[Service]
 	public class AppService : Service {
 		public static AppService INSTANCE { get; private set; }

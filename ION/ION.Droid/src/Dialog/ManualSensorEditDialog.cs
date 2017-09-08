@@ -7,8 +7,9 @@
   using Android.Widget;
 
 	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
 
-  using ION.Core.Sensors;
+	using ION.Core.Sensors;
 
   using ION.Droid.Views;
 
@@ -26,10 +27,9 @@
       sensor.name = context.GetString(Resource.String.manual);
     }
 
-    public ManualSensorEditDialog(Context context, ManualSensor sensor, EventHandler<Sensor> action) {
+    public ManualSensorEditDialog(Context context, ManualSensor sensor) {
       this.context = context;
       this.sensor = sensor;
-      this.action = action;
     }
 
     public Android.App.Dialog Show() {
@@ -42,6 +42,11 @@
 
       var unit = sensor.unit;
       button.Text = unit.ToString();
+
+      if (sensor != null) {
+        name.Text = sensor.name;
+				measurement.Text = SensorUtils.ToFormattedString(sensor.measurement);
+			}
 
       button.SetOnClickListener(new ViewClickAction((v) => {
         UnitDialog.Create(context, sensor.supportedUnits, (obj, u) => {
@@ -68,10 +73,13 @@
           var meas = double.Parse(measurement.Text);
           sensor.measurement = unit.OfScalar(meas);
 
-          action(d, sensor);
+          if (action != null) {
+            action(d, sensor);
+          }
 
           d.Dismiss();
         } catch (Exception e) {
+          Log.E(this, "Failed to edit manual sensor", e);
 					Toast.MakeText(context, Resource.String.please_enter_valid_number, ToastLength.Long).Show();
         }
       });

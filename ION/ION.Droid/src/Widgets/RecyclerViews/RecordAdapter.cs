@@ -3,6 +3,8 @@
 	using System;
 	using System.Collections.Generic;
 
+  using Appion.Commons.Util;
+
 	using Android.Graphics;
 	using Android.OS;
 	using Android.Support.V7.Widget;
@@ -61,20 +63,24 @@
 			RegisterAdapterDataObserver(new InternalObserver(this));
 		}
 
-		// Overridden from RecyclerView.Adapter
-		protected override void Dispose(bool disposing) {
-			base.Dispose(disposing);
-      if (recyclerView != null && recyclerView.ChildCount > 0) {
-  			for (int i = 0; i < this.ItemCount; i++) {
-  				var vh = recyclerView.FindViewHolderForAdapterPosition(i);
-  				if (vh is SwipeRecyclerView.ViewHolder) {
-  					var v = vh as SwipeRecyclerView.ViewHolder;
-  					v.Unbind();
-  				} else if (vh is RecordViewHolder) {
-  					var v = vh as RecordViewHolder;
-  					v.Unbind();
-  				}
-  			}
+    // Overridden from RecyclerView.Adapter
+    protected override void Dispose(bool disposing) {
+      base.Dispose(disposing);
+      try {
+        if (recyclerView != null && recyclerView.ChildCount > 0) {
+          for (int i = 0; i < this.ItemCount; i++) {
+            var vh = recyclerView.FindViewHolderForAdapterPosition(i);
+            if (vh is SwipeRecyclerView.ViewHolder) {
+              var v = vh as SwipeRecyclerView.ViewHolder;
+              v.Unbind();
+            } else if (vh is RecordViewHolder) {
+              var v = vh as RecordViewHolder;
+              v.Unbind();
+            }
+          }
+        }
+      } catch (Exception e) {
+        Log.E(this, "Failed to dispose RecordAdapter", e);
       }
 		}
 
@@ -178,6 +184,17 @@
 				NotifyItemInserted(index);
 			}
 		}
+    
+    /// <summary>
+    /// Removes the given record from the adapter.
+    /// </summary>
+    /// <param name="record">Record.</param>
+    public void RemoveRecord(IRecord record) {
+      var index = IndexOfRecord(record);
+      if (index >= 0) {
+        RemoveRecord(index);
+      }
+    }
 
 		/// <summary>
 		/// Removes the given record from the adapter.
@@ -240,17 +257,6 @@
 					recyclerView.Visibility = ViewStates.Gone;
 				}
 			}
-		}
-
-		/// <summary>
-		/// The contract for a record that will live in the recycler view.
-		/// </summary>
-		public interface IRecord {
-			/// <summary>
-			/// Queries the view type of the record. This is used for identification and record switching.
-			/// </summary>
-			/// <value>The type of the view.</value>
-			int viewType { get; }
 		}
 
 		/// <summary>
@@ -319,6 +325,17 @@
 		}
 
 		/// <summary>
+		/// The contract for a record that will live in the recycler view.
+		/// </summary>
+		public interface IRecord {
+			/// <summary>
+			/// Queries the view type of the record. This is used for identification and record switching.
+			/// </summary>
+			/// <value>The type of the view.</value>
+			int viewType { get; }
+		}
+
+		/// <summary>
 		/// A simple implementation of a non-generic record object.
 		/// </summary>
 		public abstract class Record : IRecord {
@@ -343,7 +360,7 @@
 		}
 
 		public class RecordViewHolder : RecyclerView.ViewHolder {
-			public Record data {
+			public IRecord data {
 				get {
 					return __data;
 				}
@@ -358,7 +375,7 @@
 						Invalidate();
 					}
 				}
-			} Record __data;
+			} IRecord __data;
 
 			public RecordViewHolder(View view) : base(view) {
 			}
@@ -380,7 +397,7 @@
 			}
 		}
 
-		public class RecordViewHolder<T> : RecordViewHolder where T : Record {
+		public class RecordViewHolder<T> : RecordViewHolder where T : IRecord {
 			public T record { get { return (T)data; } set { base.data = value; } }
 
 			public RecordViewHolder(View view) : base(view) {
@@ -392,7 +409,7 @@
 
 
 		public class SwipeRecordViewHolder : SwipeRecyclerView.ViewHolder {
-			public Record data {
+			public IRecord data {
 				get {
 					return __data;
 				}
@@ -407,7 +424,7 @@
 						Invalidate();
 					}
 				}
-			} Record __data;
+			} IRecord __data;
 
 			public SwipeRecordViewHolder(SwipeRecyclerView rv, int foregroundLayout, int backgroundLayout) : base(rv, foregroundLayout, backgroundLayout) {
 			}
@@ -419,7 +436,7 @@
 			}
 		}
 
-		public class SwipeRecordViewHolder<T> : SwipeRecordViewHolder where T : Record {
+		public class SwipeRecordViewHolder<T> : SwipeRecordViewHolder where T : IRecord {
 			public T record { get { return (T)data; } set { base.data = value; } }
 
 			public SwipeRecordViewHolder(SwipeRecyclerView rv, int foregroundLayout, int backgroundLayout) : base(rv, foregroundLayout, backgroundLayout) {

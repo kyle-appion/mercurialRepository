@@ -31,7 +31,7 @@
 	public delegate void OnAnalyzerChanged(Analyzer analyzer);
   public delegate void RemotePlatformChanged(IPlatformInfo platformInfo);
 	public delegate void OnIonStateChanged(IonState.EType eventType);
-
+  
   /// <summary>
   /// The interface that describes an ION application context.
   /// </summary>

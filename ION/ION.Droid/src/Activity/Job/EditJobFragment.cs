@@ -36,14 +36,12 @@
 		private EditText addressView;
     private TextView coordinates;
     private View getAddress;
+    
+    private JobRow job;
 
     public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			View ret;
-			if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
-				ret = inflater.Inflate(Resource.Layout.fragment_edit_job_4_4, container, false);
-			} else {
-				ret = inflater.Inflate(Resource.Layout.fragment_edit_job, container, false);
-			}
+			ret = inflater.Inflate(Resource.Layout.fragment_job_edit, container, false);
 
 			name = ret.FindViewById<EditText>(Resource.Id.name);
 			customer = ret.FindViewById<EditText>(Resource.Id.customer_no);
@@ -57,6 +55,10 @@
       coordinates = ret.FindViewById<TextView>(Resource.Id.coordinates);
       getAddress = ret.FindViewById<ImageView>(Resource.Id.icon);
       getAddress.SetOnClickListener(new ViewClickAction((v) => GetAddress()));
+      
+      ret.FindViewById(Resource.Id.delete).Click += (sender, e) => {
+        RequestDeleteJob();
+      };
 
       return ret;
     }
@@ -71,6 +73,7 @@
 		}
 
     public void Present(JobRow job) {
+      this.job = job;
       name.Text = job.jobName;
       customer.Text = job.customerNumber;
       dispatch.Text = job.dispatchNumber;
@@ -81,6 +84,10 @@
 			system.Text = job.systemType;
 			addressView.Text = job.jobAddress;
       coordinates.Text = job.jobLocation;
+    }
+    
+    public Task<bool> LoadAsync(JobRow job) {
+      return Task.FromResult(true);
     }
 
     public async Task<bool> SaveAsync(JobRow job) {
@@ -113,6 +120,7 @@
       }
 
 			var dialog = new ProgressDialog(Activity);
+      dialog.SetCanceledOnTouchOutside(false);
 			dialog.SetTitle(Resource.String.please_wait);
 			dialog.SetMessage(GetString(Resource.String.location_determining_address));
 			dialog.Show();
@@ -124,54 +132,81 @@
 				if (address == null) {
 					Toast.MakeText(Activity, Resource.String.location_undetermined, ToastLength.Long).Show();
 				} else {
-					addressView.Text = address.GetAddressLine(0);
-					coordinates.Text = address.Latitude + ", " + address.Longitude;
+          try {
+            addressView.Text = address.GetAddressLine(0) + ", " + address.GetAddressLine(1);
+            coordinates.Text = address.Latitude + ", " + address.Longitude;
+          } catch (Exception e) {
+            Log.E(this, "Failed to set address content", e);
+          }
 				}
       } else {
         // Get coordinates based on given address
         var address = await PollGeocode(usAddress);
         if (address == null) {
-          Toast.MakeText(Activity, Resource.String.location_undetermined, ToastLength.Long).Show();
+          Alert(Resource.String.location_undetermined);
         } else {
           coordinates.Text = address.Latitude + ", " + address.Longitude;
         }
       }
 
+
+      await Task.Delay(500);
       dialog.Dismiss();
+    }
+    
+    private void RequestDeleteJob() {
+      var adb = new IONAlertDialog(Activity);
+      adb.SetTitle(Resource.String.job_delete_title);
+      adb.SetMessage(Resource.String.job_delete_message);
+      adb.SetNegativeButton(Resource.String.cancel, (sender, e) => {
+      });
+      adb.SetPositiveButton(Resource.String.delete, (sender, e) => {
+        DeleteJob();
+      });
+      adb.Show();
+    }
+    
+    private void DeleteJob() {
+      var deleted = ion.database.Delete<JobRow>(job);
+      (deleted == 1).Assert("Attempted to delete a single job, but deleted " + deleted + " instead.");
+      Activity.SetResult(Result.Ok);
+      Activity.Finish();
     }
 
 		private async Task<Address> PollGeocode(string address) {
 			var geo = new Geocoder(Activity);
+      var timeout = TimeSpan.FromSeconds(15);
 
       var start = DateTime.Now;
       var task = geo.GetFromLocationNameAsync(address, 1);
-      while (!task.IsCompleted && DateTime.Now - start <= TimeSpan.FromSeconds(5)) {
+      while (!task.IsCompleted && DateTime.Now - start <= timeout) {
         await Task.Delay(100);
       }
 
-      if (task.IsCompleted) {
-        return task.Result[0];
-      } else {
-        return null;
+      if (DateTime.Now - start > timeout) {
+				return null;
+			} else {
+				return task.Result[0];
       }
 		}
 
     private async Task<Address> PollGeocode() {
       var loc = ion.locationManager.lastKnownLocation;
+			var timeout = TimeSpan.FromSeconds(15);
 
-      var geo = new Geocoder(Activity);
+			var geo = new Geocoder(Activity);
 
 			var start = DateTime.Now;
 			var task = geo.GetFromLocationAsync(loc.latitude, loc.longitude, 1);
-			while (!task.IsCompleted && DateTime.Now - start <= TimeSpan.FromSeconds(5)) {
+			while (!task.IsCompleted && DateTime.Now - start <= timeout) {
 				await Task.Delay(100);
 			}
 
-      if (task.IsCompleted) {
-        return task.Result[0];
-      } else {
-        return null;
-      }
+			if (DateTime.Now - start > timeout) {
+				return null;
+			} else {
+				return task.Result[0];
+			}
     }
   }
 }

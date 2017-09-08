@@ -92,14 +92,6 @@
       <HintPath>Components\flyoutnavigation-1.5.1\lib\ios-unified\FlyoutNavigation.dll</HintPath>
     </Reference>
     <Reference Include="MonoTouch.Dialog-1" />
-    <Reference Include="Xfinium.Pdf.Xamarin.iOS">
-      <HintPath>..\packages\Nfinium\XFINIUM.PDF 5.4.0 Mobile Professional Edition Commercial Version\Redist\iOS-Unified\Xfinium.Pdf.Xamarin.iOS.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Xfinium.Pdf.Render.Xamarin.iOS">
-      <HintPath>..\packages\Nfinium\XFINIUM.PDF 5.4.0 Mobile Professional Edition Commercial Version\Redist\iOS-Unified\Xfinium.Pdf.Render.Xamarin.iOS.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="SWTableViewCell">
       <HintPath>..\packages\SWTableViewCell-0.3.6.1\lib\ios-unified\SWTableViewCell.dll</HintPath>
     </Reference>
@@ -151,8 +143,8 @@
     <Reference Include="FlexCel">
       <HintPath>..\Components\FlexCel-6.8.0\lib\ios-unified\FlexCel.dll</HintPath>
     </Reference>
-    <Reference Include="Xfinium.Pdf.Pcl">
-      <HintPath>..\..\..\..\..\Downloads\Xfinium\XfiniumPdf540PclProCommercial\Xfinium.Pdf.Pcl.dll</HintPath>
+    <Reference Include="Xfinium.Pdf.Render.Xamarin.iOS">
+      <HintPath>..\packages\Xfinium\XFINIUM.PDF 5.4.0 Mobile Professional Edition Commercial Version\Redist\iOS-Unified\Xfinium.Pdf.Render.Xamarin.iOS.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

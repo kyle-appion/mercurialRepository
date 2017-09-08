@@ -44,7 +44,7 @@
 
 			i.SetFlags(ActivityFlags.NewTask | ActivityFlags.NoHistory);
 			i.PutExtra(Intent.ExtraEmail, new string[] { AppionConstants.EMAIL_SUPPORT });
-			i.SetType(Constants.MIME_RFC822);
+			i.SetType(AppionConstants.MIME_RFC822);
 
 			try {
 				var chooser = Intent.CreateChooser(i, activity.GetString(Resource.String.preferences_send_feedback));
@@ -65,7 +65,7 @@
 					try {
 						activity.StartActivity(new Intent(Intent.ActionView, Android.Net.Uri.Parse("market://details?id=" + activity.PackageName)));
 					} catch (Exception ee) {
-						Log.E(THIS, "Failed to start activity for maket with package name.", e);
+						Log.E(THIS, "Failed to start activity for maket with package name.", ee);
 						activity.StartActivity(new Intent(Intent.ActionView, Android.Net.Uri.Parse("http://play.google.com/store/apps/details?id=" + activity.PackageName)));
 					}
 				});

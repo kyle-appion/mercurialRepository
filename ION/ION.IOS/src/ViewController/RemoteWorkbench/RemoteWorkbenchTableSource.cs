@@ -569,12 +569,6 @@ namespace ION.IOS.ViewController.RemoteAccess {
           break;
 
         case WorkbenchEvent.EType.Swapped:
-          tableView.BeginUpdates();
-
-          // TODO ahodder@appioninc.com: I think  this is a singular move and not a swap.
-//          tableView.MoveRow(NSIndexPath.FromRowSection((nint)workbenchEvent.index, (nint)workbenchEvent.otherIndex));
-
-          tableView.EndUpdates();
           break;
       }
     }
