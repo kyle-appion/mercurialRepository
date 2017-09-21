@@ -153,8 +153,10 @@
         w.Write((int)(maxPressure.amount * 10)); // Write the maximum pressure
 
         for (int i = 0; i < steps; i++) {
-          var bub = fluid.GetTemperatureFromAbsolutePressure(Fluid.EState.Bubble, kpa.OfScalar(minPressure.amount + i * interval.magnitude));
-          var dew = fluid.GetTemperatureFromAbsolutePressure(Fluid.EState.Dew, kpa.OfScalar(minPressure.amount + i * interval.magnitude));
+					//var bub = fluid.GetTemperatureFromAbsolutePressure(Fluid.EState.Bubble, kpa.OfScalar(minPressure.amount + i * interval.magnitude));
+					var bub = fluid.GetSaturatedTemperature(Fluid.EState.Bubble, kpa.OfScalar(minPressure.amount + i * interval.magnitude));
+					//var dew = fluid.GetTemperatureFromAbsolutePressure(Fluid.EState.Dew, kpa.OfScalar(minPressure.amount + i * interval.magnitude));
+					var dew = fluid.GetSaturatedTemperature(Fluid.EState.Dew, kpa.OfScalar(minPressure.amount + i * interval.magnitude));
           w.Write((int)(bub.amount * 10)); // Write the bubble temperature
           w.Write((int)(dew.amount * 10)); // Write the dew temperature
         }

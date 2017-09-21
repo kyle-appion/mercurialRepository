@@ -9,9 +9,7 @@ using ION.Core.Sensors;
 namespace ION.IOS.ViewController.Analyzer {
   
   public partial class secondarySensorCell : UITableViewCell  {
-    //private UILabel cellHeader = new UILabel(new CGRect(0,0,149, 30));
     UILabel cellHeader;
-    //UILabel fluidType = new UILabel(new CGRect(0,30,100,30));
     UILabel secondaryReading;
 
     public secondarySensorCell(IntPtr handle) {
@@ -20,7 +18,6 @@ namespace ION.IOS.ViewController.Analyzer {
 
     public void makeEvents(lowHighSensor lhSensor, CGRect tableRect){
       cellHeader = new UILabel(new CGRect(0, 0, 1.006 * tableRect.Width, .5 * lhSensor.cellHeight));
-      //secondaryReading = new UILabel(new CGRect(0, .5 * lhSensor.cellHeight, tableRect.Width, .5 * lhSensor.cellHeight));
       secondaryReading = new UILabel(new CGRect(0, .5 * lhSensor.cellHeight, tableRect.Width, .5 * lhSensor.cellHeight));
 			
 			if(lhSensor.currentSensor != null && lhSensor.currentSensor.type == ESensorType.Temperature){
@@ -42,20 +39,10 @@ namespace ION.IOS.ViewController.Analyzer {
       secondaryReading.AdjustsFontSizeToFitWidth = true;
       secondaryReading.TextAlignment = UITextAlignment.Center;
 
-      if (lhSensor.currentSensor != null && lhSensor.manifold.secondarySensor != null) {
-        if (lhSensor.currentSensor != lhSensor.manifold.primarySensor) {
-          secondaryReading.Text = lhSensor.manifold.primarySensor.measurement.amount.ToString("N") + " " + lhSensor.manifold.primarySensor.unit;
-        } else if (lhSensor.currentSensor == lhSensor.manifold.primarySensor) {
-          secondaryReading.Text = lhSensor.manifold.secondarySensor.measurement.amount.ToString("N") + " " + lhSensor.manifold.secondarySensor.unit;
-        } else {
-          secondaryReading.Text = Util.Strings.Device.NOTLINKED;
-        }
-      } else if (lhSensor.manualSensor != null && lhSensor.manifold.secondarySensor != null) {
-        if(lhSensor.manualSensor.type.Equals(ESensorType.Pressure)){
-          secondaryReading.Text = lhSensor.manifold.secondarySensor.measurement.amount.ToString("N") + " " + lhSensor.manifold.secondarySensor.unit;
-        } else {
-          secondaryReading.Text = lhSensor.manifold.primarySensor.measurement.amount.ToString("N") + " " + lhSensor.manifold.primarySensor.unit;
-        }
+      if (lhSensor.currentSensor != null && lhSensor.currentSensor.linkedSensor != null) {
+        secondaryReading.Text = lhSensor.currentSensor.linkedSensor.measurement.amount.ToString("N") + " " + lhSensor.currentSensor.linkedSensor.unit;
+      } else if (lhSensor.manualSensor != null && lhSensor.manualSensor.linkedSensor != null) {
+        secondaryReading.Text = lhSensor.manualSensor.linkedSensor.measurement.amount.ToString("N") + " " + lhSensor.manualSensor.linkedSensor.unit;
       } else {
         secondaryReading.Text = Util.Strings.Device.NOTLINKED;      
       }

@@ -14,9 +14,13 @@
     // Overridden from ISensorProperty
     public Sensor sensor {
       get {
-        return manifold.primarySensor;
+				//return manifold.primarySensor;
+				return __sensor;
+      } 
+      set {
+        __sensor = value;
       }
-    }
+    } Sensor __sensor;
 
     // Overridden from ISensorProperty
     public virtual Scalar modifiedMeasurement {
@@ -35,21 +39,22 @@
       }
     }
 
-    /// <summary>
-    /// The manifold that this property applies to.
-    /// </summary>
-    /// <value>The manifold.</value>
-    public Manifold manifold { get; private set; }
-    
-    public AbstractManifoldSensorProperty(Manifold manifold) {
-      this.manifold = manifold;
-      manifold.onManifoldEvent += OnManifoldEvent;
+		/// <summary>
+		/// The manifold that this property applies to.
+		/// </summary>
+		/// <value>The manifold.</value>
+		//public Manifold manifold { get; private set; }
+
+		//public AbstractManifoldSensorProperty(Manifold manifold){
+		public AbstractManifoldSensorProperty(Sensor sensor) {
+      this.sensor = sensor;
+      //manifold.onManifoldEvent += OnManifoldEvent;
       App.AppState.context.locationManager.onLocationChanged += OnLocationChanged;
     }
 
     // Overridden from ISensorProperty
     public virtual void Dispose() {
-      manifold.onManifoldEvent -= OnManifoldEvent;
+      //manifold.onManifoldEvent -= OnManifoldEvent;
 
       App.AppState.context.locationManager.onLocationChanged -= OnLocationChanged;
     }

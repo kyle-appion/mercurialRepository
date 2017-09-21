@@ -87,6 +87,8 @@ namespace ION.IOS.App {
     // Implemented From IION
     public DataLogManager dataLogManager { get; protected set; }
     // Implemented from IION
+    public ManualSensorContainer manualSensorContainer { get; protected set; }
+    // Implemented from IION
     public virtual bool hasNetworkConnection { 
       get {
         return Reachability.IsReachableWithoutRequiringConnection(SystemConfiguration.NetworkReachabilityFlags.Reachable);  

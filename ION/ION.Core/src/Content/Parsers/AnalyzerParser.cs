@@ -23,20 +23,21 @@
 				}
 
 				// Write the low side manifold
-				if (analyzer.lowSideManifold != null) {
-					if (!(analyzer.lowSideManifold.primarySensor is ManualSensor)) {
+				if (analyzer.lowSideSensor != null) {
+					if (!(analyzer.lowSideSensor is ManualSensor)) {
 						writer.Write(true);
-						ManifoldParser.WriteManifold(ion, analyzer.lowSideManifold, writer);						
+						ManifoldParser.WriteManifold(ion, analyzer.lowSideSensor, writer);
 					}
 				} else {
 					writer.Write(false);
 				}
 
 				// Write the high side manifold
-				if (analyzer.highSideManifold != null) {
-					if (!(analyzer.highSideManifold.primarySensor is ManualSensor)) {
+				if (analyzer.highSideSensor != null) {
+					if (!(analyzer.highSideSensor is ManualSensor)) {
 						writer.Write(true);
-						ManifoldParser.WriteManifold(ion, analyzer.highSideManifold, writer);
+						//ManifoldParser.WriteManifold(ion, analyzer.highSideManifold, writer);
+						ManifoldParser.WriteManifold(ion, analyzer.highSideSensor, writer);
 					}
 				} else {
 					writer.Write(false);
@@ -73,23 +74,23 @@
 
 				// Read the low side manifold
 				if (reader.ReadBoolean()) {
-					var manifold = ManifoldParser.ReadManifold(ion, reader);
-					ret.SetManifold(Analyzer.ESide.Low, manifold.primarySensor);
+					var checkSensor = ManifoldParser.ReadManifold(ion, reader);
+					ret.SetManifold(Analyzer.ESide.Low, checkSensor);
 
-					ret.lowSideManifold.SetSecondarySensor(manifold.secondarySensor);
-					foreach (var sp in manifold.sensorProperties) {
-						ret.lowSideManifold.AddSensorProperty(sp);
+					ret.lowSideSensor.SetLinkedSensor(checkSensor.linkedSensor);
+					foreach (var sp in checkSensor.sensorProperties) {
+						ret.lowSideSensor.AddSensorProperty(sp);
 					}
 				}
 
 				// Read the high side manifold
 				if (reader.ReadBoolean()) {
-					var manifold = ManifoldParser.ReadManifold(ion, reader);
-					ret.SetManifold(Analyzer.ESide.High, manifold.primarySensor);
+					var checkSensor = ManifoldParser.ReadManifold(ion, reader);
+					ret.SetManifold(Analyzer.ESide.High, checkSensor);
 
-					ret.highSideManifold.SetSecondarySensor(manifold.secondarySensor);
-					foreach (var sp in manifold.sensorProperties) {
-						ret.highSideManifold.AddSensorProperty(sp);
+					ret.highSideSensor.SetLinkedSensor(checkSensor.linkedSensor);
+					foreach (var sp in checkSensor.sensorProperties) {
+						ret.highSideSensor.AddSensorProperty(sp);
 					}
 				}
 

@@ -10,8 +10,9 @@
 	using ION.Core.Content;
 	using ION.Core.Devices;
 	using ION.Core.Sensors.Properties;
+  using ION.Core.Sensors;
 
-	public class RemoteAnalyzerLH {
+  public class RemoteAnalyzerLH {
 		[JsonProperty("low")]
 		public string lowAnalyzerIndex;
 		[JsonProperty("lsn")]
@@ -58,13 +59,13 @@
 			highSubviews = new string[0];
 
 			// Commit low side manifold
-			if (analyzer.lowSideManifold != null && analyzer.lowSideManifold.primarySensor is GaugeDeviceSensor) {
-				var m = analyzer.lowSideManifold;
-				var gds = m.primarySensor as GaugeDeviceSensor;
+			if (analyzer.lowSideSensor != null && analyzer.lowSideSensor is GaugeDeviceSensor) {
+				var m = analyzer.lowSideSensor;
+				var gds = m as GaugeDeviceSensor;
 
 				if (gds != null) {
           // Commit primary sensor stuff
-          var ps = (GaugeDeviceSensor)m.primarySensor;
+          var ps = (GaugeDeviceSensor)m;
           lowSerialNumber = ps.device.serialNumber.ToString();
           lowSensorIndex = ps.index;
 
@@ -72,7 +73,7 @@
 					lowAnalyzerIndex = i + "";
 
           // Commit primary sensor stuff
-					var sgds = m.secondarySensor as GaugeDeviceSensor;
+					var sgds = m.linkedSensor as GaugeDeviceSensor;
 					if (sgds != null) {
 						lowLinkedSerialNumber = sgds.device.serialNumber.ToString();
             lowLinkedSensorIndex = sgds.index;
@@ -95,13 +96,13 @@
 			}
 
       // Commit high side manifold
-      if (analyzer.highSideManifold != null && analyzer.highSideManifold.primarySensor is GaugeDeviceSensor) {
-        var m = analyzer.highSideManifold;
-        var gds = m.primarySensor as GaugeDeviceSensor;
+      if (analyzer.highSideSensor != null && analyzer.highSideSensor is GaugeDeviceSensor) {
+        var m = analyzer.highSideSensor;
+        var gds = m as GaugeDeviceSensor;
 
         if (gds != null) {
           // Commit primary sensor stuff
-          var ps = (GaugeDeviceSensor)m.primarySensor;
+          var ps = (GaugeDeviceSensor)m;
           highSerialNumber = ps.device.serialNumber.ToString();
           highSensorIndex = ps.index;
 
@@ -109,7 +110,7 @@
           highAnalyzerIndex = i + "";
 
           // Commit primary sensor stuff
-          var sgds = m.secondarySensor as GaugeDeviceSensor;
+          var sgds = m.linkedSensor as GaugeDeviceSensor;
           if (sgds != null) {
             highLinkedSerialNumber = sgds.device.serialNumber.ToString();
             highLinkedSensorIndex = sgds.index;
@@ -154,22 +155,22 @@
 			}
 		}
 
-		public static ISensorProperty ParseSensorPropertyFromCode(Manifold manifold, string code) {
+		public static ISensorProperty ParseSensorPropertyFromCode(Sensor sensor, string code) {
 			switch (code) {
 				case "Alternate":
-					return new AlternateUnitSensorProperty(manifold);
+					return new AlternateUnitSensorProperty(sensor);
 				case "Pressure":
-					return new PTChartSensorProperty(manifold);
+					return new PTChartSensorProperty(sensor);
 				case "Minimum":
-					return new MinSensorProperty(manifold);
+					return new MinSensorProperty(sensor);
 				case "Maximum":
-					return new MaxSensorProperty(manifold);
+					return new MaxSensorProperty(sensor);
 				case "Hold":
-					return new HoldSensorProperty(manifold);
+					return new HoldSensorProperty(sensor);
 //				case "Rate":
 //					return new RateOfChangeSensorProperty(manifold);
 				case "Superheat":
-					return new SuperheatSubcoolSensorProperty(manifold);
+					return new SuperheatSubcoolSensorProperty(sensor);
 
 				default:
 //          Log.D(typeof(RemoteAnalyzerLH).Name, "Cannot parse sensor property from code: " + code + ". Returning null.");

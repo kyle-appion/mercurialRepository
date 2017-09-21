@@ -120,7 +120,8 @@
     /// </summary>
     /// <value>The data log manager.</value>
     DataLogManager dataLogManager { get; }
-    
+
+    ManualSensorContainer manualSensorContainer { get; }
     /// <summary>
     /// Whether or not the ion instance has access to the network.
     /// </summary>

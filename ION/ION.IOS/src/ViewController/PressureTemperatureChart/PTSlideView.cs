@@ -15,7 +15,6 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 
 		CGPath pressurePath;
     CGPath temperaturePath;
-    PTChart ptChart;
     public Unit lookup;
     public Unit tempLookup;
     Sensor pressureSensor;
@@ -38,18 +37,17 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     public double measurementWidth;
     IION ion;
 
-    public PTSlideView(PTChart chart, UIScrollView scrollView, Unit pUnit, Unit tUnit, Sensor sensor) {
+    public PTSlideView(UIScrollView scrollView, Unit pUnit, Unit tUnit, Sensor sensor) {
       ion = AppState.context;
       pressureSensor = sensor;
 		  lookup = pUnit;
 		  tempLookup = tUnit;
-		  ptChart = chart;
 
 		  minPressure = setPressureStart(lookup);
 		  minTemperature = new Scalar();
 		  if(pUnit == null){Console.WriteLine("punit is null");}
 		  if(pressureSensor == null){Console.WriteLine("Pressure sensor null");}
-		  minTemperature = chart.GetTemperature(new Scalar(pUnit,minPressure),pressureSensor.isRelative).ConvertTo(tUnit);
+		  minTemperature = ion.fluidManager.lastUsedFluid.GetMinimumTemperature().ConvertTo(tUnit);
 
       sViewWidth = scrollView.Bounds.Width;
       sViewHeight = scrollView.Bounds.Height;
@@ -58,13 +56,11 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     }
     public PTSlideView(IntPtr handle) : base(handle){}
 
-    public void resetData(PTChart newChart, Unit pressureUnit, Unit temperatureUnit){
-      Console.WriteLine("Resetting data from change. Pressure unit: " + pressureUnit + " temperature unit: " + temperatureUnit + " for fluid " + newChart.fluid.name);
+    public void resetData(Unit pressureUnit, Unit temperatureUnit){
+      Console.WriteLine("Resetting data from change. Pressure unit: " + pressureUnit + " temperature unit: " + temperatureUnit + " for fluid " + ion.fluidManager.lastUsedFluid.name);
       tempLookup = temperatureUnit;
 
       lookup = pressureUnit;
-
-      ptChart = newChart;
 
       this.SetNeedsDisplay();
     }
@@ -73,24 +69,24 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       base.Draw (rect);
 		
       minPressure = setPressureStart(lookup);
-	  //minPressure = ptChart.fluid.GetMinimumPressure(ptChart.state).ConvertTo(lookup).amount;
-	  	maxPressure = ptChart.fluid.GetMaximumPressure(ptChart.state).ConvertTo(lookup);
-      maxPressure = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(maxPressure,ion.locationManager.lastKnownLocation.altitude).ConvertTo(lookup);
 
-      minTemperature = ptChart.GetTemperature(new Scalar(lookup,minPressure), pressureSensor.isRelative).ConvertTo(tempLookup);
-	  	//maxTemperature = ptChart.fluid.GetMaximumTemperature().ConvertTo(tempLookup).amount - 1;
-	  	maxTemperature = ptChart.GetTemperature(new Scalar(lookup,Math.Floor(maxPressure.amount)), pressureSensor.isRelative).ConvertTo(tempLookup).amount - 1;
+	  	maxPressure = ion.fluidManager.lastUsedFluid.GetMaximumPressure().ConvertTo(lookup);
+			//maxPressure = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(maxPressure, ion.locationManager.lastKnownLocation.altitude).ConvertTo(lookup);
 
-		  //Console.WriteLine ("pressure sensor relativeness: " + pressureSensor.isRelative);
-	   // Console.WriteLine ("min pressure: " + minPressure);
-	   // Console.WriteLine ("max pressure: " + maxPressure.amount);
-		  //Console.WriteLine ("min temperature: " + minTemperature);
-		  //Console.WriteLine ("fluid min temperature: " + ptChart.fluid.GetMinimumTemperature ().ConvertTo(tempLookup));
-		  //Console.WriteLine ("min pressure for min temperature" + ptChart.GetPressure(new Scalar(minTemperature.unit,minTemperature.amount),pressureSensor.isRelative).ConvertTo(lookup));
-		  //Console.WriteLine ("min pressure for fluid min temperature: " + ptChart.GetPressure(new Scalar(tempLookup,ptChart.fluid.GetMinimumTemperature ().ConvertTo(tempLookup).amount),pressureSensor.isRelative).ConvertTo(lookup));
-	   // Console.WriteLine ("max temperature: " + maxTemperature);
+      minTemperature = ion.fluidManager.lastUsedFluid.GetMinimumTemperature().ConvertTo(tempLookup);
 
-      startGap = sViewWidth / 2.0;
+	  	maxTemperature = ion.fluidManager.lastUsedFluid.GetMaximumTemperature().ConvertTo(tempLookup).amount - 1;
+
+			//Console.WriteLine ("pressure sensor relativeness: " + pressureSensor.isRelative);
+			// Console.WriteLine ("min pressure: " + minPressure);
+			// Console.WriteLine ("max pressure: " + maxPressure.amount);
+			//Console.WriteLine ("min temperature: " + minTemperature);
+			//Console.WriteLine ("fluid min temperature: " + ion.fluidManager.lastUsedFluid.GetMinimumTemperature ().ConvertTo(tempLookup));
+			//Console.WriteLine ("min pressure for min temperature" + ion.fluidManager.lastUsedFluid.GetPressure(new Scalar(minTemperature.unit,minTemperature.amount),pressureSensor.isRelative).ConvertTo(lookup));
+			//Console.WriteLine ("min pressure for fluid min temperature: " + ion.fluidManager.lastUsedFluid.GetMinTemperature().ConvertTo(lookup));
+			// Console.WriteLine ("max temperature: " + maxTemperature);
+
+			startGap = sViewWidth / 2.0;
       measurementWidth = this.Frame.Width - sViewWidth;
 
       firstMeasurements = setPressureRange(lookup,1);
@@ -98,8 +94,6 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       secondMeasurements = setPressureRange(lookup, 2);
 
       middleMeasurements = setPressureRange(lookup, 3);
-
-      //var lastMeasurements = maxPressure.amount - middleMeasurements;     
 
       firstMod = setPressureMod(lookup, 1);
       secondMod = setPressureMod(lookup, 2);
@@ -113,39 +107,40 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       UIColor.Blue.SetStroke ();
       gctx.SetLineCap (CGLineCap.Round);
 
-	  pressurePath = new CGPath ();
+  	  pressurePath = new CGPath (); 
       temperaturePath = new CGPath ();
-	  var tempCount = (int)Math.Ceiling(minTemperature.amount);
-	  var tempRange = maxTemperature - minTemperature.amount;
+  	  var tempCount = (int)Math.Ceiling(minTemperature.amount);
+  	  var tempRange = maxTemperature - minTemperature.amount;
 
-	  var pressCount = (int)Math.Ceiling (minPressure);
+  	  var pressCount = (int)Math.Ceiling (minPressure);
 
-	  tempTicks = measurementWidth / tempRange;
+  	  tempTicks = measurementWidth / tempRange;
 
-	  var tempIncrease = startGap + ((tempCount - minTemperature.amount)/ tempRange * measurementWidth);
+  	  var tempIncrease = startGap + ((tempCount - minTemperature.amount)/ tempRange * measurementWidth);
 
 
-	  if (tempCount % 10 == 0) {
-		temperaturePath.AddLines(new CGPoint[] {
-			new CGPoint(tempIncrease, .5 * sViewHeight),
+  	  if (tempCount % 10 == 0) {
+  		temperaturePath.AddLines(new CGPoint[] {
+  			new CGPoint(tempIncrease, .5 * sViewHeight),
 
-			new CGPoint(tempIncrease, .75 * sViewHeight)
-		});
-		DrawTemperatureNumber(tempCount, tempIncrease);
-	  } else {
-		  temperaturePath.AddLines(new CGPoint[] {
-			new CGPoint(tempIncrease, .5 * sViewHeight),
+  			new CGPoint(tempIncrease, .75 * sViewHeight)
+  		});
+  		DrawTemperatureNumber(tempCount, tempIncrease);
+  	  } else {
+  		  temperaturePath.AddLines(new CGPoint[] {
+  			new CGPoint(tempIncrease, .5 * sViewHeight),
 
-			new CGPoint(tempIncrease, .6 * sViewHeight)
-		  });
-	  }
-	  var pressLower = ptChart.GetPressure(new Scalar(tempLookup,tempCount),pressureSensor.isRelative).ConvertTo(lookup).amount;
-	  tempIncrease += tempTicks;
-	  tempCount++;
+  			new CGPoint(tempIncrease, .6 * sViewHeight)
+  		  });
+  	  }
+			//var pressLower = ptChart.GetPressure(new Scalar(tempLookup, tempCount), pressureSensor.isRelative).ConvertTo(lookup).amount;
+			var pressLower = ion.fluidManager.lastUsedFluid.GetPressureFromSaturatedTemperature(pressureSensor.fluidState,new Scalar(tempLookup,tempCount)).ConvertTo(lookup).amount;
+  	  tempIncrease += tempTicks;
+  	  tempCount++;
 
-	  for (; tempCount <= maxTemperature; tempCount++) {        
-		if (tempCount % 10 == 0) {
-			temperaturePath.AddLines(new CGPoint[] {
+	    for (; tempCount <= maxTemperature; tempCount++) {        
+		  if (tempCount % 10 == 0) {
+			  temperaturePath.AddLines(new CGPoint[] {
 				new CGPoint(tempIncrease, .5 * sViewHeight),
 
 				new CGPoint(tempIncrease, .85 * sViewHeight)
@@ -168,7 +163,8 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 	  }
 	  
 	  for (; pressCount < maxPressure.amount; pressCount++) {
-		var pressTemperature = ptChart.GetTemperature (new Scalar (lookup,pressCount), pressureSensor.isRelative).ConvertTo(tempLookup).amount;
+				//var pressTemperature = ptChart.GetTemperature(new Scalar(lookup, pressCount), pressureSensor.isRelative).ConvertTo(tempLookup).amount;
+		var pressTemperature = ion.fluidManager.lastUsedFluid.GetSaturatedTemperature (pressureSensor.fluidState,new Scalar (lookup,pressCount)).ConvertTo(tempLookup).amount;
 		var tempDifference = pressTemperature - minTemperature.amount;
 		var tempOffset = tempDifference * tempTicks + startGap;
 		
@@ -245,7 +241,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     }
 
     public double setPressureStart(Unit pressureUnit){
-      var fluidMin = ptChart.minRelativePressure.ConvertTo(lookup);
+			var fluidMin = ion.fluidManager.lastUsedFluid.GetMinimumPressure().ConvertTo(lookup);
       var convertedFluidMin = fluidMin;
 
 			if(pressureUnit == Units.Pressure.PSIG){

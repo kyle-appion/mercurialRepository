@@ -18,7 +18,8 @@ namespace ION.IOS.ViewController.Workbench
       }
     }
 
-    public SecondarySensorRecord(Manifold manifold, ISensorProperty sensorProperty) : base(manifold, sensorProperty) {
+		//public SecondarySensorRecord(Manifold manifold, ISensorProperty sensorProperty) : base(manifold, sensorProperty) {
+		public SecondarySensorRecord(Sensor sensor, ISensorProperty sensorProperty) : base(sensor, sensorProperty) {
 
     }
 
@@ -34,14 +35,17 @@ namespace ION.IOS.ViewController.Workbench
 
       set {
         if (__record != null) {
-          __record.manifold.onManifoldEvent -= manifoldUpdating;
-          __record = null;
+					//__record.manifold.onManifoldEvent -= manifoldUpdating;
+					__record.sensorProperty.onSensorPropertyChanged -= OnSensorPropertyChanged;
+					__record = null;
         }
         __record = value;
 
         if (__record != null) {
-          __record.manifold.onManifoldEvent += manifoldUpdating;
-        }
+					//__record.manifold.onManifoldEvent += manifoldUpdating;
+					__record.sensorProperty.onSensorPropertyChanged += OnSensorPropertyChanged;
+					OnSensorPropertyChanged(__record.sensorProperty);
+				}
       }
     } SecondarySensorRecord __record;
 
@@ -57,9 +61,12 @@ namespace ION.IOS.ViewController.Workbench
       labelTitle.Font = UIFont.BoldSystemFontOfSize(17);
       labelMeasurement.Font = UIFont.SystemFontOfSize(21);
 
-      if (record.manifold.secondarySensor != null) {
-        labelMeasurement.Text = record.manifold.secondarySensor.measurement.amount.ToString("N") + " " + record.manifold.secondarySensor.unit;
-        if(record.manifold.secondarySensor.type == ESensorType.Temperature){
+			//if (record.manifold.secondarySensor != null) {
+			if (record.sensor.linkedSensor != null) {
+				//labelMeasurement.Text = record.manifold.secondarySensor.measurement.amount.ToString("N") + " " + record.manifold.secondarySensor.unit;
+				labelMeasurement.Text = record.sensor.linkedSensor.measurement.amount.ToString("N") + " " + record.sensor.linkedSensor.unit;
+				//if (record.manifold.secondarySensor.type == ESensorType.Temperature){
+					if(record.sensor.linkedSensor.type == ESensorType.Temperature){
 					labelTitle.Text = "TEMP";
 				} else {
 					labelTitle.Text = "PRESS";
@@ -71,9 +78,12 @@ namespace ION.IOS.ViewController.Workbench
     }
 
     public void manifoldUpdating(ManifoldEvent Event){
-      if (record.manifold.secondarySensor != null) {
-        labelMeasurement.Text = record.manifold.secondarySensor.measurement.amount.ToString("N") + " " + record.manifold.secondarySensor.unit;
-        if(record.manifold.secondarySensor.type == ESensorType.Temperature){
+			//if (record.manifold.secondarySensor != null) {
+			if (record.sensor.linkedSensor != null) {
+				//labelMeasurement.Text = record.manifold.secondarySensor.measurement.amount.ToString("N") + " " + record.manifold.secondarySensor.unit;
+				labelMeasurement.Text = record.sensor.linkedSensor.measurement.amount.ToString("N") + " " + record.sensor.linkedSensor.unit;
+				//if (record.manifold.secondarySensor.type == ESensorType.Temperature){
+				if(record.sensor.linkedSensor.type == ESensorType.Temperature){
 					labelTitle.Text = "TEMP";
 				} else {
 					labelTitle.Text = "PRESS";
@@ -83,5 +93,29 @@ namespace ION.IOS.ViewController.Workbench
         labelTitle.Text = "Linked";
       }
 	  }
+
+		private void OnSensorPropertyChanged(ISensorProperty sensorProperty)
+		{
+			//if (record.manifold.secondarySensor != null) {
+			if (record.sensor.linkedSensor != null)
+			{
+				//labelMeasurement.Text = record.manifold.secondarySensor.measurement.amount.ToString("N") + " " + record.manifold.secondarySensor.unit;
+				labelMeasurement.Text = record.sensor.linkedSensor.measurement.amount.ToString("N") + " " + record.sensor.linkedSensor.unit;
+				//if (record.manifold.secondarySensor.type == ESensorType.Temperature){
+				if (record.sensor.linkedSensor.type == ESensorType.Temperature)
+				{
+					labelTitle.Text = "TEMP";
+				}
+				else
+				{
+					labelTitle.Text = "PRESS";
+				}
+			}
+			else
+			{
+				labelMeasurement.Text = "Not Linked";
+				labelTitle.Text = "Linked";
+			}
+		}
   }
 }

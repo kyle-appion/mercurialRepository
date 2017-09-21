@@ -20,27 +20,32 @@ namespace ION.IOS.ViewController.Workbench {
 
   public partial class ViewerTableCell : UITableViewCell, IReleasable {
     private IION ion { get; set; }
-    /// <summary>
-    /// The manifold that we are representing.
-    /// </summary>
-    /// <value>The manifold.</value>
-    private Manifold manifold {
-      get {
-        return __manifold;
-      }
-      set {
-        if (__manifold != null) {
-          __manifold.onManifoldChanged -= OnManifoldUpdated;
-        }
+		/// <summary>
+		/// The sensor that we are representing.
+		/// </summary>
+		/// <value>The sensor.</value>
+		private Sensor viewSensor
+		{
+			get
+			{
+				return __viewSensor;
+			}
+			set
+			{
+				if (__viewSensor != null)
+				{
+					__viewSensor.onSensorEvent -= SensorChangeEvent;
+				}
 
-        __manifold = value;
+				__viewSensor = value;
 
-        if (__manifold != null) {
-          __manifold.onManifoldChanged += OnManifoldUpdated;
-          OnManifoldUpdated(__manifold);
-        }
-      }
-    } Manifold __manifold;
+				if (__viewSensor != null)
+				{
+					__viewSensor.onSensorEvent += SensorChangeEvent;
+          SensorChangeEvent(new SensorEvent(SensorEvent.EType.Invalidated,__viewSensor));
+				}
+			}
+		}	Sensor __viewSensor;
 
     private int lastBatteryLevel { get; set; }
 
@@ -49,15 +54,18 @@ namespace ION.IOS.ViewController.Workbench {
 
     // Overridden from IReleasable
     public void Release() {
-      manifold = null;
+			//manifold = null;
+			viewSensor = null;
       lastBatteryLevel = -1;
 //      lastConnectionState = EConnectionState.Resolving; // Not the best, but a resolution should be over quick.
     }
 
-    public void UpdateTo(IION ion, Manifold manifold) {
+		//public void UpdateTo(IION ion, Manifold manifold) {
+		public void UpdateTo(IION ion, Sensor sensor) {
 			this.BackgroundColor = UIColor.Clear;
       this.ion = ion;
-      this.manifold = manifold;
+			//this.manifold = manifold;
+			viewSensor = sensor;
       this.Layer.BorderWidth = 1f;
       labelMeasurement.Font = UIFont.FromName("DroidSans-Bold", 36f);
 
@@ -73,11 +81,11 @@ namespace ION.IOS.ViewController.Workbench {
       if(labelHeader == null){
         return;
       }
-      var device = sensor.device;
+      var device = ((GaugeDeviceSensor)viewSensor)?.device;
       var state = device.connection.connectionState;
 
 
-      labelHeader.Text = device.serialNumber.deviceModel.GetTypeString() + ": " + sensor.name;
+      labelHeader.Text = device.serialNumber.deviceModel.GetTypeString() + ": " + viewSensor.name;
       imageSensorIcon.Image = DeviceUtil.GetUIImageFromDeviceModel(device.serialNumber.deviceModel);
       labelMeasurement.Text = sensor.ToFormattedString();
       labelUnit.Text = sensor.unit.ToString();
@@ -113,16 +121,29 @@ namespace ION.IOS.ViewController.Workbench {
 				labelMeasurement.TextColor = new UIColor(Colors.LIGHT_GRAY);
         labelUnit.TextColor = new UIColor(Colors.LIGHT_GRAY);
       }
-
     }
 
-    private void OnManifoldUpdated(Manifold manifold) {
-      if (manifold.primarySensor is GaugeDeviceSensor) {
-        UpdateFromGaugeSensor(manifold.primarySensor as GaugeDeviceSensor);
-      } else {
-        UpdateFromSensor(manifold.primarySensor);
-      }
-    }
+		//private void OnManifoldUpdated(Manifold manifold) {
+		//  if (manifold.primarySensor is GaugeDeviceSensor) {
+		//    UpdateFromGaugeSensor(manifold.primarySensor as GaugeDeviceSensor);
+		//  } else {
+		//    UpdateFromSensor(manifold.primarySensor);
+		//  }
+		//}
+
+		/// <summary>
+		/// The callback that will set the sensor's modified measurement to the
+		/// sensor's new reading.
+		/// </summary>
+		/// <param name="sensor">Sensor.</param>
+		private void SensorChangeEvent(SensorEvent sensorEvent)
+		{
+		  if (sensorEvent.sensor is GaugeDeviceSensor) {
+		    UpdateFromGaugeSensor(sensorEvent.sensor as GaugeDeviceSensor);
+		  } else {
+		    UpdateFromSensor(sensorEvent.sensor);
+		  }
+		}
 
     private void UpdateFromSensor(Sensor sensor) {
       labelHeader.Text = sensor.type.GetTypeString() + ": " + sensor.name;
@@ -172,7 +193,8 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
    public void changeConnectionStatus(object sender, EventArgs eww){
-      var gaugeSensor = manifold.primarySensor as GaugeDeviceSensor;
+			//var gaugeSensor = manifold.primarySensor as GaugeDeviceSensor;
+			var gaugeSensor = viewSensor as GaugeDeviceSensor;
 	    activityConnectStatus.StartAnimating();
       if (gaugeSensor.device.isConnected) {
         gaugeSensor.device.connection.Disconnect();

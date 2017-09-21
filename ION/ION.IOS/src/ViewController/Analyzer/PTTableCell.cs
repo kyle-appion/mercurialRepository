@@ -22,9 +22,6 @@ namespace ION.IOS.ViewController.Analyzer {
     }
 
     public void makeEvents(lowHighSensor lhSensor, CGRect tableRect){
-      if (!(ion is RemoteIosION) && lhSensor.manifold.ptChart.fluid != AppState.context.fluidManager.lastUsedFluid) {
-        lhSensor.manifold.ptChart = PTChart.New(AppState.context, lhSensor.manifold.ptChart.state);
-      }
 
       cellHeader = new UILabel(new CGRect(0,0, 1.006 * tableRect.Width, .5 * lhSensor.cellHeight));
       fluidType = new UILabel(new CGRect(0, .5 * lhSensor.cellHeight, .5 * tableRect.Width, .5 * lhSensor.cellHeight));
@@ -38,14 +35,10 @@ namespace ION.IOS.ViewController.Analyzer {
       cellHeader.AdjustsFontSizeToFitWidth = true;
 
       fluidType = lhSensor.ptFluidType;
-      if (lhSensor.manifold != null && lhSensor.manifold.ptChart != null) {
-        var name = lhSensor.manifold.ptChart.fluid.name;
-        fluidType.Text = name;
-        fluidType.BackgroundColor = CGExtensions.FromARGB8888(lhSensor.ion.fluidManager.GetFluidColor(name));
-      } else {
-        fluidType.Text = "----";
-        fluidType.BackgroundColor = UIColor.White;
-      }
+
+      fluidType.Text = ion.fluidManager.lastUsedFluid.name;
+      fluidType.BackgroundColor = CGExtensions.FromARGB8888(lhSensor.ion.fluidManager.GetFluidColor(ion.fluidManager.lastUsedFluid.name));
+
       fluidType.TextAlignment = UITextAlignment.Center;
       fluidType.Font = UIFont.FromName("Helvetica", 18f);
       fluidType.AdjustsFontSizeToFitWidth = true;

@@ -51,11 +51,12 @@
 
     private DateTime startTime { get; set; }
 
-		[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
-		public TimerSensorProperty(Sensor sensor) : base(new Manifold(sensor)) {
-		}
+		//[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
+		//public TimerSensorProperty(Sensor sensor) : base(new Manifold(sensor)) {
+		//}
 
-    public TimerSensorProperty(Manifold manifold) : base(manifold) {
+		//public TimerSensorProperty(Manifold manifold) : base(manifold){
+		public TimerSensorProperty(Sensor sensor) : base(sensor) {
     }
 
     // Overridden from AbstractSensorProperty

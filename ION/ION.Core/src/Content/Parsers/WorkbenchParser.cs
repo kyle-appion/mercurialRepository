@@ -49,7 +49,8 @@
 						var manifold = ManifoldParser.ReadManifold(ion, reader);
             if (manifold != null) {
               try {
-                ret.Add(manifold);
+								//ret.Add(manifold);
+								//ret.Add(manifold);
               } catch (Exception e) {
                 Log.E(this, "Failed to read manifold", e);
               }

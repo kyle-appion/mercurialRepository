@@ -37,11 +37,14 @@
     /// <value>The other sensor.</value>
     public Sensor pressureSensor {
       get {
-        // The else is asserted to be valid by the check in the constructor.
-        if (ESensorType.Pressure == manifold.primarySensor.type) {
-          return manifold.primarySensor;
+				// The else is asserted to be valid by the check in the constructor.
+				//if (ESensorType.Pressure == manifold.primarySensor.type) {
+				if (ESensorType.Pressure == sensor.type) {
+					//return manifold.primarySensor;
+					return sensor;
         } else {
-          return manifold.secondarySensor;
+					//return manifold.secondarySensor;
+					return sensor.linkedSensor;
         }
       }
     }
@@ -51,11 +54,14 @@
     /// <value>The temperature sensor.</value>
     public Sensor temperatureSensor {
       get {
-        // The else is asserted to be valid by the check in the constructor.
-        if (ESensorType.Temperature == manifold.primarySensor.type) {
-          return manifold.primarySensor;
+				// The else is asserted to be valid by the check in the constructor.
+				//if (ESensorType.Temperature == manifold.primarySensor.type)	{
+				if (ESensorType.Temperature == sensor.type) {
+					//return manifold.primarySensor;
+					return sensor;
         } else {
-          return manifold.secondarySensor;
+					//return manifold.secondarySensor;
+					return sensor.linkedSensor;
         }
       }
     }
@@ -64,9 +70,11 @@
 			get {
 				if (isValid) {
           if (pressureSensor.isRelative) {
-            return manifold.ptChart.CalculateTemperatureDeltaRelative(pressureSensor.measurement, temperatureSensor.measurement);            
+						//return sensor.ptChart.CalculateTemperatureDeltaRelative(pressureSensor.measurement, temperatureSensor.measurement);
+						return AppState.context.fluidManager.lastUsedFluid.CalculateTemperatureDelta(pressureSensor.fluidState,pressureSensor.measurement, temperatureSensor.measurement);            
           } else {
-            return manifold.ptChart.CalculateTemperatureDeltaAbsolute(pressureSensor.measurement, temperatureSensor.measurement);
+						//return sensor.ptChart.CalculateTemperatureDeltaAbsolute(pressureSensor.measurement, temperatureSensor.measurement);
+						return AppState.context.fluidManager.lastUsedFluid.CalculateTemperatureDelta(pressureSensor.fluidState,pressureSensor.measurement, temperatureSensor.measurement);
           }
 				} else {
           return AppState.context.preferences.units.temperature.OfSpan(0);
@@ -74,12 +82,12 @@
 			}
 		}
 
-		public bool isValid { get { return pressureSensor != null && temperatureSensor != null; } } 
+		public bool isValid { get { return pressureSensor != null && temperatureSensor != null; } }
 
-    public SuperheatSubcoolSensorProperty(Manifold manifold) : base(manifold) {
-      bool isValid = IsSensorValid(manifold.primarySensor) &&
-        (manifold.secondarySensor == null || IsSensorValid(manifold.secondarySensor) ||
-          manifold.primarySensor.type != manifold.secondarySensor.type);
+		//public SuperheatSubcoolSensorProperty(Manifold manifold) : base(manifold)	{
+		public SuperheatSubcoolSensorProperty(Sensor sensor) : base(sensor) {
+			//bool isValid = IsSensorValid(manifold.primarySensor) && (manifold.secondarySensor == null || IsSensorValid(manifold.secondarySensor) || manifold.primarySensor.type != manifold.secondarySensor.type);
+			bool isValid = IsSensorValid(sensor) && (sensor.linkedSensor == null || IsSensorValid(sensor.linkedSensor) ||  sensor.type != sensor.linkedSensor.type);
       if (!isValid) {
         throw new Exception("Cannot create SuperheatSubcoolSensorProperty: expected a pressure and temperature sensor");
       }

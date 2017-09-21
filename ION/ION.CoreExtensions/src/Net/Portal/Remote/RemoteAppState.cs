@@ -55,14 +55,14 @@
 
 			// Commit the workbench
 			var manifolds = new List<RemoteManifold>();
-			foreach (var manifold in workbench.manifolds) {
-				try {
-					var rm = RemoteManifold.CreateOrThrow(manifold);
-					manifolds.Add(rm);
-				} catch (Exception e) {
-					Log.E(typeof(RemoteAppState).Name, "Failed to create remote manifold", e);
-				}
-			}
+			//foreach (var manifold in workbench.manifolds) {
+			//	try {
+			//		var rm = RemoteManifold.CreateOrThrow(manifold);
+			//		manifolds.Add(rm);
+			//	} catch (Exception e) {
+			//		Log.E(typeof(RemoteAppState).Name, "Failed to create remote manifold", e);
+			//	}
+			//}
 			ret.workbench = manifolds.ToArray();
 
 			// Commit the analyzer
@@ -89,11 +89,11 @@
 			ret.setup = new Setup();
 			ret.setup.positions = ion.currentAnalyzer.__legacySwaps;
 			string lf = null, hf = null;
-			if (ion.currentAnalyzer.lowSideManifold != null) {
-				lf = ion.currentAnalyzer.lowSideManifold.ptChart.fluid.name;
+			if (ion.currentAnalyzer.lowSideSensor != null) {
+				lf = ion.fluidManager.lastUsedFluid.name;
 			}
-			if (ion.currentAnalyzer.highSideManifold != null) {
-				hf = ion.currentAnalyzer.highSideManifold.ptChart.fluid.name;
+			if (ion.currentAnalyzer.highSideSensor!= null) {
+				hf = ion.fluidManager.lastUsedFluid.name;
 			}
 			ret.setup.lowFluid = lf;
 			ret.setup.highFluid = hf;

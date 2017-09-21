@@ -99,7 +99,7 @@ namespace ION.Core.Devices {
 		// Implemented from IDeviceManager
 		public IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocol) {
 			var p = Protocol.FindProtocolFromVersion(protocol);
-			return deviceFactory.GetDeviceDefinition(serialNumber).CreateDevice(serialNumber, new RemoteConnection(serialNumber.ToString()), p);
+			return deviceFactory.GetDeviceDefinition(serialNumber).CreateDevice(ion,serialNumber, new RemoteConnection(serialNumber.ToString()), p);
 		}
 
     public bool HasDeviceForAddress(string address) {

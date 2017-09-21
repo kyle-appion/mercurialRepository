@@ -10,6 +10,7 @@ using Appion.Commons.Measure;
 using ION.Core.Fluids;
 using ION.Core.Sensors;
 using ION.Core.Devices;
+using ION.Core.App;
 
 namespace ION.IOS.ViewController.PressureTemperatureChart {
   public class SliderView {
@@ -22,22 +23,22 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 			get{return __entryMode;}
 			set{
 				if(__entryMode != null){
-					__entryMode.sensor.onSensorStateChangedEvent -= setOffsetFromSensorMeasurement;
+					__entryMode.sensor.onSensorEvent -= setOffsetFromSensorMeasurement;
 				}
 				__entryMode = value;
 				
 				if(__entryMode != null){
-					__entryMode.sensor.onSensorStateChangedEvent += setOffsetFromSensorMeasurement;
+					__entryMode.sensor.onSensorEvent += setOffsetFromSensorMeasurement;
 				}
 			}
 		} PTChartViewController.SensorEntryMode __entryMode;
 		
-		public PTChart Chart;
+
 		public Unit pUnit;
 		public Unit tUnit;
 
-	  internal SliderView(UIView View,PTChart ptChart, Unit pressureUnit, Unit temperatureUnit, Sensor temperatureSensor, PTChartViewController.SensorEntryMode sensorEntry) {
-	  	Chart = ptChart;
+	  internal SliderView(UIView View, Unit pressureUnit, Unit temperatureUnit, Sensor temperatureSensor, PTChartViewController.SensorEntryMode sensorEntry) {
+
 	  	pUnit = pressureUnit;
 	  	tUnit = temperatureUnit;
 	  	
@@ -54,42 +55,42 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 			ptScroller.Layer.BorderWidth = 1f;
 			ptScroller.BackgroundColor = UIColor.White;
 	
-		  ptView = new PTSlideView (ptChart, ptScroller, pressureUnit, temperatureUnit, temperatureSensor);
+		  ptView = new PTSlideView (ptScroller, pressureUnit, temperatureUnit, temperatureSensor);
 			ptView.BackgroundColor = UIColor.White;
 			
 			entryMode = sensorEntry;
 			
 		  ptScroller.AddSubview (ptView);
-	    RedrawMeasurements(ptChart);
+	    RedrawMeasurements();
 	  }
     
-    public async void setOffsetFromSensorMeasurement(Sensor sensor){
+    public async void setOffsetFromSensorMeasurement(SensorEvent sensorEvent){
     	await Task.Delay(TimeSpan.FromMilliseconds(5)); 
-			if(sensor is GaugeDeviceSensor){
-				if(sensor.type == ESensorType.Pressure){
-					if(sensor.measurement.amount >= ptView.minPressure && sensor.measurement.amount <= ptView.maxPressure.amount){
-						if(ptView.lookup != sensor.unit){
-							ptView.resetData(Chart,sensor.unit,ptView.tempLookup);
+			if(sensorEvent.sensor is GaugeDeviceSensor){
+				if(sensorEvent.sensor.type == ESensorType.Pressure){
+					if(sensorEvent.sensor.measurement.amount >= ptView.minPressure && sensorEvent.sensor.measurement.amount <= ptView.maxPressure.amount){
+						if(ptView.lookup != sensorEvent.sensor.unit){
+							ptView.resetData(sensorEvent.sensor.unit,ptView.tempLookup);
 							await Task.Delay(TimeSpan.FromMilliseconds(2));
 						}					
-						var convertedTemperature = Chart.GetTemperature(new Scalar(sensor.unit,sensor.measurement.amount),sensor.isRelative).ConvertTo(ptView.tempLookup);
+						var convertedTemperature = AppState.context.fluidManager.lastUsedFluid.GetSaturatedTemperature(sensorEvent.sensor.fluidState,new Scalar(sensorEvent.sensor.unit,sensorEvent.sensor.measurement.amount)).ConvertTo(ptView.tempLookup);
 						var tempOffset = (convertedTemperature.amount - ptView.minTemperature.amount) * ptView.tempTicks;
 						ptScroller.SetContentOffset(new CGPoint(tempOffset,0),true);
 					}
-				 } else if (sensor.type == ESensorType.Temperature){
-					if(sensor.measurement.amount >= ptView.minTemperature.amount && sensor.measurement.amount <= ptView.maxTemperature){
-						if(ptView.tempLookup != sensor.unit){
-							ptView.resetData(Chart,ptView.lookup,sensor.unit);
+				 } else if (sensorEvent.sensor.type == ESensorType.Temperature){
+					if(sensorEvent.sensor.measurement.amount >= ptView.minTemperature.amount && sensorEvent.sensor.measurement.amount <= ptView.maxTemperature){
+						if(ptView.tempLookup != sensorEvent.sensor.unit){
+							ptView.resetData(ptView.lookup,sensorEvent.sensor.unit);
 							await Task.Delay(TimeSpan.FromMilliseconds(2));
 						}
-						var tempOffset = (sensor.measurement.amount - ptView.minTemperature.amount) * ptView.tempTicks + ptView.startGap;
+						var tempOffset = (sensorEvent.sensor.measurement.amount - ptView.minTemperature.amount) * ptView.tempTicks + ptView.startGap;
 						ptScroller.SetContentOffset(new CGPoint(tempOffset,0),true);
 					}
 				 }
 			 }
 	 	}
 
-    public void RedrawMeasurements(PTChart ptChart){
+    public void RedrawMeasurements(){
       ptView.SetNeedsDisplay();
     }
   }

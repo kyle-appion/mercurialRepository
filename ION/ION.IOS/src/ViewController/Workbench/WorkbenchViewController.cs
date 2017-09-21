@@ -62,66 +62,45 @@ namespace ION.IOS.ViewController.Workbench {
       };
       AutomaticallyAdjustsScrollViewInsets = false;
 			
-			if(remoteMode){
-				remoteTitle = new UILabel(new CGRect(0, 0, 480, 44));
-				remoteTitle.BackgroundColor = UIColor.Clear;
-				remoteTitle.Lines = 2;
-				remoteTitle.Font = UIFont.BoldSystemFontOfSize(14f);
-				remoteTitle.ShadowColor = UIColor.FromWhiteAlpha(0.0f,.5f);
-				remoteTitle.TextAlignment = UITextAlignment.Center;
-				remoteTitle.TextColor = UIColor.Black;
-				remoteTitle.Text = "Workbench\nRemote Viewing";
-				this.NavigationItem.TitleView = remoteTitle;
-			} else {
+			//if(remoteMode){
+			//	remoteTitle = new UILabel(new CGRect(0, 0, 480, 44));
+			//	remoteTitle.BackgroundColor = UIColor.Clear;
+			//	remoteTitle.Lines = 2;
+			//	remoteTitle.Font = UIFont.BoldSystemFontOfSize(14f);
+			//	remoteTitle.ShadowColor = UIColor.FromWhiteAlpha(0.0f,.5f);
+			//	remoteTitle.TextAlignment = UITextAlignment.Center;
+			//	remoteTitle.TextColor = UIColor.Black;
+			//	remoteTitle.Text = "Workbench\nRemote Viewing";
+			//	this.NavigationItem.TitleView = remoteTitle;
+			//} else {
       	Title = Strings.Workbench.SELF.FromResources();
-			}
+			//}
 
       ion = AppState.context as IosION;
 	    AppState.onIonChanged += OnIonChanged;
 
-			if(remoteMode){
-        workbench = ion.currentWorkbench;
-				tableContent.Bounces = false;
-				
-				remoteBlocker = new UIScrollView(new CGRect(0,45,View.Bounds.Width,.82 * View.Bounds.Height));
-				remoteBlocker.BackgroundColor = UIColor.Clear;
-				remoteBlocker.ContentSize = tableContent.ContentSize;
-				remoteBlocker.Bounces = false;
-				remoteBlocker.ShowsVerticalScrollIndicator = false;
-				
-				NavigationController.NavigationBar.BarTintColor = UIColor.Red;
-				
-				remoteBlocker.Scrolled += (sender, e) => {
-					tableContent.SetContentOffset(remoteBlocker.ContentOffset,false);		
-				};
-				
-				View.AddSubview(remoteBlocker);
-				workbench.onWorkbenchEvent += updateBlockerHeight;
-				initializeBlockerHeight();
-			} else {
-	      var button = new UIButton(new CGRect(0, 0, 31, 30));
-	      button.TouchUpInside += (obj, args) => {
-	        TakeScreenshot();
-	      };
-	      button.SetImage(UIImage.FromBundle("ic_camera"), UIControlState.Normal);
-	
-	      recordButton = new UIButton(new CGRect(0,0,35,35));
-	      recordButton.TouchUpInside += (sender, e) => {
-	        RecordDevices();
-	      };
-	      recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
-	
-	      var barButton = new UIBarButtonItem(button);
-	      var barButton2 = new UIBarButtonItem(recordButton);
-	
-	      NavigationItem.RightBarButtonItems = new UIBarButtonItem[]{barButton,barButton2};		
-				workbench = ion.currentWorkbench;		
-				tableContent.Bounces = true;
-			}
+      var button = new UIButton(new CGRect(0, 0, 31, 30));
+      button.TouchUpInside += (obj, args) => {
+        TakeScreenshot();
+      };
+      button.SetImage(UIImage.FromBundle("ic_camera"), UIControlState.Normal);
+
+      recordButton = new UIButton(new CGRect(0,0,35,35));
+      recordButton.TouchUpInside += (sender, e) => {
+        RecordDevices();
+      };
+      recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+
+      var barButton = new UIBarButtonItem(button);
+      var barButton2 = new UIBarButtonItem(recordButton);
+
+      NavigationItem.RightBarButtonItems = new UIBarButtonItem[]{barButton,barButton2};		
+			workbench = ion.currentWorkbench;		
+			tableContent.Bounces = true;
+
 			
       tableContent.AllowsSelection = true;
       tableContent.ContentInset = new UIEdgeInsets(0, 0, 0, 0);
-      //tableContent.RegisterClassForCellReuse(typeof(ViewerTableCell),"cellViewer");
       source = new WorkbenchTableSource(this, ion, tableContent);
 			source.SetWorkbench(workbench);
       source.onAddClicked = OnRequestViewer;
@@ -139,12 +118,12 @@ namespace ION.IOS.ViewController.Workbench {
       
       if(!ion.deviceManager.connectionManager.isEnabled){
 			  UIAlertView bluetoothWarning = new UIAlertView("Bluetooth Disconnected", "Bluetooth needs to be connected to work with peripherals", null,"Close","Settings");
-	          bluetoothWarning.Clicked += (sender, e) => {
-	            if(e.ButtonIndex.Equals(1)){
-	              UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
-	            }
-	          };
-	          bluetoothWarning.Show();
+        bluetoothWarning.Clicked += (sender, e) => {
+          if(e.ButtonIndex.Equals(1)){
+            UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
+          }
+        };
+        bluetoothWarning.Show();
 	  	}
 	  	if(!remoteMode){
 	      if (ion.dataLogManager.isRecording) {
@@ -176,22 +155,14 @@ namespace ION.IOS.ViewController.Workbench {
     /// Called when the viewer source wishes to request a new viewer.
     /// </summary>
     private void OnRequestViewer() {
-    	if(!remoteMode){
-				//var sb = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
-				var sb = InflateViewController<DeviceGridViewController>(VC_DEVICE_GRID);
-        sb.fromWorkbench = true;
-	      sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
-	        Log.D(this,"Adding device to workbench");
-	        workbench.AddSensor(sensor);
-	      };
-	      NavigationController.PushViewController(sb, true);
-      } else {
-	      var sb = InflateViewController<RemoteDeviceManagerViewController>(VC_REMOTE_DEVICE_MANAGER);
-	      sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
-	        workbench.AddSensor(sensor);
-	      };
-	      NavigationController.PushViewController(sb, true);
-			}
+			var sb = InflateViewController<DeviceGridViewController>(VC_DEVICE_GRID);
+      sb.fromWorkbench = true;
+			sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
+				Log.D(this, "Adding device to workbench");
+
+				OnWorkbenchChanged(ion.currentWorkbench);
+			};
+      NavigationController.PushViewController(sb, true);
     }
 
     /// <summary>
@@ -281,7 +252,7 @@ namespace ION.IOS.ViewController.Workbench {
 		/// every second to confirm the height.
 		/// </summary>
 		/// <param name="workbenchEvent">Workbench event.</param>
-		public void updateBlockerHeight(WorkbenchEvent workbenchEvent){	
+		public void updateBlockerHeight(WorkbenchEvent workbenchEvent){
 			if(workbenchEvent.type == WorkbenchEvent.EType.ManifoldEvent){
 				if(workbenchEvent.manifoldEvent.type == ManifoldEvent.EType.SensorPropertyAdded || workbenchEvent.manifoldEvent.type == ManifoldEvent.EType.SensorPropertyRemoved){
 					//Console.WriteLine("Added or removed a sensor property");

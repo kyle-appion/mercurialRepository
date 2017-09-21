@@ -25,7 +25,7 @@
 		/// <summary>
 		/// The manifold that is driving the sensor property.
 		/// </summary>
-		Manifold manifold { get; }
+		//Manifold manifold { get; }
 
     /// <summary>
     /// The sensor that the property applies to.

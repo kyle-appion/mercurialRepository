@@ -98,7 +98,7 @@
       connection.onStateChanged += ((IConnection conn, EConnectionState state) => {
         NotifyOfDeviceEvent(DeviceEvent.EType.ConnectionChange);
         foreach (GaugeDeviceSensor sensor in sensors) {
-          sensor.NotifySensorStateChanged();
+			    sensor.NotifyInvalidated();
         }
       });
 
@@ -165,7 +165,7 @@
           removedStates[i] = sensor.removed;
 
           if (removedChanged) {
-            sensor.NotifySensorStateChanged();
+            sensor.NotifyInvalidated();
           }
         }
 

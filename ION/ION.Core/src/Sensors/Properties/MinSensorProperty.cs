@@ -27,13 +27,14 @@
     } Scalar __modifiedMeasurement;
 
 
-		[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
-		public MinSensorProperty(Sensor sensor) : base(new Manifold(sensor)) {
+		//[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
+		//public MinSensorProperty(Sensor sensor) : base(new Manifold(sensor)){
+		public MinSensorProperty(Sensor sensor) : base(sensor) {
 		}
 
-    public MinSensorProperty(Manifold manifold) : base(manifold) {
-      // Nope
-    }
+		//public MinSensorProperty(Manifold manifold) : base(manifold){
+    //  // Nope
+    //}
 
     // Overridden from AbstractSensorProperty
     public override void Reset() {

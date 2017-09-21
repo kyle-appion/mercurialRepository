@@ -26,11 +26,12 @@
       }
     } Scalar __modifiedMeasurement;
 
-		[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
-		public MaxSensorProperty(Sensor sensor) : base(new Manifold(sensor)) {
-		}
+		//[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
+		//public MaxSensorProperty(Sensor sensor) : base(new Manifold(sensor)) {
+		//}
 
-    public MaxSensorProperty(Manifold manifold) : base(manifold) {
+		//public MaxSensorProperty(Manifold manifold) : base(manifold){
+		public MaxSensorProperty(Sensor sensor) : base(sensor) {
       // Nope
     }
 

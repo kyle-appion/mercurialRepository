@@ -45,7 +45,7 @@
     /// Queries the job preferences.
     /// </summary>
     /// <value>The job.</value>
-    IJobPreferences job { get; }
+    IJobPreferences jobs { get; }
     /// <summary>
     /// Queries the fluid preferences.
     /// </summary>
@@ -159,7 +159,7 @@
 				case ESensorType.Vacuum:
 				return prefs.vacuum;
 				default:
-				return sensorType.GetDefaultUnit();
+          return sensorType.GetDefaultUnit();
 			}
 		}
 
@@ -170,7 +170,8 @@
     /// <param name="prefs">Prefs.</param>
     /// <param name="scalar">Scalar.</param>
 		public static Scalar ToDefaultUnit(this IUnitPreferences prefs, Scalar scalar) {
-			var unit = prefs.DefaultUnitFor(scalar.unit.quantity.AsSensorType());
+      var unit = prefs.DefaultUnitFor(scalar.unit.quantity.AsSensorType());
+
 			return scalar.ConvertTo(unit);
 		}
   }

@@ -1,535 +1,613 @@
-﻿using System.Collections.Generic;
-namespace ION.Core.Sensors {
+﻿namespace ION.Core.Sensors
+{
 
-  using System;
+	using System;
+	using System.Collections.Generic;
 
-  using Newtonsoft.Json;
+	using Newtonsoft.Json;
 
 	using Appion.Commons.Measure;
-  using Appion.Commons.Util;
+	using Appion.Commons.Util;
 
-  using ION.Core.App;
-  using ION.Core.Sensors.Serialization;
+	using ION.Core.App;
+	using ION.Core.Fluids;
+	using ION.Core.Sensors.Properties;
 
-  /// <summary>
-  /// Enumerates the possible sensors.
-  /// </summary>
-  public enum ESensorType {
-    Length,
-    Humidity,
-    Pressure,
-    Temperature,
-    Vacuum,
+	/// <summary>
+	/// A simple entity that is used to indicate events spawned by sensor actions.
+	/// </summary>
+	public class SensorEvent
+	{
+		/// <summary>
+		/// The type describing the sensor event.
+		/// </summary>
+		public EType type { get; private set; }
+		/// <summary>
+		/// The sensor that caused the event.
+		/// </summary>
+		public Sensor sensor { get; private set; }
+		/// <summary>
+		/// The index of an affected sensor property. This will be -1 if the event does not describe a sensor property
+		/// change.
+		/// </summary>
+		public int index { get; internal set; }
+		/// <summary>
+		/// The index that is used for the dest swap location for swapped sensor properties.
+		/// </sumary>
+		public int otherIndex { get; internal set; }
+
+		public SensorEvent(EType type, Sensor sensor)
+		{
+			this.type = type;
+			this.sensor = sensor;
+		}
+
+		public SensorEvent(EType type, Sensor sensor, int index) : this(type, sensor)
+		{
+			this.index = index;
+		}
+
+		public SensorEvent(EType type, Sensor sensor, int index, int otherIndex) : this(type, sensor, index)
+		{
+			this.otherIndex = otherIndex;
+		}
+
+		/// <summary>
+		/// The enumeration of the events that a sensor can produce.
+		/// </summary>
+		public enum EType
+		{
+			/// <summary>
+			/// Used when the sensor's measurements, unit or name change.
+			/// </summary>
+			Invalidated,
+
+			/// <summary>
+			/// Used when a sensor is linked to this sensor.
+			/// </summary>
+			LinkedSensorAdded,
+			/// <summary>
+			/// Used when the sensor's linked sensor is removed.
+			/// </summary>
+			LinkedSensorRemoved,
+
+			/// <summary>
+			/// The sensor's fluid state was changed.
+			/// </summary>
+			FluidStateChanged,
+
+			/// <summary>
+			/// Used when a sensor property is added to the sensor.
+			/// </summary>
+			SensorPropertyAdded,
+			/// <summary>
+			/// Used when a sensor property is removed from the sensor.
+			/// </summary>
+			SensorPropertyRemoved,
+			/// <summary>
+			/// Used when the sensor property list is cleared.
+			/// </summary>
+			SensorPropertyCleared,
+			/// <summary>
+			/// Used when two sensor properties are swapped within the sensor.
+			/// </summary>
+			SensorPropertySwapped,
+		}
+	}
+
+	/// <summary>
+	/// Enumerates the possible sensors.
+	/// </summary>
+	public enum ESensorType
+	{
+		Length,
+		Humidity,
+		Pressure,
+		Temperature,
+		Vacuum,
 		Weight,
-    Unknown,
-  }
+		Unknown,
+	}
 
-  /// <summary>
-  /// Some utility extensions around the sensor type enum.
-  /// </summary>
-  public static class SensorExtensions {
-    /// <summary>
-    /// Queries the default unit for the given sensor type.
-    /// </summary>
-    /// <returns>The default unit.</returns>
-    /// <param name="sensorType">Sensor type.</param>
-    public static Unit GetDefaultUnit(this ESensorType sensorType) {
-      switch (sensorType) {
-/*
-        case ESensorType.Humidity: {
-          return DEFAULT_HUMIDITY_UNITS[0];
-        }
-        case ESensorType.Length: {
-          return DEFAULT_LENGTH_UNITS[0];
-        }
-        case ESensorType.Mass: {
-          return DEFAULT_MASS_UNITS[0];
-        }
-*/
-        case ESensorType.Pressure:
-          return SensorUtils.DEFAULT_PRESSURE_UNITS[0];
-        case ESensorType.Temperature:
-          return SensorUtils.DEFAULT_TEMPERATURE_UNITS[0];
-        case ESensorType.Vacuum:
-          return SensorUtils.DEFAULT_VACUUM_UNITS[0];
-				case ESensorType.Weight:
-					return SensorUtils.DEFAULT_WEIGHT_UNITS[0];
-        default:
-          throw new ArgumentException("Cannot get default unit for " + sensorType);
-      }
-    }
-
-    public static ESensorType AsSensorType(this Quantity quantity) {
-      switch (quantity) {
-        case Quantity.Pressure: return ESensorType.Pressure;
-        case Quantity.Temperature: return ESensorType.Temperature;
-        case Quantity.Vacuum: return ESensorType.Vacuum;
-        case Quantity.Mass: return ESensorType.Weight;
-        default: return ESensorType.Unknown;
-			}
-    }
-
-    /// <summary>
-    /// Builds a formatted string of this sensor's measurement.
-    /// </summary>
-    /// <remarks>
-    /// The string will NOT include the sensor's unit.
-    /// </remarks>
-    /// <returns>The formatted string.</returns>
-    /// <param name="sensor">Sensor.</param>
-    public static string ToFormattedString(this Sensor sensor, bool includeUnit = false) {
-      return SensorUtils.ToFormattedString(sensor.measurement, includeUnit);
-    }
-  } // End SensorExtensions
-
-  /// <summary>
-  /// A simple utility class that will provide functions that aid in the use of the
-  /// ESensorType in conjunction with an ISensor.
-  /// </summary>
-  public partial class SensorUtils {
-    /// <summary>
-    /// The default pressure units to use for sensors that do not provide their own
-    /// unit list.
-    /// </summary>
-    public static Unit[] DEFAULT_PRESSURE_UNITS = new Unit[] {
-//      Units.Pressure.PSIA,
-      Units.Pressure.PSIG,
-      Units.Pressure.BAR,
-      Units.Pressure.IN_HG,
-      Units.Pressure.CM_HG,
-      Units.Pressure.KG_CM,
-      Units.Pressure.KILOPASCAL,
-      Units.Pressure.MEGAPASCAL,
-    };
-
-    /// <summary>
-    /// The default temperature units to use for sensors that do not provide their
-    /// own unit list.
-    /// </summary>
-    public static Unit[] DEFAULT_TEMPERATURE_UNITS = new Unit[] {
-      Units.Temperature.FAHRENHEIT,
-      Units.Temperature.CELSIUS,
-      Units.Temperature.KELVIN,
-    };
-
-    /// <summary>
-    /// The default vacuum units to use for senors that do not provide their own
-    /// unit list.
-    /// </summary>
-    public static Unit[] DEFAULT_VACUUM_UNITS = new Unit[] {
-      Units.Vacuum.MICRON,
-      Units.Vacuum.IN_HG,
-      Units.Vacuum.MILLITORR,
-      Units.Vacuum.PSIA,
-      Units.Vacuum.KILOPASCAL,
-    };
+	/// <summary>
+	/// A Sensor is an entity that reports on physical measurements.
+	/// </summary>
+	public abstract class Sensor
+	{
+		/// <summary>
+		/// The delegate that will be notified when the sensor's state is changed.
+		/// </summary>
+		public delegate void OnSensorEvent(SensorEvent sensorEvent);
 
 		/// <summary>
-		/// The default weight units to use for senors that do not provide their own
-		/// unit list.
+		/// The event that is used to spawn alerts that the sensor state changed.
+		/// Note: events can be called from any thread an propogations through this event may not be on the main thread.
 		/// </summary>
-		public static Unit[] DEFAULT_WEIGHT_UNITS = new Unit[] {
-			Units.Weight.KILOGRAM,
-			Units.Weight.POUND_FORCE,
-			Units.Weight.POUND_OUNCE_FORCE,
-		};
+		public event OnSensorEvent onSensorEvent;
 
 		/// <summary>
-		/// Builds and returns a mapping of the application default units to sensor type mapping.
+		/// The type of sensor this is. From this, the base conversion unit is
+		/// derived as well as sensor uses.
 		/// </summary>
-		/// <returns>The sensor type unit mapping.</returns>
-		public static Dictionary<ESensorType, IEnumerable<Unit>> GetSensorTypeUnitMapping() {
-			var ret = new Dictionary<ESensorType, IEnumerable<Unit>>();
-
-			ret[ESensorType.Pressure] = DEFAULT_PRESSURE_UNITS;
-			ret[ESensorType.Temperature] = DEFAULT_TEMPERATURE_UNITS;
-			ret[ESensorType.Vacuum] = DEFAULT_VACUUM_UNITS;
-			ret[ESensorType.Weight] = DEFAULT_WEIGHT_UNITS;
-
-			return ret;
-		}
-
-    public static ESensorType FromString(string sensorType) {
-      var ret = ESensorType.Unknown;
-      Enum.TryParse(sensorType, out ret);
-      return ret;
-    }
-
-		[Obsolete("Use 'ToFormattedString(Scalar measurement, bool includeUnit = false)' instead")]
-    public static string ToFormattedString(ESensorType sensorType, Scalar measurement, bool includeUnit = false) {
-			return ToFormattedString(measurement, includeUnit);
-    }
-
-		public static string ToFormattedString(Scalar measurement, bool includeUnit = false) {
-			return ToFormattedString(measurement.amount, measurement.unit, includeUnit);
-		}
-
-    public static string ToFormattedString(ScalarSpan measurement, bool includeUnit = false) {
-      return ToFormattedString(measurement.magnitude, measurement.unit, includeUnit);
-    }
-
-		public static string ToFormattedString(double amount, Unit unit, bool includeUnit = false) {
-			string ret = "";
-
-			if (double.IsNaN(amount)) {
-				ret = "---";
-			} else {
-				// PRESSURE UNITS
-				if (Units.Pressure.PASCAL.Equals(unit)) {
-					ret = amount.ToString("0");
-				} else if (Units.Pressure.KILOPASCAL.Equals(unit)) {
-					ret = amount.ToString("0");
-				} else if (Units.Pressure.MEGAPASCAL.Equals(unit)) {
-					ret = amount.ToString("0.000");
-				} else if (Units.Pressure.MILLIBAR.Equals(unit)) {
-					ret = amount.ToString("0.000");
-				} else if (Units.Pressure.PSIG.Equals(unit)) {
-					ret = amount.ToString("0.0");
-				} else if (Units.Pressure.PSIA.Equals(unit)) {
-					ret = amount.ToString("0.0000");
-				} else if (Units.Pressure.IN_HG.Equals(unit)) {
-					ret = amount.ToString("0.00");
-				}
-				// VACUUM PRESSURE
-				else if (Units.Vacuum.IN_HG.Equals(unit)) {
-					ret = amount.ToString("0.000");
-				} else if (Units.Vacuum.KILOPASCAL.Equals(unit)) {
-					ret = amount.ToString("0.0000");
-				} else if (Units.Vacuum.MICRON.Equals(unit)) {
-					ret = amount.ToString("###,##0");
-				} else if (Units.Vacuum.MILLITORR.Equals(unit)) {
-					ret = amount.ToString("###,##0");
-				} else if (Units.Vacuum.MILLIBAR.Equals(unit)) {
-					ret = amount.ToString("000.000");
-				}
-				// DEFAULT
-				else {
-					ret = amount.ToString("0.00");
-				}
+		//public ESensorType type { get; private set; }
+		public ESensorType type { get;  set; }
+		/// <summary>
+		/// Whether or not the sensor's reading is relative.
+		/// </summary>
+		public bool isRelative { get; private set; }
+		/// <summary>
+		/// Whether or not te sensor's reading is editable.
+		/// </summary>
+		/// <value><c>true</c> if is editable; otherwise, <c>false</c>.</value>
+		public virtual bool isEditable
+		{
+			get
+			{
+				return false;
 			}
-
-			if (includeUnit) {
-				ret += " " + unit.ToString();
-			}
-
-			return ret;
 		}
 
-		public static string ToFormattedString(ESensorType sensorType, ScalarSpan measurement, bool includeUnit = false) {
-			var unit = measurement.unit;
-			var amount = measurement.magnitude;
-
-			string ret = "";
-
-			if (double.IsNaN(amount)) {
-				ret = "---";
-			} else {
-				// PRESSURE UNITS
-				if (Units.Pressure.PASCAL.Equals(unit)) {
-					ret = amount.ToString("0");
-				} else if (Units.Pressure.KILOPASCAL.Equals(unit)) {
-					if (ESensorType.Vacuum == sensorType) {
-						ret = amount.ToString("0.0000");
-					} else {
-						ret = amount.ToString("0");
+		/// <summary>
+		/// The custom name for the specific sensor.
+		/// </summary>
+		public virtual string name
+		{
+			get
+			{
+				return _name;
+			}
+			set
+			{
+				_name = value;
+				NotifyOfEvent(SensorEvent.EType.Invalidated);
+			}
+		}
+		string _name;
+		/// <summary>
+		/// The unit that the sensor's measurement is quantitated in.
+		/// </summary>
+		public Unit unit
+		{
+			get
+			{
+				return measurement.unit;
+			}
+			set
+			{
+				measurement = measurement.ConvertTo(value);
+			}
+		}
+		/// <summary>
+		/// The measurement of the sensor.
+		/// </summary>
+		public Scalar measurement
+		{
+			get
+			{
+				return _measurement;
+			}
+			protected set
+			{
+				if (!value.unit.IsCompatible(unit))
+				{
+					throw new Exception("Attempted to set measurement, but the sensor unit " + unit + " is incompatible with " + value.unit + ".");
+				}
+				_measurement = value;
+				NotifyOfEvent(SensorEvent.EType.Invalidated);
+			}
+		}
+		Scalar _measurement;
+		/// <summary>
+		/// The maxumimum measurement that the sensor can accurately measure.
+		/// </summary>
+		public Scalar maxMeasurement { get; set; }
+		/// <summary>
+		/// The minumum measurement that the sensor can acurrately measure.
+		/// </summary>
+		public Scalar minMeasurement { get; set; }
+		/// <summary>
+		/// The measurement range for the sensor.
+		/// </summary>
+		/// <value>The range.</value>
+		public ScalarSpan range
+		{
+			get
+			{
+				return maxMeasurement - minMeasurement;
+			}
+		}
+		/// <summary>
+		/// Whether or not the sensor is overloaded. The reading cannot be regarded as reliable if the measurement is overloaded.
+		/// </summary>
+		public bool isOverloaded
+		{
+			get
+			{
+				return maxMeasurement != null && measurement >= maxMeasurement ||
+				  minMeasurement != null && measurement <= minMeasurement;
+			}
+		}
+		/// <summary>
+		/// The array of units that the sensor will support for unit changes.
+		/// </summary>
+		/// <value>The supported units.</value>
+		public virtual Unit[] supportedUnits
+		{
+			get
+			{
+				return __supportedUnits;
+			}
+			protected set
+			{
+				foreach (var u in value)
+				{
+					if (!unit.IsCompatible(u))
+					{
+						throw new Exception("Cannot set units: quantity mismatch. Expected: " + unit.quantity + " received: " + u.quantity);
 					}
-				} else if (Units.Pressure.MEGAPASCAL.Equals(unit)) {
-					ret = amount.ToString("0.000");
-				} else if (Units.Pressure.MILLIBAR.Equals(unit)) {
-					ret = amount.ToString("0.000");
-				} else if (Units.Pressure.PSIG.Equals(unit)) {
-					ret = amount.ToString("0.0");
-				} else if (Units.Pressure.PSIA.Equals(unit)) {
-					ret = amount.ToString("0.0000");
-				} else if (Units.Pressure.IN_HG.Equals(unit)) {
-					if (ESensorType.Vacuum == sensorType) {
-						ret = amount.ToString("0.000");
-					} else {
-						ret = amount.ToString("0.00");
-					}
 				}
-				// VACUUM PRESSURE
-				else if (Units.Vacuum.MICRON.Equals(unit)) {
-					ret = amount.ToString("###,##0");
-				} else if (Units.Vacuum.MILLITORR.Equals(unit)) {
-					ret = amount.ToString("###,##0");
-				}
-				// DEFAULT
-				else {
-					ret = amount.ToString("0.00");
-				}
-			}
 
-			if (includeUnit) {
-				ret += " " + unit.ToString();
+				__supportedUnits = value;
 			}
-
-			return ret;
 		}
-
-    /// <summary>
-    /// Determines whether or not the given unit is valid with the provided sensor type.
-    /// </summary>
-    /// <param name="sensorType"></param>
-    /// <param name="unit"></param>
-    /// <returns>True if the unit is valid for the sensor type, false otherwise.</returns>
-    public static bool IsCompatibleWith(ESensorType sensorType, Unit unit) {
-      switch (sensorType) {
-        case ESensorType.Length: {
-          return unit.IsCompatible(Units.Length.METER);
-        }
-        case ESensorType.Humidity: {
-          return unit.IsCompatible(Units.Humidity.RELATIVE_HUMIDITY);
-        }
-        case ESensorType.Weight: {
-          return unit.IsCompatible(Units.Weight.KILOGRAM);
-        }
-        case ESensorType.Pressure: {
-          return unit.IsCompatible(Units.Pressure.PASCAL);
-        }
-        case ESensorType.Temperature: {
-          return unit.IsCompatible(Units.Temperature.KELVIN);
-        }
-        case ESensorType.Vacuum: {
-          return unit.IsCompatible(Units.Vacuum.MICRON);
-        }
-        default: {
-          return false;
-        }
-      }
-    }
-  } // End SensorUtils
-
-  /// <summary>
-  /// A Sensor is a device that is used to measure physical phenomena and/or their effect
-  /// on physical reality.
-  /// <para>
-  /// This class will be used to organize and represent all that is needed to proxy the
-  /// measurement of this phenomena.
-  /// </para>
-  /// </summary>
-  [JsonConverter(typeof(DefaultSensorJsonConverter))]
-  public abstract class Sensor {
-    /// <summary>
-    /// The delegate that will be notified when the sensor's state
-    /// is changed. Note: the measurement change can be cause by either/or
-    /// a change to the unit or magnitude.
-    /// </summary>
-    public delegate void OnSensorStateChanged(Sensor sensor);
-
-    /// <summary>
-    /// The event that will be notified when the sensor changes.
-    /// </summary>
-    public event OnSensorStateChanged onSensorStateChangedEvent;
-
-    /// <summary>
-    /// The type of sensor this is. From this, the base conversion unit is
-    /// derived as well as sensor uses.
-    /// </summary>
-    public ESensorType type { get; private set; }
-    /// <summary>
-    /// Whether or not the sensor's reading is relative.
-    /// </summary>
-    public bool isRelative { get; private set; }
-    /// <summary>
-    /// Whether or not te sensor's reading is editable.
-    /// </summary>
-    /// <value><c>true</c> if is editable; otherwise, <c>false</c>.</value>
-    public abstract bool isEditable { get; }
-    /// <summary>
-    /// The custom name for the specific sensor.
-    /// </summary>
-    public virtual string name {
-      get {
-        return __name;
-      }
-      set {
-        __name = value;
-        NotifySensorStateChanged();
-      }
-    } string __name;
-    /// <summary>
-    /// The unit that the sensor's measurement is quantitated in.
-    /// </summary>
-    public Unit unit {
-      get {
-        return measurement.unit;
-      }
-      set {
-        if (!isEditable) {
-          throw new UnauthorizedAccessException("Cannot set sensor unit: sensor is not editable.");
-        }
-        ForceSetUnit(value);
-      }
-    }
-    /// <summary>
-    /// The measurement of the sensor.
-    /// </summary>
-    public Scalar measurement {
-      get {
-        return __measurement;
-      }
-      set {
-        if (!isEditable) {
-          throw new UnauthorizedAccessException("Cannot set sensor measurement: sensor is not editable.");
-        }
-        ForceSetMeasurement(value);
-      }
-    } Scalar __measurement;
-    /// <summary>
-    /// The maxumimum measurement that the sensor can accurately measure.
-    /// </summary>
-    public Scalar maxMeasurement { get; set; }
-    /// <summary>
-    /// The minumum measurement that the sensor can acurrately measure.
-    /// </summary>
-    public Scalar minMeasurement { get; set; }
-    /// <summary>
-    /// The measurement range for the sensor.
-    /// </summary>
-    /// <value>The range.</value>
-    public ScalarSpan range {
-      get {
-        return maxMeasurement - minMeasurement;
-      }
-    }
-    /// <summary>
-    /// Whether or not the sensor is overloaded. The reading cannot be regarded
-    /// as reliable if the measurement is overloaded.
-    /// </summary>
-    public bool isOverloaded {
-      get {
-        return maxMeasurement != null && measurement >= maxMeasurement;
-      }
-    }
-    /// <summary>
-    /// The array of units that the sensor will support for unit changes.
-    /// </summary>
-    /// <value>The supported units.</value>
-    public virtual Unit[] supportedUnits {
-      get {
-        if (__supportedUnits == null) {
-          switch (type) {
-            case ESensorType.Pressure:
-              return SensorUtils.DEFAULT_PRESSURE_UNITS;
-            case ESensorType.Temperature:
-              return SensorUtils.DEFAULT_TEMPERATURE_UNITS;
-            case ESensorType.Vacuum:
-              return SensorUtils.DEFAULT_VACUUM_UNITS;
-            default:
-              return new Unit[] { };
-          }
-        } else {
-          return __supportedUnits;
-        }
-      }
-      set {
-        foreach (var u in value) {
-          if (!unit.IsCompatible(u)) {
-            throw new Exception("Cannot set units: quantity mismatch. Expected: " + unit.quantity + " received: " + u.quantity);
-          }
-        }
-
-        __supportedUnits = value;
-      }
-    } Unit[] __supportedUnits;
-    
-    /// <summary>
-    /// Gets or sets the index of a sensor's location in the analyzer.
-    /// </summary>
-    /// <value>The analyzer slot.</value>
-    public int analyzerSlot { get; set; }
+		Unit[] __supportedUnits;
+    public double targetSHSC;
+		/// <summary>
+		/// Gets or sets the index of a sensor's location in the analyzer.
+		/// </summary>
+		/// <value>The analyzer slot.</value>
+		[Obsolete("This needs to be deleted.")]
+		public int analyzerSlot { get; set; }
+		[Obsolete("This needs to be deleted.")]
 		public int analyzerArea { get; set; }
-    /// <summary>
-    /// Creates a new sensor.
-    /// </summary>
-    /// <param name="sensorType">Sensor type.</param>
-    /// <param name="isRelative">If set to <c>true</c> is relative.</param>
-    protected Sensor(ESensorType sensorType, bool isRelative=true) : this(sensorType, AppState.context.preferences.units.DefaultUnitFor(sensorType).OfScalar(0.0), isRelative) {
-    }
-    /// <summary>
-    /// Creates a new sensor.
-    /// </summary>
-    /// <param name="sensorType">Sensor type.</param>
-    /// <param name="initialMeasurement">Initial measurement.</param>
-    /// <param name="isRelative">If set to <c>true</c> is relative.</param>
-    protected Sensor(ESensorType sensorType, Scalar initialMeasurement, bool isRelative=true) {
-      this.type = sensorType;
-      this.__measurement = initialMeasurement;
-      this.isRelative = isRelative;
-    }
 
-    public override string ToString() {
-      return string.Format("[" + this.GetType().Name + ": type={0}, name={1}, unit={2}, measurement={3}]", type, name, unit, measurement);
-    }
-
-    /// <summary>
-    /// Notifies the sensors event that the sensor state changed.
-    /// </summary>
-    public void NotifySensorStateChanged() {
-      // TODO ahodder@appioninc.com: This post and posts like it need to disappear.
-      var ion = AppState.context;
-      if (ion != null) {
-        ion.PostToMain(() => {
-          if (onSensorStateChangedEvent != null) {            
-            onSensorStateChangedEvent(this);
-          }
-        });
-      }
-    }
-
-    /// <summary>
-    /// Formats this sensor's measurement into a user friendly string.
-    /// </summary>
-    /// <returns>The formatted string.</returns>
-    /// <param name="includeUnit">If set to <c>true</c> include unit.</param>
-    public string ToFormattedString(bool includeUnit) {
-			if (!(this is ManualSensor) && !(unit == Units.Vacuum.IN_HG || unit == Units.Pressure.IN_HG) &&
-					(measurement.ConvertTo(maxMeasurement.unit).amount > maxMeasurement.amount ||
-			     measurement.ConvertTo(minMeasurement.unit).amount < minMeasurement.amount)) {
-				return "OL";
-			} else {
-      	return SensorUtils.ToFormattedString(measurement, includeUnit);
+		/// <summary>
+		/// Gets the sensor that is linked to the this sensor.
+		/// </summary>
+		/// <value>The linked sensor.</value>
+		public Sensor linkedSensor
+		{
+			get
+			{
+				return _linkedSensor;
 			}
+			private set
+			{
+				if (_linkedSensor != null)
+				{
+					NotifyOfEvent(SensorEvent.EType.LinkedSensorRemoved);
+				}
+
+				_linkedSensor = value;
+
+				if (_linkedSensor != null)
+				{
+					NotifyOfEvent(SensorEvent.EType.LinkedSensorAdded);
+				}
+			}
+		}
+		Sensor _linkedSensor;
+
+		/// <summary>
+		/// The sensor properties that are within the manifold.
+		/// </summary>
+		/// <value>The sensor properties.</value>
+		public readonly List<ISensorProperty> sensorProperties = new List<ISensorProperty>();
+
+		/// <summary>
+		/// The number of sensor properties are held in the manifold.
+		/// </summary>
+		/// <value>The sensor property count.</value>
+		public int sensorPropertyCount
+		{
+			get
+			{
+				return sensorProperties.Count;
+			}
+		}
+
+		/// <summary>
+		/// An indexer that will retrieve the sensor properties from the manifold.
+		/// </summary>
+		/// <param name="index">Index.</param>
+		public ISensorProperty this[int index]
+		{
+			get
+			{
+				return sensorProperties[index];
+			}
+		}
+
+		/// <summary>
+		/// The fluid state (system side) that the sensor is considered to be placed.
+		/// </summary>
+		/// <value>The state of the fluid.</value>
+		public Fluid.EState fluidState
+		{
+			get
+			{
+				return _fluidState;
+			}
+			set
+			{
+				_fluidState = value;
+				NotifyOfEvent(SensorEvent.EType.FluidStateChanged);
+			}
+		}
+		Fluid.EState _fluidState;
+
+		/// <summary>
+		/// Creates a new sensor.
+		/// </summary>
+		/// <param name="sensorType">Sensor type.</param>
+		/// <param name="isRelative">If set to <c>true</c> is relative.</param>
+		protected Sensor(ESensorType sensorType, bool isRelative = true) :
+		  this(sensorType, AppState.context.preferences.units.DefaultUnitFor(sensorType).OfScalar(0.0), isRelative)
+		{
+		}
+		/// <summary>
+		/// Creates a new sensor.
+		/// </summary>
+		/// <param name="sensorType">Sensor type.</param>
+		/// <param name="initialMeasurement">Initial measurement.</param>
+		/// <param name="isRelative">If set to <c>true</c> is relative.</param>
+		protected Sensor(ESensorType sensorType, Scalar initialMeasurement, bool isRelative = true)
+		{
+			type = sensorType;
+			_measurement = initialMeasurement;
+			this.isRelative = isRelative;
+
+			supportedUnits = new List<Unit>(SensorUtils.GetSensorTypeUnitMapping()[type]).ToArray();
+		}
+
+    protected Sensor(){
+      
     }
 
-    /// <summary>
-    /// Forces the measurement of the sensor to be set to the given value.
-    /// </summary>
-    /// <remarks>
-    /// This operation will throw an exception if the scalar is not
-    /// compatible with the sensor's unit.
-    /// </remarks>
-    /// <param name="value">Value.</param>
-    public void ForceSetMeasurement(Scalar value) {
-      if (!value.unit.IsCompatible(unit)) {
-        throw new ArgumentException("Cannot set measurement: " + value.unit + " is not compatible with " + unit);
-      }
-      __measurement = value;
-      NotifySensorStateChanged();
-    }
+		/// <summary>
+		/// Attempst to set the secondary sensor for the manifold.
+		/// </summary>
+		/// <returns><c>true</c>, if secondary sensor was set, <c>false</c> otherwise.</returns>
+		/// <param name="sensor">Sensor.</param>
+		public bool SetLinkedSensor(Sensor sensor) {
+			if (linkedSensor == sensor)	{
+				// Safety check against infinite loops
+				return true;
+			}	else if (sensor == null){
+				linkedSensor = null;
+				return true;
+			}	else if (!WillAcceptSecondarySensor(sensor))	{
+				return false;
+			}	else	{
+				linkedSensor = sensor;
+				sensor.linkedSensor = this;
+				return true;
+			}
+		}
 
-    /// <summary>
-    /// Forces the unit of the sensor to be set.
-    /// </summary>
-    /// <remarks>
-    /// This operation will throw an exception if the unit is not compatible
-    /// with the sensor's previous unit.
-    /// </remarks>
-    /// <param name="unit">Unit.</param>
-    public void ForceSetUnit(Unit unit) {
-      if (this.unit.Equals(unit)) {
-        return;
-      }
+		/// <summary>
+		/// Queries whether or not the manifold will accept the given sensor as a secondary sensor.
+		/// </summary>
+		/// <returns><c>true</c>, if accept secondary sensor was willed, <c>false</c> otherwise.</returns>
+		/// <param name="sensor">Sensor.</param>
+		public bool WillAcceptSecondarySensor(Sensor sensor) {
+			if (sensor != null)	{
+				return ALLOWED_SECONDARY_SENSORS.Matches(new ESensorType[] { type, sensor.type });
+			}	else {
+				return true;
+			}
+		}
 
-      if (!this.unit.IsCompatible(unit)) {
-        throw new ArgumentException("Cannot set unit: " + unit + " is not compatible with " + this.unit);
-      }
-      if (this.unit.Equals(unit)) {
-        return;
-      }
-      __measurement = __measurement.ConvertTo(unit);
-      NotifySensorStateChanged();
-    }
-  }
+		/// <summary>
+		/// Adds the sensor property to the manifold if the manifold does not already have a
+		/// sensor property of the given type.
+		/// </summary>
+		/// <param name="sensorProperty">Sensor property.</param>
+		/// <returns>True if the property was added, false if the manifold already has the property.</returns>
+		public bool AddSensorProperty(ISensorProperty sensorProperty) {
+			if (HasSensorPropertyOfType(sensorProperty.GetType())) {
+				return false;
+			}	else {
+				if (sensorProperty is SecondarySensorProperty) {
+					sensorProperties.Insert(0, sensorProperty);
+					NotifyOfEvent(new SensorEvent(SensorEvent.EType.LinkedSensorAdded, this, 0));
+					return true;
+				}	else {
+					sensorProperties.Add(sensorProperty);
+					NotifyOfEvent(SensorEvent.EType.LinkedSensorAdded);
+					return true;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Inserts the sensor property into the given index within the manifold.
+		/// </summary>
+		/// <returns><c>true</c>, if sensor property was inserted, <c>false</c> otherwise.</returns>
+		/// <param name="">.</param>
+		public bool InsertSensorProperty(ISensorProperty sensorProperty, int index)	{
+			if (HasSensorPropertyOfType(sensorProperty.GetType())) {
+				return false;
+			}	else {
+				sensorProperties.Insert(index, sensorProperty);
+				NotifyOfEvent(new SensorEvent(SensorEvent.EType.LinkedSensorAdded, this, index));
+				return true;
+			}
+		}
+
+		/// <summary>
+		/// Queries the index of the given sensor property.
+		/// </summary>
+		/// <returns>The of sensor property.</returns>
+		/// <param name="sensorProperty">Sensor property.</param>
+		public int IndexOfSensorProperty(ISensorProperty sensorProperty)
+		{
+			return sensorProperties.IndexOf(sensorProperty);
+		}
+
+		/// <summary>
+		/// Swaps the sensor properties at the given indices.
+		/// </summary>
+		/// <param name="first">First.</param>
+		/// <param name="second">Second.</param>
+		public void SwapSensorProperties(int first, int second)
+		{
+			if (first == second)
+			{
+				return;
+			}
+
+			var tmp = sensorProperties[first];
+			sensorProperties[first] = sensorProperties[second];
+			sensorProperties[second] = tmp;
+			NotifyOfEvent(new SensorEvent(SensorEvent.EType.SensorPropertySwapped, this, first, second));
+		}
+
+		/// <summary>
+		/// Removes the given sensor property from the manifold.
+		/// </summary>
+		/// <param name="sensorProperty">Sensor property.</param>
+		public void RemoveSensorProperty(ISensorProperty sensorProperty)
+		{
+			RemoveSensorPropertyAt(sensorProperties.IndexOf(sensorProperty));
+		}
+
+		/// <summary>
+		/// Removes the sensor property at the given index.
+		/// </summary>
+		/// <param name="index">Index.</param>
+		public void RemoveSensorPropertyAt(int index)
+		{
+			sensorProperties.RemoveAt(index);
+			NotifyOfEvent(new SensorEvent(SensorEvent.EType.SensorPropertyRemoved, this, index));
+		}
+
+		/// <summary>
+		/// Queries whether or not the manifold has a sensor property of the given type.
+		/// </summary>
+		/// <returns><c>true</c> if this instance has sensor property of type; otherwise, <c>false</c>.</returns>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public bool HasSensorPropertyOfType(Type type)
+		{
+			foreach (var prop in sensorProperties)
+			{
+				if (prop.GetType().Equals(type))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Removes all of the sensor properties that are attached to this manifold.
+		/// </summary>
+		public void ClearSensorProperties()
+		{
+			foreach (var sp in sensorProperties)
+			{
+				RemoveSensorProperty(sp);
+			}
+		}
+
+		/// <summary>
+		/// Returns the sensor property of given type.
+		/// </summary>
+		/// <returns>The sensor property of type.</returns>
+		/// <param name="type">Type.</param>
+		public ISensorProperty GetSensorPropertyOfType(Type type)
+		{
+			foreach (var prop in sensorProperties)
+			{
+				if (prop.GetType().Equals(type))
+				{
+					return prop;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// Returns the manifold's sensor property of the given type if it is present.
+		/// </summary>
+		/// <returns>The sensor property of type.</returns>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public T GetSensorPropertyOfType<T>() where T : ISensorProperty
+		{
+			foreach (var prop in sensorProperties)
+			{
+				if (prop.GetType().Equals(typeof(T)))
+				{
+					return (T)prop;
+				}
+			}
+
+			return default(T);
+		}
+
+		public override string ToString()
+		{
+			return string.Format("[" + this.GetType().Name + ": type={0}, name={1}, unit={2}, measurement={3}]", type, name, unit, measurement);
+		}
+
+		/// <summary>
+		/// Formats this sensor's measurement into a user friendly string.
+		/// </summary>
+		/// <returns>The formatted string.</returns>
+		/// <param name="includeUnit">If set to <c>true</c> include unit.</param>
+		public string ToFormattedString(bool includeUnit)
+		{
+			if (isOverloaded ||
+				!(this is ManualSensor) && !(unit == Units.Vacuum.IN_HG || unit == Units.Pressure.IN_HG) &&
+				(measurement.ConvertTo(maxMeasurement.unit).amount > maxMeasurement.amount ||
+				 measurement.ConvertTo(minMeasurement.unit).amount < minMeasurement.amount))
+			{
+				return "OL";
+			}
+			else
+			{
+				return SensorUtils.ToFormattedString(measurement, includeUnit);
+			}
+		}
+
+		/// <summary>
+		/// Propogates a new sensor event to all listeners with EType.Invalidate.
+		/// </summary>
+		public void NotifyInvalidated()
+		{
+		}
+
+		/// <summary>
+		/// Progogates a new sensor event to all listeners.
+		/// </summary>
+		protected void NotifyOfEvent(SensorEvent sensorEvent)
+		{
+			if (onSensorEvent != null)
+			{
+				onSensorEvent(sensorEvent);
+			}
+		}
+
+		/// <summary>
+		/// Progogates a new sensor event to all listeners.
+		/// </summary>
+		protected void NotifyOfEvent(SensorEvent.EType type)
+		{
+			if (onSensorEvent != null)
+			{
+				onSensorEvent(new SensorEvent(type, this));
+			}
+		}
+
+		private static readonly IFilter<ESensorType[]> ALLOWED_SECONDARY_SENSORS = new OrFilterCollection<ESensorType[]>(
+		  new ExactSensorTypeFilter(ESensorType.Pressure),
+		  new ExactSensorTypeFilter(ESensorType.Pressure, ESensorType.Temperature),
+		  new ExactSensorTypeFilter(ESensorType.Temperature, ESensorType.Pressure),
+		  new ExactSensorTypeFilter(ESensorType.Temperature),
+		  new ExactSensorTypeFilter(ESensorType.Vacuum)
+		);
+
+	}
 }

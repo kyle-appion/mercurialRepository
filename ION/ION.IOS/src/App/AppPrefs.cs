@@ -60,9 +60,9 @@
     public IAlarmPreferences alarm { get { return _alarm; } }
     
 		// Implemented for IPreferences
-    public JobPreferences _job { get; private set; }
+    public JobPreferences _jobs { get; private set; }
 		// Implemented for IPreferences
-		public IJobPreferences job { get { return _job; } }
+		public IJobPreferences jobs { get { return _jobs; } }
     
     // Implemented for IPreferences
     public FluidPreferences _fluid { get; private set; }
@@ -113,7 +113,7 @@
     private AppPrefs() {
       _device = new DevicePreferences(this);
       _alarm = new AlarmPreferences(this);
-      _job = new JobPreferences(this);
+      _jobs = new JobPreferences(this);
       _fluid = new FluidPreferences(this);
       _location = new LocationPreferences(this);
       _units = new UnitPreferences(this);
@@ -137,7 +137,7 @@
       _units.InitDefaults();
       _report.InitDefaults();
       _portal.InitDefaults();
-      _job.InitDefaults();
+      _jobs.InitDefaults();
     }
 
     private void OnSettingsChanged(NSNotification defaults) {

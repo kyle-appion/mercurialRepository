@@ -19,10 +19,28 @@
     public event OnSensorPropertyChanged onSensorPropertyChanged;
 
 		// Overridden from ISensorProperty
-		public Manifold manifold { get; private set; }
+		//public Manifold manifold { get; private set; }
 
-    // Overridden from ISensorProperty
-		public Sensor sensor { get { return manifold.primarySensor; } }
+		// Overridden from ISensorProperty
+		//public Sensor sensor { get { return manifold.primarySensor; } }
+		public Sensor sensor { 
+      get { 
+        return __sensor; 
+      } 
+      set {
+        if(__sensor != null){
+					//__sensor.onSensorStateChangedEvent -= SensorChangeEvent;
+					__sensor.onSensorEvent -= SensorChangeEvent;
+          __sensor = null;
+        }
+        __sensor = value;
+				if (__sensor != null)
+				{
+					//__sensor.onSensorStateChangedEvent += SensorChangeEvent;
+					__sensor.onSensorEvent += SensorChangeEvent;
+				}
+      }
+    } Sensor __sensor;
     // Overridden from ISensorProperty
     public virtual Scalar modifiedMeasurement {
       get {
@@ -55,17 +73,23 @@
       // Nope
     }
 
-    public AbstractSensorProperty(Manifold manifold) {
-			this.manifold = manifold;
-			manifold.onManifoldEvent += OnManifoldEvent;
-			manifold.primarySensor.onSensorStateChangedEvent += SensorChangeEvent;
+		//public AbstractSensorProperty(Manifold manifold){
+		public AbstractSensorProperty(Sensor sensor) {
+			this.sensor = sensor;
+      sensor.onSensorEvent += SensorChangeEvent;
       Reset();
     }
 
+		public AbstractSensorProperty(Sensor sensor, Unit unit)
+		{
+			this.sensor = sensor;
+			sensor.onSensorEvent += SensorChangeEvent;
+			Reset();
+		}
     // Overridden from ISensorProperty
     public virtual void Dispose() {
-			manifold.onManifoldEvent -= OnManifoldEvent;
-			manifold.primarySensor.onSensorStateChangedEvent -= SensorChangeEvent;
+			//sensor.onSensorStateChangedEvent -= SensorChangeEvent;
+			sensor.onSensorEvent -= SensorChangeEvent;
     }
 
     // Overridden from ISensorProperty
@@ -92,13 +116,14 @@
 		protected virtual void OnManifoldEvent(ManifoldEvent e) {
 		}
 
-    /// <summary>
-    /// The callback that will set the sensor's modified measurement to the
-    /// sensor's new reading.
-    /// </summary>
-    /// <param name="sensor">Sensor.</param>
-    protected void SensorChangeEvent(Sensor sensor) {
-      modifiedMeasurement = sensor.measurement;
+		/// <summary>
+		/// The callback that will set the sensor's modified measurement to the
+		/// sensor's new reading.
+		/// </summary>
+		/// <param name="sensor">Sensor.</param>
+		//protected void SensorChangeEvent(Sensor sensor)	{
+		protected void SensorChangeEvent(SensorEvent sensorEvent) {
+      modifiedMeasurement = sensorEvent.sensor.measurement;
 
       OnSensorChanged();
 

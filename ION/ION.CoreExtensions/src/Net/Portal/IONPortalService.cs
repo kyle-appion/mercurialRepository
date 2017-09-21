@@ -1079,7 +1079,7 @@
 
 				foreach (var remoteSensor in remoteDevice.sensors) {
 					var sensor = gd[remoteSensor.sensorIndex];
-					sensor.ForceSetMeasurement(UnitLookup.GetUnit(remoteSensor.unit).OfScalar(remoteSensor.measurement));
+          ((GaugeDeviceSensor)sensor).SetMeasurement(UnitLookup.GetUnit(remoteSensor.unit).OfScalar(remoteSensor.measurement));
 				}
 			}
 
@@ -1138,17 +1138,20 @@
 			// Sync the low manifold
       var uslpsn = appState.lh.lowSerialNumber;
       if (uslpsn.IsValidSerialNumber()) {
-        var m = analyzer.lowSideManifold;
+				//var m = analyzer.lowSideManifold;
+				var m = analyzer.lowSideSensor;
 
         if (!int.TryParse(appState.lh.lowAnalyzerIndex, out index)) {
           m = null;
         }
 				// We have a low side manifold
 				var sensor = analyzer[index];
-				if (m == null || !sensor.Equals(m.primarySensor)) {
+				//if (m == null || !sensor.Equals(m.primarySensor))	{
+				if (m == null || !sensor.Equals(m)) {
 					// We need to update the manifold
 					analyzer.SetManifold(Analyzer.ESide.Low, sensor);
-					m = analyzer.lowSideManifold;
+					//m = analyzer.lowSideManifold;
+					m = analyzer.lowSideSensor;
 				}
 
         // The analyzer has a low side manifold, so lets set its subviews and secondary sensor.
@@ -1160,8 +1163,9 @@
             var sd = ion.deviceManager[lsn] as GaugeDevice;
             if (sd != null) {
               var sds = sd[appState.lh.lowLinkedSensorIndex];
-              if (m.secondarySensor != sds) {
-                m.SetSecondarySensor(sds);
+							//if (m.secondarySensor != sds)	{
+							if (m.linkedSensor != sds) {
+                m.SetLinkedSensor(sds);
               }
             }
           }
@@ -1169,6 +1173,7 @@
           // Setup the subviews for the manifold.
 					var pendingSubviewRemovals = new HashSet<ISensorProperty>(m.sensorProperties);
 					foreach (var subCode in appState.lh.lowSubviews) {
+						//var newSp = RemoteAnalyzerLH.ParseSensorPropertyFromCode(m, subCode);
 						var newSp = RemoteAnalyzerLH.ParseSensorPropertyFromCode(m, subCode);
             if (newSp != null) {
               var type = newSp.GetType();
@@ -1185,32 +1190,29 @@
 						m.RemoveSensorProperty(sp);
 					}
 				}
-				if (analyzer.lowSideManifold != null) {
-					if (analyzer.lowSideManifold != null) {
-						if (!analyzer.lowSideManifold.ptChart.fluid.name.Equals(appState.setup.lowFluid)) {
-							var fluid = ion.fluidManager.LoadFluidAsync(appState.setup.lowFluid).Result;
-              analyzer.lowSideManifold.ptChart = new PTChart(fluid, analyzer.lowSideManifold.ptChart.state);
-						}
-					}
-				}
+
+
       } else {
-				analyzer.SetManifold(Analyzer.ESide.Low, (Manifold)null);
+				analyzer.SetManifold(Analyzer.ESide.Low, (Sensor)null);
 			}
 
 			// Sync the high manifold
       var ushpsn = appState.lh.highSerialNumber;
       if (ushpsn.IsValidSerialNumber()) {
-        var m = analyzer.highSideManifold;
+				//var m = analyzer.highSideManifold;
+				var m = analyzer.highSideSensor;
 
         if (!int.TryParse(appState.lh.highAnalyzerIndex, out index)) {
           m = null;
         }
 				// We have a low side manifold
 				var sensor = analyzer[index];
-				if (m == null || !sensor.Equals(m.primarySensor)) {
+				//if (m == null || !sensor.Equals(m.primarySensor))	{
+				if (m == null || !sensor.Equals(m)) {
 					// We need to update the manifold
 					analyzer.SetManifold(Analyzer.ESide.High, sensor);
-					m = analyzer.highSideManifold;
+					//m = analyzer.highSideManifold;
+					m = analyzer.highSideSensor;
 				}
 
 				if (m != null) {
@@ -1221,8 +1223,9 @@
             var sd = ion.deviceManager[hsn] as GaugeDevice;
             if (sd != null) {
               var sds = sd[appState.lh.highLinkedSensorIndex];
-              if (m.secondarySensor != sds) {
-                m.SetSecondarySensor(sds);
+							//if (m.secondarySensor != sds)	{
+							if (m.linkedSensor != sds) {
+                m.SetLinkedSensor(sds);
               }
             }
           }
@@ -1246,17 +1249,8 @@
 						m.RemoveSensorProperty(sp);
 					}
 				}
-
-				if (analyzer.highSideManifold != null) {
-					if (analyzer.highSideManifold != null) {
-						if (!analyzer.highSideManifold.ptChart.fluid.name.Equals(appState.setup.highFluid)) {
-							var fluid = ion.fluidManager.LoadFluidAsync(appState.setup.highFluid).Result;
-							analyzer.highSideManifold.ptChart = new PTChart(fluid, analyzer.highSideManifold.ptChart.state);
-						}
-					}
-				}
       } else {
-				analyzer.SetManifold(Analyzer.ESide.High, (Manifold)null);
+				analyzer.SetManifold(Analyzer.ESide.High, (Sensor)null);
 			}
 		}
 		/// <summary>
@@ -1268,8 +1262,10 @@
 			wb.isEditable = false;
 
 			var pendingRemovals = new HashSet<Sensor>();
-			foreach (var m in wb.manifolds) {
-				pendingRemovals.Add(m.primarySensor);
+			//foreach (var m in wb.manifolds)	{
+			foreach (var m in wb.sensors) {
+				//pendingRemovals.Add(m.primarySensor);
+				pendingRemovals.Add(m);
 			}
 
 			var ci = 0; // Current index
@@ -1282,11 +1278,13 @@
 
 					var wbi = wb.IndexOf(sensor);
 					if (wbi != -1) { // The sensor is present in the workbench
-						pendingRemovals.Remove(wb[wbi].primarySensor);
+						//pendingRemovals.Remove(wb[wbi].primarySensor);
+						pendingRemovals.Remove(wb[wbi]);
 
 						if (wbi != ci) { // The sensor moved in the workbench
 							wb.Remove(sensor);
 							var m = remoteManifold.InflateManifoldOrThrowAsync(ion).Result;
+							//wb.Insert(m, ci);
 							wb.Insert(m, ci);
 						} else { // The sensor is exactly where we left it.
 							// Do Nothing
@@ -1308,31 +1306,33 @@
 		}
 
 		// TODO ahodder@appioninc.com: Using Task.Result synchronously
-		private void SyncManifold(IION ion, Manifold manifold, RemoteManifold rm) {
-			var fs = (Fluid.EState)rm.fluidState;
-			if (!manifold.ptChart.fluid.name.Equals(rm.fluidName) || manifold.ptChart.state != fs) {
-        var fluid = ion.fluidManager.LoadFluidAsync(rm.fluidName).Result;
-        manifold.ptChart = fluid.GetPtChart(fs);
-			}
+		//private void SyncManifold(IION ion, Manifold manifold, RemoteManifold rm){
+		private void SyncManifold(IION ion, Sensor sensor, RemoteManifold rm) {
+
 		}
 
-		private void SyncManifoldSensorProperties(Manifold manifold, RemoteManifold rm) {
+		//private void SyncManifoldSensorProperties(Manifold manifold, RemoteManifold rm){
+		private void SyncManifoldSensorProperties(Sensor sensor, RemoteManifold rm) {
 			var codes = new HashSet<int>(rm.subviewCodes);
-			var sps = new List<ISensorProperty>(manifold.sensorProperties);
+			//var sps = new List<ISensorProperty>(manifold.sensorProperties);
+			var sps = new List<ISensorProperty>(sensor.sensorProperties);
 
 			foreach (var sp in sps) {
 				var code = RemoteManifold.CodeFromSensorProperty(sp);
 				if (code != -1) {
 					if (!codes.Contains(code)) {
-						manifold.RemoveSensorProperty(sp);
+						//manifold.RemoveSensorProperty(sp);
+						sensor.RemoveSensorProperty(sp);
 					}
 				}
 			}
 
 			foreach (var code in codes) {
-        var sp = RemoteManifold.ParseSensorPropertyFromCode(manifold, code);
+				//var sp = RemoteManifold.ParseSensorPropertyFromCode(manifold, code);
+				var sp = RemoteManifold.ParseSensorPropertyFromCode(sensor, code);
         if (sp != null) {
-          manifold.AddSensorProperty(sp);
+					//manifold.AddSensorProperty(sp);
+					sensor.AddSensorProperty(sp);
         }
 			}
 		}

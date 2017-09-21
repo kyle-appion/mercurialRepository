@@ -120,10 +120,10 @@ namespace ION.IOS.ViewController.DeviceGrid {
 				BackgroundView.Hidden = true;
       } else {
         if (slotSensor != null) {
-          slotSensor.onSensorStateChangedEvent -= gaugeUpdating;
+          slotSensor.onSensorEvent -= gaugeUpdating;
         }
 				slotSensor = sensor;
-				slotSensor.onSensorStateChangedEvent += gaugeUpdating;
+				slotSensor.onSensorEvent += gaugeUpdating;
 				linkLabel1.Hidden = true;
 				typeLabel.Text = slotSensor.device.serialNumber.deviceModel.GetTypeString();
 
@@ -155,6 +155,7 @@ namespace ION.IOS.ViewController.DeviceGrid {
 				}
 
         if(sensor.device.isConnected){
+					connectionImage.TintColor = UIColor.Green;
 					measurementLabel.Text = slotSensor.measurement.amount.ToString();
 					unitLabel.Text = slotSensor.measurement.unit.ToString();
         } else {
@@ -164,22 +165,22 @@ namespace ION.IOS.ViewController.DeviceGrid {
 					linkLabel1.Hidden = true;
 				}
 
-				slotSensor.NotifySensorStateChanged();
+				slotSensor.NotifyInvalidated();
 			}
     }
 
-		public async void gaugeUpdating(Sensor sensor) {
+		public async void gaugeUpdating(SensorEvent sensorEvent) {
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
-      var gaugeSensor = sensor as GaugeDeviceSensor;
+      var gaugeSensor = sensorEvent.sensor as GaugeDeviceSensor;
 
       if (gaugeSensor.device.isConnected) {
         connectionImage.TintColor = UIColor.Green;
-        measurementLabel.Text = sensor.measurement.amount.ToString();
-        unitLabel.Text = sensor.measurement.unit.ToString();
+        measurementLabel.Text = sensorEvent.sensor.measurement.amount.ToString();
+        unitLabel.Text = sensorEvent.sensor.measurement.unit.ToString();
       } else if (gaugeSensor.device.connection.connectionState == Core.Connections.EConnectionState.Broadcasting) {
 				connectionImage.TintColor = UIColor.Blue;
-				measurementLabel.Text = sensor.measurement.amount.ToString();
-				unitLabel.Text = sensor.measurement.unit.ToString();
+				measurementLabel.Text = sensorEvent.sensor.measurement.amount.ToString();
+				unitLabel.Text = sensorEvent.sensor.measurement.unit.ToString();
       } else {
         if (gaugeSensor.device.isNearby) {
 					connectionImage.TintColor = UIColor.Yellow;

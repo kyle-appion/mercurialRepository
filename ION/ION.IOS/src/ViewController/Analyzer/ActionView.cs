@@ -163,11 +163,11 @@ namespace ION.IOS.ViewController.Analyzer {
     public GaugeDeviceSensor currentSensor {
       get { return __currentSensor;}
       set { if (__currentSensor != null) {
-          __currentSensor.onSensorStateChangedEvent -= gaugeUpdating;
+          __currentSensor.onSensorEvent -= gaugeUpdating;
         }
         __currentSensor = value;
         if (__currentSensor != null) {
-          __currentSensor.onSensorStateChangedEvent += gaugeUpdating;
+          __currentSensor.onSensorEvent += gaugeUpdating;
         }
       }
     } GaugeDeviceSensor __currentSensor;
@@ -180,7 +180,7 @@ namespace ION.IOS.ViewController.Analyzer {
 		}
 		ManualSensor __manualSensor;
 
-    public async void gaugeUpdating(Sensor sensor){
+    public async void gaugeUpdating(SensorEvent sensorEvent){
       pconnection.Hidden = false;  
       if (currentSensor.device.isConnected) {
         pconnection.Image = UIImage.FromBundle("ic_bluetooth_connected");
@@ -195,12 +195,12 @@ namespace ION.IOS.ViewController.Analyzer {
 				pgaugeValue.Font = UIFont.FromName("DroidSans", 54f);
         pgaugeValue.TextColor = UIColor.Gray;
 			}
-      if (sensor.unit != Units.Vacuum.MICRON) {
-        pgaugeValue.Text = sensor.measurement.amount.ToString("N");
+      if (sensorEvent.sensor.unit != Units.Vacuum.MICRON) {
+        pgaugeValue.Text = sensorEvent.sensor.measurement.amount.ToString("N");
       } else {
-        pgaugeValue.Text = sensor.measurement.amount.ToString();
+        pgaugeValue.Text = sensorEvent.sensor.measurement.amount.ToString();
       }
-      pvalueType.Text = sensor.measurement.unit.ToString();
+      pvalueType.Text = sensorEvent.sensor.measurement.unit.ToString();
     }
 
     public async void connectionSpinner(int conn){ 
@@ -298,11 +298,11 @@ namespace ION.IOS.ViewController.Analyzer {
 				connectionColor.Hidden = false;
 				conDisButton.Hidden = false;
 				pdeviceImage.Image = DeviceUtil.GetUIImageFromDeviceModel(currentSensor.device.serialNumber.deviceModel);
-        if (AppState.context.currentAnalyzer.lowSideManifold != null && AppState.context.currentAnalyzer.lowSideManifold.primarySensor != null && AppState.context.currentAnalyzer.lowSideManifold.primarySensor == currentSensor){
+        if (AppState.context.currentAnalyzer.lowSideSensor != null && AppState.context.currentAnalyzer.lowSideSensor == currentSensor){
 					pLowHigh.SetTitle(Util.Strings.Analyzer.LOWSIDE, UIControlState.Normal);
 					pLowHigh.SetTitleColor(UIColor.White, UIControlState.Normal);
 					pLowHigh.BackgroundColor = UIColor.Blue;
-        } else if (AppState.context.currentAnalyzer.highSideManifold != null && AppState.context.currentAnalyzer.highSideManifold.primarySensor != null && AppState.context.currentAnalyzer.highSideManifold.primarySensor == currentSensor){
+        } else if (AppState.context.currentAnalyzer.highSideSensor != null && AppState.context.currentAnalyzer.highSideSensor == currentSensor){
 					pLowHigh.SetTitle(Util.Strings.Analyzer.HIGHSIDE, UIControlState.Normal);
 					pLowHigh.SetTitleColor(UIColor.White, UIControlState.Normal);
 					pLowHigh.BackgroundColor = UIColor.Red;					

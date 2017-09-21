@@ -16,13 +16,15 @@ namespace ION.Core.Sensors.Alarms {
       }
       set {
         if (__sensor != null) {
-          __sensor.onSensorStateChangedEvent -= OnSensorChanged;
+					//__sensor.onSensorStateChangedEvent -= OnSensorChanged;
+					__sensor.onSensorEvent -= OnSensorChanged;
         }
 
         __sensor = value;
 
         if (__sensor != null) {
-          __sensor.onSensorStateChangedEvent += OnSensorChanged;
+					//__sensor.onSensorStateChangedEvent += OnSensorChanged;
+					__sensor.onSensorEvent += OnSensorChanged;
         }
       }
     } Sensor __sensor;
@@ -40,7 +42,8 @@ namespace ION.Core.Sensors.Alarms {
     /// Called when the alarm's sensor's measurement changes.
     /// </summary>
     /// <param name="sensor">Sensor.</param>
-    private void OnSensorChanged(Sensor sensor) {
+    //private void OnSensorChanged(Sensor sensor)	{
+    private void OnSensorChanged(SensorEvent sensorEvent) {
       Fire();
     }
   }

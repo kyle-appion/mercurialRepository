@@ -150,7 +150,7 @@ namespace ION.IOS.ViewController.JobManager {
 
 			activeJobImage.TouchUpInside += (sender, e) => {
         Console.WriteLine("Unlinking active job");
-        ion.preferences.job.activeJob = 0;
+        ion.preferences.jobs.activeJob = 0;
         setupActiveJob();
 			};
 
@@ -187,7 +187,7 @@ namespace ION.IOS.ViewController.JobManager {
 
     public async void setupActiveJob(){
       await Task.Delay(TimeSpan.FromMilliseconds(2));
-      if(ion.preferences.job.activeJob == 0){
+      if(ion.preferences.jobs.activeJob == 0){
         activeJobView.Frame = new CGRect(.03 * View.Bounds.Width, 0, .94 * containerView.Bounds.Width, 1);
         activeJobView.Hidden = true;
         savedJobLabel.Frame = new CGRect(0, 5, containerView.Bounds.Width, 40);
@@ -197,7 +197,7 @@ namespace ION.IOS.ViewController.JobManager {
 				savedJobLabel.Frame = new CGRect(0, 110, containerView.Bounds.Width, 40);
 				jobTable.Frame = new CGRect(.03 * containerView.Bounds.Width, 150, .94 * containerView.Bounds.Width, containerView.Bounds.Height - 150);
 
-				var jobQuery = ion.database.Query<ION.Core.Database.JobRow>("SELECT * FROM JobRow WHERE JID = ?", ion.preferences.job.activeJob);
+				var jobQuery = ion.database.Query<ION.Core.Database.JobRow>("SELECT * FROM JobRow WHERE JID = ?", ion.preferences.jobs.activeJob);
 
 				foreach (var job in jobQuery) {
 					idValueLabel.Text = job.JID.ToString();

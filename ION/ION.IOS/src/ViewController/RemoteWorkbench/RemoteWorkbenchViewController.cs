@@ -33,7 +33,7 @@
     /// The source that will provide Viewer views to the table view.
     /// </summary>
     /// <value>The source.</value>
-    private RemoteWorkbenchTableSource source { get; set; }
+    //private RemoteWorkbenchTableSource source { get; set; }
 		public UITableView tableContent;
     public UIButton recordButton;
     
@@ -87,11 +87,11 @@
       tableContent.AllowsSelection = true;
       tableContent.ContentInset = new UIEdgeInsets(0, 0, 0, 0);
 
-      source = new RemoteWorkbenchTableSource(this, ion, tableContent);
-			source.SetWorkbench(workbench);
-      source.onAddClicked = OnRequestViewer;
+      //source = new RemoteWorkbenchTableSource(this, ion, tableContent);
+			//source.SetWorkbench(workbench);
+      //source.onAddClicked = OnRequestViewer;
 
-      tableContent.Source = source;
+      //tableContent.Source = source;
 
 			//AppState.context.onWorkbenchChanged += this.OnWorkbenchChanged;
 			//if(ion.currentWorkbench == null){
@@ -136,7 +136,7 @@
     }
 
 		private void OnWorkbenchChanged(Workbench workbench) {
-			source.SetWorkbench(workbench);
+			//source.SetWorkbench(workbench);
 			workbench.onWorkbenchEvent += OnWorkbenchEvent;
 		}
 

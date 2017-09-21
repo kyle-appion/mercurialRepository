@@ -27,11 +27,12 @@
     /// </summary>
     /// <value>The workbench.</value>
     public Workbench workbench { get; private set; }
-    /// <summary>
-    /// The manifold that triggered the event. This is null on EType.Invalidated.
-    /// </summary>
-    /// <value>The manifold.</value>
-    public Manifold manifold { get; private set; }
+		/// <summary>
+		/// The manifold that triggered the event. This is null on EType.Invalidated.
+		/// </summary>
+		/// <value>The manifold.</value>
+		//public Manifold manifold { get; private set; }
+		public Sensor sensor { get; private set; }
     /// <summary>
     /// The index of the manifold. Note: if the type is Swapped, then this index represents
     /// the manifold AFTER the swap occured.
@@ -49,18 +50,22 @@
     /// <value>The workbench event.</value>
     public ManifoldEvent manifoldEvent { get; private set; }
 
-    public  WorkbenchEvent(EType type, Workbench workbench, Manifold manifold, int index, ManifoldEvent manifoldEvent = null) {
+		//public WorkbenchEvent(EType type, Workbench workbench, Manifold manifold, int index, ManifoldEvent manifoldEvent = null){
+		public  WorkbenchEvent(EType type, Workbench workbench, Sensor sensor, int index, ManifoldEvent manifoldEvent = null) {
       this.type = type;
       this.workbench = workbench;
-      this.manifold = manifold;
+      //this.manifold = manifold;
+      this.sensor = sensor;
       this.index = index;
       this.manifoldEvent = manifoldEvent;
     }
 
-    public WorkbenchEvent(EType type, Workbench workbench, Manifold manifold, int index, int otherIndex) {
+		//public WorkbenchEvent(EType type, Workbench workbench, Manifold manifold, int index, int otherIndex){
+		public WorkbenchEvent(EType type, Workbench workbench, Sensor sensor, int index, int otherIndex) {
       this.type = type;
       this.workbench = workbench;
-      this.manifold = manifold;
+			//this.manifold = manifold;
+			this.sensor = sensor;
       this.index = index;
       this.otherIndex = otherIndex;
     }
@@ -101,39 +106,53 @@
     /// </summary>
     /// <value>The ion.</value>
     public IION ion { get; set; }
-    /// <summary>
-    /// The number of manifolds that are present in the workbench.
-    /// </summary>
-    /// <value>The count.</value>
-    public int count { get { return manifolds.Count; } }
-    /// <summary>
-    /// The indexer that will poll a manifold from the workbench.
-    /// </summary>
-    /// <param name="index">Index.</param>
-    public Manifold this[int index] {
-      get {
-        return manifolds[index];
-      }
+		/// <summary>
+		/// The number of manifolds that are present in the workbench.
+		/// </summary>
+		/// <value>The count.</value>
+		//public int count { get { return manifolds.Count; } }
+		public int count { get { return sensors.Count; } }
+		/// <summary>
+		/// The indexer that will poll a manifold from the workbench.
+		/// </summary>
+		/// <param name="index">Index.</param>
+		//public Manifold this[int index] {
+		//  get {
+		//    return manifolds[index];
+		//  }
 
-      private set {
-        manifolds[index] = value;
-      }
-    }
+		//  private set {
+		//    manifolds[index] = value;
+		//  }
+		//}
+		public Sensor this[int index]
+		{
+			get
+			{
+				return sensors[index];
+			}
 
-    /// <summary>
-    /// The backing list of manifolds for the workbench.
-    /// </summary>
-    public readonly List<Manifold> manifolds = new List<Manifold>();
+			private set
+			{
+				sensors[index] = value;
+			}
+		}
+		/// <summary>
+		/// The backing list of manifolds for the workbench.
+		/// </summary>
+		//public readonly List<Manifold> manifolds = new List<Manifold>();
+		public readonly List<Sensor> sensors = new List<Sensor>();
 		/// <summary>
 		/// Whether or not the workbench is editable.
 		/// </summary>
 		/// <value><c>true</c> if is editable; otherwise, <c>false</c>.</value>
 		public bool isEditable { get; set; }
-    /// <summary>
-    /// Whether or not the workbench is empty.
-    /// </summary>
-    /// <value><c>true</c> if is empty; otherwise, <c>false</c>.</value>
-    public bool isEmpty { get { return manifolds.Count <= 0; } }
+		/// <summary>
+		/// Whether or not the workbench is empty.
+		/// </summary>
+		/// <value><c>true</c> if is empty; otherwise, <c>false</c>.</value>
+		//public bool isEmpty { get { return manifolds.Count <= 0; } }
+		public bool isEmpty { get { return sensors.Count <= 0; } }
 
     public Workbench(IION ion) {
       this.ion = ion;
@@ -151,48 +170,67 @@
 		/// </summary>
 		/// <returns>The of.</returns>
 		/// <param name="sensor">Sensor.</param>
+		//public int IndexOf(Sensor sensor) {
+		//	for (int i = 0; i < manifolds.Count; i++) {
+		//		if (manifolds[i].primarySensor == sensor) {
+		//			return i;
+		//		}
+		//	}
+
+		//	return -1;
+		//}
+
+		/// <summary>
+		/// Queries the index of the given manifold or -1 if the manifold is not present in the workbench.
+		/// </summary>
+		/// <returns>The of.</returns>
+		/// <param name="manifold">Manifold.</param>
+		//public int IndexOf(Manifold manifold){
 		public int IndexOf(Sensor sensor) {
-			for (int i = 0; i < manifolds.Count; i++) {
-				if (manifolds[i].primarySensor == sensor) {
-					return i;
-				}
-			}
-
-			return -1;
-		}
-
-    /// <summary>
-    /// Queries the index of the given manifold or -1 if the manifold is not present in the workbench.
-    /// </summary>
-    /// <returns>The of.</returns>
-    /// <param name="manifold">Manifold.</param>
-    public int IndexOf(Manifold manifold) {
-      return manifolds.IndexOf(manifold);
+			//return manifolds.IndexOf(manifold);
+			return sensors.IndexOf(sensor);
     }
 
-    /// <summary>
-    /// Adds the given manifold to the workbench. A given manifold may only exist
-    /// once in the workbench.
-    /// </summary>
-    /// <param name="manifold">Manifold.</param>
-    /// <returns>True if the manifold was added, false otherwise.</returns>
-    public bool Add(Manifold manifold) {
-      if (manifolds.Contains(manifold)) {
+		/// <summary>
+		/// Adds the given manifold to the workbench. A given manifold may only exist
+		/// once in the workbench.
+		/// </summary>
+		/// <param name="manifold">Manifold.</param>
+		/// <returns>True if the manifold was added, false otherwise.</returns>
+		//public bool Add(Manifold manifold){
+		public bool Add(Sensor sensor) {
+			//if (manifolds.Contains(manifold)){
+		  if (sensors.Contains(sensor)) {
         return false;
       } else {
-        manifolds.Add(manifold);
-        manifold.onManifoldEvent += OnManifoldEvent;
-				var GaugeSensor = manifold.primarySensor as GaugeDeviceSensor;
+    //    manifolds.Add(manifold);
+    //    manifold.onManifoldEvent += OnManifoldEvent;
+				//var GaugeSensor = manifold.primarySensor as GaugeDeviceSensor;
 
-				NotifyOfEvent(WorkbenchEvent.EType.Added, manifold, manifolds.Count - 1);
+				//NotifyOfEvent(WorkbenchEvent.EType.Added, manifold, manifolds.Count - 1);
 
-				if (GaugeSensor.device.serialNumber.deviceModel == EDeviceModel.AV760) {
-					manifold.AddSensorProperty(new Sensors.Properties.RateOfChangeSensorProperty(manifold, TimeSpan.FromSeconds(1)));
-				} else if (GaugeSensor.device.serialNumber.deviceModel == EDeviceModel.PT500 || GaugeSensor.device.serialNumber.deviceModel == EDeviceModel.PT800) {
-					manifold.AddSensorProperty(new Sensors.Properties.SuperheatSubcoolSensorProperty(manifold));
-					manifold.AddSensorProperty(new Sensors.Properties.SecondarySensorProperty(manifold));
-				}
+				//if (GaugeSensor.device.serialNumber.deviceModel == EDeviceModel.AV760) {
+				//	manifold.AddSensorProperty(new Sensors.Properties.RateOfChangeSensorProperty(manifold, TimeSpan.FromSeconds(1)));
+				//} else if (GaugeSensor.device.serialNumber.deviceModel == EDeviceModel.PT500 || GaugeSensor.device.serialNumber.deviceModel == EDeviceModel.PT800) {
+				//	manifold.AddSensorProperty(new Sensors.Properties.SuperheatSubcoolSensorProperty(manifold));
+				//	manifold.AddSensorProperty(new Sensors.Properties.SecondarySensorProperty(manifold));
+				//}
+        sensors.Add(sensor);
+        if (sensor is GaugeDeviceSensor)
+        {
+          var GaugeSensor = sensor as GaugeDeviceSensor;
 
+          if (GaugeSensor.device.serialNumber.deviceModel == EDeviceModel.AV760)
+          {
+            sensor.AddSensorProperty(new Sensors.Properties.RateOfChangeSensorProperty(sensor, TimeSpan.FromSeconds(1)));
+          }
+          else if (GaugeSensor.device.serialNumber.deviceModel == EDeviceModel.PT500 || GaugeSensor.device.serialNumber.deviceModel == EDeviceModel.PT800)
+          {
+            sensor.AddSensorProperty(new Sensors.Properties.SuperheatSubcoolSensorProperty(sensor));
+            sensor.AddSensorProperty(new Sensors.Properties.SecondarySensorProperty(sensor));
+          }
+        }
+        onWorkbenchEvent(new WorkbenchEvent(WorkbenchEvent.EType.Added, this, sensor, this.sensors.Count));
         return true;
       } 
     }
@@ -207,9 +245,7 @@
       if (ContainsSensor(sensor)) {
         return false;
       } else {
-        var m = new Manifold(sensor);
-        m.ptChart = ion.fluidManager.lastUsedFluid.GetPtChart(Fluid.EState.Dew);
-        return Add(m);
+				return Add(sensor);
       }
     }
 
@@ -218,15 +254,22 @@
 		/// </summary>
 		/// <param name="manifold">Manifold.</param>
 		/// <param name="index">Index.</param>
-		public bool Insert(Manifold manifold, int index) {
-			if (manifolds.Contains(manifold)) {
-				return false;
-			} else {
-				manifolds.Insert(index, manifold);
-				manifold.onManifoldEvent += OnManifoldEvent;
-				NotifyOfEvent(WorkbenchEvent.EType.Added, manifold, index);
-				return true;
-			}
+		//public bool Insert(Manifold manifold, int index){
+		public bool Insert(Sensor sensor, int index) {
+      //if (manifolds.Contains(manifold)) {
+      //	return false;
+      //} else {
+      //	manifolds.Insert(index, manifold);
+      //	manifold.onManifoldEvent += OnManifoldEvent;
+      //	NotifyOfEvent(WorkbenchEvent.EType.Added, manifold, index);
+      //	return true;
+      //}
+      if(sensors.Contains(sensor)){
+        return false;
+      }else {
+        sensors.Insert(index,sensor);
+        return true;
+      }
 		}
 
     /// <summary>
@@ -239,34 +282,30 @@
         Log.D(this, "Not swapping manifolds");
         return;
       }
-      var tmp = manifolds[first];
-      manifolds[first] = manifolds[second];
-      manifolds[second] = tmp;
+      //var tmp = manifolds[first];
+      //manifolds[first] = manifolds[second];
+      //manifolds[second] = tmp;
+      var tmp = sensors[first];
+      sensors[first] = sensors[second];
+      sensors[second] = tmp;
       NotifyOfEvent(WorkbenchEvent.EType.Swapped, tmp, second, first);
     }
 
-    /// <summary>
-    /// Removes the manifold from the workbench.
-    /// </summary>
-    /// <param name="manifold">Manifold.</param>
-    public void Remove(Manifold manifold) {
-      var index = manifolds.IndexOf(manifold);
-      manifolds.Remove(manifold);
-      manifold.onManifoldEvent -= OnManifoldEvent;
-      NotifyOfEvent(WorkbenchEvent.EType.Removed, manifold, index);
-    }
-
-    /// <summary>
-    /// Removes all instances where the primary sensor is equal to the given the sensor from the workbench.
-    /// </summary>
-    /// <param name="sensor">Sensor.</param>
-    public void Remove(Sensor sensor) {
-      for (int i = count - 1; i >= 0; i--) {
-        if (manifolds[i].primarySensor.Equals(sensor)) {
-          var m = manifolds[i];
-          manifolds.RemoveAt(i);
-          this.NotifyOfEvent(WorkbenchEvent.EType.Removed, m, 1);
-        }
+		/// <summary>
+		/// Removes the manifold from the workbench.
+		/// </summary>
+		/// <param name="manifold">Manifold.</param>
+		//public void Remove(Manifold manifold){
+		public void Remove(Sensor sensor) {
+			//var index = manifolds.IndexOf(manifold);
+			var index = sensors.IndexOf(sensor);
+      //manifolds.Remove(manifold);
+      //manifold.onManifoldEvent -= OnManifoldEvent;
+      //NotifyOfEvent(WorkbenchEvent.EType.Removed, manifold, index);
+      if (index != -1)
+      {
+        sensors.Remove(sensor);
+        NotifyOfEvent(WorkbenchEvent.EType.Removed, sensor, index);
       }
     }
 
@@ -275,19 +314,27 @@
     /// </summary>
     /// <param name="sensor">Sensor.</param>
     public void RemovePrimarySensor(Sensor sensor) {
-      foreach (var m in manifolds) {
-        if (m.primarySensor.Equals(sensor)) {
-          Remove(m);
-        }
-      }
+			//foreach (var m in manifolds) {
+			//  if (m.primarySensor.Equals(sensor)) {
+			//    Remove(m);
+			//  }
+			//}
+			foreach (var m in sensors)
+			{
+				if (m.Equals(sensor))
+				{
+					Remove(m);
+				}
+			}
     }
 
     /// <summary>
     /// Clears the workbench of all manifolds.
     /// </summary>
     public void Clear() {
-      foreach (Manifold m in manifolds.ToArray()) {
-        Remove(m);
+			//foreach (Manifold m in manifolds.ToArray())	{
+			foreach (Sensor s in sensors.ToArray()) {
+        Remove(s);
       }
     }
 
@@ -301,12 +348,19 @@
       var gd = device as GaugeDevice;
 
       if (gd != null) {
-        foreach (var m in manifolds) {
-          var p = m.primarySensor as GaugeDeviceSensor;
-          var s = m.secondarySensor as GaugeDeviceSensor;
+				//foreach (var m in manifolds) {
+				//  var p = m.primarySensor as GaugeDeviceSensor;
+				//  var s = m.secondarySensor as GaugeDeviceSensor;
 
-          return gd.ContainsSensor(p) || gd.ContainsSensor(s);
-        }
+				//  return gd.ContainsSensor(p) || gd.ContainsSensor(s);
+				//}
+				foreach (var s in sensors)
+				{
+					var p = s as GaugeDeviceSensor;
+					var l = s.linkedSensor as GaugeDeviceSensor;
+
+					return gd.ContainsSensor(p) || gd.ContainsSensor(s);
+				}
       }
 
       return false;
@@ -319,8 +373,10 @@
 		/// <param name="unitCode">Unit code.</param>
 		public int GetDeviceIndex(ISerialNumber serialNumber, int sensorIndex){
       if (serialNumber != null) {
-        for(int i = 0; i < manifolds.Count; i++) {
-          var p = manifolds[i].primarySensor as GaugeDeviceSensor;
+				//for (int i = 0; i < manifolds.Count; i++) {
+				for(int i = 0; i < sensors.Count; i++) {
+					//var p = manifolds[i].primarySensor as GaugeDeviceSensor;
+					var p = sensors[i] as GaugeDeviceSensor;
 					
 					if(p != null){
 	          if(serialNumber.rawSerial == p.device.serialNumber.rawSerial && p.index == sensorIndex){
@@ -339,8 +395,9 @@
     /// <returns><c>true</c>, if sensor was containsed, <c>false</c> otherwise.</returns>
     /// <param name="sensor">Sensor.</param>
     public bool ContainsSensor(Sensor sensor) {
-      foreach (Manifold manifold in manifolds) {
-        if (manifold.primarySensor.Equals(sensor)) {
+			//foreach (Manifold manifold in manifolds) {
+			foreach (Sensor checkSensor in sensors) {
+        if (checkSensor.Equals(sensor)) {
           return true;
         }
       }
@@ -358,16 +415,19 @@
       var gd = device as GaugeDevice;
 
       if (gd != null) {
-        var toRemove = new List<Manifold>();
+				//var toRemove = new List<Manifold>();
+				var toRemove = new List<Sensor>();
 
-        foreach (var m in manifolds) {
-          var p = m.primarySensor as GaugeDeviceSensor;
-          var s = m.secondarySensor as GaugeDeviceSensor;
-
+				//foreach (var m in manifolds) {
+				//var p = m.primarySensor as GaugeDeviceSensor;
+				//var s = m.secondarySensor as GaugeDeviceSensor;
+				foreach (var s in sensors){
+					var p = s as GaugeDeviceSensor;
+					var l = s.linkedSensor as GaugeDeviceSensor;
           if (gd.ContainsSensor(p)) {
-            toRemove.Add(m);  
+            toRemove.Add(s);  
           } else if (gd.ContainsSensor(s)) {
-            m.SetSecondarySensor(null);
+            s.SetLinkedSensor(null);
           }
         }
 
@@ -377,21 +437,25 @@
       }
     }
 
-    /// <summary>
-    /// Notifies the onWorkbenchEvent handler of a new workbench event.
-    /// </summary>
-    /// <param name="type">Type.</param>
-    /// <param name="manifold">Manifold.</param>
-    private void NotifyOfEvent(WorkbenchEvent.EType type, Manifold manifold, int index, int otherIndex = -1) {
+		/// <summary>
+		/// Notifies the onWorkbenchEvent handler of a new workbench event.
+		/// </summary>
+		/// <param name="type">Type.</param>
+		/// <param name="manifold">Manifold.</param>
+		//private void NotifyOfEvent(WorkbenchEvent.EType type, Manifold manifold, int index, int otherIndex = -1){
+		private void NotifyOfEvent(WorkbenchEvent.EType type, Sensor sensor, int index, int otherIndex = -1) {
       if (onWorkbenchEvent != null) {
-        onWorkbenchEvent(new WorkbenchEvent(type, this, manifold, index, otherIndex));
+				//onWorkbenchEvent(new WorkbenchEvent(type, this, manifold, index, otherIndex));
+				onWorkbenchEvent(new WorkbenchEvent(type, this, sensor, index, otherIndex));
       }
     }
 
-    private void NotifyOfEvent(WorkbenchEvent.EType type, ManifoldEvent manifoldEvent) {
+		//private void NotifyOfEvent(WorkbenchEvent.EType type, ManifoldEvent manifoldEvent){
+	  private void NotifyOfEvent(WorkbenchEvent.EType type, ManifoldEvent manifoldEvent) {
       if (onWorkbenchEvent != null) {
-        var m = manifoldEvent.manifold;
-        onWorkbenchEvent(new WorkbenchEvent(type, this, m, manifolds.IndexOf(m), manifoldEvent));
+				//var m = manifoldEvent.manifold;
+				var m = manifoldEvent.sensor;
+        //onWorkbenchEvent(new WorkbenchEvent(type, this, m, sensors.IndexOf(m), manifoldEvent));
       }
     }
 
