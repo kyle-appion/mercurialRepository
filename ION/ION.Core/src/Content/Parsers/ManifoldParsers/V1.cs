@@ -13,34 +13,36 @@
 	public class V1 : ManifoldParser {
 		public override int version { get { return 1; } }
 
-		public override void DoWriteManifold(IION ion, Manifold manifold, BinaryWriter writer) {
+		//public override void DoWriteManifold(IION ion, Manifold manifold, BinaryWriter writer){
+	  public override void DoWriteManifold(IION ion, Sensor sensor, BinaryWriter writer) {
 			// Write primary sensor
-			SensorParser.WriteSensor(ion, manifold.primarySensor, writer);
+			SensorParser.WriteSensor(ion, sensor, writer);
 			// Write secondary sensor
-			SensorParser.WriteSensor(ion, manifold.secondarySensor, writer);
+			SensorParser.WriteSensor(ion, sensor.linkedSensor, writer);
 
 			// Write fluid name
-			if (manifold.ptChart == null) {
-				writer.Write(false); // Doens't have a pt chart.
-			} else {
-				writer.Write(true); // Does have a pt chart
-				writer.Write(Enum.GetName(typeof(Fluid.EState), manifold.ptChart.state));
-				if (manifold.ptChart.fluid == null) {
-					writer.Write("");
-				} else {
-					writer.Write(manifold.ptChart.fluid.name);
-				}
-			}
+			//if (sensor.ptChart == null) {
+			//	writer.Write(false); // Doens't have a pt chart.
+			//} else {
+			//	writer.Write(true); // Does have a pt chart
+			//	writer.Write(Enum.GetName(typeof(Fluid.EState), sensor.ptChart.state));
+			//	if (sensor.ptChart.fluid == null) {
+			//		writer.Write("");
+			//	} else {
+			//		writer.Write(sensor.ptChart.fluid.name);
+			//	}
+			//}
 
 			// The number of sensor properties that the manifold ha
-			writer.Write(manifold.sensorProperties.Count);
+			writer.Write(sensor.sensorProperties.Count);
 			// Write sensor properties
-			foreach (var sp in manifold.sensorProperties) {
+			foreach (var sp in sensor.sensorProperties) {
 				WriteSensorProperty(sp, writer);
 			}
 		}
 
-		public override Manifold DoReadManifold(IION ion, BinaryReader reader) {
+		//public override Manifold DoReadManifold(IION ion, BinaryReader reader){
+		public override Sensor DoReadManifold(IION ion, BinaryReader reader) {
 			// Read the primary sensor
 			Sensor primary = SensorParser.ReadSensor(ion, reader);
 			// Assert that the primary sensor is not null;
@@ -52,8 +54,9 @@
 			Sensor secondary = SensorParser.ReadSensor(ion, reader);
 
 			// Create the inflated manifold
-			var ret = new Manifold(primary);
-			ret.SetSecondarySensor(secondary);
+			//var ret = new Manifold(primary);
+			var ret = primary;
+			ret.SetLinkedSensor(secondary);
 
 			if (reader.ReadBoolean()) {
 				var state = (Fluid.EState)Enum.Parse(typeof(Fluid.EState), reader.ReadString());
@@ -65,7 +68,7 @@
           fluid = ion.fluidManager.LoadFluidAsync(fluidName).Result;
 				}
 
-        ret.ptChart = fluid.GetPtChart(state);
+        //ret.ptChart = fluid.GetPtChart(state);
 			}
 
 			// Read sensor properties
@@ -88,29 +91,39 @@
 			}
 		}
 
-		private void ReadSensorProperty(IION ion, Manifold manifold, BinaryReader reader) {
+		//private void ReadSensorProperty(IION ion, Manifold manifold, BinaryReader reader)	{
+			private void ReadSensorProperty(IION ion, Sensor sensor, BinaryReader reader) {
 			var name = reader.ReadString();
 
 			if (name != null) {
 				if (name.Equals(typeof(MinSensorProperty).Name)) {
-					manifold.AddSensorProperty(new MinSensorProperty(manifold));
+					//manifold.AddSensorProperty(new MinSensorProperty(manifold));
+					sensor.AddSensorProperty(new MinSensorProperty(sensor));
 				} else if (name.Equals(typeof(MaxSensorProperty).Name)) {
-					manifold.AddSensorProperty(new MaxSensorProperty(manifold));
+					//manifold.AddSensorProperty(new MaxSensorProperty(manifold));
+					sensor.AddSensorProperty(new MaxSensorProperty(sensor));
 				} else if (name.Equals(typeof(PTChartSensorProperty).Name)) {
-					manifold.AddSensorProperty(new PTChartSensorProperty(manifold));
+					//manifold.AddSensorProperty(new PTChartSensorProperty(manifold));
+					sensor.AddSensorProperty(new PTChartSensorProperty(sensor));
 				} else if (name.Equals(typeof(RateOfChangeSensorProperty).Name)) {
-          manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold, ion.preferences.device.trendInterval));
+					//manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold, ion.preferences.device.trendInterval));
+					sensor.AddSensorProperty(new RateOfChangeSensorProperty(sensor, ion.preferences.device.trendInterval));
 				} else if (name.Equals(typeof(SecondarySensorProperty).Name)) {
-					manifold.AddSensorProperty(new SecondarySensorProperty(manifold));
+					//manifold.AddSensorProperty(new SecondarySensorProperty(manifold));
+					sensor.AddSensorProperty(new SecondarySensorProperty(sensor));
 				} else if (name.Equals(typeof(SuperheatSubcoolSensorProperty).Name)) {
-					manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(manifold));
+					//manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(manifold));
+					sensor.AddSensorProperty(new SuperheatSubcoolSensorProperty(sensor));
 				} else if (name.Equals(typeof(TimerSensorProperty).Name)) {
-					manifold.AddSensorProperty(new TimerSensorProperty(manifold));
+					//manifold.AddSensorProperty(new TimerSensorProperty(manifold));
+					sensor.AddSensorProperty(new TimerSensorProperty(sensor));
 				} else if (name.Equals(typeof(HoldSensorProperty).Name)) {
-					manifold.AddSensorProperty(new HoldSensorProperty(manifold));
+					//manifold.AddSensorProperty(new HoldSensorProperty(manifold));
+					sensor.AddSensorProperty(new HoldSensorProperty(sensor));
 				} else if (name.Equals(typeof(AlternateUnitSensorProperty).Name)) {
-					var sp = new AlternateUnitSensorProperty(manifold);
-					manifold.AddSensorProperty(sp);
+					var sp = new AlternateUnitSensorProperty(sensor);
+					//manifold.AddSensorProperty(sp);
+					sensor.AddSensorProperty(sp);
 					var usunit = reader.ReadInt32();
 					sp.unit = UnitLookup.GetUnit(usunit);
 				} else {

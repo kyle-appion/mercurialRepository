@@ -48,6 +48,7 @@
       alarmManager = new BaseAlarmManager(this);
       dataLogManager = new DataLogManager(this);
       fluidManager = new BaseFluidManager(this);
+      manualSensorContainer = new ManualSensorContainer();
       
       alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
         return new CompoundAlarmAlert(alarm, new PopupWindowAlarmAlert(alarm), new VibrateAlarmAlert(alarm, this), new SoundAlarmAlert(alarm, this));

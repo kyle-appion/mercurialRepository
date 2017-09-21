@@ -1,6 +1,7 @@
 ﻿using System;
 using Foundation;
 using ION.Core.Content;
+using ION.Core.Devices;
 using ION.Core.Fluids;
 using ION.Core.Sensors;
 using ION.Core.Sensors.Properties;
@@ -35,19 +36,25 @@ namespace ION.IOS.ViewController.Workbench {
 		}
 
     public void UpdateTo(FluidRecord record){
+      this.record.sensor.onSensorEvent -= updateTSH;
       this.record = record;
+      this.record.sensor.onSensorEvent += updateTSH;
     }
 
 		private void OnSensorPropertyChanged(ISensorProperty sensorProperty) {
 			HandleSuperheatSubcoolSensorPropertyChanged(sensorProperty as TargetSuperheatSubcoolProperty);
 		}
 
-		private void HandleSuperheatSubcoolSensorPropertyChanged(TargetSuperheatSubcoolProperty sensorProperty) {
-			var ptchart = sensorProperty.manifold.ptChart;
-      labelTarget.Text = record.manifold.targetSHSC.ToString();
+    public void updateTSH(SensorEvent sensorEvent){
+      HandleSuperheatSubcoolSensorPropertyChanged(this.record.sensorProperty as TargetSuperheatSubcoolProperty);
+    }
 
-			//if (ptchart.fluid.mixture) {
-				switch (sensorProperty.manifold.ptChart.state) {
+		private void HandleSuperheatSubcoolSensorPropertyChanged(TargetSuperheatSubcoolProperty sensorProperty) {
+      labelTarget.Text = record.sensor.targetSHSC.ToString();
+
+      //if (ptchart.fluid.mixture) {
+      //switch (sensorProperty.manifold.ptChart.state){
+      switch (sensorProperty.sensor.fluidState) {
 					case Fluid.EState.Bubble:
 					//labelTitle.Text = Strings.Fluid.SUBCOOL_ABRV;
 					labelTitle.Text = "T-SC";
@@ -76,11 +83,13 @@ namespace ION.IOS.ViewController.Workbench {
 				}
 			//}
 
-      ////set subview for not existing sensor linkage
-			if (sensorProperty.pressureSensor == null || sensorProperty.temperatureSensor == null) {
+			////set subview for not existing sensor linkage
+			//if (sensorProperty.pressureSensor == null || sensorProperty.temperatureSensor == null)	{
+			if (sensorProperty.sensor.linkedSensor == null) {
 				labelOffset.Text = Strings.Workbench.Viewer.SHSC_SETUP;
 			} else {
-				var meas = sensorProperty.temperatureDelta - record.manifold.targetSHSC;
+				//var meas = sensorProperty.temperatureDelta - record.manifold.targetSHSC;
+				var meas = sensorProperty.temperatureDelta - record.sensor.targetSHSC;
 
         labelOffset.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, meas, true);
 

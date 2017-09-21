@@ -5,24 +5,29 @@
   using ION.Core.App;
   using ION.Core.Content;
 	using ION.Core.Content.Parsers.ManifoldParsers;
+  using ION.Core.Sensors;
 
   /// <summary>
   /// A ManifoldParser is not a parser in that it is not an IParser<T>. However, is does have versioning and does export
-	/// sensors out in a binary format.
+  /// sensors out in a binary format.
   /// </summary>
-	public abstract class ManifoldParser {
+  public abstract class ManifoldParser {
 		private const int VERSION = 2;
 
 		private static ManifoldParser CURRENT_PARSER = new V2();
 
 		public abstract int version { get; }
-		public abstract void DoWriteManifold(IION ion, Manifold manifold, BinaryWriter writer);
-		public abstract Manifold DoReadManifold(IION ion, BinaryReader reader);
+		//public abstract void DoWriteManifold(IION ion, Manifold manifold, BinaryWriter writer);
+		public abstract void DoWriteManifold(IION ion, Sensor sensor, BinaryWriter writer);
+		//public abstract Manifold DoReadManifold(IION ion, BinaryReader reader);
+		public abstract Sensor DoReadManifold(IION ion, BinaryReader reader);
 
 
-		public static void WriteManifold(IION ion, Manifold manifold, BinaryWriter writer) {
+		//public static void WriteManifold(IION ion, Manifold manifold, BinaryWriter writer){
+		public static void WriteManifold(IION ion, Sensor sensor, BinaryWriter writer) {
 			writer.Write(VERSION);
-			CURRENT_PARSER.DoWriteManifold(ion, manifold, writer);
+			//CURRENT_PARSER.DoWriteManifold(ion, manifold, writer);
+			CURRENT_PARSER.DoWriteManifold(ion, sensor, writer);
 		}
 
 		/// <summary>
@@ -33,7 +38,8 @@
 		/// <returns>The sensor.</returns>
 		/// <param name="ion">Ion.</param>
 		/// <param name="reader">Reader.</param>
-		public static Manifold ReadManifold(IION ion, BinaryReader reader) {
+		//public static Manifold ReadManifold(IION ion, BinaryReader reader){
+			public static Sensor ReadManifold(IION ion, BinaryReader reader) {
 			var v = reader.ReadInt32();
 			switch (v) {
 				case 1:

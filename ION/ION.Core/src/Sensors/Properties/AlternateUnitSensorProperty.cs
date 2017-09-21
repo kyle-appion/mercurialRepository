@@ -51,18 +51,23 @@
       }
     } Unit __unit;
 
-		[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
-		public AlternateUnitSensorProperty(Sensor sensor) : base(new Manifold(sensor)) {
+		//[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
+		//public AlternateUnitSensorProperty(Sensor sensor) : base(new Manifold(sensor)){
+		public AlternateUnitSensorProperty(Sensor sensor) : base(sensor) {
+			this.__unit = sensor.measurement.unit;
+			this.modifiedMeasurement = sensor.measurement;
 		}
 
-		[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
-		public AlternateUnitSensorProperty(Sensor sensor, Unit unit) : this(new Manifold(sensor), unit) {
+		//[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
+		public AlternateUnitSensorProperty(Sensor sensor, Unit unit) : base(sensor, unit) {
+			this.__unit = unit;
+			this.modifiedMeasurement = sensor.measurement;
 		}
 
-    public AlternateUnitSensorProperty(Manifold manifold) : base(manifold) {
-      this.__unit = sensor.measurement.unit;
-      this.modifiedMeasurement = sensor.measurement;
-    }
+    //public AlternateUnitSensorProperty(Manifold manifold) : base(manifold) {
+    //  this.__unit = sensor.measurement.unit;
+    //  this.modifiedMeasurement = sensor.measurement;
+    //}
 
     /// <summary>
     /// Creates a new alternate unit property. Note: this construct will throw an
@@ -70,9 +75,9 @@
     /// </summary>
     /// <param name="sensor">Sensor.</param>
     /// <param name="unit">Unit.</param>
-    public AlternateUnitSensorProperty(Manifold manifold, Unit unit) : this(manifold) {
-      this.__unit = unit;
-    }
+    //public AlternateUnitSensorProperty(Manifold manifold, Unit unit) : this(manifold) {
+    //  this.__unit = unit;
+    //}
   }
 }
 

@@ -191,55 +191,49 @@
     /// </summary>
     /// <value>The sensors per side.</value>
     public int sensorsPerSide { get; private set; }
-    
-    /// <summary>
-    /// Gets or sets the remote analyzer.
-    /// </summary>
-    /// <value>The remote analyzer.</value>
-    public Analyzer storedAnalyzer {get; set;}
 
-    /// <summary>
-    /// The manifold that will represent the fore front low side sensors. Null indicates no manifold is present.
-    /// </summary>
-    public Manifold lowSideManifold {
+    public Sensor lowSideSensor{
       get {
-        return __lowSideManifold;
+        return __lowSideSensor;
       }
       private set {
-        if (__lowSideManifold != null) {
-          __lowSideManifold.onManifoldEvent -= OnManifoldEvent;
-          NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldRemoved, ESide.Low));
-        }
+		    if (__lowSideSensor != null) {
+		      //__lowSideManifold.onManifoldEvent -= OnManifoldEvent;
+		      NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldRemoved, ESide.Low));
+		    }
 
-        __lowSideManifold = value;
+		    __lowSideSensor = value;
 
-        if (__lowSideManifold != null) {
-          __lowSideManifold.onManifoldEvent += OnManifoldEvent;
-          NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.Low));
-        }
-      }
-    } Manifold __lowSideManifold;
+		    if (__lowSideSensor != null) {
+		      //__lowSideManifold.onManifoldEvent += OnManifoldEvent;
+		      NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.Low));
+		    }
+			}
+    } Sensor __lowSideSensor;
 
-    /// <summary>
-    /// The manifold that will represent the forefront high side sensors.
-    /// </summary>
-    public Manifold highSideManifold {
-      get {
-        return __highSideManifold;
-      }
-      private set {
-        if (__highSideManifold != null) {
-          __highSideManifold.onManifoldEvent -= OnManifoldEvent;
-        }
+		public Sensor highSideSensor
+		{
+			get
+			{
+				return __highSideSensor;
+			}
+			private set
+			{
+				if (__highSideSensor != null)
+				{
+					//__highSideManifold.onManifoldEvent -= OnManifoldEvent;
+					NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldRemoved, ESide.High));
+				}
 
-        __highSideManifold = value;
+				__highSideSensor = value;
 
-        if (__highSideManifold != null) {
-          __highSideManifold.onManifoldEvent += OnManifoldEvent;
-        }
-      }
-    } Manifold __highSideManifold;
-
+				if (__highSideSensor != null)
+				{
+					//__highSideManifold.onManifoldEvent += OnManifoldEvent;
+					NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
+				}
+			}
+		}	Sensor __highSideSensor;
 		/// <summary>
 		/// This array maintains the history of sensor swaps. This is necessary only for iOS remote viewing.
 		/// </summary>
@@ -268,7 +262,7 @@
 		public string lowAccessibility ="low";
 		public string highAccessibility ="high";
 		
-		public Fluid lowFluid{ 
+		public Fluid lowFluid {
 			get{return __lowFluid;} 
 			set {
 				Log.D(this, "setting low fluid");
@@ -279,8 +273,8 @@
 			}
 		} Fluid __lowFluid;
 		
-		public Fluid highFluid{ 
-			get{ return __highFluid;} 
+		public Fluid highFluid {
+			get{ return __highFluid;}
 			set {
 				Log.D(this, "setting high fluid");
 				if(__highFluid != null){
@@ -384,10 +378,10 @@
     /// <returns><c>true</c> if this instance is sensor index attached to manifold the specified index; otherwise, <c>false</c>.</returns>
     /// <param name="index">Index.</param>
     public bool IsSensorIndexAttachedToManifold(int index) {
-      if (index >= 0 && index < sensorsPerSide && lowSideManifold != null) {
-        return lowSideManifold.ContainsSensor(sensors[index]);
-      } else if (index >= sensorsPerSide && index < sensors.Length && highSideManifold != null) {
-        return highSideManifold.ContainsSensor(sensors[index]);
+      if (index >= 0 && index < sensorsPerSide && lowSideSensor != null) {
+        return lowSideSensor.Equals(sensors[index]);
+      } else if (index >= sensorsPerSide && index < sensors.Length && highSideSensor != null) {
+        return highSideSensor.Equals(sensors[index]);
       } else {
         return false;
       }
@@ -529,7 +523,6 @@
       RemoveSensor(index);
 
       sensors[index] = sensor;
-      //sensor.onSensorStateChangedEvent += OnSensorChangedEvent;
 
       var ae = new AnalyzerEvent(AnalyzerEvent.EType.Added, sensor, index);
       NotifyOfAnalyzerEvent(ae);
@@ -556,22 +549,21 @@
       }
 
       var sensor = sensors[index];
-      sensors[index].onSensorStateChangedEvent -= OnSensorChangedEvent;
       sensors[index] = null;
 
-			if (lowSideManifold != null) {
-				if (lowSideManifold.primarySensor.Equals(sensor)) {
+			if (lowSideSensor != null) {
+				if (lowSideSensor.Equals(sensor)) {
 					RemoveManifold(ESide.Low);
 				} else {
-					lowSideManifold.SetSecondarySensor(null);
+					lowSideSensor.SetLinkedSensor(null);
 				}
 			}
 
-			if (highSideManifold != null) {
-				if (highSideManifold.primarySensor.Equals(sensor)) {
+			if (highSideSensor != null) {
+				if (highSideSensor.Equals(sensor)) {
 					RemoveManifold(ESide.High);
 				} else {
-					highSideManifold.SetSecondarySensor(null);
+					highSideSensor.SetLinkedSensor(null);
 				}
 			}
 
@@ -612,14 +604,12 @@
       switch (side) {
         case ESide.Low:
           RemoveManifold(ESide.Low);
-          lowSideManifold = new Manifold(sensor);
-          lowSideManifold.ptChart = ion.fluidManager.lastUsedFluid.GetPtChart(Fluid.EState.Bubble);
+					lowSideSensor = sensor;
           NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.Low));
           return true;
         case ESide.High:
           RemoveManifold(ESide.High);
-          highSideManifold = new Manifold(sensor);
-          highSideManifold.ptChart = ion.fluidManager.lastUsedFluid.GetPtChart(Fluid.EState.Dew);
+          highSideSensor = sensor;
           NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
           return true;
         default:
@@ -629,108 +619,16 @@
     }
 
 		/// <summary>
-		/// Sets the manifold for the given side. Is a manifold already exists, then it will be replaced by the new manifold.
+		/// Attempts to remove the given manifold from the analyzer. Obviously, if the manifold is not in the analyzer, we
+		/// will do nothing.
 		/// </summary>
-		/// <returns><c>true</c>, if manifold was set, <c>false</c> otherwise.</returns>
-		/// <param name="side">Side.</param>
+		/// <returns><c>true</c>, if manifold was removed, <c>false</c> otherwise.</returns>
 		/// <param name="manifold">Manifold.</param>
-		public bool SetManifold(ESide side, Manifold manifold) {
-			switch (side) {
-				case ESide.Low:
-					RemoveManifold(ESide.Low);
-					lowSideManifold = manifold;
-					if (manifold != null && manifold.ptChart == null) {
-          manifold.ptChart = ion.fluidManager.lastUsedFluid.GetPtChart(Fluid.EState.Dew);
-					}
-					NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.Low));
-				  return true;
-				case ESide.High:
-					RemoveManifold(ESide.High);
-					highSideManifold = manifold;
-					if (manifold != null && manifold.ptChart == null) {
-						manifold.ptChart = ion.fluidManager.lastUsedFluid.GetPtChart(Fluid.EState.Bubble);
-					}
-					NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
-				  return true;
-				default:
-          return false;
-			}
-		}
-
-		/// <summary>
-		/// Sets the manifold for remote viewing linked sensors.
-		/// </summary>
-		/// <returns><c>true</c>, if remote manifold was set, <c>false</c> otherwise.</returns>
-		/// <param name="side">Side.</param>
-		/// <param name="sensor">Sensor.</param>
-		public bool SetRemoteManifold(ESide side, Sensor sensor, Fluid remoteFluid){
-			if(sensor == null){
-				RemoveManifold(side);
-				return false;
-			}
-      switch (side) {
-        case ESide.Low:
-          RemoveManifold(ESide.Low);
-          lowSideManifold = new Manifold(sensor);
-          lowSideManifold.ptChart = remoteFluid.GetPtChart(Fluid.EState.Bubble);
-          NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.Low));
-          return true;
-        case ESide.High:
-          RemoveManifold(ESide.High);
-          highSideManifold = new Manifold(sensor);
-          highSideManifold.ptChart = remoteFluid.GetPtChart(Fluid.EState.Dew);
-          NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
-          return true;
-        default:
-          return true;
-      }
-		}
-    /// <summary>
-    /// Queries the and sets the value of side to the side of the given manifold. If the manifold is not present in the
-    /// analyzer, we will return false and set the side to ESide.Low.
-    /// </summary>
-    /// <returns><c>true</c>, if side of manifold was gotten, <c>false</c> otherwise.</returns>
-    /// <param name="manifold">Manifold.</param>
-    /// <param name="side">Side.</param>
-    public bool GetSideOfManifold(Manifold manifold, out ESide side) {
-      if (lowSideManifold == manifold) {
-        side = ESide.Low;
-        return true;
-      } else if (highSideManifold == manifold) {
-        side = ESide.High;
-        return true;
-      } else {
-        side = ESide.Low;
-        return false;
-      }
-    }
-
-    /// <summary>
-    /// Queries whether or not the analyzer has a manifold on the given side.
-    /// </summary>
-    /// <returns><c>true</c> if this instance has manifold on side the specified ; otherwise, <c>false</c>.</returns>
-    /// <param name="">.</param>
-    public bool HasManifoldOnSide(ESide side) {
-      switch (side) {
-        case ESide.Low:
-          return lowSideManifold != null;
-        case ESide.High:
-          return highSideManifold != null;
-        default:
-          return false;
-      }
-    }
-
-    /// <summary>
-    /// Attempts to remove the given manifold from the analyzer. Obviously, if the manifold is not in the analyzer, we
-    /// will do nothing.
-    /// </summary>
-    /// <returns><c>true</c>, if manifold was removed, <c>false</c> otherwise.</returns>
-    /// <param name="manifold">Manifold.</param>
-    public void RemoveManifold(Manifold manifold) {
-      if (lowSideManifold == manifold) {
+		//public void RemoveManifold(Manifold manifold)	{
+		public void RemoveManifold(Sensor sensor) {
+      if (lowSideSensor == sensor) {
         RemoveManifold(ESide.Low);
-      } else if (highSideManifold == manifold) {
+      } else if (highSideSensor == sensor) {
         RemoveManifold(ESide.High);
       }
     }
@@ -743,32 +641,14 @@
     public void RemoveManifold(ESide side) {
       switch (side) {
         case ESide.Low:
-          lowSideManifold = null;
+          lowSideSensor = null;
           NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldRemoved, ESide.Low));
           break;
         case ESide.High:
-          highSideManifold = null;
+          highSideSensor = null;
           NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldRemoved, ESide.High));
           break;
       } 
-    }
-
-    /// <summary>
-    /// Queries the manifold from the given side of the analyzer.
-    /// </summary>
-    /// <returns>The manifold from side.</returns>
-    /// <param name="side">Side.</param>
-    public Manifold GetManifoldFromSide(ESide side) {
-      switch (side) {
-        case ESide.Low:
-          return lowSideManifold;
-        case ESide.High:
-          return highSideManifold;
-        default:
-        Log.E(this,"Failed to get manifold from side: " + side);
-        return null;
-          //throw new Exception("Failed to get manifold from side: " + side);
-      }
     }
 
     /// <summary>
@@ -860,42 +740,31 @@
 
       if (firstIsInManifold && secondIsInManifold) {
         // Great! Simply swap the manifolds and the two sensors.
-        var low = lowSideManifold;
-        var high = highSideManifold;
+        var low = lowSideSensor;
+        var high = highSideSensor;
 
-        lowSideManifold = high;
-        highSideManifold = low;
+        lowSideSensor = high;
+        highSideSensor = low;
 
-        // Update the systems sides for the ptchart.
-        lowSideManifold.ptChart = lowSideManifold.ptChart.fluid.GetPtChart(Fluid.EState.Dew);
-        highSideManifold.ptChart = highSideManifold.ptChart.fluid.GetPtChart(Fluid.EState.Bubble);
-
-				lowSideManifold.SetSecondarySensor(null);
-				highSideManifold.SetSecondarySensor(null);
+				lowSideSensor.SetLinkedSensor(null);
+				highSideSensor.SetLinkedSensor(null);
       } else {
         if (firstIsInManifold) {
-          ESide side;
-          if (GetSideOfIndex(first, out side)) {
-						var manifold = GetManifoldFromSide(side);
-						if (manifold.primarySensor.Equals(sensors[first])) {
-							RemoveManifold(side);
-						} else {
-							manifold.SetSecondarySensor(null);
-						}
+          if(lowSideSensor == sensors[first]){
+            
+          } else if (highSideSensor == sensors[first]){
+            
           }
         }
 
         if (secondIsInManifold) {
-          ESide side;
-          if (GetSideOfIndex(second, out side)) {
-						var manifold = GetManifoldFromSide(side);
-						if (manifold.primarySensor.Equals(sensors[second])) {
-            	RemoveManifold(side);
-						} else {
-							manifold.SetSecondarySensor(null);
-						}
-          }
-        }
+					if (lowSideSensor == sensors[first]) {
+
+					}	else if (highSideSensor == sensors[first]) {
+
+					}
+				}
+
       }
 
       swap();
@@ -912,25 +781,7 @@
 				return;
 			}
 
-			RemoveSensorFromManifold(side, sensor);
-		}
-
-		/// <summary>
-		/// Attempts to remove the given sensor from the manifold on the given side of the analyzer.
-		/// </summary>
-		/// <param name="side">Side.</param>
-		/// <param name="sensor">Sensor.</param>
-		public void RemoveSensorFromManifold(ESide side, Sensor sensor) {
-			var manifold = GetManifoldFromSide(side);
-			if (manifold == null) {
-				return;
-			}
-
-			if (manifold.primarySensor.Equals(sensor)) {
-				RemoveManifold(side);
-			} else if (manifold.secondarySensor != null && manifold.secondarySensor.Equals(sensor)) {
-				manifold.SetSecondarySensor(null);
-			}
+			RemoveSensor(sensor);
 		}
 
     /// <summary>

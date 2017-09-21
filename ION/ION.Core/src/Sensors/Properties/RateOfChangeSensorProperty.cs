@@ -122,14 +122,16 @@
 
 		private bool isRegisteredToSecondary;
 
-//		[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
-//		public RateOfChangeSensorProperty(Sensor sensor) : this(new Manifold(sensor)) {
-//		}
+		//		[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
+		//		public RateOfChangeSensorProperty(Sensor sensor) : this(new Manifold(sensor)) {
+		//		}
 
-//		public RateOfChangeSensorProperty(Manifold manifold) : this(manifold, GRAPH_INTERVAL) {
-//		}
+		//		public RateOfChangeSensorProperty(Manifold manifold) : this(manifold, GRAPH_INTERVAL) {
+		//		}
 
-		public RateOfChangeSensorProperty(Manifold manifold, TimeSpan interval) : base(manifold) {
+		//public RateOfChangeSensorProperty(Manifold manifold, TimeSpan interval) : base(manifold){
+		//public RateOfChangeSensorProperty(Sensor sensor, TimeSpan interval) : base(manifold){
+		public RateOfChangeSensorProperty(Sensor sensor, TimeSpan interval) : base(sensor) {
       this.interval = interval;
       window = TimeSpan.FromMilliseconds(interval.TotalMilliseconds * POINT_LIMIT);
 			flags = EFlags.ShowAll;
@@ -159,8 +161,9 @@
         rocBuffer.Clear();
       }
 
-			if (manifold.secondarySensor != null && !isRegisteredToSecondary) {
-				manifold.secondarySensor.onSensorStateChangedEvent += SensorChangeEvent;
+			if (sensor.linkedSensor != null && !isRegisteredToSecondary) {
+				//sensor.linkedSensor.onSensorStateChangedEvent += SensorChangeEvent;
+				sensor.linkedSensor.onSensorEvent += SensorChangeEvent;
 			}
 		}
 
@@ -168,8 +171,9 @@
 		public override void Dispose() {
 			base.Dispose();
 			if (isRegisteredToSecondary) {
-				if (manifold.secondarySensor != null) {
-					manifold.secondarySensor.onSensorStateChangedEvent -= SensorChangeEvent;
+				if (sensor.linkedSensor != null) {
+					//sensor.linkedSensor.onSensorStateChangedEvent -= SensorChangeEvent;
+					sensor.linkedSensor.onSensorEvent -= SensorChangeEvent;
 				}
 			}
 			AppState.context.preferences.onPreferencesChanged -= OnPreferencesChanged;
@@ -181,14 +185,16 @@
 
 			switch (e.type) {
 				case ManifoldEvent.EType.SecondarySensorAdded: {
-					if (manifold.secondarySensor != null && !isRegisteredToSecondary) {
-						manifold.secondarySensor.onSensorStateChangedEvent += SensorChangeEvent;
+					if (sensor.linkedSensor != null && !isRegisteredToSecondary) {
+							//sensor.linkedSensor.onSensorStateChangedEvent += SensorChangeEvent;
+							sensor.linkedSensor.onSensorEvent += SensorChangeEvent;
 					}
 					break;
-				} // ManifoldEvent.EType.SecondarySensorAdd
+				} 
 				case ManifoldEvent.EType.SecondarySensorRemoved: {
-					if (manifold.secondarySensor != null && isRegisteredToSecondary) {
-						manifold.secondarySensor.onSensorStateChangedEvent -= SensorChangeEvent;
+					if (sensor.linkedSensor != null && isRegisteredToSecondary) {
+							//sensor.linkedSensor.onSensorStateChangedEvent -= SensorChangeEvent;
+							sensor.linkedSensor.onSensorEvent -= SensorChangeEvent;
 					}
 					break;
 				} // Manifold.EType.SecondarySensorRemove
@@ -265,13 +271,15 @@
 					max = dp.measurement;
 				}
 			}
-				
-      var u = manifold.primarySensor.unit.standardUnit;
+
+			//var u = manifold.primarySensor.unit.standardUnit;
+			var u = sensor.unit.standardUnit;
 			return new MinMax(u.OfScalar(min), u.OfScalar(max));
 		}
 
 		public MinMax GetSecondaryMinMax() {
-			if (manifold.secondarySensor == null) {
+			//if (manifold.secondarySensor == null)	{
+			if (sensor.linkedSensor == null) {
 				return null;
 			} else {
 				double min = double.MaxValue, max = double.MinValue;
@@ -285,7 +293,8 @@
 					}
 				}
 
-        var u = manifold.secondarySensor.unit.standardUnit;
+				//var u = manifold.secondarySensor.unit.standardUnit;
+				var u = sensor.linkedSensor.unit.standardUnit;
 				return new MinMax(u.OfScalar(min), u.OfScalar(max));
 			}
 		}
@@ -321,8 +330,10 @@
       }
 			if (DateTime.Now - lastRecord >= interval) {
 				primarySensorBuffer.Add(new PlotPoint(sensor.measurement.ConvertTo(sensor.unit.standardUnit).amount));
-				if (manifold.secondarySensor != null) {
-					var ss = manifold.secondarySensor;
+				//if (manifold.secondarySensor != null)	{
+				if (sensor.linkedSensor != null) {
+					//var ss = manifold.secondarySensor;
+					var ss = sensor.linkedSensor;
 					secondarySensorBuffer.Add(new PlotPoint(ss.measurement.ConvertTo(ss.unit.standardUnit).amount));
 				}
 				lastRecord = DateTime.Now;

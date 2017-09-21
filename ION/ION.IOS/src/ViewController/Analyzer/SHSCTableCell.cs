@@ -22,10 +22,6 @@ namespace ION.IOS.ViewController.Analyzer {
     }
 
     public void makeEvents(lowHighSensor lhSensor, CGRect tableRect){
-      if (!(ion is RemoteIosION) && lhSensor.manifold.ptChart.fluid != AppState.context.fluidManager.lastUsedFluid) {
-        lhSensor.manifold.ptChart = PTChart.New(AppState.context, lhSensor.manifold.ptChart.state);
-      }
-
       cellHeader = new UILabel(new CGRect(0,0, 1.006 * tableRect.Width, .5 * lhSensor.cellHeight));
 
       cellHeader = lhSensor.shFluidState;
@@ -38,19 +34,15 @@ namespace ION.IOS.ViewController.Analyzer {
       cellHeader.AdjustsFontSizeToFitWidth = true;
 
       fluidType = lhSensor.shFluidType;
-      if (lhSensor.manifold != null && lhSensor.manifold.ptChart != null) {
-        var name = lhSensor.manifold.ptChart.fluid.name;
-        fluidType.Text = name;
-        fluidType.BackgroundColor = CGExtensions.FromARGB8888(lhSensor.ion.fluidManager.GetFluidColor(name));
-        if(lhSensor.manifold.ptChart.state.Equals(Fluid.EState.Dew)){
-          cellHeader.Text = Util.Strings.Analyzer.SC;
-        } else if (lhSensor.manifold.ptChart.state.Equals(Fluid.EState.Bubble)){
-          cellHeader.Text = Util.Strings.Analyzer.SH;
-        }
-      } else {
-        fluidType.Text = "----";
-        fluidType.BackgroundColor = UIColor.White;
+
+      fluidType.Text = ion.fluidManager.lastUsedFluid.name;
+      fluidType.BackgroundColor = CGExtensions.FromARGB8888(lhSensor.ion.fluidManager.GetFluidColor(ion.fluidManager.lastUsedFluid.name));
+      if(lhSensor.currentSensor.fluidState.Equals(Fluid.EState.Dew)){
+        cellHeader.Text = Util.Strings.Analyzer.SC;
+      } else if (lhSensor.currentSensor.fluidState.Equals(Fluid.EState.Bubble)){
+        cellHeader.Text = Util.Strings.Analyzer.SH;
       }
+
       fluidType.TextAlignment = UITextAlignment.Center;
       fluidType.Font = UIFont.FromName("Helvetica", 18f);
       fluidType.AdjustsFontSizeToFitWidth = true;
@@ -58,20 +50,20 @@ namespace ION.IOS.ViewController.Analyzer {
       fluidType.Layer.BorderWidth = 1f;
 
       tempReading = lhSensor.shReading;
-      if (lhSensor.manifold.secondarySensor != null) {
+      if (lhSensor.currentSensor.linkedSensor != null) {
 				var stateCheck = new ScalarSpan();
-        if(lhSensor.manifold.primarySensor.type == ESensorType.Pressure){
-          var calculation = lhSensor.manifold.ptChart.CalculateTemperatureDelta(lhSensor.manifold.primarySensor.measurement, lhSensor.manifold.secondarySensor.measurement, lhSensor.manifold.primarySensor.isRelative);
+        if(lhSensor.currentSensor.type == ESensorType.Pressure){
+          var calculation = ion.fluidManager.lastUsedFluid.CalculateTemperatureDelta(lhSensor.currentSensor.fluidState,lhSensor.currentSensor.measurement, lhSensor.currentSensor.linkedSensor.measurement);
 	        stateCheck = calculation;  
-					if (!lhSensor.manifold.ptChart.fluid.mixture && calculation < 0) {
+					if (!ion.fluidManager.lastUsedFluid.mixture && calculation < 0) {
             calculation = calculation * -1;
           }
           cellHeader.Text = lhSensor.shFluidState.Text;
 					tempReading.Text = calculation.magnitude.ToString("N")+ " " + calculation.unit.ToString();
         } else {
-          var calculation = lhSensor.manifold.ptChart.CalculateTemperatureDelta(lhSensor.manifold.secondarySensor.measurement, lhSensor.manifold.primarySensor.measurement, lhSensor.manifold.secondarySensor.isRelative);
+          var calculation = ion.fluidManager.lastUsedFluid.CalculateTemperatureDelta(lhSensor.currentSensor.fluidState, lhSensor.currentSensor.linkedSensor.measurement, lhSensor.currentSensor.measurement);
           stateCheck = calculation;  
-					if (!lhSensor.manifold.ptChart.fluid.mixture && calculation < 0) {
+					if (!ion.fluidManager.lastUsedFluid.mixture && calculation < 0) {
             calculation = calculation * -1;
           }
           cellHeader.Text = lhSensor.shFluidState.Text;
@@ -79,15 +71,15 @@ namespace ION.IOS.ViewController.Analyzer {
         }
        	
         var ptAmount = stateCheck.magnitude;
-        if (!lhSensor.manifold.ptChart.fluid.mixture){
+        if (!ion.fluidManager.lastUsedFluid.mixture){
           if (ptAmount < 0) {
             lhSensor.shFluidState.Text = Util.Strings.Analyzer.SC;
           } else {
             lhSensor.shFluidState.Text = Util.Strings.Analyzer.SH;
           }
-        } else if (lhSensor.manifold.ptChart.state.Equals(Fluid.EState.Bubble)) {
+        } else if (lhSensor.currentSensor.fluidState.Equals(Fluid.EState.Bubble)) {
           lhSensor.shFluidState.Text = Util.Strings.Analyzer.SC;
-        } else if (lhSensor.manifold.ptChart.state.Equals(Fluid.EState.Dew)) {
+        } else if (lhSensor.currentSensor.fluidState.Equals(Fluid.EState.Dew)) {
           lhSensor.shFluidState.Text = Util.Strings.Analyzer.SH;
         }  
       } else {

@@ -17,7 +17,8 @@ namespace ION.IOS.ViewController.Workbench {
       }
     }
 
-    public MeasurementRecord(Manifold manifold, ISensorProperty sensorProperty) : base(manifold, sensorProperty) {
+		//public MeasurementRecord(Manifold manifold, ISensorProperty sensorProperty) : base(manifold, sensorProperty) {
+		public MeasurementRecord(Sensor sensor, ISensorProperty sensorProperty) : base(sensor, sensorProperty) {
     }
   }
 

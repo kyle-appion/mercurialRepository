@@ -344,17 +344,20 @@ namespace ION.IOS.ViewController.Analyzer {
 
 			///CREATE MANUAL MANIFOLDS
 			if (dtypeButton.AccessibilityIdentifier.Equals("Pressure")) {
-				start.pressedSensor.manualSensor = new ManualSensor(ESensorType.Pressure, ion.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0));
+				start.pressedSensor.manualSensor = new ManualSensor(ion.manualSensorContainer, ESensorType.Pressure, ion.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0));
+				//start.pressedSensor.manualSensor = new ManualSensor(ESensorType.Pressure, ion.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0));
 			} else if (dtypeButton.AccessibilityIdentifier.Equals("Temperature")) {
-				start.pressedSensor.manualSensor = new ManualSensor(ESensorType.Temperature, ion.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0));
+				start.pressedSensor.manualSensor = new ManualSensor(ion.manualSensorContainer, ESensorType.Temperature, ion.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0));
+				//start.pressedSensor.manualSensor = new ManualSensor(ESensorType.Temperature, ion.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0));
 			} else {
-				start.pressedSensor.manualSensor = new ManualSensor(ESensorType.Vacuum, ion.preferences.units.DefaultUnitFor(ESensorType.Vacuum).OfScalar(0.0));
+				start.pressedSensor.manualSensor = new ManualSensor(ion.manualSensorContainer, ESensorType.Vacuum, ion.preferences.units.DefaultUnitFor(ESensorType.Vacuum).OfScalar(0.0));
+				//start.pressedSensor.manualSensor = new ManualSensor(ESensorType.Vacuum, ion.preferences.units.DefaultUnitFor(ESensorType.Vacuum).OfScalar(0.0));
 			}
 
 			///SET MANUALSENSOR MEASUREMENT AND UNIT TYPE
 			start.pressedSensor.manualSensor.unit = AnalyserUtilities.getManualUnit(start.pressedSensor.manualSensor.type, mbuttonText.Text.ToLower());
 
-			start.pressedSensor.manualSensor.measurement = new Scalar(start.pressedSensor.manualSensor.unit, Convert.ToDouble(mtextValue.Text));
+      ((ManualSensor)start.pressedSensor.manualSensor).SetMeasurement(new Scalar(start.pressedSensor.manualSensor.unit, Convert.ToDouble(mtextValue.Text)));
 
 			textValidation.Hidden = true;
 			mdoneButton.TouchUpInside -= handleManualPopup;
@@ -419,15 +422,18 @@ namespace ION.IOS.ViewController.Analyzer {
 					analyzerSensors.viewList[i].isManual = true;
 
 					if (dtypeButton.AccessibilityIdentifier.Equals("Pressure")) {
-						analyzerSensors.viewList[i].manualSensor = new ManualSensor(ESensorType.Pressure, ion.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0));
+						analyzerSensors.viewList[i].manualSensor = new ManualSensor(ion.manualSensorContainer, ESensorType.Pressure, ion.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0));
+						//analyzerSensors.viewList[i].manualSensor = new ManualSensor(ESensorType.Pressure, ion.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0));
 					} else if (dtypeButton.AccessibilityIdentifier.Equals("Temperature")) {
-						analyzerSensors.viewList[i].manualSensor = new ManualSensor(ESensorType.Temperature, ion.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0));
+						analyzerSensors.viewList[i].manualSensor = new ManualSensor(ion.manualSensorContainer, ESensorType.Temperature, ion.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0));
+						//analyzerSensors.viewList[i].manualSensor = new ManualSensor(ESensorType.Temperature, ion.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0));
 					} else {
-						analyzerSensors.viewList[i].manualSensor = new ManualSensor(ESensorType.Vacuum, ion.preferences.units.DefaultUnitFor(ESensorType.Vacuum).OfScalar(0.0));
+						analyzerSensors.viewList[i].manualSensor = new ManualSensor(ion.manualSensorContainer, ESensorType.Vacuum, ion.preferences.units.DefaultUnitFor(ESensorType.Vacuum).OfScalar(0.0));
+						//analyzerSensors.viewList[i].manualSensor = new ManualSensor(ESensorType.Vacuum, ion.preferences.units.DefaultUnitFor(ESensorType.Vacuum).OfScalar(0.0));
 					}
 					analyzerSensors.viewList[i].manualSensor.name = analyzerSensors.viewList[i].topLabel.Text;
 					analyzerSensors.viewList[i].manualSensor.unit = AnalyserUtilities.getManualUnit(analyzerSensors.viewList[i].manualSensor.type, mbuttonText.Text.ToLower());
-					analyzerSensors.viewList[i].manualSensor.measurement = new Scalar(analyzerSensors.viewList[i].manualSensor.unit, Convert.ToDouble(mtextValue.Text));
+          ((ManualSensor)analyzerSensors.viewList[i].manualSensor).SetMeasurement(new Scalar(analyzerSensors.viewList[i].manualSensor.unit, Convert.ToDouble(mtextValue.Text)));
 
 					Console.WriteLine("Handlemanuallhpopup about to low high associate");
 					if (begin == 4) {
@@ -436,15 +442,12 @@ namespace ION.IOS.ViewController.Analyzer {
 						lowHighSensors.highArea.manualGType = analyzerSensors.viewList[i].manualSensor.type.ToString();
 						lowHighSensors.highArea.isManual = true;
             ion.currentAnalyzer.SetManifold(Core.Content.Analyzer.ESide.High,lowHighSensors.highArea.manualSensor);
-						ion.currentAnalyzer.highSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Bubble);
-						lowHighSensors.highArea.manifold = ion.currentAnalyzer.highSideManifold;
 
 						///////////////////// change the high manifold to be based on moved location instead of created position
 						Console.WriteLine("addLHDeviceSensor already on analyzer Should change highAccessibility to " + i + " instead of " + analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier);
 						lowHighSensors.highArea.snapArea.AccessibilityIdentifier = i.ToString();
 						ion.currentAnalyzer.highAccessibility = i.ToString();
 						/////////////////////                          
-						//analyzer.highSubviews = analyzerSensors.viewList[i].highArea.tableSubviews; 
 						lowHighSensors.highArea.setLHUI();
 
 					} else {
@@ -453,8 +456,6 @@ namespace ION.IOS.ViewController.Analyzer {
 						lowHighSensors.lowArea.manualGType = analyzerSensors.viewList[i].manualSensor.type.ToString();
 						lowHighSensors.lowArea.isManual = true;
 						ion.currentAnalyzer.SetManifold(Core.Content.Analyzer.ESide.Low, lowHighSensors.highArea.manualSensor);
-						ion.currentAnalyzer.lowSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
-						lowHighSensors.lowArea.manifold = ion.currentAnalyzer.lowSideManifold;
 
 						///////////////////// change the low manifold to be based on moved location instead of created position
 						Console.WriteLine("handleManualLHPopup Should change lowAccessibility to " + i + " instead of " + analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier);
@@ -462,7 +463,6 @@ namespace ION.IOS.ViewController.Analyzer {
 						ion.currentAnalyzer.lowAccessibility = i.ToString();
 						/////////////////////
 						lowHighSensors.lowArea.setLHUI();
-
 					}
 
 					break;

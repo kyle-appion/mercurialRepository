@@ -19,7 +19,7 @@ namespace ION.Core.Devices {
 
       var factory = ion.deviceManager.deviceFactory;
       var defn = factory.GetDeviceDefinition(sn);
-      return defn.CreateDevice(sn, new DebugConnection(sn.ToString(), "DebugAddress_" + sn.batchId), null);
+      return defn.CreateDevice(ion,sn, new DebugConnection(sn.ToString(), "DebugAddress_" + sn.batchId), null);
     }
 #endif
   }

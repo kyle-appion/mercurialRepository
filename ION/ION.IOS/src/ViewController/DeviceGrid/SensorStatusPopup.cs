@@ -202,12 +202,8 @@ namespace ION.IOS.ViewController {
       //Console.WriteLine("Add sensor " + sensor.device.sensors[0].name +" "+sensor.device.sensors[0].type.ToString()+" to workbench" );
       popupView.Hidden = true;
       if (ion.currentWorkbench.IndexOf(sensor.device.sensors[0]) == -1) {
-        if (fromWorkbench){
-					gridVC.inflateWorkbench(sensor.device.sensors[0]);
-				} else {
 					ion.currentWorkbench.AddSensor(sensor.device.sensors[0]);
 					gridVC.inflateWorkbench();
-				}
 			} else {
 				Console.WriteLine("Manifold is already on the Workbench");
 			}
@@ -217,24 +213,16 @@ namespace ION.IOS.ViewController {
       if(sensor.device.sensorCount == 1){
 				popupView.Hidden = true;
 				if (ion.currentWorkbench.IndexOf(sensor.device.sensors[0]) == -1) {
-					if (fromWorkbench) {
-						gridVC.inflateWorkbench(sensor.device.sensors[0]);
-					} else {
-						ion.currentWorkbench.AddSensor(sensor.device.sensors[0]);
-						gridVC.inflateWorkbench();
-					}
+					ion.currentWorkbench.AddSensor(sensor.device.sensors[0]);
+					gridVC.inflateWorkbench();
 				} else {
 					Console.WriteLine("Pressure Manifold is already on the Workbench");
 				}
 			} else {
 				popupView.Hidden = true;
 				if (ion.currentWorkbench.IndexOf(sensor.device.sensors[1]) == -1) {
-					if (fromWorkbench) {
-						gridVC.inflateWorkbench(sensor.device.sensors[1]);
-					} else {
-						ion.currentWorkbench.AddSensor(sensor.device.sensors[1]);
-						gridVC.inflateWorkbench();
-					}
+					ion.currentWorkbench.AddSensor(sensor.device.sensors[1]);
+					gridVC.inflateWorkbench();
         } else {
 					Console.WriteLine("Temperature Manifold is already on the Workbench");
 				}
@@ -297,11 +285,11 @@ namespace ION.IOS.ViewController {
 
     public void updatePopup(GaugeDeviceSensor passedSensor){
       if(sensor != null){
-				sensor.onSensorStateChangedEvent -= updateSensor;
+				sensor.onSensorEvent -= updateSensor;
 			}
       Console.WriteLine("Analyzer slot index: " + analyzerSlot);
       sensor = passedSensor;
-			sensor.onSensorStateChangedEvent += updateSensor;
+			sensor.onSensorEvent += updateSensor;
 			nameLabel.Text = sensor.device.serialNumber.deviceModel.GetTypeString() + ":" + sensor.device.serialNumber.rawSerial.ToUpper();
 			deviceImage.Image = Devices.DeviceUtil.GetUIImageFromDeviceModel(sensor.device.serialNumber.deviceModel);
 
@@ -320,19 +308,19 @@ namespace ION.IOS.ViewController {
         addWorkbench1.Hidden = false;
         addAnalyzer1.Hidden = false;
       }
-      sensor.NotifySensorStateChanged();
+      sensor.NotifyInvalidated();
 		}
 
-    public void updateSensor(Sensor sensor){
-      var updateSensor = sensor as GaugeDeviceSensor;
+    public void updateSensor(SensorEvent sensorEvent){
+      var updateSensor = sensorEvent.sensor as GaugeDeviceSensor;
 			if (updateSensor.device.sensorCount == 1) {
-				typeLabel2.Text = sensor.type.ToString();
+				typeLabel2.Text = updateSensor.type.ToString();
 
 				if (updateSensor.device.isConnected) {
 					bluetoothImage.Image = UIImage.FromBundle("ic_bluetooth_connected");
 					bluetoothImage.BackgroundColor = UIColor.Green;
-					measurementLabel2.Text = sensor.measurement.amount.ToString();
-					unitLabel2.Text = sensor.measurement.unit.ToString();
+					measurementLabel2.Text = updateSensor.measurement.amount.ToString();
+					unitLabel2.Text = updateSensor.measurement.unit.ToString();
 
 				} else {
 					bluetoothImage.Image = UIImage.FromBundle("ic_bluetooth_disconnected");

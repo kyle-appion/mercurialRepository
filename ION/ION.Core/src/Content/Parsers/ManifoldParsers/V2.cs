@@ -45,35 +45,41 @@
 		}
 
 		// Overridden from ManifoldParser
-		public override void DoWriteManifold(IION ion, Manifold manifold, BinaryWriter writer) {
+		//public override void DoWriteManifold(IION ion, Manifold manifold, BinaryWriter writer){
+	  public override void DoWriteManifold(IION ion, Sensor sensor, BinaryWriter writer) {
 			// Write primary sensor
-			SensorParser.WriteSensor(ion, manifold.primarySensor, writer);
+			//SensorParser.WriteSensor(ion, manifold.primarySensor, writer);
+			SensorParser.WriteSensor(ion, sensor, writer);
 			// Write secondary sensor
-			SensorParser.WriteSensor(ion, manifold.secondarySensor, writer);
+			//SensorParser.WriteSensor(ion, manifold.secondarySensor, writer);
+			SensorParser.WriteSensor(ion, sensor.linkedSensor, writer);
 
 			// Write fluid name
-			if (manifold.ptChart == null) {
-				writer.Write(false); // Doens't have a pt chart.
-			} else {
-				writer.Write(true); // Does have a pt chart
-				writer.Write(Enum.GetName(typeof(Fluid.EState), manifold.ptChart.state));
-				if (manifold.ptChart.fluid == null) {
-					writer.Write("");
-				} else {
-					writer.Write(manifold.ptChart.fluid.name);
-				}
-			}
+			//if (sensor.ptChart == null) {
+			//	writer.Write(false); // Doens't have a pt chart.
+			//} else {
+			//	writer.Write(true); // Does have a pt chart
+			//	writer.Write(Enum.GetName(typeof(Fluid.EState), sensor.fluidState));
+			//	if (ion.fluidManager.lastUsedFluid == null) {
+			//		writer.Write("");
+			//	} else {
+			//		writer.Write(ion.fluidManager.lastUsedFluid.name);
+			//	}
+			//}
 
 			// The number of sensor properties that the manifold ha
-			writer.Write(manifold.sensorProperties.Count);
+			//writer.Write(manifold.sensorProperties.Count);
+			writer.Write(sensor.sensorProperties.Count);
 			// Write sensor properties
-			foreach (var sp in manifold.sensorProperties) {
+			//foreach (var sp in manifold.sensorProperties)	{
+			foreach (var sp in sensor.sensorProperties) {
 				WriteSensorProperty(sp, writer);
 			}
 		}
 
 		// Overridden from ManifoldParser
-		public override Manifold DoReadManifold(IION ion, BinaryReader reader) {
+		//public override Manifold DoReadManifold(IION ion, BinaryReader reader){
+		public override Sensor DoReadManifold(IION ion, BinaryReader reader) {
 			// Read the primary sensor
 			Sensor primary = SensorParser.ReadSensor(ion, reader);
 			// Assert that the primary sensor is not null;
@@ -85,8 +91,10 @@
 			Sensor secondary = SensorParser.ReadSensor(ion, reader);
 
 			// Create the inflated manifold
-			var ret = new Manifold(primary);
-			ret.SetSecondarySensor(secondary);
+			//var ret = new Manifold(primary);
+			var ret = primary;
+			//ret.SetSecondarySensor(secondary);
+			ret.SetLinkedSensor(secondary);
 
 			if (reader.ReadBoolean()) {
 				var state = (Fluid.EState)Enum.Parse(typeof(Fluid.EState), reader.ReadString());
@@ -98,13 +106,13 @@
           fluid = ion.fluidManager.LoadFluidAsync(fluidName).Result;
 				}
 
-        ret.ptChart = fluid.GetPtChart(state);
 			}
 
 			// Read sensor properties
 			var propCount = reader.ReadInt32();
 
 			for(int i = 0; i < propCount; i++){
+				//ReadSensorProperty(ion, ret, reader);
 				ReadSensorProperty(ion, ret, reader);
 			}
 
@@ -128,13 +136,16 @@
 			}
 		}
 
-		private void ReadSensorProperty(IION ion, Manifold manifold, BinaryReader reader) {
+		//private void ReadSensorProperty(IION ion, Manifold manifold, BinaryReader reader){
+		private void ReadSensorProperty(IION ion, Sensor sensor, BinaryReader reader) {
 			var code = (ECode)reader.ReadInt32();
 
 			var parser = parsers[code];
-			var sp = parser.Read(ion, manifold, reader);
+			//var sp = parser.Read(ion, manifold, reader);
+			var sp = parser.Read(ion, sensor, reader);
 			if (sp != null) {
-				manifold.AddSensorProperty(sp);
+				//manifold.AddSensorProperty(sp);
+				sensor.AddSensorProperty(sp);
 			}
 		}
 	}
@@ -162,7 +173,8 @@
 		/// <returns>The read.</returns>
 		/// <param name="manifold">Manifold.</param>
 		/// <param name="reader">Reader.</param>
-		ISensorProperty Read(IION ion, Manifold manifold, BinaryReader reader);
+		//ISensorProperty Read(IION ion, Manifold manifold, BinaryReader reader);
+		ISensorProperty Read(IION ion, Sensor sensor, BinaryReader reader);
 		/// <summary>
 		/// Called to let the subview parser write its own data.
 		/// Note: you only need to write the subviews data, not its type information unless the subview needs if for its
@@ -183,8 +195,10 @@
 		}
 
 		// Implemented for ISubviewParser
-		public ISensorProperty Read(IION ion, Manifold manifold, BinaryReader reader) {
-			return (ISensorProperty)Activator.CreateInstance(typeof(T), manifold);
+		//public ISensorProperty Read(IION ion, Manifold manifold, BinaryReader reader){
+		public ISensorProperty Read(IION ion, Sensor sensor, BinaryReader reader) {
+			//return (ISensorProperty)Activator.CreateInstance(typeof(T), manifold);
+			return (ISensorProperty)Activator.CreateInstance(typeof(T), sensor);
 		}
 
 		// Implemented for ISubviewParser
@@ -198,8 +212,10 @@
 		public ECode type { get { return ECode.AlternateUnit; } }
 
 		// Implemented for ISubviewParser
-		public ISensorProperty Read(IION ion, Manifold manifold, BinaryReader reader) {
-			var ret = new AlternateUnitSensorProperty(manifold);
+		//public ISensorProperty Read(IION ion, Manifold manifold, BinaryReader reader)	{
+			public ISensorProperty Read(IION ion, Sensor sensor, BinaryReader reader) {
+			//var ret = new AlternateUnitSensorProperty(manifold);
+			var ret = new AlternateUnitSensorProperty(sensor);
 
 			var usunit = reader.ReadInt32();
 
@@ -226,8 +242,10 @@
 		public ECode type { get { return ECode.RoC; } }
 
 		// Implemented for ISubviewParser
-		public ISensorProperty Read(IION ion, Manifold manifold, BinaryReader reader) {
-      var ret = new RateOfChangeSensorProperty(manifold, ion.preferences.device.trendInterval);
+		//public ISensorProperty Read(IION ion, Manifold manifold, BinaryReader reader){
+		public ISensorProperty Read(IION ion, Sensor sensor, BinaryReader reader) {
+			//var ret = new RateOfChangeSensorProperty(manifold, ion.preferences.device.trendInterval);
+			var ret = new RateOfChangeSensorProperty(sensor, ion.preferences.device.trendInterval);
 
       ret.Resize(ion.preferences.device.trendInterval);
 			ret.flags = (RateOfChangeSensorProperty.EFlags)reader.ReadInt32();

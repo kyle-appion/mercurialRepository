@@ -29,12 +29,12 @@ namespace ION.IOS.ViewController.Analyzer
     public GaugeDeviceSensor currentSensor {
       get { return __currentSensor;}
       set { if (__currentSensor != null) {
-          __currentSensor.onSensorStateChangedEvent -= gaugeUpdating;
+          __currentSensor.onSensorEvent -= gaugeUpdating;
             }
         __currentSensor = value;
 
         if (__currentSensor != null) {
-          __currentSensor.onSensorStateChangedEvent += gaugeUpdating;
+          __currentSensor.onSensorEvent += gaugeUpdating;
         }
       }
     } GaugeDeviceSensor __currentSensor;
@@ -128,24 +128,24 @@ namespace ION.IOS.ViewController.Analyzer
 			addIcon.Hidden = true;
 			//isManual = false;
 
-			if (ion.currentAnalyzer.lowSideManifold != null && ion.currentAnalyzer.lowSideManifold.secondarySensor != null && ion.currentAnalyzer.lowSideManifold.secondarySensor == currentSensor) {
+			if (ion.currentAnalyzer.lowSideSensor != null && ion.currentAnalyzer.lowSideSensor.linkedSensor != null && ion.currentAnalyzer.lowSideSensor.linkedSensor == currentSensor) {
 				topLabel.BackgroundColor = UIColor.Blue;
 				topLabel.TextColor = UIColor.Gray;
 			}
 
-			if (ion.currentAnalyzer.highSideManifold != null && ion.currentAnalyzer.highSideManifold.secondarySensor != null && ion.currentAnalyzer.highSideManifold.secondarySensor == currentSensor) {
+			if (ion.currentAnalyzer.highSideSensor != null && ion.currentAnalyzer.highSideSensor.linkedSensor != null && ion.currentAnalyzer.highSideSensor.linkedSensor == currentSensor) {
 				topLabel.BackgroundColor = UIColor.Red;
 				topLabel.TextColor = UIColor.Gray;
 			}
     }
 
-    public void gaugeUpdating(Sensor sensor){
-      if (sensor.unit != Units.Vacuum.MICRON) {
-        middleLabel.Text = sensor.measurement.amount.ToString("N") + " ";
+    public void gaugeUpdating(SensorEvent sensorEvent){
+      if (sensorEvent.sensor.unit != Units.Vacuum.MICRON) {
+        middleLabel.Text = sensorEvent.sensor.measurement.amount.ToString("N") + " ";
       } else {
-        middleLabel.Text = sensor.measurement.amount.ToString() + " ";
+        middleLabel.Text = sensorEvent.sensor.measurement.amount.ToString() + " ";
       }
-      bottomLabel.Text = sensor.measurement.unit.ToString() + " ";
+      bottomLabel.Text = sensorEvent.sensor.measurement.unit.ToString() + " ";
     }
   }
 	

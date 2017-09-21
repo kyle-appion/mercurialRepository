@@ -68,7 +68,7 @@ namespace ION.IOS.ViewController.JobManager {
       editJobImage = new UIButton(new CGRect(.84 * cellWidth,.25 * cellHeight,.5 * cellHeight, .5 * cellHeight));
       editJobImage.SetImage(UIImage.FromBundle("ic_bookmark").ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate),UIControlState.Normal);
 
-			if (JobID == ion.preferences.job.activeJob) {
+			if (JobID == ion.preferences.jobs.activeJob) {
 				editJobImage.TintColor = UIColor.Yellow;
       } else {
 				editJobImage.TintColor = UIColor.Black;
@@ -79,13 +79,13 @@ namespace ION.IOS.ViewController.JobManager {
       editJobImage.ContentMode = UIViewContentMode.Center;   
 
       editJobImage.TouchUpInside += (sender, e) => {
-  		 if (ion.preferences.job.activeJob == JobID) {
+  		 if (ion.preferences.jobs.activeJob == JobID) {
   		    Console.WriteLine("Unhooking job id " + JobID + " as active job");
-          ion.preferences.job.activeJob = 0;
+          ion.preferences.jobs.activeJob = 0;
           editJobImage.TintColor = UIColor.Black;
   	    } else {
   		    Console.WriteLine("Setting active job to " + JobID);
-  		    ion.preferences.job.activeJob = JobID;
+  		    ion.preferences.jobs.activeJob = JobID;
   		    editJobImage.TintColor = UIColor.Yellow;
   	    }
         clickedJobActive();

@@ -40,11 +40,12 @@
     /// </summary>
     /// <value>The type.</value>
     public EType type { get; internal set; }
-    /// <summary>
-    /// The manifold that changed.
-    /// </summary>
-    /// <value>The manifold.</value>
-    public Manifold manifold { get; internal set; }
+		/// <summary>
+		/// The manifold that changed.
+		/// </summary>
+		/// <value>The manifold.</value>
+		//public Manifold manifold { get; internal set; }
+		public Sensor sensor { get; internal set; }
     /// <summary>
     /// The index that a sensor property was removed from or added to. Index will be -1 when
     /// not used.
@@ -57,16 +58,18 @@
     /// <value>The index of the other.</value>
     public int otherIndex { get; internal set; }
 
-    /// <summary>
-    /// Creates a new manifold event.
-    /// </summary>
-    /// <param name="type">The type of event this is.</param>
-    /// <param name="manifold">Manifold.</param>
-    /// <param name="index">Index.</param>
-    /// <param name="otherIndex">Other index.</param>
-    public ManifoldEvent(EType type, Manifold manifold, int index, int otherIndex) {
+		/// <summary>
+		/// Creates a new manifold event.
+		/// </summary>
+		/// <param name="type">The type of event this is.</param>
+		/// <param name="manifold">Manifold.</param>
+		/// <param name="index">Index.</param>
+		/// <param name="otherIndex">Other index.</param>
+		//public ManifoldEvent(EType type, Manifold manifold, int index, int otherIndex){
+		public ManifoldEvent(EType type, Sensor sensor, int index, int otherIndex) {
       this.type = type;
-      this.manifold = manifold;      
+			//this.manifold = manifold;
+			this.sensor = sensor;      
       this.index = index;
       this.otherIndex = otherIndex;
     }
@@ -176,7 +179,7 @@
 					if (s != null) {
 						s.device.onDeviceEvent -= OnDeviceEvent;
 					}
-          __secondarySensor.onSensorStateChangedEvent -= OnManifoldSensorChanged;
+          //__secondarySensor.onSensorStateChangedEvent -= OnManifoldSensorChanged;
           NotifyOfEvent(ManifoldEvent.EType.SecondarySensorRemoved);
         }
 
@@ -187,7 +190,7 @@
             s.device.onDeviceEvent += OnDeviceEvent;
           }
 
-          __secondarySensor.onSensorStateChangedEvent += OnManifoldSensorChanged;
+          //__secondarySensor.onSensorStateChangedEvent += OnManifoldSensorChanged;
           OnManifoldSensorChanged(__secondarySensor);
 				  NotifyOfEvent(ManifoldEvent.EType.SecondarySensorAdded);
 				} 
@@ -230,18 +233,18 @@
     /// <summary>
     /// The pt chart that the manifold is expected to work with.
     /// </summary>
-    public PTChart ptChart {
-      get {
-        if (__ptChart == null) {
-          __ptChart = new PTChart(AppState.context.fluidManager.lastUsedFluid, Fluid.EState.Dew);
-        }
-        return __ptChart;
-      }
-      set {
-        __ptChart = value;
-        NotifyOfEvent(ManifoldEvent.EType.Invalidated);
-      }
-    } PTChart __ptChart;
+    //public PTChart ptChart {
+    //  get {
+    //    if (__ptChart == null) {
+    //      __ptChart = new PTChart(AppState.context.fluidManager.lastUsedFluid, Fluid.EState.Dew);
+    //    }
+    //    return __ptChart;
+    //  }
+    //  set {
+    //    __ptChart = value;
+    //    NotifyOfEvent(ManifoldEvent.EType.Invalidated);
+    //  }
+    //} PTChart __ptChart;
 
 
     /// <summary>
@@ -255,7 +258,7 @@
 			var s = primarySensor as GaugeDeviceSensor;
 			if (s != null) {
 				s.device.onDeviceEvent += OnDeviceEvent;
-        s.onSensorStateChangedEvent += OnManifoldSensorChanged;
+        //s.onSensorStateChangedEvent += OnManifoldSensorChanged;
 			}
     }
 
@@ -278,9 +281,9 @@
 
     // Overridden from IDispose
     public void Dispose() {
-      primarySensor.onSensorStateChangedEvent -= OnManifoldSensorChanged;
+      //primarySensor.onSensorStateChangedEvent -= OnManifoldSensorChanged;
       if (__secondarySensor != null) {
-        __secondarySensor.onSensorStateChangedEvent -= OnManifoldSensorChanged;
+        //__secondarySensor.onSensorStateChangedEvent -= OnManifoldSensorChanged;
       }
 
 			var s = primarySensor as GaugeDeviceSensor;
@@ -498,7 +501,7 @@
       }
 
       if (onManifoldEvent != null) {
-        onManifoldEvent(new ManifoldEvent(type, this, index, otherIndex));
+        //onManifoldEvent(new ManifoldEvent(type, this, index, otherIndex));
       }
     }
   }

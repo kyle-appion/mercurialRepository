@@ -26,7 +26,7 @@ namespace ION.IOS.ViewController.Analyzer {
 		public bool isUpdating = false;
 
 		public RateOfChangeSensorProperty cellRoc;
-    public Manifold cellManifold;
+		public Sensor cellSensor;
 
 		public PlotView plotView;
 		public LinearAxis BAX;
@@ -46,22 +46,22 @@ namespace ION.IOS.ViewController.Analyzer {
 
       cellRoc = lhSensor.roc;
 
-      cellManifold = lhSensor.manifold;
+			cellSensor = lhSensor.currentSensor;
 
       cellRoc.onSensorPropertyChanged += OnSensorPropertyChanged;
 
 			primaryColor = OxyColors.Blue;
 			secondaryColor = OxyColors.Red;
 
-			if (cellManifold.primarySensor.type == ESensorType.Temperature) {
+			if (cellSensor.type == ESensorType.Temperature) {
 				primaryColor = OxyColors.Red;
 				secondaryColor = OxyColors.Blue;
-				Console.WriteLine("Creating roc plotmodel for temperature sensor " + cellManifold.primarySensor.name);
-			} else if (cellManifold.primarySensor.type == ESensorType.Vacuum) {
+				Console.WriteLine("Creating roc plotmodel for temperature sensor " + cellSensor.name);
+			} else if (cellSensor.type == ESensorType.Vacuum) {
 				primaryColor = OxyColors.Maroon;
-				Console.WriteLine("Creating roc plotmodel for vacuum sensor " + cellManifold.primarySensor.name);
+				Console.WriteLine("Creating roc plotmodel for vacuum sensor " + cellSensor.name);
 			} else {
-				Console.WriteLine("Creating roc plotmodel for pressure sensor " + cellManifold.primarySensor.name);
+				Console.WriteLine("Creating roc plotmodel for pressure sensor " + cellSensor.name);
 			}
       Console.WriteLine("Cell height: " + this.Bounds.Height);
       cellHeader = new UILabel(new CGRect(0, 0, tableRect.Width, 36));
@@ -126,12 +126,12 @@ namespace ION.IOS.ViewController.Analyzer {
         plotView.Hidden = false;
       }
 
-			var device = (cellManifold.primarySensor as GaugeDeviceSensor)?.device;
+			var device = (cellSensor as GaugeDeviceSensor)?.device;
 			isConnected = device.isConnected;
 
 			if (device == null || device.isConnected) {
 				InvalidatePrimary();
-				if (cellManifold.secondarySensor != null && !(cellManifold.secondarySensor is ManualSensor)) {
+				if (cellSensor.linkedSensor != null && !(cellSensor.linkedSensor is ManualSensor)) {
 					InvalidateSecondary();
 				}
 				InvalidateTime();
@@ -185,13 +185,13 @@ namespace ION.IOS.ViewController.Analyzer {
 			}
 
 			var minMax = cellRoc.GetPrimaryMinMax();
-			var rangeAmount = cellRoc.manifold.primarySensor.maxMeasurement.ConvertTo(cellRoc.manifold.primarySensor.unit.standardUnit).amount * .05;
-			var sensorRange = new Scalar(cellRoc.manifold.primarySensor.unit.standardUnit, rangeAmount);
+			var rangeAmount = cellRoc.sensor.maxMeasurement.ConvertTo(cellRoc.sensor.unit.standardUnit).amount * .05;
+			var sensorRange = new Scalar(cellRoc.sensor.unit.standardUnit, rangeAmount);
 			//////VACUUM READINGS WILL HAVE 3 TIERS
 			/// ATM-> 15K microns(2000 Pa) = 10,000 BUFFER
 			/// 15K -> 1K microns(134 Pa) = 500 BUFFER
 			/// 1K -> 1 micron = 50 BUFFER
-			if (cellManifold.primarySensor.type == ESensorType.Vacuum) {
+			if (cellSensor.type == ESensorType.Vacuum) {
 				if (minMax.max >= 2000) {
 					rangeAmount = 2666.45;
 				} else if (minMax.max >= 134) {
@@ -200,8 +200,8 @@ namespace ION.IOS.ViewController.Analyzer {
 					rangeAmount = 7.0;
 				}
 			}
-			var sensorUnit = cellRoc.manifold.primarySensor.unit;
-			var sensorMin = cellRoc.manifold.primarySensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
+			var sensorUnit = cellRoc.sensor.unit;
+			var sensorMin = cellRoc.sensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
 
 			UpdateAxis(LAX, minMax.min, minMax.max, sensorRange, sensorUnit, sensorMin);
 			var primaryBuffer = cellRoc.primarySensorPoints;
@@ -223,7 +223,7 @@ namespace ION.IOS.ViewController.Analyzer {
 		}
 
 		private void InvalidateSecondary() {
-			if (cellManifold.secondarySensor == null) {
+			if (cellSensor.linkedSensor == null) {
 				return;
 			}
 
@@ -232,10 +232,14 @@ namespace ION.IOS.ViewController.Analyzer {
 			}
 
 			var minMax = cellRoc.GetSecondaryMinMax();
-			var rangeAmount = cellRoc.manifold.secondarySensor.maxMeasurement.ConvertTo(cellRoc.manifold.secondarySensor.unit.standardUnit).amount * .05;
-			var sensorRange = new Scalar(cellRoc.manifold.secondarySensor.unit.standardUnit, rangeAmount);
-			var sensorUnit = cellRoc.manifold.secondarySensor.unit;
-			var sensorMin = cellRoc.manifold.secondarySensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
+			//var rangeAmount = cellRoc.manifold.secondarySensor.maxMeasurement.ConvertTo(cellRoc.manifold.secondarySensor.unit.standardUnit).amount * .05;
+			var rangeAmount = cellRoc.sensor.linkedSensor.maxMeasurement.ConvertTo(cellRoc.sensor.linkedSensor.unit.standardUnit).amount * .05;
+			//var sensorRange = new Scalar(cellRoc.manifold.secondarySensor.unit.standardUnit, rangeAmount);
+			var sensorRange = new Scalar(cellRoc.sensor.linkedSensor.unit.standardUnit, rangeAmount);
+			//var sensorUnit = cellRoc.manifold.secondarySensor.unit;
+			var sensorUnit = cellRoc.sensor.linkedSensor.unit;
+			//var sensorMin = cellRoc.manifold.secondarySensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
+			var sensorMin = cellRoc.sensor.linkedSensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
 
 			UpdateAxis(RAX, minMax.min, minMax.max, sensorRange, sensorUnit, sensorMin);
 
@@ -317,7 +321,7 @@ namespace ION.IOS.ViewController.Analyzer {
 				TickStyle = TickStyle.None,
 			};
 
-			var baseUnit =cellManifold.primarySensor.unit.standardUnit;
+			var baseUnit = cellSensor.unit.standardUnit;
 			LAX = new LinearAxis() {
 				Position = AxisPosition.Left,
 				Minimum = 0,
@@ -327,7 +331,7 @@ namespace ION.IOS.ViewController.Analyzer {
 				IsPanEnabled = false,
 				Key = "first",
 				LabelFormatter = (arg) => {
-					var u = cellManifold.primarySensor.unit;
+					var u = cellSensor.unit;
 					var p = SensorUtils.ToFormattedString(u.standardUnit.OfScalar(arg).ConvertTo(u), true);
 					return p;
 				},
@@ -351,8 +355,8 @@ namespace ION.IOS.ViewController.Analyzer {
 				IsPanEnabled = false,
 				Key = "second",
 				LabelFormatter = (arg) => {
-					if (cellManifold.secondarySensor != null) {
-						var u = cellManifold.secondarySensor.unit;
+					if (cellSensor.linkedSensor != null) {
+						var u = cellSensor.linkedSensor.unit;
 						return SensorUtils.ToFormattedString(u.standardUnit.OfScalar(arg).ConvertTo(u), true);
 					} else {
 						return "";

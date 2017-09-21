@@ -74,7 +74,7 @@
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchProfiling>false</MtouchProfiling>
-    <CodesignKey>iPhone Developer: Andrew Hodder (8WUM398369)</CodesignKey>
+    <CodesignKey>iPhone Developer: Kyle Johnson (J39HJ2S6R6)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <IpaPackageName>
     </IpaPackageName>
@@ -1031,7 +1031,6 @@
     <Compile Include="src\ViewController\RemoteWorkbench\RemoteWorkbenchViewController.designer.cs">
       <DependentUpon>RemoteWorkbenchViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ViewController\RemoteWorkbench\RemoteWorkbenchTableSource.cs" />
     <Compile Include="src\ViewController\RemoteDeviceManager\RemoteDeviceManagerTableSource.cs" />
     <Compile Include="src\ViewController\RemoteDeviceManager\RemoteDeviceManagerViewController.cs" />
     <Compile Include="src\ViewController\RemoteDeviceManager\RemoteDeviceManagerViewController.designer.cs" />

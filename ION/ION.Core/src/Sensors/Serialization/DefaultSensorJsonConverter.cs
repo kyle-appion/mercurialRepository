@@ -87,9 +87,10 @@
       // Overridden from ISensorModel
       public Sensor ToSensor(IION ion) {
         var sensorType = (ESensorType)Enum.Parse(typeof(ESensorType), type);
-        var ret = new ManualSensor(sensorType, AppState.context.preferences.units.DefaultUnitFor(sensorType).OfScalar(0.0), isRelative);
+        //var ret = new ManualSensor(sensorType, AppState.context.preferences.units.DefaultUnitFor(sensorType).OfScalar(0.0), isRelative);
+        var ret = new ManualSensor(ion.manualSensorContainer, sensorType, AppState.context.preferences.units.DefaultUnitFor(sensorType).OfScalar(0.0),isRelative);
         ret.name = name;
-        ret.measurement = UnitLookup.GetUnit(unit).OfScalar(measurement);
+        ret.SetMeasurement(UnitLookup.GetUnit(unit).OfScalar(measurement));
 
         if (hasMinMeasurement) {
           ret.minMeasurement = UnitLookup.GetUnit(minUnit).OfScalar(minMeasurement);

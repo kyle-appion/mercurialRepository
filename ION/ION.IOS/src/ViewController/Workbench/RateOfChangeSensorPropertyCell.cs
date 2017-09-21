@@ -31,8 +31,10 @@ namespace ION.IOS.ViewController.Workbench {
 
     public RateOfChangeSensorProperty roc { get; set; }
 
-    public RateOfChangeRecord(Manifold manifold, ISensorProperty sensorProperty) : base(manifold, sensorProperty) {
-      roc = manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
+		//public RateOfChangeRecord(Manifold manifold, ISensorProperty sensorProperty) : base(manifold, sensorProperty) {
+		public RateOfChangeRecord(Sensor sensor, ISensorProperty sensorProperty) : base(sensor, sensorProperty) {
+			//roc = manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
+			roc = sensor.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
     }
   }
 
@@ -86,10 +88,12 @@ namespace ION.IOS.ViewController.Workbench {
 			primaryColor = OxyColors.Blue;
 			secondaryColor = OxyColors.Red;
 
-			if (record.roc.manifold.primarySensor.type == ESensorType.Temperature) {
+			//if (record.roc.manifold.primarySensor.type == ESensorType.Temperature){
+			if (record.roc.sensor.type == ESensorType.Temperature) {
 				primaryColor = OxyColors.Red;
 				secondaryColor = OxyColors.Blue;
-			} else if (record.roc.manifold.primarySensor.type == ESensorType.Vacuum) {
+      //}else if (record.roc.manifold.primarySensor.type == ESensorType.Vacuum){
+			} else if (record.roc.sensor.type == ESensorType.Vacuum) {
 				primaryColor = OxyColors.Maroon;
 			} 
 
@@ -153,7 +157,8 @@ namespace ION.IOS.ViewController.Workbench {
 
 
     private async void DoUpdateCell() {
-      var device = (record.manifold.primarySensor as GaugeDeviceSensor)?.device;
+			//var device = (record.manifold.primarySensor as GaugeDeviceSensor)?.device;
+			var device = (record.sensor as GaugeDeviceSensor)?.device;
 
       var sp = record.sensorProperty as RateOfChangeSensorProperty;
       var rocScalar = sp.GetPrimaryAverageRateOfChange();
@@ -188,12 +193,14 @@ namespace ION.IOS.ViewController.Workbench {
         return;
       }
 
-      var device = (record.manifold.primarySensor as GaugeDeviceSensor)?.device;
+			//var device = (record.manifold.primarySensor as GaugeDeviceSensor)?.device;
+			var device = (record.sensor as GaugeDeviceSensor)?.device;
       isConnected = device.isConnected;
 
       if (device == null || device.isConnected) {
         InvalidatePrimary();
-        if(record.manifold.secondarySensor != null && !(record.manifold.secondarySensor is ManualSensor)){
+				//if (record.manifold.secondarySensor != null && !(record.manifold.secondarySensor is ManualSensor)) {
+				if(record.sensor.linkedSensor != null && !(record.sensor.linkedSensor is ManualSensor)){
           InvalidateSecondary();
         }
         InvalidateTime();
@@ -250,12 +257,14 @@ namespace ION.IOS.ViewController.Workbench {
       }
       
       var minMax = record.roc.GetPrimaryMinMax();
-      var rangeAmount = record.roc.manifold.primarySensor.maxMeasurement.ConvertTo(record.roc.manifold.primarySensor.unit.standardUnit).amount * .05;
+			//var rangeAmount = record.roc.manifold.primarySensor.maxMeasurement.ConvertTo(record.roc.manifold.primarySensor.unit.standardUnit).amount * .05;
+			var rangeAmount = record.roc.sensor.maxMeasurement.ConvertTo(record.roc.sensor.unit.standardUnit).amount * .05;
 			//////VACUUM READINGS WILL HAVE 3 TIERS
 			/// ATM-> 15K microns(2000 Pa) = 10,000 BUFFER
 			/// 15K -> 1K microns(134 Pa) = 500 BUFFER
 			/// 1K -> 1 micron = 50 BUFFER
-			if(record.manifold.primarySensor.type == ESensorType.Vacuum){
+			//if (record.manifold.primarySensor.type == ESensorType.Vacuum){
+			if(record.sensor.type == ESensorType.Vacuum){
         if(minMax.max >= 2000){
 					rangeAmount = 2666.45;
         } else if (minMax.max >= 134){
@@ -264,9 +273,12 @@ namespace ION.IOS.ViewController.Workbench {
           rangeAmount = 7.0;
         }
       }
-			var sensorRange = new Scalar(record.roc.manifold.primarySensor.unit.standardUnit, rangeAmount);
-			var sensorUnit = record.roc.manifold.primarySensor.unit;
-      var sensorMin = record.roc.manifold.primarySensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
+			//var sensorRange = new Scalar(record.roc.manifold.primarySensor.unit.standardUnit, rangeAmount);
+			var sensorRange = new Scalar(record.roc.sensor.unit.standardUnit, rangeAmount);
+			//var sensorUnit = record.roc.manifold.primarySensor.unit;
+			var sensorUnit = record.roc.sensor.unit;
+			//var sensorMin = record.roc.manifold.primarySensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
+			var sensorMin = record.roc.sensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
 
 			//UpdateAxis(LAX, minMax.min, minMax.max, sensorRange, sensorUnit, TLMeasurement, BLMeasurement, sensorMin);
 			UpdateAxis(LAX, minMax.min, minMax.max, sensorRange,sensorUnit,sensorMin);
@@ -289,7 +301,8 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
     private void InvalidateSecondary() {
-	  if (record.manifold.secondarySensor == null) {
+			//if (record.manifold.secondarySensor == null) {
+			if (record.sensor.linkedSensor == null) {
         return;
       }
 
@@ -299,10 +312,14 @@ namespace ION.IOS.ViewController.Workbench {
 
       var minMax = record.roc.GetSecondaryMinMax();
 
-      var rangeAmount = record.roc.manifold.secondarySensor.maxMeasurement.ConvertTo(record.roc.manifold.secondarySensor.unit.standardUnit).amount * .05;
-      var sensorRange = new Scalar(record.roc.manifold.secondarySensor.unit.standardUnit,rangeAmount);
-      var sensorUnit = record.roc.manifold.secondarySensor.unit;
-      var sensorMin = record.roc.manifold.secondarySensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
+			//var rangeAmount = record.roc.manifold.secondarySensor.maxMeasurement.ConvertTo(record.roc.manifold.secondarySensor.unit.standardUnit).amount * .05;
+			var rangeAmount = record.roc.sensor.linkedSensor.maxMeasurement.ConvertTo(record.roc.sensor.linkedSensor.unit.standardUnit).amount * .05;
+			//var sensorRange = new Scalar(record.roc.manifold.secondarySensor.unit.standardUnit, rangeAmount);
+			var sensorRange = new Scalar(record.roc.sensor.linkedSensor.unit.standardUnit,rangeAmount);
+			//var sensorUnit = record.roc.manifold.secondarySensor.unit;
+			var sensorUnit = record.roc.sensor.linkedSensor.unit;
+			//var sensorMin = record.roc.manifold.secondarySensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
+			var sensorMin = record.roc.sensor.linkedSensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
 
 			//UpdateAxis(RAX, minMax.min, minMax.max, sensorRange, sensorUnit, TRMeasurement, BRMeasurement, sensorMin);
 			UpdateAxis(RAX, minMax.min, minMax.max, sensorRange,sensorUnit,sensorMin);
@@ -389,7 +406,8 @@ namespace ION.IOS.ViewController.Workbench {
         TickStyle = TickStyle.None,
       };
 
-      var baseUnit = record.manifold.primarySensor.unit.standardUnit;
+			//var baseUnit = record.manifold.primarySensor.unit.standardUnit;
+			var baseUnit = record.sensor.unit.standardUnit;
       LAX = new LinearAxis() {
         Position = AxisPosition.Left,
         Minimum = 0,
@@ -399,7 +417,8 @@ namespace ION.IOS.ViewController.Workbench {
         IsPanEnabled = false,
         Key = "first",
         LabelFormatter = (arg) => {
-          var u = record.manifold.primarySensor.unit;
+			    //var u = record.manifold.primarySensor.unit;
+			    var u = record.sensor.unit;
           var p = SensorUtils.ToFormattedString(u.standardUnit.OfScalar(arg).ConvertTo(u), true);
           return p;
         },
@@ -423,8 +442,10 @@ namespace ION.IOS.ViewController.Workbench {
         IsPanEnabled = false,
         Key = "second",
         LabelFormatter = (arg) => {
-          if (record.manifold.secondarySensor != null) {
-            var u = record.manifold.secondarySensor.unit;
+			    //if (record.manifold.secondarySensor != null){
+				  if (record.sensor.linkedSensor != null) {
+    				//var u = record.manifold.secondarySensor.unit;
+    				var u = record.sensor.linkedSensor.unit;
             return SensorUtils.ToFormattedString(u.standardUnit.OfScalar(arg).ConvertTo(u), true);
           } else {
             return "";

@@ -86,7 +86,8 @@
 */
 
     public override string ToString() {
-      return string.Format("[SensorMeasurementRow: id={0}, sessionId={1}, deviceId={2}, sensorIndex={3}, recordedDate={4}, measurement={5}, linkedSerial = {6}, linkedMeasurement={7}]", MID, frn_SID, serialNumber, sensorIndex, recordedDate, measurement, linkedSerial, linkedMeasurement);
+			//return string.Format("[SensorMeasurementRow: id={0}, sessionId={1}, deviceId={2}, sensorIndex={3}, recordedDate={4}, measurement={5}, linkedSerial = {6}, linkedMeasurement={7}]", MID, frn_SID, serialNumber, sensorIndex, recordedDate, measurement, linkedSerial, linkedMeasurement);
+      return string.Format("[SensorMeasurementRow: id={0}, sessionId={1}, deviceId={2}, sensorIndex={3}, recordedDate={4}, measurement={5}, linkType={6}]", MID, frn_SID, serialNumber, sensorIndex, recordedDate, measurement,linkType);
     }
   }
 }

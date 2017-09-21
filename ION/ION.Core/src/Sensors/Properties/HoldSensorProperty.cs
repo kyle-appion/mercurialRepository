@@ -17,11 +17,12 @@
       }
     } Scalar __modifiedMeasurement;
 
-		[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
-		public HoldSensorProperty(Sensor sensor) : base(new Manifold(sensor)) {
-		}
+		//[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
+		//public HoldSensorProperty(Sensor sensor) : base(new Manifold(sensor)) {
+		//}
 
-    public HoldSensorProperty(Manifold manifold) : base(manifold) {
+		//public HoldSensorProperty(Manifold manifold) : base(manifold){
+		public HoldSensorProperty(Sensor sensor) : base(sensor) {
       // Nope
     }
 

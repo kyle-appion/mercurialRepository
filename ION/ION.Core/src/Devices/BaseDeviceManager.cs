@@ -197,7 +197,7 @@
             protocol = Protocol.FindProtocolFromVersion(EProtocolVersion.V1);
           }
           var definition = deviceFactory.GetDeviceDefinition(serialNumber);
-          ret = definition.CreateDevice(serialNumber, connection, protocol);
+          ret = definition.CreateDevice(ion,serialNumber, connection, protocol);
           ret.onDeviceEvent += OnDeviceEvent;
         }
 

@@ -52,13 +52,13 @@ namespace ION.IOS.ViewController.DeviceManager {
       }
       set {
         if (__record != null) {
-          __record.sensor.onSensorStateChangedEvent -= OnSensorUpdated;
+          __record.sensor.onSensorEvent -= OnSensorUpdated;
         }
 
         __record = value;
 
         if (__record != null) {
-          __record.sensor.onSensorStateChangedEvent += OnSensorUpdated;
+          __record.sensor.onSensorEvent += OnSensorUpdated;
         }
       }
     } SensorRecord __record;
@@ -94,15 +94,15 @@ namespace ION.IOS.ViewController.DeviceManager {
 
       onAddClicked = addClickedResponder;
 
-      OnSensorUpdated(record.sensor);
+      OnSensorUpdated(new SensorEvent(SensorEvent.EType.Invalidated,record.sensor));
     }
 
-    private void OnSensorUpdated(Sensor sensor) {
-      labelType.Text = sensor.type.GetTypeString();
-      labelMeasurement.Text = sensor.ToFormattedString(true);
+    private void OnSensorUpdated(SensorEvent sensorEvent) {
+      labelType.Text = sensorEvent.sensor.type.GetTypeString();
+      labelMeasurement.Text = sensorEvent.sensor.ToFormattedString(true);
 
-      if (sensor is GaugeDeviceSensor) {
-        var ds = sensor as GaugeDeviceSensor;
+      if (sensorEvent.sensor is GaugeDeviceSensor) {
+        var ds = sensorEvent.sensor as GaugeDeviceSensor;
         if (!ds.device.isConnected || ds.removed) {
           labelMeasurement.Text = "---";
         }

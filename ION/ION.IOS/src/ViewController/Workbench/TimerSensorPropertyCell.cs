@@ -21,7 +21,8 @@ namespace ION.IOS.ViewController.Workbench {
 
     public TimerSensorProperty timer { get; set; }
 
-    public TimerRecord(Manifold manifold, TimerSensorProperty sensorProperty) : base(manifold, sensorProperty) {
+		//public TimerRecord(Manifold manifold, TimerSensorProperty sensorProperty) : base(manifold, sensorProperty) {
+		public TimerRecord(Sensor sensor, TimerSensorProperty sensorProperty) : base(sensor, sensorProperty) {
       this.timer = sensorProperty;
     }
   }

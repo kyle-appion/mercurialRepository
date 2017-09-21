@@ -6,6 +6,8 @@ using ION.Core.Content;
 using ION.Core.Devices;
 using ION.Core.Fluids;
 using ION.Core.App;
+using ION.Core.Sensors;
+using ION.Core.Sensors.Properties;
 
 namespace ION.IOS.ViewController.Workbench {
 
@@ -21,7 +23,8 @@ namespace ION.IOS.ViewController.Workbench {
     public UITextField targetInput;
 		public UIButton closeButton;
 		public UIButton setButton;
-    public Manifold targetManifold;
+		//public Manifold targetManifold;
+		public Sensor targetSensor;
 		public UITapGestureRecognizer toggleTap;
 		public UITapGestureRecognizer keyboardTap;
     public IION ion;
@@ -76,16 +79,14 @@ namespace ION.IOS.ViewController.Workbench {
 
       toggleTap = new UITapGestureRecognizer((obj) => {
         Console.WriteLine("Toggling the slider");
-        if(targetManifold.ptChart.state == Core.Fluids.Fluid.EState.Dew){
-  			  toggleLabel.Frame = new CGRect(.75 * tView.Bounds.Width, .5 * tView.Bounds.Height, .2 * tView.Bounds.Width, .15 * tView.Bounds.Height);
-          toggleLabel.BackgroundColor = UIColor.Red;
-  				toggleLabel.Text = "S/C";
-          targetManifold.ptChart = PTChart.New(ion, Fluid.EState.Bubble);
+  		  if(targetSensor.fluidState == Core.Fluids.Fluid.EState.Dew){
+    			  toggleLabel.Frame = new CGRect(.75 * tView.Bounds.Width, .5 * tView.Bounds.Height, .2 * tView.Bounds.Width, .15 * tView.Bounds.Height);
+            toggleLabel.BackgroundColor = UIColor.Red;
+    				toggleLabel.Text = "S/C";
         } else {
   			  toggleLabel.Frame = new CGRect(.55 * tView.Bounds.Width, .5 * tView.Bounds.Height, .2 * tView.Bounds.Width, .15 * tView.Bounds.Height);
   			  toggleLabel.BackgroundColor = UIColor.Blue;
   			  toggleLabel.Text = "S/H";
-          targetManifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
 		    } 
       });
 
@@ -104,13 +105,14 @@ namespace ION.IOS.ViewController.Workbench {
 
       setButton.TouchUpInside += (sender, e) => {
         Console.WriteLine("Setting manifold target SHSC");
-        if(targetManifold != null){
-          targetManifold.targetSHSC = double.Parse(targetInput.Text);
+			  if(targetSensor != null){
+  			  targetSensor.targetSHSC = double.Parse(targetInput.Text);
+          targetSensor.NotifyInvalidated();
         }
 		    targetInput.ResignFirstResponder();
 
 		    tView.Hidden = true;
-      };
+      };    
 
 			tView.AddSubview(headerLabel);
 			tView.AddSubview(closeButton);
@@ -124,13 +126,18 @@ namespace ION.IOS.ViewController.Workbench {
       containerView.AddSubview(tView);
     }
 
-    public void setManifold(Manifold manifold){
-      targetManifold = manifold;
-      var holderSensor = manifold.primarySensor as GaugeDeviceSensor;
+		//public void setManifold(Manifold manifold){
+		public void setManifold(Sensor sensor){
+      //targetManifold = manifold;
+			targetSensor = sensor;
+			//var holderSensor = manifold.primarySensor as GaugeDeviceSensor;
+			var holderSensor = targetSensor as GaugeDeviceSensor;
       nameLabel.Text = holderSensor.device.type.ToString()+": "+holderSensor.device.serialNumber.rawSerial;
-      targetInput.Text = manifold.targetSHSC.ToString();
+			//targetInput.Text = manifold.targetSHSC.ToString();
+			targetInput.Text = targetSensor.targetSHSC.ToString();
 
-			if (targetManifold.ptChart.state == Core.Fluids.Fluid.EState.Dew) {
+			//if (targetManifold.ptChart.state == Core.Fluids.Fluid.EState.Dew)	{
+			if (targetSensor.fluidState == Core.Fluids.Fluid.EState.Dew) {
 				toggleLabel.Frame = new CGRect(.55 * tView.Bounds.Width, .5 * tView.Bounds.Height, .2 * tView.Bounds.Width, .15 * tView.Bounds.Height);
 				toggleLabel.BackgroundColor = UIColor.Blue;
 				toggleLabel.Text = "S/H";

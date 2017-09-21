@@ -57,9 +57,11 @@
 	            }
 	          }
 	        }
-	
-	        foreach (var m in ion.currentWorkbench.manifolds) {
-	          var gds = m.primarySensor as GaugeDeviceSensor;
+
+					//foreach (var m in ion.currentWorkbench.manifolds)	{
+					foreach (var m in ion.currentWorkbench.sensors) {
+						//var gds = m.primarySensor as GaugeDeviceSensor;
+						var gds = m as GaugeDeviceSensor;
 	          if (gds != null && gds.device.isConnected) {
 	            sensors.Add(gds);
 	          }

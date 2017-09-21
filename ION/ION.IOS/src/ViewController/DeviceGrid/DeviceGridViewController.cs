@@ -216,17 +216,18 @@ namespace ION.IOS.ViewController.DeviceGrid {
       // Release any cached data, images, etc that aren't in use.
     }   
 
-    public void inflateWorkbench(GaugeDeviceSensor sensor = null){
+    public void inflateWorkbench(){
 			//var path = NSIndexPath.FromRowSection(0, 0);
 			var window = UIApplication.SharedApplication.KeyWindow;
       var vc = window.RootViewController as IONPrimaryScreenController;
       if (fromWorkbench) {
 				fromAnalyzer = -1;
 				fromWorkbench = false;
-				onSensorReturnDelegate(sensor);
+        onSensorReturnDelegate(null);
 				NavigationController.PopViewController(true);
 			} else {
 				//TODO This is wholely dependent upon the flyoutnavigation controller library being used for the menu. Any updates will also affect how the grid view navigates for its sensor
+				onSensorReturnDelegate(null);
 				NavigationController.PopViewController(true);
 				vc.navigation.GetType().InvokeMember("NavigationItemSelected", System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Static, Type.DefaultBinder, vc.navigation, new object[] { 0 });
 			}
@@ -243,7 +244,6 @@ namespace ION.IOS.ViewController.DeviceGrid {
 				fromAnalyzer = -1;
 				fromAnalyzerLH = false;
 				fromWorkbench = false;
-				onSensorReturnDelegate(sensor);
         NavigationController.PopViewController(true);
       }
     }
