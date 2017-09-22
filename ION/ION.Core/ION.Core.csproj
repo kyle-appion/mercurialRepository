@@ -358,14 +358,17 @@
     <Reference Include="ICSharpCode.SharpZipLib.Portable">
       <HintPath>..\packages\SharpZipLib.Portable.0.86.0.0003\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid+Xamarin.iOS10\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
     </Reference>
-    <Reference Include="FlexCel">
-      <HintPath>..\Components\FlexCel-6.8.0\lib\android\FlexCel.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\portable-net45+win8+wp8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="FlexCel">
+      <HintPath>..\..\..\ION\Components\FlexCel-6.8.0\lib\android\FlexCel.dll</HintPath>
+    </Reference>
+    <Reference Include="Xfinium.Pdf.Render.Pcl">
+      <HintPath>..\..\..\ION\packages\Xfinium\XfiniumPdf540PclProCommercial\Xfinium.Pdf.Render.Pcl.dll</HintPath>
+    </Reference>
     <Reference Include="Xfinium.Pdf.Pcl">
-      <HintPath>..\packages\Xfinium\XfiniumPdf540PclProCommercial\Xfinium.Pdf.Pcl.dll</HintPath>
+      <HintPath>..\..\..\ION\packages\Xfinium\XfiniumPdf540PclProCommercial\Xfinium.Pdf.Pcl.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

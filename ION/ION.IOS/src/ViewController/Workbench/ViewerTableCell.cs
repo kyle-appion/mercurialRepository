@@ -64,9 +64,7 @@ namespace ION.IOS.ViewController.Workbench {
 		public void UpdateTo(IION ion, Sensor sensor) {
 			this.BackgroundColor = UIColor.Clear;
       this.ion = ion;
-			//this.manifold = manifold;
 			viewSensor = sensor;
-      this.Layer.BorderWidth = 1f;
       labelMeasurement.Font = UIFont.FromName("DroidSans-Bold", 36f);
 
       labelMeasurement.AdjustsFontSizeToFitWidth = true;
@@ -78,12 +76,11 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
     public void UpdateFromGaugeSensor(GaugeDeviceSensor sensor) {
-      if(labelHeader == null){
+      if(viewSensor == null){
         return;
       }
       var device = ((GaugeDeviceSensor)viewSensor)?.device;
       var state = device.connection.connectionState;
-
 
       labelHeader.Text = device.serialNumber.deviceModel.GetTypeString() + ": " + viewSensor.name;
       imageSensorIcon.Image = DeviceUtil.GetUIImageFromDeviceModel(device.serialNumber.deviceModel);
@@ -122,14 +119,6 @@ namespace ION.IOS.ViewController.Workbench {
         labelUnit.TextColor = new UIColor(Colors.LIGHT_GRAY);
       }
     }
-
-		//private void OnManifoldUpdated(Manifold manifold) {
-		//  if (manifold.primarySensor is GaugeDeviceSensor) {
-		//    UpdateFromGaugeSensor(manifold.primarySensor as GaugeDeviceSensor);
-		//  } else {
-		//    UpdateFromSensor(manifold.primarySensor);
-		//  }
-		//}
 
 		/// <summary>
 		/// The callback that will set the sensor's modified measurement to the
@@ -181,10 +170,10 @@ namespace ION.IOS.ViewController.Workbench {
 				batteryImage.Image = UIImage.FromBundle("img_battery_50");
 			} else if (percent >= 25) {
 				batteryImage.Image = UIImage.FromBundle("img_battery_25");
-				//batteryImage.TintColor = new UIColor(Colors.RED);
+				batteryImage.TintColor = new UIColor(Colors.RED);
       } else if (percent >= 0) {
 				batteryImage.Image = UIImage.FromBundle("img_battery_0");
-				//batteryImage.TintColor = new UIColor(Colors.RED);
+				batteryImage.TintColor = new UIColor(Colors.RED);
       } else {
 				batteryImage.Hidden = true;
 			}
@@ -193,7 +182,6 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
    public void changeConnectionStatus(object sender, EventArgs eww){
-			//var gaugeSensor = manifold.primarySensor as GaugeDeviceSensor;
 			var gaugeSensor = viewSensor as GaugeDeviceSensor;
 	    activityConnectStatus.StartAnimating();
       if (gaugeSensor.device.isConnected) {

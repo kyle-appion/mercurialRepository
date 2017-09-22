@@ -53,7 +53,7 @@ namespace ION.IOS.ViewController.Analyzer {
       if (lhSensor.currentSensor.linkedSensor != null) {
 				var stateCheck = new ScalarSpan();
         if(lhSensor.currentSensor.type == ESensorType.Pressure){
-          var calculation = ion.fluidManager.lastUsedFluid.CalculateTemperatureDelta(lhSensor.currentSensor.fluidState,lhSensor.currentSensor.measurement, lhSensor.currentSensor.linkedSensor.measurement);
+          var calculation = ion.fluidManager.lastUsedFluid.CalculateTemperatureDelta(lhSensor.currentSensor.fluidState,lhSensor.currentSensor.measurement, lhSensor.currentSensor.linkedSensor.measurement, ion.locationManager.lastKnownLocation.altitude);
 	        stateCheck = calculation;  
 					if (!ion.fluidManager.lastUsedFluid.mixture && calculation < 0) {
             calculation = calculation * -1;
@@ -61,7 +61,7 @@ namespace ION.IOS.ViewController.Analyzer {
           cellHeader.Text = lhSensor.shFluidState.Text;
 					tempReading.Text = calculation.magnitude.ToString("N")+ " " + calculation.unit.ToString();
         } else {
-          var calculation = ion.fluidManager.lastUsedFluid.CalculateTemperatureDelta(lhSensor.currentSensor.fluidState, lhSensor.currentSensor.linkedSensor.measurement, lhSensor.currentSensor.measurement);
+          var calculation = ion.fluidManager.lastUsedFluid.CalculateTemperatureDelta(lhSensor.currentSensor.fluidState, lhSensor.currentSensor.linkedSensor.measurement, lhSensor.currentSensor.measurement, ion.locationManager.lastKnownLocation.altitude);
           stateCheck = calculation;  
 					if (!ion.fluidManager.lastUsedFluid.mixture && calculation < 0) {
             calculation = calculation * -1;

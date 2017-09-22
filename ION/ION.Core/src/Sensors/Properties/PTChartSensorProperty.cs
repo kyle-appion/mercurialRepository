@@ -15,11 +15,9 @@
       get {
         // The else is asserted to be valid by the check in the constructor.
         if (sensor.type == ESensorType.Pressure) {
-					//return sensor.ptChart.GetTemperature(sensor.measurement, sensor.isRelative).ConvertTo(unit);
-					return AppState.context.fluidManager.lastUsedFluid.GetSaturatedTemperature(sensor.fluidState,sensor.measurement).ConvertTo(unit);
+					return AppState.context.fluidManager.lastUsedFluid.GetSaturatedTemperature(sensor.fluidState,sensor.measurement,AppState.context.locationManager.lastKnownLocation.altitude).ConvertTo(unit);
         } else {
-					//return sensor.ptChart.GetRelativePressure(sensor.measurement).ConvertTo(unit);
-					return AppState.context.fluidManager.lastUsedFluid.GetPressureFromSaturatedTemperature(sensor.fluidState, sensor.measurement).ConvertTo(unit);
+					return AppState.context.fluidManager.lastUsedFluid.GetPressureFromSaturatedTemperature(sensor.fluidState, sensor.measurement,AppState.context.locationManager.lastKnownLocation.altitude).ConvertTo(unit);
         }
       }
     }

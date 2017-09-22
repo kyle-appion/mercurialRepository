@@ -115,10 +115,6 @@
       <HintPath>..\packages\SharpZipLib.Portable.0.86.0.0003\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid+Xamarin.iOS10\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http" />
-    <Reference Include="Xfinium.Pdf.Xamarin.iOS">
-      <HintPath>..\packages\Xfinium\XFINIUM.PDF 5.4.0 Mobile Professional Edition Commercial Version\Redist\iOS-Unified\Xfinium.Pdf.Xamarin.iOS.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="SWTableViewCell">
       <HintPath>..\packages\SWTableViewCell-0.3.6.1\lib\ios-unified\SWTableViewCell.dll</HintPath>
     </Reference>
@@ -140,11 +136,14 @@
     <Reference Include="DSoft.UI">
       <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.UI.dll</HintPath>
     </Reference>
-    <Reference Include="FlexCel">
-      <HintPath>..\Components\FlexCel-6.8.0\lib\ios-unified\FlexCel.dll</HintPath>
-    </Reference>
     <Reference Include="Xfinium.Pdf.Render.Xamarin.iOS">
-      <HintPath>..\packages\Xfinium\XFINIUM.PDF 5.4.0 Mobile Professional Edition Commercial Version\Redist\iOS-Unified\Xfinium.Pdf.Render.Xamarin.iOS.dll</HintPath>
+      <HintPath>..\..\..\ION\packages\Xfinium\XFINIUM.PDF 5.4.0 Mobile Professional Edition Commercial Version\Redist\iOS-Unified\Xfinium.Pdf.Render.Xamarin.iOS.dll</HintPath>
+    </Reference>
+    <Reference Include="Xfinium.Pdf.Xamarin.iOS">
+      <HintPath>..\..\..\ION\packages\Xfinium\XFINIUM.PDF 5.4.0 Mobile Professional Edition Commercial Version\Redist\iOS-Unified\Xfinium.Pdf.Xamarin.iOS.dll</HintPath>
+    </Reference>
+    <Reference Include="FlexCel">
+      <HintPath>..\..\..\ION\Components\FlexCel-6.8.0\lib\ios-unified\FlexCel.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

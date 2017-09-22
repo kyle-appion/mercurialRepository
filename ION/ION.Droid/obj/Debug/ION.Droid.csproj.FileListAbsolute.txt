@@ -1,0 +1,14 @@
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.Droid/obj/Debug/ION.Droid.csprojResolveAssemblyReference.cache
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.Droid/obj/Debug/XbdMerge/Xamarin.GooglePlayServices.Basement.dll.stamp
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.Droid/obj/Debug/XbdMerge/Xamarin.GooglePlayServices.Tasks.dll.stamp
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.Droid/obj/Debug/XbdMerge/Xamarin.GooglePlayServices.Base.dll.stamp
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.Droid/obj/Debug/XbdMerge/Xamarin.GooglePlayServices.Location.dll.stamp
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.Droid/obj/Debug/XbdMerge/proguard/dc663e480.txt
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.Droid/obj/Debug/XbdMerge/dc663e48.proguard.stamp
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.Droid/obj/Debug/XbdMerge/proguard/0757626b0.txt
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.Droid/obj/Debug/XbdMerge/0757626b.proguard.stamp
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.Droid/obj/Debug/XbdMerge/proguard/2f4d086a0.txt
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.Droid/obj/Debug/XbdMerge/2f4d086a.proguard.stamp
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.Droid/obj/Debug/XbdMerge/proguard/effb23710.txt
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.Droid/obj/Debug/XbdMerge/effb2371.proguard.stamp
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.Droid/obj/Debug/ION.Droid.csproj.CoreCompileInputs.cache

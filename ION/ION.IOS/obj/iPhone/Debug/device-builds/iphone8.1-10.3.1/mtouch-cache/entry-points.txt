@@ -1,0 +1,35 @@
+Function=CreateZStream
+	/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/mtouch-cache/Link/System.dll
+Function=CloseZStream
+	/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/mtouch-cache/Link/System.dll
+Function=Flush
+	/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/mtouch-cache/Link/System.dll
+Function=ReadZStream
+	/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/mtouch-cache/Link/System.dll
+Function=WriteZStream
+	/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/mtouch-cache/Link/System.dll
+Function=xamarin_start_wwan
+	/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/mtouch-cache/Link/System.dll
+Function=xamarin_timezone_get_data
+	/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/mtouch-cache/Link/mscorlib.dll
+Function=xamarin_GetFolderPath
+	/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/mtouch-cache/Link/mscorlib.dll
+Function=xamarin_log
+	/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/mtouch-cache/Link/mscorlib.dll
+ObjectiveCClass=OBJC_CLASS_$_SWTableViewCell
+	/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/mtouch-cache/Link/SWTableViewCell.dll
+ObjectiveCClass=OBJC_CLASS_$_SWCellScrollView
+	/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/mtouch-cache/Link/SWTableViewCell.dll
+ObjectiveCClass=OBJC_CLASS_$_SWLongPressGestureRecognizer
+	/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/mtouch-cache/Link/SWTableViewCell.dll
+ObjectiveCClass=OBJC_CLASS_$_SWUtilityButtonTapGestureRecognizer
+	/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/mtouch-cache/Link/SWTableViewCell.dll
+ObjectiveCClass=OBJC_CLASS_$_SWUtilityButtonView
+	/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/mtouch-cache/Link/SWTableViewCell.dll
+Function=xamarin_get_block_descriptor
+	/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/mtouch-cache/Link/Xamarin.iOS.dll
+Function=UIApplicationMain
+	/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/mtouch-cache/Link/Xamarin.iOS.dll
+Function=xamarin_IntPtr_objc_msgSend_IntPtr
+	/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/mtouch-cache/Link/Xamarin.iOS.dll
+Function=mono_pmip

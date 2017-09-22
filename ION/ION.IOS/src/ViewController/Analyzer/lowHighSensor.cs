@@ -418,7 +418,7 @@ namespace ION.IOS.ViewController.Analyzer
 					shFluidType.Text = ion.fluidManager.lastUsedFluid.name;
 
           shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(ion.fluidManager.lastUsedFluid.name));
-          var calculation = ion.fluidManager.lastUsedFluid.CalculateTemperatureDelta(currentSensor.fluidState,currentSensor.measurement, currentSensor.linkedSensor.measurement);
+          var calculation = ion.fluidManager.lastUsedFluid.CalculateTemperatureDelta(currentSensor.fluidState,currentSensor.measurement, currentSensor.linkedSensor.measurement, ion.locationManager.lastKnownLocation.altitude);
           ptAmount = calculation.magnitude;
           if (!ion.fluidManager.lastUsedFluid.mixture && calculation < 0) {
             calculation = calculation * -1;
@@ -428,7 +428,7 @@ namespace ION.IOS.ViewController.Analyzer
           shFluidType.Text = ion.fluidManager.lastUsedFluid.name;
 
           shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(ion.fluidManager.lastUsedFluid.name));
-          var calculation = ion.fluidManager.lastUsedFluid.CalculateTemperatureDelta(currentSensor.fluidState, currentSensor.linkedSensor.measurement, currentSensor.measurement);
+          var calculation = ion.fluidManager.lastUsedFluid.CalculateTemperatureDelta(currentSensor.fluidState, currentSensor.linkedSensor.measurement, currentSensor.measurement, ion.locationManager.lastKnownLocation.altitude);
 					ptAmount = calculation.magnitude;
           if (!ion.fluidManager.lastUsedFluid.mixture && calculation < 0) {
             calculation = calculation * -1;
@@ -466,14 +466,14 @@ namespace ION.IOS.ViewController.Analyzer
         ptFluidType.Text = ion.fluidManager.lastUsedFluid.name;
 
         ptFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(ion.fluidManager.lastUsedFluid.name));
-				var ptcalc = ion.fluidManager.lastUsedFluid.GetSaturatedTemperature(currentSensor.fluidState,currentSensor.measurement);
+				var ptcalc = ion.fluidManager.lastUsedFluid.GetSaturatedTemperature(currentSensor.fluidState,currentSensor.measurement, ion.locationManager.lastKnownLocation.altitude);
 
         ptReading.Text = ptcalc.ConvertTo(tUnit).amount.ToString("N") + " " + ptcalc.unit;
       } else if (currentSensor.type == ESensorType.Temperature) {
         ptFluidType.Text = ion.fluidManager.lastUsedFluid.name;
 
         ptFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(ion.fluidManager.lastUsedFluid.name));
-        var ptcalc = ion.fluidManager.lastUsedFluid.GetPressureFromSaturatedTemperature(currentSensor.fluidState, currentSensor.measurement);
+        var ptcalc = ion.fluidManager.lastUsedFluid.GetPressureFromSaturatedTemperature(currentSensor.fluidState, currentSensor.measurement, ion.locationManager.lastKnownLocation.altitude);
         ptcalc = ion.fluidManager.lastUsedFluid.ConvertAbsolutePressureToRelative(ptcalc, ion.locationManager.lastKnownLocation.altitude); 
 
         ptReading.Text = ptcalc.ConvertTo(pUnit).amount.ToString("N") + " " + ptcalc.unit;

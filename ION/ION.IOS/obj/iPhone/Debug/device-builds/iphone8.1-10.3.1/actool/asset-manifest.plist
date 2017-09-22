@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>com.apple.actool.compilation-results</key>
+	<dict>
+		<key>output-files</key>
+		<array>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/bundle/AppIcons29x29@2x.png</string>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/bundle/AppIcons29x29@3x.png</string>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/bundle/AppIcons40x40@2x.png</string>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/bundle/AppIcons40x40@3x.png</string>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/bundle/AppIcons60x60@2x.png</string>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/bundle/AppIcons60x60@3x.png</string>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/bundle/AppIcons40x40~ipad.png</string>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/bundle/AppIcons40x40@2x~ipad.png</string>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/bundle/AppIcons76x76~ipad.png</string>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/bundle/AppIcons76x76@2x~ipad.png</string>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/bundle/AppIcons83.5x83.5@2x~ipad.png</string>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/bundle/Assets.car</string>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/partial-info.plist</string>
+		</array>
+	</dict>
+	<key>com.apple.actool.document.warnings</key>
+	<array>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./img_splash_screen.imageset/(null)[2d][Default-568h@2x.png]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "img_splash_screen" has an unassigned child.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_record.imageset/(null)[2d][ic_record (1).pdf]</string>
+				<string>./ic_record.imageset/(null)[2d][ic_record_text.pdf]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_record" has 2 unassigned children.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_record.imageset/[universal][][][1x][][][][][][]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The file "ic_record.png" for the image set "ic_record" does not exist.</string>
+			<key>type</key>
+			<string>Missing Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_render_gauge_av760.imageset/(null)[2d][ic_render_gauge_av760.png]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_render_gauge_av760" has an unassigned child.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_render_gauge_av760.imageset/[universal][][][][][][][][][]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The file "ic_render_gaugeav760.pdf" for the image set "ic_render_gauge_av760" does not exist.</string>
+			<key>type</key>
+			<string>Missing Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_render_gauge_p500.imageset/(null)[2d][ic_render_gauge_p500.png]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_render_gauge_p500" has an unassigned child.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_bluetooth_connected.imageset/(null)[2d][ic_bluetooth_connected.png]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_bluetooth_connected" has an unassigned child.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_render_gauge_pt800.imageset/(null)[2d][ic_render_gauge_pt800.png]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_render_gauge_pt800" has an unassigned child.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_device_add_to_workbench.imageset/[watch][][&gt;145][2x][][][][][][][1d][(null)]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_device_add_to_workbench" has an unassigned child.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_stop.imageset/(null)[2d][ic_record_stop.pdf]</string>
+				<string>./ic_stop.imageset/(null)[2d][ic_stop_text.pdf]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_stop" has 2 unassigned children.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_render_gauge_p300.imageset/(null)[2d][ic_render_gauge_p300.png]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_render_gauge_p300" has an unassigned child.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_render_gauge_p800.imageset/(null)[2d][ic_render_gauge_p800.png]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_render_gauge_p800" has an unassigned child.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_bluetooth_disconnected.imageset/(null)[2d][ic_bluetooth_disconnected.png]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_bluetooth_disconnected" has an unassigned child.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_record.imageset/(null)[2d][ic_record (1).pdf]</string>
+				<string>./ic_record.imageset/(null)[2d][ic_record_text.pdf]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_record" has 2 unassigned children.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_record.imageset/[universal][][][1x][][][][][][]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The file "ic_record.png" for the image set "ic_record" does not exist.</string>
+			<key>type</key>
+			<string>Missing Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_render_gauge_pt800.imageset/(null)[2d][ic_render_gauge_pt800.png]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_render_gauge_pt800" has an unassigned child.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_render_gauge_p800.imageset/(null)[2d][ic_render_gauge_p800.png]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_render_gauge_p800" has an unassigned child.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_bluetooth_disconnected.imageset/(null)[2d][ic_bluetooth_disconnected.png]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_bluetooth_disconnected" has an unassigned child.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./img_splash_screen.imageset/(null)[2d][Default-568h@2x.png]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "img_splash_screen" has an unassigned child.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_stop.imageset/(null)[2d][ic_record_stop.pdf]</string>
+				<string>./ic_stop.imageset/(null)[2d][ic_stop_text.pdf]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_stop" has 2 unassigned children.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_logo_appiondefault.imageset/[universal][][][1x][][][][][][]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The file "ic_logo_appiondefault.png" for the image set "ic_logo_appiondefault" does not exist.</string>
+			<key>type</key>
+			<string>Missing Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./img_battery_50.imageset/[universal][][][][][][][][][]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The file "img_battery_50.pdf" for the image set "img_battery_50" does not exist.</string>
+			<key>type</key>
+			<string>Missing Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./img_battery_100.imageset/[universal][][][][][][][][][]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The file "img_battery_100.pdf" for the image set "img_battery_100" does not exist.</string>
+			<key>type</key>
+			<string>Missing Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_render_gauge_av760.imageset/(null)[2d][ic_render_gauge_av760.png]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_render_gauge_av760" has an unassigned child.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_render_gauge_av760.imageset/[universal][][][][][][][][][]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The file "ic_render_gaugeav760.pdf" for the image set "ic_render_gauge_av760" does not exist.</string>
+			<key>type</key>
+			<string>Missing Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_menu_overflow.imageset/[universal][][][1x][][][][][][]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The file "ic_menu_moreoverflow.png" for the image set "ic_menu_overflow" does not exist.</string>
+			<key>type</key>
+			<string>Missing Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./img_battery_75.imageset/[universal][][][][][][][][][]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The file "img_battery_75.pdf" for the image set "img_battery_75" does not exist.</string>
+			<key>type</key>
+			<string>Missing Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./img_battery_0.imageset/[universal][][][][][][][][][]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The file "img_battery_0.pdf" for the image set "img_battery_0" does not exist.</string>
+			<key>type</key>
+			<string>Missing Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_bluetooth_connected.imageset/(null)[2d][ic_bluetooth_connected.png]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_bluetooth_connected" has an unassigned child.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_render_gauge_p500.imageset/(null)[2d][ic_render_gauge_p500.png]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_render_gauge_p500" has an unassigned child.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./img_battery_25.imageset/[universal][][][][][][][][][]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The file "img_battery_25.pdf" for the image set "img_battery_25" does not exist.</string>
+			<key>type</key>
+			<string>Missing Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_render_gauge_p300.imageset/(null)[2d][ic_render_gauge_p300.png]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_render_gauge_p300" has an unassigned child.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+		<dict>
+			<key>affected-items</key>
+			<array>
+				<string>./ic_device_add_to_workbench.imageset/[watch][][&gt;145][2x][][][][][][][1d][(null)]</string>
+			</array>
+			<key>catalog</key>
+			<string>/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.IOS/obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/actool/cloned-assets/Resources/Images.xcassets</string>
+			<key>message</key>
+			<string>The image set "ic_device_add_to_workbench" has an unassigned child.</string>
+			<key>type</key>
+			<string>Ambiguous Content</string>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -70,11 +70,9 @@
 			get {
 				if (isValid) {
           if (pressureSensor.isRelative) {
-						//return sensor.ptChart.CalculateTemperatureDeltaRelative(pressureSensor.measurement, temperatureSensor.measurement);
-						return AppState.context.fluidManager.lastUsedFluid.CalculateTemperatureDelta(pressureSensor.fluidState,pressureSensor.measurement, temperatureSensor.measurement);            
+						return AppState.context.fluidManager.lastUsedFluid.CalculateTemperatureDelta(pressureSensor.fluidState,pressureSensor.measurement, temperatureSensor.measurement, AppState.context.locationManager.lastKnownLocation.altitude);            
           } else {
-						//return sensor.ptChart.CalculateTemperatureDeltaAbsolute(pressureSensor.measurement, temperatureSensor.measurement);
-						return AppState.context.fluidManager.lastUsedFluid.CalculateTemperatureDelta(pressureSensor.fluidState,pressureSensor.measurement, temperatureSensor.measurement);
+						return AppState.context.fluidManager.lastUsedFluid.CalculateTemperatureDelta(pressureSensor.fluidState,pressureSensor.measurement, temperatureSensor.measurement, AppState.context.locationManager.lastKnownLocation.altitude);
           }
 				} else {
           return AppState.context.preferences.units.temperature.OfSpan(0);

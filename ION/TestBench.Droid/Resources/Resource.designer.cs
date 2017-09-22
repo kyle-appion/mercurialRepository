@@ -26,8 +26,6 @@ namespace TestBench.Droid
 		
 		public static void UpdateIdValues()
 		{
-			global::DSoft.UI.Resource.Drawable.checkmark = global::TestBench.Droid.Resource.Drawable.checkmark;
-			global::DSoft.UI.Resource.String.library_name = global::TestBench.Droid.Resource.String.library_name;
 		}
 		
 		public partial class Animation
@@ -2013,22 +2011,19 @@ namespace TestBench.Droid
 			public const int abc_vector_test = 2130837586;
 			
 			// aapt resource value: 0x7f020053
-			public const int checkmark = 2130837587;
+			public const int design_fab_background = 2130837587;
 			
 			// aapt resource value: 0x7f020054
-			public const int design_fab_background = 2130837588;
+			public const int design_ic_visibility = 2130837588;
 			
 			// aapt resource value: 0x7f020055
-			public const int design_ic_visibility = 2130837589;
+			public const int design_snackbar_background = 2130837589;
 			
 			// aapt resource value: 0x7f020056
-			public const int design_snackbar_background = 2130837590;
+			public const int navigation_empty_icon = 2130837590;
 			
 			// aapt resource value: 0x7f020057
-			public const int navigation_empty_icon = 2130837591;
-			
-			// aapt resource value: 0x7f020058
-			public const int notification_template_icon_bg = 2130837592;
+			public const int notification_template_icon_bg = 2130837591;
 			
 			static Drawable()
 			{
@@ -2873,8 +2868,8 @@ namespace TestBench.Droid
 			// aapt resource value: 0x7f080012
 			public const int abc_toolbar_collapse_description = 2131230738;
 			
-			// aapt resource value: 0x7f080026
-			public const int app_name = 2131230758;
+			// aapt resource value: 0x7f080025
+			public const int app_name = 2131230757;
 			
 			// aapt resource value: 0x7f080021
 			public const int appbar_scrolling_view_behavior = 2131230753;
@@ -2885,11 +2880,8 @@ namespace TestBench.Droid
 			// aapt resource value: 0x7f080023
 			public const int character_counter_pattern = 2131230755;
 			
-			// aapt resource value: 0x7f080025
-			public const int hello = 2131230757;
-			
 			// aapt resource value: 0x7f080024
-			public const int library_name = 2131230756;
+			public const int hello = 2131230756;
 			
 			// aapt resource value: 0x7f080013
 			public const int search_menu_title = 2131230739;

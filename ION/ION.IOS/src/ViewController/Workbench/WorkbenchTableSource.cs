@@ -209,6 +209,7 @@ namespace ION.IOS.ViewController.Workbench {
 
         if (fr.sensorProperty is PTChartSensorProperty) {
           var ptvc = vc.InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART);
+          ptvc.initialSensor = fr.sensor;
           switch (fr.pt.sensor.type) {
             case ESensorType.Pressure:
               ptvc.tUnitChanged += (changedUnit) => {
@@ -225,15 +226,13 @@ namespace ION.IOS.ViewController.Workbench {
               };
               break;
           }
-          //ptvc.initialManifold = fr.manifold;
+
           vc.NavigationController.PushViewController(ptvc, true);
         } else if (fr.sensorProperty is SuperheatSubcoolSensorProperty) {
           var shvc = vc.InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL);
-					//shvc.initialManifold = new Manifold(fr.sensor);
 					shvc.initialSensor = fr.sensor;
           vc.NavigationController.PushViewController(shvc, true);
         } else if (fr.sensorProperty is TargetSuperheatSubcoolProperty){
-					//setTargetView.setManifold(fr.manifold);
 					setTargetView.setManifold(fr.sensor);
         }
       } else if (record is MeasurementRecord){
@@ -252,14 +251,13 @@ namespace ION.IOS.ViewController.Workbench {
 					vc.PresentViewController(dialog, false, null);
 				}
 			} else if (record is RateOfChangeRecord){
-				//Console.WriteLine("Workbench table source clicked the rate of change cell. Sending record of " + ((RateOfChangeRecord)record).manifold.primarySensor.name);
 				Console.WriteLine("Workbench table source clicked the rate of change cell. Sending record of " + ((RateOfChangeRecord)record).sensor.name);
           var rocvc = vc.InflateViewController<RateofChangeSettingsViewController>(BaseIONViewController.VC_RATEOFCHANGE);
           var passingRecord = record as RateOfChangeRecord;
           rocvc.initialRecord = passingRecord;
           vc.NavigationController.PushViewController(rocvc, true);
       } else if (record is ViewerRecord){
-				//ShowManifoldContext(null, ((ViewerRecord)record).manifold);
+
 				ShowManifoldContext(null,((ViewerRecord)record).sensor);
       }
     }
@@ -318,9 +316,8 @@ namespace ION.IOS.ViewController.Workbench {
         var viewer = record as ViewerRecord;
         var cell = tableView.DequeueReusableCell(CELL_VIEWER) as ViewerTableCell;
 
-				//cell.UpdateTo(ion, viewer.manifold);
 				cell.UpdateTo(ion, viewer.sensor);
-        
+
         var longPress = new UILongPressGestureRecognizer((obj) => {
 					if(obj.State == UIGestureRecognizerState.Began){
 						if(tableView.Editing){
@@ -413,11 +410,9 @@ namespace ION.IOS.ViewController.Workbench {
 		/// </summary>
 		/// <returns>The of manifold.</returns>
 		/// <param name="manifold">Manifold.</param>
-		//public int IndexOfManifold(Manifold manifold) {
 		public int IndexOfManifold(Sensor sensor) {
       for (var i = 0; i < records.Count; i++) {
         var record = records[i] as ViewerRecord;
-				//if (record?.manifold == manifold)	{
 				if (record != null && record.sensor == sensor) {
           return i;
         }
@@ -434,23 +429,17 @@ namespace ION.IOS.ViewController.Workbench {
 			this.workbench = workbench;
 			this.workbench.onWorkbenchEvent += OnManifoldEvent;
 			records.Clear();
-			//foreach (var manifold in workbench.manifolds)	{
 			foreach (var checkSensor in workbench.sensors) {
 				records.Add(new ViewerRecord() {
-					//manifold = manifold,
-					//sensor = manifold.primarySensor,
 					sensor = checkSensor,
 					expanded = true,
 				});
 				
 				if(expanded){
-					//foreach (var sp in manifold.sensorProperties)	{
 					foreach (var sp in checkSensor.sensorProperties) {
-						//records.Add(CreateRecordForSensorProperty(manifold, sp));
 						records.Add(CreateRecordForSensorProperty(checkSensor, sp));
 					}
 				}
-				//records.Add(new SpaceRecord());
 			}
 
 			records.Add(new AddRecord());
@@ -464,20 +453,17 @@ namespace ION.IOS.ViewController.Workbench {
 		/// </summary>
 		/// <param name="obj">Object.</param>
 		/// <param name="sensor">Sensor.</param>
-		//private void ShowManifoldContext(object obj, Manifold manifold){
 		private void ShowManifoldContext(object obj, Sensor sensor) {
       var window = UIApplication.SharedApplication.KeyWindow;
       var vc = window.RootViewController;
       while (vc.PresentedViewController != null) {
         vc = vc.PresentedViewController;
       }
-			//var dialog = UIAlertController.Create(manifold.primarySensor.name, Strings.Workbench.SELECT_VIEWER_ACTION.FromResources(), UIAlertControllerStyle.Alert);
+
 			var dialog = UIAlertController.Create(sensor.name, Strings.Workbench.SELECT_VIEWER_ACTION.FromResources(), UIAlertControllerStyle.Alert);
 
-
-			//if (manifold.primarySensor is GaugeDeviceSensor) {
 			if (sensor is GaugeDeviceSensor) {
-				//var sensor = manifold.primarySensor as GaugeDeviceSensor;
+
 				var checkSensor = sensor as GaugeDeviceSensor;
         // Append gauge device sensor context items
         if (!checkSensor.device.isConnected) {
@@ -487,11 +473,11 @@ namespace ION.IOS.ViewController.Workbench {
         }
 				dialog.AddAction(UIAlertAction.Create("Remote change unit", UIAlertActionStyle.Default, (action) => {
 					var d = UIAlertController.Create("Select a Sensor", "", UIAlertControllerStyle.Alert);
-					//var device = ((GaugeDeviceSensor)manifold.primarySensor).device;
+
 					var device = ((GaugeDeviceSensor)sensor).device;
 					for (int i = 0; i < device.sensorCount; i++) {
 						var s = device[i];
-						//d.AddAction(UIAlertAction.Create(i + ": " + s.GetType(), UIAlertActionStyle.Default, (e) => {
+
 						d.AddAction(UIAlertAction.Create(s.type.ToString(), UIAlertActionStyle.Default, (e) => {
 							ShowChangeUnitDialog(s);
 						}));
@@ -502,38 +488,32 @@ namespace ION.IOS.ViewController.Workbench {
       }
 
       dialog.AddAction(UIAlertAction.Create(Strings.Workbench.Viewer.ADD, UIAlertActionStyle.Default, (action) => {
-		    //ShowAddSubviewDialog(tableView, manifold);
+
 		    ShowAddSubviewDialog(tableView, sensor);
       }));
 
       dialog.AddAction(UIAlertAction.Create(Strings.Alarms.SELF, UIAlertActionStyle.Default, (action) => {
         var ac = this.vc.InflateViewController<SensorAlarmViewController>(BaseIONViewController.VC_SENSOR_ALARMS);
-  		  //ac.sensor = manifold.primarySensor;
+
   		  ac.sensor = sensor;
         this.vc.NavigationController.PushViewController(ac, true);
       }));
 
       dialog.AddAction(UIAlertAction.Create(Strings.Workbench.REMOVE, UIAlertActionStyle.Default, (action) => {
-  		  //workbench.Remove(manifold);
   		  workbench.Remove(sensor);
       }));
 
-			//if (manifold.primarySensor is GaugeDeviceSensor) {
 			if (sensor is GaugeDeviceSensor) {
-				//var sensor = manifold.primarySensor as GaugeDeviceSensor;
 				var checkSensor = sensor as GaugeDeviceSensor;
 				// Append gauge device sensor context items
-				//if (sensor.device.isConnected) {
 				if (checkSensor.device.isConnected) {
           dialog.AddAction(UIAlertAction.Create(Strings.Device.DISCONNECT.FromResources(), UIAlertActionStyle.Default, (action) => {
-    			  //sensor.device.connection.Disconnect();
     			  checkSensor.device.connection.Disconnect();
           }));
         }
       }
 
       dialog.AddAction(UIAlertAction.Create(Strings.RENAME, UIAlertActionStyle.Default, (action) => {
-		  //UIAlertController textAlert = UIAlertController.Create(Strings.ENTER_NAME, manifold.primarySensor.name, UIAlertControllerStyle.Alert);
 		  UIAlertController textAlert = UIAlertController.Create(Strings.ENTER_NAME, sensor.name, UIAlertControllerStyle.Alert);
         textAlert.AddTextField(textField => {});
         textAlert.AddAction (UIAlertAction.Create (Strings.CANCEL, UIAlertActionStyle.Cancel, UIAlertAction => {}));
@@ -587,7 +567,6 @@ namespace ION.IOS.ViewController.Workbench {
 		/// </summary>
 		/// <param name="tableView">Table view.</param>
 		/// <param name="sensor">Sensor.</param>
-		//private void ShowAddSubviewDialog(UITableView tableView, Manifold manifold)	{
 		private void ShowAddSubviewDialog(UITableView tableView, Sensor sensor) {
       var dialog = UIAlertController.Create(Strings.ACTIONS, Strings.Workbench.Viewer.ADD, UIAlertControllerStyle.Alert);
 
@@ -710,16 +689,14 @@ namespace ION.IOS.ViewController.Workbench {
     /// </summary>
     /// <param name="workbenchEvent">Workbench event.</param>
     private void OnManifoldEvent(WorkbenchEvent workbenchEvent) {
-			//var manifold = workbenchEvent.manifold;
 			var checkSensor = workbenchEvent.sensor;
-			//var recordIndex = IndexOfManifold(manifold);
 			var recordIndex = IndexOfManifold(checkSensor);
       var indices = new List<int>();
       ViewerRecord vr;
 
       switch (workbenchEvent.type) {
         case WorkbenchEvent.EType.Added:
-        Console.WriteLine("Added a Manifold");
+        Console.WriteLine("Added a Sensor");
           recordIndex = records.Count - 1;
           indices.Add(recordIndex);
 
@@ -747,7 +724,6 @@ namespace ION.IOS.ViewController.Workbench {
 
         case WorkbenchEvent.EType.Removed:
           var start = recordIndex;
-          //var end = start + 1;  
           var end = start;
 					if (recordIndex == -1)
 					{
@@ -756,7 +732,6 @@ namespace ION.IOS.ViewController.Workbench {
           vr = records[start] as ViewerRecord;
 
           if (vr.expanded) {
-						//end += vr.manifold.sensorPropertyCount;
 						end += vr.sensor.sensorPropertyCount;
           }
           vr.sensor.sensorProperties.Clear();
@@ -787,9 +762,7 @@ namespace ION.IOS.ViewController.Workbench {
     	if(!expanded){
 				return;
 			}
-			//var manifold = e.manifold;
 			var checkSensor = e.sensor;
-			//var recordIndex = IndexOfManifold(manifold);
 			var recordIndex = IndexOfManifold(checkSensor);
       var indices = new List<int>();
       ViewerRecord vr;
@@ -804,7 +777,6 @@ namespace ION.IOS.ViewController.Workbench {
           if (recordIndex > 0) {
             vr = records[recordIndex] as ViewerRecord;
             if (vr.expanded) {
-							//for (int i = manifold.sensorPropertyCount; i > 0; i--) {
 							for (int i = checkSensor.sensorPropertyCount; i > 0; i--) {
                 indices.Add(i + recordIndex);
               }
@@ -816,7 +788,6 @@ namespace ION.IOS.ViewController.Workbench {
 
         case ManifoldEvent.EType.SensorPropertyAdded:
           index = recordIndex + e.index + 1;
-					//records.Insert(index, CreateRecordForSensorProperty(manifold, manifold[e.index]));
 					records.Insert(index, CreateRecordForSensorProperty(checkSensor, checkSensor[e.index]));
           tableView.InsertRows(ToNSIndexPath(new int[] { index }), UITableViewRowAnimation.Top);
           SetWorkbench(workbench);
@@ -846,25 +817,18 @@ namespace ION.IOS.ViewController.Workbench {
 		/// </summary>
 		/// <returns>The record for sensor property.</returns>
 		/// <param name="sensorProperty">Sensor property.</param>
-		//private IWorkbenchSourceRecord CreateRecordForSensorProperty(Manifold manifold, ISensorProperty sensorProperty) {
 		private IWorkbenchSourceRecord CreateRecordForSensorProperty(Sensor sensor, ISensorProperty sensorProperty) {
       if (sensorProperty is MinSensorProperty || sensorProperty is MaxSensorProperty || sensorProperty is HoldSensorProperty) {
-				//return new MeasurementRecord(manifold, sensorProperty);
 				return new MeasurementRecord(sensor, sensorProperty);
       } else if (sensorProperty is TimerSensorProperty) {
-				//return new TimerRecord(manifold, sensorProperty as TimerSensorProperty);
 				return new TimerRecord(sensor, sensorProperty as TimerSensorProperty);
       } else if (sensorProperty is RateOfChangeSensorProperty) {
-				//return new RateOfChangeRecord(manifold, sensorProperty);
 				return new RateOfChangeRecord(sensor, sensorProperty);
       } else if (sensorProperty is PTChartSensorProperty || sensorProperty is SuperheatSubcoolSensorProperty || sensorProperty is TargetSuperheatSubcoolProperty) {
-				//return new FluidRecord(manifold, sensorProperty);
 				return new FluidRecord(sensor, sensorProperty);
       } else if (sensorProperty is SecondarySensorProperty){
-				//return new SecondarySensorRecord(manifold, sensorProperty as SecondarySensorProperty);
 				return new SecondarySensorRecord(sensor, sensorProperty as SecondarySensorProperty);
       } else if (sensorProperty is AlternateUnitSensorProperty){
-				//return new MeasurementRecord(manifold, sensorProperty as AlternateUnitSensorProperty);
 				return new MeasurementRecord(sensor, sensorProperty as AlternateUnitSensorProperty);
       } else {
         //throw new Exception("Cannot create WorkbenchSourceRecord for sensor property: " + sensorProperty);
@@ -907,13 +871,10 @@ namespace ION.IOS.ViewController.Workbench {
 
   public abstract class SensorPropertyRecord : IWorkbenchSourceRecord {
     public abstract WorkbenchTableSource.ViewType viewType { get; }
-		//public Manifold manifold { get; set; }
 		public Sensor sensor { get; set; }
     public ISensorProperty sensorProperty { get; set; }
 
-		//public SensorPropertyRecord(Manifold manifold, ISensorProperty sensorProperty) {
 		public SensorPropertyRecord(Sensor sensor, ISensorProperty sensorProperty) {
-			//this.manifold = manifold;
 			this.sensor = sensor;
       this.sensorProperty = sensorProperty;
     }

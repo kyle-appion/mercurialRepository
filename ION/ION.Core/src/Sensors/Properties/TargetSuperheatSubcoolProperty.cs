@@ -38,12 +38,9 @@
 		public Sensor pressureSensor {
 			get {
 				// The else is asserted to be valid by the check in the constructor.
-				//if (ESensorType.Pressure == manifold.primarySensor.type){
 				if (ESensorType.Pressure == sensor.type) {
-					//return manifold.primarySensor;
 					return sensor;
 				} else {
-					//return manifold.secondarySensor;
 					return sensor.linkedSensor;
 				}
 			}
@@ -55,12 +52,9 @@
 		public Sensor temperatureSensor {
 			get {
 				// The else is asserted to be valid by the check in the constructor.
-				//if (ESensorType.Temperature == manifold.primarySensor.type)	{
 				if (ESensorType.Temperature == sensor.type) {
-					//return manifold.primarySensor;
 					return sensor;
 				} else {
-					//return manifold.secondarySensor;
 					return sensor.linkedSensor;
 				}
 			}
@@ -69,7 +63,7 @@
 		public ScalarSpan temperatureDelta {
 			get {
 				if (isValid) {
-					return AppState.context.fluidManager.lastUsedFluid.CalculateTemperatureDelta(sensor.fluidState, pressureSensor.measurement, temperatureSensor.measurement);
+					return AppState.context.fluidManager.lastUsedFluid.CalculateTemperatureDelta(sensor.fluidState, pressureSensor.measurement, temperatureSensor.measurement, AppState.context.locationManager.lastKnownLocation.altitude);
 				} else {
 					return AppState.context.preferences.units.temperature.OfSpan(0);
 				}
@@ -78,9 +72,7 @@
 
 		public bool isValid { get { return pressureSensor != null && temperatureSensor != null; } }
 
-		//public TargetSuperheatSubcoolProperty(Manifold manifold) : base(manifold){
 		public TargetSuperheatSubcoolProperty(Sensor sensor) : base(sensor) {
-			//bool isValid = IsSensorValid(manifold.primarySensor) && (manifold.secondarySensor == null || IsSensorValid(manifold.secondarySensor) || manifold.primarySensor.type != manifold.secondarySensor.type);
 			bool isValid = IsSensorValid(sensor) && (sensor.linkedSensor == null || IsSensorValid(sensor.linkedSensor) ||	sensor.type != sensor.linkedSensor.type);
 			if (!isValid) {
 				throw new Exception("Cannot create TargetSuperheatSubcoolProperty: expected a pressure and temperature sensor");

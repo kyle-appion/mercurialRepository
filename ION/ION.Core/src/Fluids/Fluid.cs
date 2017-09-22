@@ -287,7 +287,18 @@
 				}
 			}
 		}
-
+		/// <summary>
+		/// Queries the expected saturated temperature of the fluid at the given state and relative pressure.
+		/// </summary>
+		/// <returns>The saturated pressure from relative pressure.</returns>
+		/// <param name="state">State.</param>
+		/// <param name="relativePressure">Relative pressure.</param>
+		/// <param name="altitude">Altitude.</param>
+		public Scalar GetSaturatedTemperature(EState state, Scalar relativePressure, Scalar altitude)
+		{
+			var absPressure = ConvertRelativePressureToAbsolute(relativePressure, altitude);
+			return GetSaturatedTemperature(state, relativePressure);
+		}
 		/// <summary>
 		/// Queries pressure of the fluid in the given state and saturated temperature.
 		/// </summary>
@@ -333,7 +344,18 @@
 				}
 			}
 		}
-
+		/// <summary>
+		/// Queries the relative pressure of the fluid in the given state and saturated temperaure.
+		/// </summary>
+		/// <returns>The relative pressure from saturated temperature.</returns>
+		/// <param name="state">State.</param>
+		/// <param name="saturatedTemperature">Saturated temperature.</param>
+		/// <param name="altitude">Altitude.</param>
+		public Scalar GetPressureFromSaturatedTemperature(EState state, Scalar saturatedTemperature, Scalar altitude)
+		{
+			var absPressure = GetPressureFromSaturatedTemperature(state, saturatedTemperature);
+			return ConvertAbsolutePressureToRelative(absPressure, altitude);
+		}
 		/// <summary>
 		/// Calculates the effective superheat or subcool of the fluid given absolute pressure and measured temperature.
 		/// </summary>
@@ -360,7 +382,19 @@
 				return measuredTemperature - satTemp;
 			}
 		}
-
+		/// <summary>
+		/// Calculates the effective superheat or subcool of the fluid given relative pressure and measured temperature.
+		/// </summary>
+		/// <returns>The temperature delta.</returns>
+		/// <param name="fluidState">Fluid state.</param>
+		/// <param name="relativePressure">Relative pressure.</param>
+		/// <param name="measuredTemperature">Measured temperature.</param>
+		/// <param name="altitude">Altitude.</param>
+		public ScalarSpan CalculateTemperatureDelta(EState fluidState, Scalar relativePressure, Scalar measuredTemperature, Scalar altitude)
+		{
+			var absPressure = ConvertRelativePressureToAbsolute(relativePressure, altitude);
+			return CalculateTemperatureDelta(fluidState, absPressure, measuredTemperature);
+		}
 		/// <summary>
 		/// Calculates the superheat for the fluid.
 		/// </summary>

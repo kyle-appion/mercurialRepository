@@ -41,8 +41,7 @@ namespace ION.IOS.ViewController.JobManager
       set { _floatingLabel.Font = value; }
     }
 
-    public FloatLabeledTextField(CGRect frame)
-      : base(frame)
+    public FloatLabeledTextField(CGRect frame) : base(frame)
     {
       _floatingLabel = new UILabel() 
       {
@@ -53,7 +52,7 @@ namespace ION.IOS.ViewController.JobManager
 
       FloatingLabelTextColor = UIColor.Gray;
       FloatingLabelActiveTextColor = UIColor.Blue;
-      FloatingLabelFont = UIFont.BoldSystemFontOfSize(12);
+      FloatingLabelFont = UIFont.FromName("DroidSans-Bold",12);
     }
 
     public override string Placeholder 
@@ -74,17 +73,17 @@ namespace ION.IOS.ViewController.JobManager
 
     public override CGRect TextRect(CGRect forBounds)
     {
-      if (_floatingLabel == null)
+      if (_floatingLabel == null) {
         return base.TextRect(forBounds);
-
+      }
       return InsetRect(base.TextRect(forBounds), new UIEdgeInsets(_floatingLabel.Font.LineHeight, 0, 0, 0));
     }
 
     public override CGRect EditingRect(CGRect forBounds)
     {
-      if (_floatingLabel == null)
+      if (_floatingLabel == null){
         return base.EditingRect(forBounds);
-
+      }
       return InsetRect(base.EditingRect(forBounds), new UIEdgeInsets(_floatingLabel.Font.LineHeight, 0, 0, 0));
     }
 
@@ -92,12 +91,10 @@ namespace ION.IOS.ViewController.JobManager
     {
       var rect = base.ClearButtonRect(forBounds);
 
-      if (_floatingLabel == null)
+      if (_floatingLabel == null){
         return rect;
-
-      return new CGRect(
-        rect.X, rect.Y + _floatingLabel.Font.LineHeight / 2.0f, 
-        rect.Size.Width, rect.Size.Height);
+      }
+      return new CGRect(rect.X, rect.Y + _floatingLabel.Font.LineHeight / 2.0f, rect.Size.Width, rect.Size.Height);
     }
 
     public override void LayoutSubviews()

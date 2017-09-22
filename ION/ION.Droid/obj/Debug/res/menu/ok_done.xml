@@ -1,0 +1,1 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"><item android:id="@id/ok_done" android:actionLayout="@layout/ok_done" android:title="@string/ok_done" android:showAsAction="always" /></menu>

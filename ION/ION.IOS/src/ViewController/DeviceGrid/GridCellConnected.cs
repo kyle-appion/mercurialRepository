@@ -17,7 +17,23 @@ namespace ION.IOS.ViewController.DeviceGrid {
     public UIImageView connectionImage, extraImage, workbenchImage, analyzerImage, pressureLinkImage, tempLinkImage;
     public nfloat textSize;
     public static NSString CellID = new NSString("connectedCell");
-    public GaugeDeviceSensor slotSensor;
+
+    public GaugeDeviceSensor slotSensor { 
+      get {
+        return __slotSensor;
+      } 
+      set {
+				if (__slotSensor != null)	{
+					__slotSensor.onSensorEvent -= gaugeUpdating;
+				}
+        __slotSensor = value;
+
+        if(__slotSensor != null){
+					__slotSensor.onSensorEvent += gaugeUpdating;
+				}
+      }
+    } GaugeDeviceSensor __slotSensor;
+
     IION ion;
     public bool actualLinked = true;
 
@@ -119,15 +135,12 @@ namespace ION.IOS.ViewController.DeviceGrid {
 				ContentView.Hidden = true;
 				BackgroundView.Hidden = true;
       } else {
-        if (slotSensor != null) {
-          slotSensor.onSensorEvent -= gaugeUpdating;
-        }
+
 				slotSensor = sensor;
-				slotSensor.onSensorEvent += gaugeUpdating;
 				linkLabel1.Hidden = true;
 				typeLabel.Text = slotSensor.device.serialNumber.deviceModel.GetTypeString();
 
-				if(slotSensor.type == Core.Sensors.ESensorType.Pressure){
+				if(slotSensor.type == Core.Sensors.ESensorType.Pressure && slotSensor.device.sensorCount > 1){
 					pressureLinkImage.Hidden = false;
 					tempLinkImage.Hidden = true;
 				} else if (slotSensor.type == Core.Sensors.ESensorType.Temperature && slotSensor.index != 0) {
@@ -169,28 +182,37 @@ namespace ION.IOS.ViewController.DeviceGrid {
 			}
     }
 
-		public async void gaugeUpdating(SensorEvent sensorEvent) {
-			await Task.Delay(TimeSpan.FromMilliseconds(1));
+		public void gaugeUpdating(SensorEvent sensorEvent) {
+
       var gaugeSensor = sensorEvent.sensor as GaugeDeviceSensor;
 
       if (gaugeSensor.device.isConnected) {
-        connectionImage.TintColor = UIColor.Green;
-        measurementLabel.Text = sensorEvent.sensor.measurement.amount.ToString();
-        unitLabel.Text = sensorEvent.sensor.measurement.unit.ToString();
-      } else if (gaugeSensor.device.connection.connectionState == Core.Connections.EConnectionState.Broadcasting) {
-				connectionImage.TintColor = UIColor.Blue;
-				measurementLabel.Text = sensorEvent.sensor.measurement.amount.ToString();
-				unitLabel.Text = sensorEvent.sensor.measurement.unit.ToString();
-      } else {
+				InvokeOnMainThread(() => {
+          connectionImage.TintColor = UIColor.Green;
+          measurementLabel.Text = sensorEvent.sensor.measurement.amount.ToString();
+          unitLabel.Text = sensorEvent.sensor.measurement.unit.ToString();
+				});
+			} else if (gaugeSensor.device.connection.connectionState == Core.Connections.EConnectionState.Broadcasting) {
+				InvokeOnMainThread(() => {
+					connectionImage.TintColor = UIColor.Blue;
+  				measurementLabel.Text = sensorEvent.sensor.measurement.amount.ToString();
+  				unitLabel.Text = sensorEvent.sensor.measurement.unit.ToString();
+				});
+
+			} else {
         if (gaugeSensor.device.isNearby) {
-					connectionImage.TintColor = UIColor.Yellow;
-					measurementLabel.Text = "---";
-					unitLabel.Text = "";
-        } else {
-					connectionImage.TintColor = UIColor.Red;
-					measurementLabel.Text = "---";
-          unitLabel.Text = "";
-        }
+					InvokeOnMainThread(() => {
+						connectionImage.TintColor = UIColor.Yellow;
+  					measurementLabel.Text = "---";
+  					unitLabel.Text = "";
+					});
+				} else {
+					InvokeOnMainThread(() => {
+						connectionImage.TintColor = UIColor.Red;
+  					measurementLabel.Text = "---";
+            unitLabel.Text = "";
+					});
+				}
 			}
 		}
   }

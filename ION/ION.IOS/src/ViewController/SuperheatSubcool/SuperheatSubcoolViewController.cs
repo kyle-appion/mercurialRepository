@@ -119,7 +119,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     /// <value><c>true</c> if pressure sensor locked; otherwise, <c>false</c>.</value>
     public bool pressureSensorLocked {
       get {
-				//return initialManifold != null && ESensorType.Pressure == initialManifold.primarySensor.type;
 				return initialSensor != null && ESensorType.Pressure == initialSensor.type;
       }
     }
@@ -130,7 +129,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     /// <value><c>true</c> if temperature sensor locked; otherwise, <c>false</c>.</value>
     public bool temperatureSensorLocked {
       get {
-				//return initialManifold != null && ESensorType.Temperature == initialManifold.primarySensor.type;
 				return initialSensor != null && ESensorType.Temperature == initialSensor.type;
       }
     }
@@ -153,15 +151,15 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     public override void ViewDidLoad() {
       base.ViewDidLoad();
 
-			//if (initialManifold == null){
 			if (initialSensor == null) {
         InitNavigationBar("ic_nav_superheat_subcool", false);
         backAction = () => {
           root.navigation.ToggleMenu();
         }; 
       }
+			ion = AppState.context;
 
-      NavigationItem.Title = Strings.Fluid.SUPERHEAT_SUBCOOL;
+			NavigationItem.Title = Strings.Fluid.SUPERHEAT_SUBCOOL;
       NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.HELP, UIBarButtonItemStyle.Plain, delegate {
         var dialog = new UIAlertView(Strings.HELP, Strings.Fluid.STATE_HELP, null, Strings.OK);
         dialog.Show();
@@ -169,7 +167,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       InitializeFluidControlWidgets();
 
-      ion = AppState.context;
 
       ion.locationManager.onLocationChanged += DeltaOnLocationChanged;
 
@@ -177,9 +174,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       temperatureUnit = Units.Temperature.FAHRENHEIT;
 
 			pressureSensor = new ManualSensor(ion.manualSensorContainer, ESensorType.Pressure, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0), true);
-			//pressureSensor = new ManualSensor(ESensorType.Pressure, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0), true);
 			temperatureSensor = new ManualSensor(ion.manualSensorContainer, ESensorType.Temperature, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0), false);
-			//temperatureSensor = new ManualSensor(ESensorType.Temperature, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0), false);
 
       pressureSensor.unit = pressureUnit;
       temperatureSensor.unit = temperatureUnit;
@@ -237,7 +232,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           ////if user removes a pressure sensor, they need to be able to create a new manual sensor
           if (pressureSensor == null){
 				    pressureSensor = new ManualSensor(ion.manualSensorContainer, ESensorType.Pressure, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0), true);
-				    //pressureSensor = new ManualSensor(ESensorType.Pressure, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0), true);
             var measurement = pressureUnit.OfScalar(double.Parse("0.00"));
             ((ManualSensor)pressureSensor).SetMeasurement(measurement);
           }
@@ -262,7 +256,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       viewTemperatureTouchArea.AddGestureRecognizer(new UILongPressGestureRecognizer(() => {
         if (!temperatureSensorLocked) {
-          //temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
           temperatureSensor = null;
           buttonTemperatureUnit.Enabled = false;
           ClearTemperatureInput();
@@ -278,7 +271,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           ////if user removes a temperature sensor, they need to be able to create a new manual sensor
           if (temperatureSensor == null){
 				    temperatureSensor = new ManualSensor(ion.manualSensorContainer, ESensorType.Temperature, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0), false);
-				    //temperatureSensor = new ManualSensor(ESensorType.Temperature, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0), false);
             var measurement = temperatureUnit.OfScalar(double.Parse("0.00"));
             ((ManualSensor)temperatureSensor).SetMeasurement(measurement);
           }
@@ -303,7 +295,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 						temperatureSensor = initialSensor.linkedSensor;
           } else {
 						temperatureSensor = new ManualSensor(ion.manualSensorContainer, ESensorType.Temperature, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0), false);
-						//temperatureSensor = new ManualSensor(ESensorType.Temperature, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0), false);
           }
         } else if (ESensorType.Temperature == sensor.type) {
           temperatureSensor = sensor;
@@ -311,7 +302,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
             pressureSensor = initialSensor.linkedSensor;
           } else {
 						pressureSensor = new ManualSensor(ion.manualSensorContainer, ESensorType.Pressure, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0), true);
-						//pressureSensor = new ManualSensor(ESensorType.Pressure, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0), true);
           }
         } else {
         	Log.E(this, "Cannot accept sensor that is not a pressure or temperature sensor");
@@ -338,12 +328,10 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     private void OnSettingsChanged(NSNotification defaults) {
       if (pressureSensor != null) {
         pressureUnit = ion.preferences.units.pressure;
-        //pressureSensor.unit = pressureUnit;
         OnPressureSensorChanged(new SensorEvent(SensorEvent.EType.Invalidated, pressureSensor));
       }
       if (temperatureSensor != null) {
         temperatureUnit = ion.preferences.units.temperature;
-        //temperatureSensor.unit = temperatureUnit;
         OnTemperatureSensorChanged(new SensorEvent(SensorEvent.EType.Invalidated, temperatureSensor));
       }
       UpdateDelta();
@@ -379,10 +367,14 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     /// Initializes all of view controller's fluid control widgets.
     /// </summary>
     private void InitializeFluidControlWidgets() {
+			viewFluidColor.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(ion.fluidManager.lastUsedFluid.name));
+			labelFluidName.Text = ion.fluidManager.lastUsedFluid.name;
+
       viewFluidHeader.AddGestureRecognizer(new UITapGestureRecognizer(() => {
         var sb = InflateViewController<FluidManagerViewController>(VC_FLUID_MANAGER);
         sb.onFluidSelectedDelegate = (Fluid fluid) => {
-
+    			viewFluidColor.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(ion.fluidManager.lastUsedFluid.name));
+    			labelFluidName.Text = ion.fluidManager.lastUsedFluid.name;
 			    if (pressureSensor != null) {
             OnPressureSensorChanged(new SensorEvent(SensorEvent.EType.Invalidated, pressureSensor));
           }
@@ -417,7 +409,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
     /// <summary>
     /// Updates the calculated temperature delta value for the superheat/subcool calculations.
-    /// </summary>
+    /// </summary>   
     private void UpdateDelta() {
       labelFluidState.BackgroundColor = new UIColor(Colors.RED);
       switchFluidState.TintColor = new UIColor(Colors.RED);
@@ -445,10 +437,10 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         return;
       }
       
-      var pressureScalar = pressureSensor.measurement;
+      var pressureScalar = ion.fluidManager.lastUsedFluid.ConvertRelativePressureToAbsolute(pressureSensor.measurement, ion.locationManager.lastKnownLocation.altitude);
       var temperatureScalar = temperatureSensor.measurement;
 
-      var calculation = ion.fluidManager.lastUsedFluid.CalculateTemperatureDelta(pressureSensor.fluidState,pressureScalar, temperatureScalar).ConvertTo(temperatureUnit);
+      var calculation = ion.fluidManager.lastUsedFluid.CalculateTemperatureDelta(pressureSensor.fluidState,pressureScalar, temperatureScalar, ion.locationManager.lastKnownLocation.altitude).ConvertTo(temperatureUnit);
 
       if (ion.fluidManager.lastUsedFluid.mixture) {
         switch (pressureSensor.fluidState) {
@@ -556,7 +548,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       pressureUnit = measurement.unit;
 
       if (sensorEvent.sensor != null) {
-        var temp = ion.fluidManager.lastUsedFluid.GetSaturatedTemperature(sensorEvent.sensor.fluidState,sensorEvent.sensor.measurement).ConvertTo(temperatureUnit);
+        var temp = ion.fluidManager.lastUsedFluid.GetSaturatedTemperature(sensorEvent.sensor.fluidState,sensorEvent.sensor.measurement, ion.locationManager.lastKnownLocation.altitude).ConvertTo(temperatureUnit);
 	      labelSatTempMeasurement.Text = SensorUtils.ToFormattedString(temp);
 	      labelSatTempUnit.Text = temp.unit.ToString();
 			}
@@ -579,9 +571,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       buttonTemperatureUnit.SetTitle(measurement.unit.ToString(), UIControlState.Normal);
       if(pressureSensor == null){
 				pressureSensor = new ManualSensor(ion.manualSensorContainer, ESensorType.Pressure, new Scalar(pressureUnit, 0.0));
-				//pressureSensor = new ManualSensor(ESensorType.Pressure, new Scalar(pressureUnit, 0.0));
       }
-      var temp = ion.fluidManager.lastUsedFluid.GetSaturatedTemperature(pressureSensor.fluidState,pressureSensor.measurement).ConvertTo(temperatureUnit);
+      var temp = ion.fluidManager.lastUsedFluid.GetSaturatedTemperature(pressureSensor.fluidState,pressureSensor.measurement, ion.locationManager.lastKnownLocation.altitude).ConvertTo(temperatureUnit);
       labelSatTempUnit.Text = temp.unit.ToString();
 
       UpdateDelta();
@@ -608,9 +599,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     /// Synchronizes the state of the pressure icons to the pressure sensor.
     /// </summary>
     private void SynchronizePressureIcons() {
-			//var im = initialManifold;
 			var im = initialSensor;
-			//var locked = im != null && im.primarySensor == pressureSensor;
 			var locked = im != null && im == pressureSensor;
 
       if (pressureSensor is GaugeDeviceSensor) {

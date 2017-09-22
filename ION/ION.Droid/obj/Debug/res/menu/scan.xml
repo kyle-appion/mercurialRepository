@@ -1,0 +1,1 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"><item android:id="@id/scan" android:actionLayout="@layout/button_scan" android:title="@string/scan" android:visible="true" android:showAsAction="always" /></menu>

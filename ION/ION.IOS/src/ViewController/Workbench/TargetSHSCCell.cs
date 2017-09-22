@@ -14,17 +14,19 @@ namespace ION.IOS.ViewController.Workbench {
 		private FluidRecord record {
 			get {
 				return __record;
-			}
+			}  
 
 			set {
 				if (__record != null) {
 					__record.sensorProperty.onSensorPropertyChanged -= OnSensorPropertyChanged;
+          __record.sensor.onSensorEvent -= OnSensorChanged;
 				}
 
 				__record = value;
 
 				if (__record != null) {
 					__record.sensorProperty.onSensorPropertyChanged += OnSensorPropertyChanged;
+					__record.sensor.onSensorEvent += OnSensorChanged;
 					OnSensorPropertyChanged(__record.sensorProperty);
 				}
 			}
@@ -36,24 +38,20 @@ namespace ION.IOS.ViewController.Workbench {
 		}
 
     public void UpdateTo(FluidRecord record){
-      this.record.sensor.onSensorEvent -= updateTSH;
       this.record = record;
-      this.record.sensor.onSensorEvent += updateTSH;
     }
+
+    private void OnSensorChanged(SensorEvent sensorEvent){
+			HandleSuperheatSubcoolSensorPropertyChanged(record.sensorProperty as TargetSuperheatSubcoolProperty);
+		}
 
 		private void OnSensorPropertyChanged(ISensorProperty sensorProperty) {
 			HandleSuperheatSubcoolSensorPropertyChanged(sensorProperty as TargetSuperheatSubcoolProperty);
 		}
 
-    public void updateTSH(SensorEvent sensorEvent){
-      HandleSuperheatSubcoolSensorPropertyChanged(this.record.sensorProperty as TargetSuperheatSubcoolProperty);
-    }
-
 		private void HandleSuperheatSubcoolSensorPropertyChanged(TargetSuperheatSubcoolProperty sensorProperty) {
       labelTarget.Text = record.sensor.targetSHSC.ToString();
 
-      //if (ptchart.fluid.mixture) {
-      //switch (sensorProperty.manifold.ptChart.state){
       switch (sensorProperty.sensor.fluidState) {
 					case Fluid.EState.Bubble:
 					//labelTitle.Text = Strings.Fluid.SUBCOOL_ABRV;
@@ -67,7 +65,6 @@ namespace ION.IOS.ViewController.Workbench {
 					labelTitle.Text = Strings.UNKNOWN;
 					break;
 				}
-			//} else {
 				if (sensorProperty.pressureSensor == null || sensorProperty.temperatureSensor == null) {
 					labelTitle.Text = Strings.Fluid.SHSC;
 				} else {
@@ -79,20 +76,16 @@ namespace ION.IOS.ViewController.Workbench {
 					} else if (meas < 0) {
 						//labelTitle.Text = Strings.Fluid.SC;
 						labelTitle.Text = "T-SC";
-					} 
+					}    
 				}
-			//}
 
 			////set subview for not existing sensor linkage
-			//if (sensorProperty.pressureSensor == null || sensorProperty.temperatureSensor == null)	{
 			if (sensorProperty.sensor.linkedSensor == null) {
 				labelOffset.Text = Strings.Workbench.Viewer.SHSC_SETUP;
 			} else {
-				//var meas = sensorProperty.temperatureDelta - record.manifold.targetSHSC;
 				var meas = sensorProperty.temperatureDelta - record.sensor.targetSHSC;
 
         labelOffset.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, meas, true);
-
 			}
 
 		}

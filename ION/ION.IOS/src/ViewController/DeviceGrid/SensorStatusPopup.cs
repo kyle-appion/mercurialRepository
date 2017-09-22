@@ -26,7 +26,22 @@ namespace ION.IOS.ViewController {
     public UILabel nameLabel, typeLabel1, typeLabel2, measurementLabel1, measurementLabel2, unitLabel1, unitLabel2, displayOnLabel, moreInfoLabel, divider1, divider2, divider3, divider4;
     public UIButton settingsButton, connectButton, linkToggleButton, addWorkbench1, addWorkbench2, addAnalyzer1, addAnalyzer2;
     public UIImageView settingsImage, bluetoothImage, deviceImage, batteryImage;
-    public GaugeDeviceSensor sensor;
+    public GaugeDeviceSensor sensor {
+      get {
+        return __sensor;
+      }
+      set {
+        if(__sensor != null){
+          __sensor.onSensorEvent -= updateSensor;
+        }
+        __sensor = value;
+
+        if(__sensor != null){
+          __sensor.onSensorEvent += updateSensor;
+        }
+      }
+    } GaugeDeviceSensor __sensor;
+
     public bool shouldOpen = true;
     IION ion;
     public DeviceGridViewController gridVC;
@@ -154,9 +169,9 @@ namespace ION.IOS.ViewController {
 			NSError error = null;
 			var htmlString = new NSAttributedString(
 			NSData.FromString("<div style=\"font-size: 150%\">For added functionality, add this device<br>to <b>System Analyzer</b> or <b>Workbench</b>.</div>"),
-			new NSAttributedStringDocumentAttributes { DocumentType = NSDocumentType.HTML, StringEncoding = NSStringEncoding.UTF8 },
-			ref error
-			);
+			  new NSAttributedStringDocumentAttributes { DocumentType = NSDocumentType.HTML, StringEncoding = NSStringEncoding.UTF8 }, 
+        ref error
+      );
 
       moreInfoLabel.AttributedText = htmlString;
           
@@ -284,44 +299,49 @@ namespace ION.IOS.ViewController {
 		}
 
     public void updatePopup(GaugeDeviceSensor passedSensor){
-      if(sensor != null){
-				sensor.onSensorEvent -= updateSensor;
-			}
       Console.WriteLine("Analyzer slot index: " + analyzerSlot);
       sensor = passedSensor;
-			sensor.onSensorEvent += updateSensor;
 			nameLabel.Text = sensor.device.serialNumber.deviceModel.GetTypeString() + ":" + sensor.device.serialNumber.rawSerial.ToUpper();
 			deviceImage.Image = Devices.DeviceUtil.GetUIImageFromDeviceModel(sensor.device.serialNumber.deviceModel);
 
       if (sensor.device.sensorCount == 1) {
         typeLabel1.Hidden = true;
-        measurementLabel1.Hidden = true;
+				measurementLabel1.Hidden = true;
+        measurementLabel2.Hidden = false;
         unitLabel1.Hidden = true;
         divider2.Hidden = true;
         addWorkbench1.Hidden = true;
         addAnalyzer1.Hidden = true;
+        measurementLabel2.Text = sensor.measurement.amount.ToString();
       } else {
         typeLabel1.Hidden = false;
-        measurementLabel1.Hidden = false;
+				measurementLabel1.Hidden = false;
+				measurementLabel2.Hidden = false;
         unitLabel1.Hidden = false;
         divider2.Hidden = false;
         addWorkbench1.Hidden = false;
         addAnalyzer1.Hidden = false;
+				measurementLabel1.Text = sensor.measurement.amount.ToString();
+				measurementLabel2.Text = sensor.device.sensors[1].measurement.amount.ToString();
+			}
+      if (sensor.device.sensorCount == 1) {
+        typeLabel2.Text = sensor.type.ToString();
+
+      } else {
+				typeLabel1.Text = sensor.device.sensors[0].type.ToString();
+				typeLabel2.Text = sensor.device.sensors[1].type.ToString();
       }
-      sensor.NotifyInvalidated();
+			sensor.NotifyInvalidated();
 		}
 
     public void updateSensor(SensorEvent sensorEvent){
       var updateSensor = sensorEvent.sensor as GaugeDeviceSensor;
 			if (updateSensor.device.sensorCount == 1) {
-				typeLabel2.Text = updateSensor.type.ToString();
-
 				if (updateSensor.device.isConnected) {
 					bluetoothImage.Image = UIImage.FromBundle("ic_bluetooth_connected");
 					bluetoothImage.BackgroundColor = UIColor.Green;
 					measurementLabel2.Text = updateSensor.measurement.amount.ToString();
 					unitLabel2.Text = updateSensor.measurement.unit.ToString();
-
 				} else {
 					bluetoothImage.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
 					bluetoothImage.BackgroundColor = UIColor.Red;
@@ -330,9 +350,6 @@ namespace ION.IOS.ViewController {
 				}
 
 			} else {
-				typeLabel1.Text = updateSensor.device.sensors[0].type.ToString();
-				typeLabel2.Text = updateSensor.device.sensors[1].type.ToString();
-
 				if (updateSensor.device.isConnected) {
 					bluetoothImage.Image = UIImage.FromBundle("ic_bluetooth_connected");
 					bluetoothImage.BackgroundColor = UIColor.Green;

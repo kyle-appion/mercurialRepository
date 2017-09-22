@@ -1,0 +1,2 @@
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/TestBench.Droid/obj/Debug/TestBench.Droid.csprojResolveAssemblyReference.cache
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/TestBench.Droid/obj/Debug/TestBench.Droid.csproj.CoreCompileInputs.cache

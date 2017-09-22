@@ -1,0 +1,12 @@
+<android.support.v4.widget.DrawerLayout android:id="@id/main" android:layout_width="match_parent" android:layout_height="match_parent" xmlns:android="http://schemas.android.com/apk/res/android"><FrameLayout android:id="@id/content" android:layout_width="match_parent" android:layout_height="match_parent"><!--
+        <fragment
+          android:name="ION.Droid.Fragments.AnalyzerFragment"
+          android:id="@id/analyzer"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"/>
+        <fragment
+          android:name="ION.Droid.Fragments.WorkbenchFragment"
+          android:id="@id/workbench"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent" />
+--></FrameLayout><FrameLayout android:id="@id/drawer" android:background="@color/black" android:layout_gravity="start" android:layout_width="@dimen/drawer_width" android:layout_height="match_parent"><ListView android:id="@id/drawer_list" android:layout_width="match_parent" android:layout_height="match_parent" /></FrameLayout></android.support.v4.widget.DrawerLayout>

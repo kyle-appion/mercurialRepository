@@ -31,16 +31,28 @@ namespace ION.IOS.ViewController.Workbench {
 
     public RateOfChangeSensorProperty roc { get; set; }
 
-		//public RateOfChangeRecord(Manifold manifold, ISensorProperty sensorProperty) : base(manifold, sensorProperty) {
 		public RateOfChangeRecord(Sensor sensor, ISensorProperty sensorProperty) : base(sensor, sensorProperty) {
-			//roc = manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
 			roc = sensor.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
     }
   }
 
   public partial class RateOfChangeSensorPropertyCell : UITableViewCell {
 
-    public PlotView plotView;
+    public PlotView plotView {
+      get {
+        return __plotView;
+      }
+     set {
+        if(__plotView != null){
+          __plotView = null;
+        }
+        __plotView = value;
+        if(__plotView != null && isConnected){
+					updateCellGraph();
+				}
+      }
+    } PlotView __plotView;
+
     public LinearAxis BAX;
     public LinearAxis LAX;
     public LinearAxis RAX;
@@ -84,15 +96,13 @@ namespace ION.IOS.ViewController.Workbench {
     public async void UpdateTo(RateOfChangeRecord record) {
       ion = AppState.context;
       await Task.Delay(TimeSpan.FromMilliseconds(200));
-
+      isConnected = (bool)(record.sensor as GaugeDeviceSensor)?.device.isConnected;
 			primaryColor = OxyColors.Blue;
 			secondaryColor = OxyColors.Red;
 
-			//if (record.roc.manifold.primarySensor.type == ESensorType.Temperature){
 			if (record.roc.sensor.type == ESensorType.Temperature) {
 				primaryColor = OxyColors.Red;
 				secondaryColor = OxyColors.Blue;
-      //}else if (record.roc.manifold.primarySensor.type == ESensorType.Vacuum){
 			} else if (record.roc.sensor.type == ESensorType.Vacuum) {
 				primaryColor = OxyColors.Maroon;
 			} 
@@ -110,35 +120,11 @@ namespace ION.IOS.ViewController.Workbench {
           BackgroundColor = UIColor.Clear,
         };
 
-        //TLMeasurement = new UILabel(new CGRect(10,0,.5 * plotView.Bounds.Width,20));
-        //TLMeasurement.AdjustsFontSizeToFitWidth = true;
-        //TLMeasurement.TextAlignment = UITextAlignment.Left;
-        //TLMeasurement.BackgroundColor = UIColor.Clear;
-        
-        //BLMeasurement = new UILabel(new CGRect(10,25,.5 * plotView.Bounds.Width,20));
-        //BLMeasurement.AdjustsFontSizeToFitWidth = true;
-        //BLMeasurement.TextAlignment = UITextAlignment.Left;
-        //BLMeasurement.BackgroundColor = UIColor.Clear;
-        
-        //TRMeasurement = new UILabel(new CGRect(.5 * plotView.Bounds.Width,0,.5 * plotView.Bounds.Width - 10,20));
-        //TRMeasurement.AdjustsFontSizeToFitWidth = true;
-        //TRMeasurement.TextAlignment = UITextAlignment.Right;
-        //TRMeasurement.BackgroundColor = UIColor.Clear;
-
-        //BRMeasurement = new UILabel(new CGRect(.5 * plotView.Bounds.Width,30,.5 * plotView.Bounds.Width - 10,20));
-        //BRMeasurement.AdjustsFontSizeToFitWidth = true;
-        //BRMeasurement.TextAlignment = UITextAlignment.Right;
-        //BRMeasurement.BackgroundColor = UIColor.Clear;
-        
-        //plotView.AddSubview(TLMeasurement);
-        //plotView.AddSubview(BLMeasurement);
-        //plotView.AddSubview(TRMeasurement);
-        //plotView.AddSubview(BRMeasurement);
-
         plotView.Layer.BorderWidth = 1f;
         plotView.UserInteractionEnabled = false;
         viewBackground.AddSubview(plotView);
       }
+
     }
 
     private void OnSensorPropertyChanged(ISensorProperty sensorProperty) {
@@ -152,14 +138,11 @@ namespace ION.IOS.ViewController.Workbench {
           labelMeasurement.Hidden = true;
         }
         updateCellGraph();
-      }
+      } 
     }
 
 
     private async void DoUpdateCell() {
-			//var device = (record.manifold.primarySensor as GaugeDeviceSensor)?.device;
-			var device = (record.sensor as GaugeDeviceSensor)?.device;
-
       var sp = record.sensorProperty as RateOfChangeSensorProperty;
       var rocScalar = sp.GetPrimaryAverageRateOfChange();
       var abs = Math.Abs(rocScalar.magnitude);
@@ -186,6 +169,7 @@ namespace ION.IOS.ViewController.Workbench {
         await Task.Delay(100);
         DoUpdateCell();
       }
+
     }
 
     public async void updateCellGraph(){
@@ -193,13 +177,11 @@ namespace ION.IOS.ViewController.Workbench {
         return;
       }
 
-			//var device = (record.manifold.primarySensor as GaugeDeviceSensor)?.device;
 			var device = (record.sensor as GaugeDeviceSensor)?.device;
       isConnected = device.isConnected;
 
       if (device == null || device.isConnected) {
         InvalidatePrimary();
-				//if (record.manifold.secondarySensor != null && !(record.manifold.secondarySensor is ManualSensor)) {
 				if(record.sensor.linkedSensor != null && !(record.sensor.linkedSensor is ManualSensor)){
           InvalidateSecondary();
         }

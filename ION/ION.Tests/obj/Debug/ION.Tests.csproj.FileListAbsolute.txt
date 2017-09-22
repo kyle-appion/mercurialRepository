@@ -1,0 +1,2 @@
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.Tests/obj/Debug/ION.Tests.csprojResolveAssemblyReference.cache
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.Tests/obj/Debug/ION.Tests.csproj.CoreCompileInputs.cache

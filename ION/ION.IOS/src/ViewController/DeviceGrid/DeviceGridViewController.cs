@@ -115,7 +115,9 @@ namespace ION.IOS.ViewController.DeviceGrid {
 			gridTapped = new UITapGestureRecognizer(() => {
 					selectedSensor.popupView.Hidden = true;
           selectedSensor.shouldOpen = false;
+				  selectedSensor.sensor.onSensorEvent -= selectedSensor.updateSensor;
 			});
+
       gridTapped.CancelsTouchesInView = false;
       gridTapped.ShouldReceiveTouch += (recognizer, touch) => !(selectedSensor.popupView.Hidden);
 
@@ -131,36 +133,51 @@ namespace ION.IOS.ViewController.DeviceGrid {
     }
 
 		private void OnDeviceManagerEvent(DeviceManagerEvent dme) {
-      if (updatingGrid == false) {
-        updatingGrid = true;
-				connectedSensors.Clear();
-				disconnectedSensors.Clear();
+      if (dme != null && dme.type == DeviceManagerEvent.EType.ScanStarted)
+      {
+        if (updatingGrid == false)
+        {
+          updatingGrid = true;
+          connectedSensors.Clear();
+          disconnectedSensors.Clear();
 
-        foreach (var device in ion.deviceManager.devices) {
-					var holder = device as GaugeDevice;
-					if (holder.connection.connectionState == Core.Connections.EConnectionState.Connected || holder.connection.connectionState == Core.Connections.EConnectionState.Broadcasting) {
-						foreach (var sensor in holder.sensors) {
-							connectedSensors.Add(sensor);
-						}
-					} else {
-						if (holder.isNearby == true) {
-							foreach (var sensor in holder.sensors) {
-                if (!connectedSensors.Contains(sensor)) {
-                  connectedSensors.Add(sensor);
+          foreach (var device in ion.deviceManager.devices)
+          {
+            var holder = device as GaugeDevice;
+            if (holder.connection.connectionState == Core.Connections.EConnectionState.Connected || holder.connection.connectionState == Core.Connections.EConnectionState.Broadcasting)
+            {
+              foreach (var sensor in holder.sensors)
+              {
+                connectedSensors.Add(sensor);
+              }
+            }
+            else
+            {
+              if (holder.isNearby == true)
+              {
+                foreach (var sensor in holder.sensors)
+                {
+                  if (!connectedSensors.Contains(sensor))
+                  {
+                    connectedSensors.Add(sensor);
+                  }
                 }
-							}
-						} else {
-							foreach (var sensor in holder.sensors) {
-								disconnectedSensors.Add(sensor);
-							}
-						}
-					}
-				}
+              }
+              else
+              {
+                foreach (var sensor in holder.sensors)
+                {
+                  disconnectedSensors.Add(sensor);
+                }
+              }
+            }
+          }
 
-				connectedSensors.Sort(new GeneralSensorSorter());
-				disconnectedSensors.Sort(new GeneralSensorSorter());
-        spaceSensors();
-			}
+          connectedSensors.Sort(new GeneralSensorSorter());
+          disconnectedSensors.Sort(new GeneralSensorSorter());
+          spaceSensors();
+        }
+      }
 		}
 
     public void spaceSensors(){
@@ -217,7 +234,8 @@ namespace ION.IOS.ViewController.DeviceGrid {
     }   
 
     public void inflateWorkbench(){
-			//var path = NSIndexPath.FromRowSection(0, 0);
+			selectedSensor.sensor.onSensorEvent -= selectedSensor.updateSensor;
+
 			var window = UIApplication.SharedApplication.KeyWindow;
       var vc = window.RootViewController as IONPrimaryScreenController;
       if (fromWorkbench) {
@@ -234,6 +252,8 @@ namespace ION.IOS.ViewController.DeviceGrid {
     }
 
 		public void inflateAnalyzer(GaugeDeviceSensor sensor = null) {
+			selectedSensor.sensor.onSensorEvent -= selectedSensor.updateSensor;
+
 			var window = UIApplication.SharedApplication.KeyWindow;
 			var vc = window.RootViewController as IONPrimaryScreenController;
       if (fromAnalyzer == -1 && fromAnalyzerLH == false) {

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="RIDER_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$/../..">
+      <sourceFolder url="file://$MODULE_DIR$/../../Appion.Commons" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../ION.Core" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../ION.CoreExtensions" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../ION.DevAssist" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../ION.Droid" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../ION.IOS" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../ION.Tests" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../packages/Xamarin.Android.Support.Animated.Vector.Drawable.25.4.0.2/proguard" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../packages/Xamarin.Android.Support.Core.UI.25.4.0.2/proguard" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../packages/Xamarin.Android.Support.Design.25.4.0.2/proguard" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../packages/Xamarin.Android.Support.v7.RecyclerView.25.4.0.2/proguard" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../TestBench.Droid" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../TODOS" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../UITests" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Appion.Commons/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Appion.Commons/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../ION.Core/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../ION.Core/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../ION.DevAssist/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../ION.DevAssist/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../ION.Droid/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../ION.Droid/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../ION.IOS/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../ION.IOS/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../ION.Tests/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../ION.Tests/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../TestBench.Droid/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../TestBench.Droid/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../UITests/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../UITests/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../packages" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

@@ -1,0 +1,1037 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="833a6f82-9953-49e8-a2ef-6ca44e0a5212" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.Core/ION.Core.csproj" afterPath="$PROJECT_DIR$/ION.Core/ION.Core.csproj" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.Core/src/Fluids/Fluid.cs" afterPath="$PROJECT_DIR$/ION.Core/src/Fluids/Fluid.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.Core/src/Sensors/Properties/PTChartSensorProperty.cs" afterPath="$PROJECT_DIR$/ION.Core/src/Sensors/Properties/PTChartSensorProperty.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.Core/src/Sensors/Properties/SuperheatSubcoolSensorProperty.cs" afterPath="$PROJECT_DIR$/ION.Core/src/Sensors/Properties/SuperheatSubcoolSensorProperty.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.Core/src/Sensors/Properties/TargetSuperheatSubcoolProperty.cs" afterPath="$PROJECT_DIR$/ION.Core/src/Sensors/Properties/TargetSuperheatSubcoolProperty.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.Core/src/Sensors/Sensor.cs" afterPath="$PROJECT_DIR$/ION.Core/src/Sensors/Sensor.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.Droid/Resources/Resource.designer.cs" afterPath="$PROJECT_DIR$/ION.Droid/Resources/Resource.designer.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.IOS/ION.IOS.csproj" afterPath="$PROJECT_DIR$/ION.IOS/ION.IOS.csproj" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.IOS/src/Storyboard/Storyboard.storyboard" afterPath="$PROJECT_DIR$/ION.IOS/src/Storyboard/Storyboard.storyboard" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.IOS/src/ViewController/Analyzer/SHSCTableCell.cs" afterPath="$PROJECT_DIR$/ION.IOS/src/ViewController/Analyzer/SHSCTableCell.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.IOS/src/ViewController/Analyzer/lowHighSensor.cs" afterPath="$PROJECT_DIR$/ION.IOS/src/ViewController/Analyzer/lowHighSensor.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.IOS/src/ViewController/DeviceGrid/DeviceGridViewController.cs" afterPath="$PROJECT_DIR$/ION.IOS/src/ViewController/DeviceGrid/DeviceGridViewController.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.IOS/src/ViewController/DeviceGrid/GridCellConnected.cs" afterPath="$PROJECT_DIR$/ION.IOS/src/ViewController/DeviceGrid/GridCellConnected.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.IOS/src/ViewController/DeviceGrid/SensorStatusPopup.cs" afterPath="$PROJECT_DIR$/ION.IOS/src/ViewController/DeviceGrid/SensorStatusPopup.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.IOS/src/ViewController/JobManager/FloatLabeledTextField.cs" afterPath="$PROJECT_DIR$/ION.IOS/src/ViewController/JobManager/FloatLabeledTextField.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.IOS/src/ViewController/PressureTemperatureChart/PTChartViewController.cs" afterPath="$PROJECT_DIR$/ION.IOS/src/ViewController/PressureTemperatureChart/PTChartViewController.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.IOS/src/ViewController/PressureTemperatureChart/PTSlideView.cs" afterPath="$PROJECT_DIR$/ION.IOS/src/ViewController/PressureTemperatureChart/PTSlideView.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.IOS/src/ViewController/PressureTemperatureChart/SliderView.cs" afterPath="$PROJECT_DIR$/ION.IOS/src/ViewController/PressureTemperatureChart/SliderView.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.IOS/src/ViewController/ScreenshotReport/AdditionalView.cs" afterPath="$PROJECT_DIR$/ION.IOS/src/ViewController/ScreenshotReport/AdditionalView.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.IOS/src/ViewController/SuperheatSubcool/SuperheatSubcoolViewController.cs" afterPath="$PROJECT_DIR$/ION.IOS/src/ViewController/SuperheatSubcool/SuperheatSubcoolViewController.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.IOS/src/ViewController/Workbench/FluidSubviewCell.cs" afterPath="$PROJECT_DIR$/ION.IOS/src/ViewController/Workbench/FluidSubviewCell.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.IOS/src/ViewController/Workbench/RateOfChangeSensorPropertyCell.cs" afterPath="$PROJECT_DIR$/ION.IOS/src/ViewController/Workbench/RateOfChangeSensorPropertyCell.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.IOS/src/ViewController/Workbench/TargetSHSCCell.cs" afterPath="$PROJECT_DIR$/ION.IOS/src/ViewController/Workbench/TargetSHSCCell.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.IOS/src/ViewController/Workbench/TargetSHSCView.cs" afterPath="$PROJECT_DIR$/ION.IOS/src/ViewController/Workbench/TargetSHSCView.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.IOS/src/ViewController/Workbench/ViewerTableCell.cs" afterPath="$PROJECT_DIR$/ION.IOS/src/ViewController/Workbench/ViewerTableCell.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ION.IOS/src/ViewController/Workbench/WorkbenchTableSource.cs" afterPath="$PROJECT_DIR$/ION.IOS/src/ViewController/Workbench/WorkbenchTableSource.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/TestBench.Droid/Resources/Resource.designer.cs" afterPath="$PROJECT_DIR$/TestBench.Droid/Resources/Resource.designer.cs" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="PTChartViewController.cs" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/ION.IOS/src/ViewController/PressureTemperatureChart/PTChartViewController.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding>
+                <marker date="1506117062000" expanded="true" signature="59:32200" ph="{...}" />
+                <marker date="1506117062000" expanded="false" signature="70:675" ph="..." />
+                <marker date="1506117062000" expanded="true" signature="736:829" ph="/// ONLY SET THE MANFOLD FOR THIS CLASS AFTER INSTANTIATION. ... " />
+                <marker date="1506117062000" expanded="true" signature="899:32198" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="1132:1520" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="1144:1180" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="1191:1514" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="1225:1334" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="1397:1506" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="1598:1753" ph="/// The sensor that will provide pressure readings for the view controller ... " />
+                <marker date="1506117062000" expanded="true" signature="1787:2280" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="1799:1841" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="1852:2274" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="1923:1993" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="2103:2229" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="2311:2473" ph="/// The sensor that will provide temperature readings for the view controller. ... " />
+                <marker date="1506117062000" expanded="true" signature="2510:3008" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="2522:2567" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="2578:3002" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="2649:2719" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="2832:2958" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="3068:3692" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="3080:3120" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="3131:3686" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="3278:3320" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="3358:3465" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="3401:3455" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="3506:3668" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="3748:4390" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="3760:3803" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="3814:4384" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="3967:4009" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="4050:4163" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="4096:4153" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="4204:4366" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="4420:4606" ph="/// Whether or not the pressure sensor can be set by the user. ... " />
+                <marker date="1506117062000" expanded="true" signature="4644:4885" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="4656:4879" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="4891:5083" ph="/// Whether or not the temperature sensor can be set by the user. ... " />
+                <marker date="1506117062000" expanded="true" signature="5124:5365" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="5136:5359" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="5371:5472" ph="/// The ion applicaiton context. ... " />
+                <marker date="1506117062000" expanded="true" signature="5512:5613" ph="/// The entry mode that will dictate how the fields are entered. ... " />
+                <marker date="1506117062000" expanded="true" signature="5652:5873" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="5664:5701" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="5712:5867" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="5804:5859" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="5967:5974" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="6060:10702" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="6423:6565" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="6505:6556" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="6964:7411" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="7047:7093" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="7143:7192" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="7564:8700" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="7654:7861" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="8248:8691" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="8371:8681" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="8416:8624" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="8747:8878" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="8806:8870" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="8933:9608" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="9045:9600" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="9146:9590" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="9654:9785" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="9714:9777" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="9836:9967" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="9895:9959" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="10025:10350" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="10140:10342" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="10399:10530" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="10459:10522" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="10560:10696" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="10797:11266" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="10871:10910" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="10949:10991" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="11367:11897" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="11481:11545" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="11568:11638" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="11713:11891" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="11995:12118" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="12162:12388" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="12394:12534" ph="/// Attempts to update the pt chart sensor property unit. ... " />
+                <marker date="1506117062000" expanded="true" signature="12573:12991" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="12605:12630" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="12734:12985" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="12770:12977" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="12997:13103" ph="/// Initializes the states and event handlers the for ptchart widgets ... " />
+                <marker date="1506117062000" expanded="true" signature="13142:16955" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="13415:15411" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="13557:15343" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="13880:14008" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="14058:14186" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="14234:14366" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="14402:14534" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="14625:14878" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="14661:14866" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="14957:15214" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="14993:15202" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="15487:16948" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="15564:15619" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="15675:15889" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="15926:16050" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="16257:16501" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="16291:16491" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="16580:16827" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="16614:16817" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="16961:17072" ph="/// Initializes the state and the event handlers for the pressure widgets. ... " />
+                <marker date="1506117062000" expanded="true" signature="17112:21027" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="17260:17960" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="17297:17952" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="17532:17880" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="17645:17828" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="18011:18559" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="18066:18551" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="18106:18451" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="18650:18942" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="18687:18898" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="18821:18888" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="18997:19069" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="19133:19534" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="19171:19479" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="19759:21020" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="19826:21012" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="20064:20947" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="20133:20193" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="20234:20366" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="20419:20630" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="20846:20935" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="21033:21147" ph="/// Initializes the state and the event handlers for the temperature widgets. ... " />
+                <marker date="1506117062000" expanded="true" signature="21190:24214" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="21343:22055" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="21383:22047" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="21621:21975" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="21740:21923" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="22151:22449" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="22191:22405" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="22328:22395" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="22507:22579" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="22646:22946" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="22687:22888" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="23177:24207" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="23250:24199" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="23497:24134" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="23569:23633" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="23674:23806" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="24032:24122" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="24281:24752" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="24311:24336" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="24808:25203" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="24820:24976" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="24997:25197" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="25144:25189" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="25262:25669" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="25274:25439" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="25460:25663" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="25610:25655" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="25675:25763" ph="/// Synchronizes the state of the fluid and the UI. ... " />
+                <marker date="1506117062000" expanded="true" signature="25809:26066" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="26072:26181" ph="/// Synchronizes the state of the pressure icons to the pressure sensor. ... " />
+                <marker date="1506117062000" expanded="true" signature="26226:26763" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="26275:26538" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="26769:26966" ph="/// Synchronizes the icons for the temperature sensor. Note: this will affect the pressure lock ... " />
+                <marker date="1506117062000" expanded="true" signature="27014:27578" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="27066:27344" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="27584:27691" ph="/// Invalidates the view controller in a current sensor sensitive way. ... " />
+                <marker date="1506117062000" expanded="true" signature="27736:28598" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="27809:27860" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="27901:28257" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="28360:28401" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="28604:28718" ph="/// Clears the pressure input without updating the pressure sensor's reading. ... " />
+                <marker date="1506117062000" expanded="true" signature="28757:28794" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="28800:28920" ph="/// Clears the temperature input without updating the temperature sensor's reading. ... " />
+                <marker date="1506117062000" expanded="true" signature="28962:29002" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="29039:31165" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="29079:29204" ph="/// The sensor that will drive the sensor mode. ... " />
+                <marker date="1506117062000" expanded="true" signature="29241:29352" ph="/// The sensor for the conversion. ... " />
+                <marker date="1506117062000" expanded="true" signature="29585:29943" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="29972:30030" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="30063:31064" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="30104:30181" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="30239:31056" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="31128:31159" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="31170:31413" ph="/// Takes the offset of the slider and translates it into the current unit's value at that point in the slider ... " />
+                <marker date="1506117062000" expanded="true" signature="31465:32032" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="31519:31591" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="31674:31730" ph="{...}" />
+                <marker date="1506117062000" expanded="true" signature="32153:32194" ph="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/ION.IOS/src/ViewController/PressureTemperatureChart/PTChartViewController.cs" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/ION.IOS/src/ViewController/PressureTemperatureChart/PTChartViewController.cs" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="536" />
+    <option name="y" value="136" />
+    <option name="width" value="1735" />
+    <option name="height" value="1000" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator currentView="SolutionExplorer" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="SolutionExplorer">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ION (9 projects)" />
+              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+        <option name="show-file-system" value="false" />
+        <option name="show-all-items" value="false" />
+      </pane>
+      <pane id="Scratches" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Xamarin.iOS.iOS Default">
+    <configuration default="true" type="DotNetProject" factoryName=".NET Project">
+      <option name="PROJECT_PATH" value="" />
+      <option name="PROJECT_KIND" value="None" />
+      <option name="PROJECT_TFM" value="" />
+      <option name="EXE_PATH" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="USE_MONO" value="0" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="XamarinAndroidProject" factoryName="Xamarin.Android">
+      <option name="PROJECT_PATH" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="DEPLOY_BEHAVIOUR_NAME" value="Default" />
+      <option name="DEPLOY_TARGET_BEHAVIOUR_NAME" value="Ask" />
+      <option name="DEFAULT_DEVICE_TO_RUN" value="" />
+      <option name="DEFAULT_EMULATOR_TO_RUN" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="XamarinIOSProject" factoryName="Xamarin.iOS">
+      <option name="PROJECT_PATH" value="" />
+      <option name="DEFAULT_IPHONE_DEVICE" value="" />
+      <option name="DEFAULT_IPHONE_SIMULATOR" value="" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Default" type="DotNetProject" factoryName=".NET Project">
+      <option name="PROJECT_PATH" value="" />
+      <option name="PROJECT_KIND" value="None" />
+      <option name="PROJECT_TFM" value="" />
+      <option name="EXE_PATH" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="USE_MONO" value="0" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="Android Default" type="XamarinAndroidProject" factoryName="Xamarin.Android">
+      <option name="PROJECT_PATH" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="DEPLOY_BEHAVIOUR_NAME" value="Default" />
+      <option name="DEPLOY_TARGET_BEHAVIOUR_NAME" value="Ask" />
+      <option name="DEFAULT_DEVICE_TO_RUN" value="" />
+      <option name="DEFAULT_EMULATOR_TO_RUN" value="" />
+      <method />
+    </configuration>
+    <configuration default="false" name="iOS Default" type="XamarinIOSProject" factoryName="Xamarin.iOS">
+      <option name="PROJECT_PATH" value="" />
+      <option name="DEFAULT_IPHONE_DEVICE" value="" />
+      <option name="DEFAULT_IPHONE_SIMULATOR" value="" />
+      <method />
+    </configuration>
+    <list size="3">
+      <item index="0" class="java.lang.String" itemvalue=".NET Project.Default" />
+      <item index="1" class="java.lang.String" itemvalue="Xamarin.Android.Android Default" />
+      <item index="2" class="java.lang.String" itemvalue="Xamarin.iOS.iOS Default" />
+    </list>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="833a6f82-9953-49e8-a2ef-6ca44e0a5212" name="Default" comment="" />
+      <created>1506022315465</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1506022315465</updated>
+      <workItem from="1506022316692" duration="172000" />
+      <workItem from="1506022530822" duration="6000" />
+      <workItem from="1506022540472" duration="404000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="582000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="536" y="136" width="1735" height="1000" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Errors In Solution" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32975295" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Unit Tests" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="NuGet" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24956772" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="processedProjectFiles" value="true" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/ION.IOS/src/ViewController/PressureTemperatureChart/PTChartViewController.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1506117062000" expanded="true" signature="59:32200" ph="{...}" />
+            <marker date="1506117062000" expanded="false" signature="70:675" ph="..." />
+            <marker date="1506117062000" expanded="true" signature="736:829" ph="/// ONLY SET THE MANFOLD FOR THIS CLASS AFTER INSTANTIATION. ... " />
+            <marker date="1506117062000" expanded="true" signature="899:32198" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1132:1520" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1144:1180" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1191:1514" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1225:1334" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1397:1506" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1598:1753" ph="/// The sensor that will provide pressure readings for the view controller ... " />
+            <marker date="1506117062000" expanded="true" signature="1787:2280" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1799:1841" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1852:2274" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1923:1993" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="2103:2229" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="2311:2473" ph="/// The sensor that will provide temperature readings for the view controller. ... " />
+            <marker date="1506117062000" expanded="true" signature="2510:3008" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="2522:2567" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="2578:3002" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="2649:2719" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="2832:2958" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3068:3692" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3080:3120" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3131:3686" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3278:3320" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3358:3465" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3401:3455" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3506:3668" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3748:4390" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3760:3803" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3814:4384" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3967:4009" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="4050:4163" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="4096:4153" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="4204:4366" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="4420:4606" ph="/// Whether or not the pressure sensor can be set by the user. ... " />
+            <marker date="1506117062000" expanded="true" signature="4644:4885" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="4656:4879" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="4891:5083" ph="/// Whether or not the temperature sensor can be set by the user. ... " />
+            <marker date="1506117062000" expanded="true" signature="5124:5365" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="5136:5359" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="5371:5472" ph="/// The ion applicaiton context. ... " />
+            <marker date="1506117062000" expanded="true" signature="5512:5613" ph="/// The entry mode that will dictate how the fields are entered. ... " />
+            <marker date="1506117062000" expanded="true" signature="5652:5873" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="5664:5701" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="5712:5867" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="5804:5859" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="5967:5974" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="6060:10702" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="6423:6565" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="6505:6556" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="6964:7411" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="7047:7093" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="7143:7192" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="7564:8700" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="7654:7861" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="8248:8691" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="8371:8681" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="8416:8624" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="8747:8878" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="8806:8870" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="8933:9608" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="9045:9600" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="9146:9590" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="9654:9785" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="9714:9777" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="9836:9967" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="9895:9959" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10025:10350" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10140:10342" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10399:10530" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10459:10522" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10560:10696" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10797:11266" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10871:10910" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10949:10991" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="11367:11897" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="11481:11545" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="11568:11638" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="11713:11891" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="11995:12118" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="12162:12388" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="12394:12534" ph="/// Attempts to update the pt chart sensor property unit. ... " />
+            <marker date="1506117062000" expanded="true" signature="12573:12991" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="12605:12630" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="12734:12985" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="12770:12977" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="12997:13103" ph="/// Initializes the states and event handlers the for ptchart widgets ... " />
+            <marker date="1506117062000" expanded="true" signature="13142:16955" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="13415:15411" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="13557:15343" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="13880:14008" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14058:14186" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14234:14366" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14402:14534" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14625:14878" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14661:14866" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14957:15214" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14993:15202" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="15487:16948" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="15564:15619" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="15675:15889" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="15926:16050" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="16257:16501" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="16291:16491" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="16580:16827" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="16614:16817" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="16961:17072" ph="/// Initializes the state and the event handlers for the pressure widgets. ... " />
+            <marker date="1506117062000" expanded="true" signature="17112:21027" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="17260:17960" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="17297:17952" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="17532:17880" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="17645:17828" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18011:18559" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18066:18551" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18106:18451" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18650:18942" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18687:18898" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18821:18888" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18997:19069" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="19133:19534" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="19171:19479" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="19759:21020" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="19826:21012" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="20064:20947" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="20133:20193" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="20234:20366" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="20419:20630" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="20846:20935" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="21033:21147" ph="/// Initializes the state and the event handlers for the temperature widgets. ... " />
+            <marker date="1506117062000" expanded="true" signature="21190:24214" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="21343:22055" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="21383:22047" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="21621:21975" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="21740:21923" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="22151:22449" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="22191:22405" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="22328:22395" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="22507:22579" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="22646:22946" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="22687:22888" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="23177:24207" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="23250:24199" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="23497:24134" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="23569:23633" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="23674:23806" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="24032:24122" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="24281:24752" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="24311:24336" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="24808:25203" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="24820:24976" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="24997:25197" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="25144:25189" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="25262:25669" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="25274:25439" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="25460:25663" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="25610:25655" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="25675:25763" ph="/// Synchronizes the state of the fluid and the UI. ... " />
+            <marker date="1506117062000" expanded="true" signature="25809:26066" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="26072:26181" ph="/// Synchronizes the state of the pressure icons to the pressure sensor. ... " />
+            <marker date="1506117062000" expanded="true" signature="26226:26763" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="26275:26538" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="26769:26966" ph="/// Synchronizes the icons for the temperature sensor. Note: this will affect the pressure lock ... " />
+            <marker date="1506117062000" expanded="true" signature="27014:27578" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="27066:27344" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="27584:27691" ph="/// Invalidates the view controller in a current sensor sensitive way. ... " />
+            <marker date="1506117062000" expanded="true" signature="27736:28598" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="27809:27860" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="27901:28257" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="28360:28401" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="28604:28718" ph="/// Clears the pressure input without updating the pressure sensor's reading. ... " />
+            <marker date="1506117062000" expanded="true" signature="28757:28794" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="28800:28920" ph="/// Clears the temperature input without updating the temperature sensor's reading. ... " />
+            <marker date="1506117062000" expanded="true" signature="28962:29002" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="29039:31165" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="29079:29204" ph="/// The sensor that will drive the sensor mode. ... " />
+            <marker date="1506117062000" expanded="true" signature="29241:29352" ph="/// The sensor for the conversion. ... " />
+            <marker date="1506117062000" expanded="true" signature="29585:29943" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="29972:30030" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="30063:31064" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="30104:30181" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="30239:31056" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="31128:31159" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="31170:31413" ph="/// Takes the offset of the slider and translates it into the current unit's value at that point in the slider ... " />
+            <marker date="1506117062000" expanded="true" signature="31465:32032" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="31519:31591" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="31674:31730" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="32153:32194" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ION.IOS/src/ViewController/PressureTemperatureChart/PTChartViewController.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1506117062000" expanded="true" signature="59:32200" ph="{...}" />
+            <marker date="1506117062000" expanded="false" signature="70:675" ph="..." />
+            <marker date="1506117062000" expanded="true" signature="736:829" ph="/// ONLY SET THE MANFOLD FOR THIS CLASS AFTER INSTANTIATION. ... " />
+            <marker date="1506117062000" expanded="true" signature="899:32198" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1132:1520" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1144:1180" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1191:1514" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1225:1334" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1397:1506" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1598:1753" ph="/// The sensor that will provide pressure readings for the view controller ... " />
+            <marker date="1506117062000" expanded="true" signature="1787:2280" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1799:1841" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1852:2274" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1923:1993" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="2103:2229" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="2311:2473" ph="/// The sensor that will provide temperature readings for the view controller. ... " />
+            <marker date="1506117062000" expanded="true" signature="2510:3008" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="2522:2567" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="2578:3002" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="2649:2719" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="2832:2958" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3068:3692" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3080:3120" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3131:3686" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3278:3320" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3358:3465" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3401:3455" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3506:3668" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3748:4390" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3760:3803" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3814:4384" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3967:4009" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="4050:4163" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="4096:4153" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="4204:4366" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="4420:4606" ph="/// Whether or not the pressure sensor can be set by the user. ... " />
+            <marker date="1506117062000" expanded="true" signature="4644:4885" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="4656:4879" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="4891:5083" ph="/// Whether or not the temperature sensor can be set by the user. ... " />
+            <marker date="1506117062000" expanded="true" signature="5124:5365" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="5136:5359" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="5371:5472" ph="/// The ion applicaiton context. ... " />
+            <marker date="1506117062000" expanded="true" signature="5512:5613" ph="/// The entry mode that will dictate how the fields are entered. ... " />
+            <marker date="1506117062000" expanded="true" signature="5652:5873" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="5664:5701" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="5712:5867" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="5804:5859" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="5967:5974" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="6060:10702" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="6423:6565" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="6505:6556" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="6964:7411" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="7047:7093" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="7143:7192" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="7564:8700" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="7654:7861" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="8248:8691" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="8371:8681" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="8416:8624" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="8747:8878" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="8806:8870" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="8933:9608" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="9045:9600" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="9146:9590" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="9654:9785" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="9714:9777" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="9836:9967" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="9895:9959" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10025:10350" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10140:10342" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10399:10530" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10459:10522" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10560:10696" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10797:11266" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10871:10910" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10949:10991" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="11367:11897" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="11481:11545" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="11568:11638" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="11713:11891" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="11995:12118" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="12162:12388" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="12394:12534" ph="/// Attempts to update the pt chart sensor property unit. ... " />
+            <marker date="1506117062000" expanded="true" signature="12573:12991" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="12605:12630" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="12734:12985" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="12770:12977" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="12997:13103" ph="/// Initializes the states and event handlers the for ptchart widgets ... " />
+            <marker date="1506117062000" expanded="true" signature="13142:16955" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="13415:15411" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="13557:15343" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="13880:14008" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14058:14186" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14234:14366" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14402:14534" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14625:14878" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14661:14866" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14957:15214" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14993:15202" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="15487:16948" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="15564:15619" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="15675:15889" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="15926:16050" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="16257:16501" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="16291:16491" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="16580:16827" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="16614:16817" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="16961:17072" ph="/// Initializes the state and the event handlers for the pressure widgets. ... " />
+            <marker date="1506117062000" expanded="true" signature="17112:21027" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="17260:17960" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="17297:17952" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="17532:17880" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="17645:17828" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18011:18559" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18066:18551" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18106:18451" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18650:18942" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18687:18898" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18821:18888" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18997:19069" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="19133:19534" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="19171:19479" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="19759:21020" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="19826:21012" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="20064:20947" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="20133:20193" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="20234:20366" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="20419:20630" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="20846:20935" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="21033:21147" ph="/// Initializes the state and the event handlers for the temperature widgets. ... " />
+            <marker date="1506117062000" expanded="true" signature="21190:24214" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="21343:22055" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="21383:22047" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="21621:21975" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="21740:21923" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="22151:22449" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="22191:22405" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="22328:22395" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="22507:22579" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="22646:22946" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="22687:22888" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="23177:24207" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="23250:24199" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="23497:24134" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="23569:23633" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="23674:23806" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="24032:24122" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="24281:24752" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="24311:24336" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="24808:25203" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="24820:24976" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="24997:25197" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="25144:25189" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="25262:25669" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="25274:25439" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="25460:25663" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="25610:25655" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="25675:25763" ph="/// Synchronizes the state of the fluid and the UI. ... " />
+            <marker date="1506117062000" expanded="true" signature="25809:26066" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="26072:26181" ph="/// Synchronizes the state of the pressure icons to the pressure sensor. ... " />
+            <marker date="1506117062000" expanded="true" signature="26226:26763" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="26275:26538" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="26769:26966" ph="/// Synchronizes the icons for the temperature sensor. Note: this will affect the pressure lock ... " />
+            <marker date="1506117062000" expanded="true" signature="27014:27578" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="27066:27344" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="27584:27691" ph="/// Invalidates the view controller in a current sensor sensitive way. ... " />
+            <marker date="1506117062000" expanded="true" signature="27736:28598" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="27809:27860" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="27901:28257" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="28360:28401" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="28604:28718" ph="/// Clears the pressure input without updating the pressure sensor's reading. ... " />
+            <marker date="1506117062000" expanded="true" signature="28757:28794" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="28800:28920" ph="/// Clears the temperature input without updating the temperature sensor's reading. ... " />
+            <marker date="1506117062000" expanded="true" signature="28962:29002" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="29039:31165" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="29079:29204" ph="/// The sensor that will drive the sensor mode. ... " />
+            <marker date="1506117062000" expanded="true" signature="29241:29352" ph="/// The sensor for the conversion. ... " />
+            <marker date="1506117062000" expanded="true" signature="29585:29943" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="29972:30030" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="30063:31064" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="30104:30181" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="30239:31056" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="31128:31159" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="31170:31413" ph="/// Takes the offset of the slider and translates it into the current unit's value at that point in the slider ... " />
+            <marker date="1506117062000" expanded="true" signature="31465:32032" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="31519:31591" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="31674:31730" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="32153:32194" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ION.IOS/src/ViewController/PressureTemperatureChart/PTChartViewController.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1506117062000" expanded="true" signature="59:32200" ph="{...}" />
+            <marker date="1506117062000" expanded="false" signature="70:675" ph="..." />
+            <marker date="1506117062000" expanded="true" signature="736:829" ph="/// ONLY SET THE MANFOLD FOR THIS CLASS AFTER INSTANTIATION. ... " />
+            <marker date="1506117062000" expanded="true" signature="899:32198" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1132:1520" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1144:1180" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1191:1514" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1225:1334" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1397:1506" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1598:1753" ph="/// The sensor that will provide pressure readings for the view controller ... " />
+            <marker date="1506117062000" expanded="true" signature="1787:2280" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1799:1841" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1852:2274" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="1923:1993" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="2103:2229" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="2311:2473" ph="/// The sensor that will provide temperature readings for the view controller. ... " />
+            <marker date="1506117062000" expanded="true" signature="2510:3008" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="2522:2567" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="2578:3002" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="2649:2719" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="2832:2958" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3068:3692" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3080:3120" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3131:3686" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3278:3320" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3358:3465" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3401:3455" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3506:3668" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3748:4390" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3760:3803" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3814:4384" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="3967:4009" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="4050:4163" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="4096:4153" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="4204:4366" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="4420:4606" ph="/// Whether or not the pressure sensor can be set by the user. ... " />
+            <marker date="1506117062000" expanded="true" signature="4644:4885" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="4656:4879" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="4891:5083" ph="/// Whether or not the temperature sensor can be set by the user. ... " />
+            <marker date="1506117062000" expanded="true" signature="5124:5365" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="5136:5359" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="5371:5472" ph="/// The ion applicaiton context. ... " />
+            <marker date="1506117062000" expanded="true" signature="5512:5613" ph="/// The entry mode that will dictate how the fields are entered. ... " />
+            <marker date="1506117062000" expanded="true" signature="5652:5873" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="5664:5701" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="5712:5867" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="5804:5859" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="5967:5974" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="6060:10702" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="6423:6565" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="6505:6556" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="6964:7411" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="7047:7093" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="7143:7192" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="7564:8700" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="7654:7861" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="8248:8691" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="8371:8681" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="8416:8624" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="8747:8878" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="8806:8870" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="8933:9608" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="9045:9600" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="9146:9590" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="9654:9785" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="9714:9777" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="9836:9967" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="9895:9959" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10025:10350" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10140:10342" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10399:10530" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10459:10522" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10560:10696" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10797:11266" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10871:10910" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="10949:10991" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="11367:11897" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="11481:11545" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="11568:11638" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="11713:11891" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="11995:12118" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="12162:12388" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="12394:12534" ph="/// Attempts to update the pt chart sensor property unit. ... " />
+            <marker date="1506117062000" expanded="true" signature="12573:12991" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="12605:12630" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="12734:12985" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="12770:12977" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="12997:13103" ph="/// Initializes the states and event handlers the for ptchart widgets ... " />
+            <marker date="1506117062000" expanded="true" signature="13142:16955" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="13415:15411" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="13557:15343" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="13880:14008" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14058:14186" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14234:14366" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14402:14534" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14625:14878" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14661:14866" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14957:15214" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="14993:15202" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="15487:16948" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="15564:15619" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="15675:15889" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="15926:16050" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="16257:16501" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="16291:16491" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="16580:16827" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="16614:16817" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="16961:17072" ph="/// Initializes the state and the event handlers for the pressure widgets. ... " />
+            <marker date="1506117062000" expanded="true" signature="17112:21027" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="17260:17960" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="17297:17952" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="17532:17880" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="17645:17828" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18011:18559" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18066:18551" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18106:18451" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18650:18942" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18687:18898" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18821:18888" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="18997:19069" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="19133:19534" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="19171:19479" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="19759:21020" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="19826:21012" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="20064:20947" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="20133:20193" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="20234:20366" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="20419:20630" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="20846:20935" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="21033:21147" ph="/// Initializes the state and the event handlers for the temperature widgets. ... " />
+            <marker date="1506117062000" expanded="true" signature="21190:24214" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="21343:22055" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="21383:22047" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="21621:21975" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="21740:21923" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="22151:22449" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="22191:22405" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="22328:22395" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="22507:22579" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="22646:22946" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="22687:22888" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="23177:24207" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="23250:24199" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="23497:24134" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="23569:23633" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="23674:23806" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="24032:24122" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="24281:24752" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="24311:24336" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="24808:25203" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="24820:24976" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="24997:25197" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="25144:25189" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="25262:25669" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="25274:25439" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="25460:25663" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="25610:25655" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="25675:25763" ph="/// Synchronizes the state of the fluid and the UI. ... " />
+            <marker date="1506117062000" expanded="true" signature="25809:26066" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="26072:26181" ph="/// Synchronizes the state of the pressure icons to the pressure sensor. ... " />
+            <marker date="1506117062000" expanded="true" signature="26226:26763" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="26275:26538" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="26769:26966" ph="/// Synchronizes the icons for the temperature sensor. Note: this will affect the pressure lock ... " />
+            <marker date="1506117062000" expanded="true" signature="27014:27578" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="27066:27344" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="27584:27691" ph="/// Invalidates the view controller in a current sensor sensitive way. ... " />
+            <marker date="1506117062000" expanded="true" signature="27736:28598" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="27809:27860" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="27901:28257" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="28360:28401" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="28604:28718" ph="/// Clears the pressure input without updating the pressure sensor's reading. ... " />
+            <marker date="1506117062000" expanded="true" signature="28757:28794" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="28800:28920" ph="/// Clears the temperature input without updating the temperature sensor's reading. ... " />
+            <marker date="1506117062000" expanded="true" signature="28962:29002" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="29039:31165" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="29079:29204" ph="/// The sensor that will drive the sensor mode. ... " />
+            <marker date="1506117062000" expanded="true" signature="29241:29352" ph="/// The sensor for the conversion. ... " />
+            <marker date="1506117062000" expanded="true" signature="29585:29943" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="29972:30030" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="30063:31064" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="30104:30181" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="30239:31056" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="31128:31159" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="31170:31413" ph="/// Takes the offset of the slider and translates it into the current unit's value at that point in the slider ... " />
+            <marker date="1506117062000" expanded="true" signature="31465:32032" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="31519:31591" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="31674:31730" ph="{...}" />
+            <marker date="1506117062000" expanded="true" signature="32153:32194" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

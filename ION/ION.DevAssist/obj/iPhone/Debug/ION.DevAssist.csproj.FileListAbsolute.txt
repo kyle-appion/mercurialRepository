@@ -1,0 +1,6 @@
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.DevAssist/bin/Debug/ION.DevAssist.exe
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.DevAssist/bin/Debug/ION.DevAssist.pdb
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.DevAssist/obj/iPhone/Debug/ION.DevAssist.csprojResolveAssemblyReference.cache
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.DevAssist/obj/iPhone/Debug/ION.DevAssist.csproj.CoreCompileInputs.cache
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.DevAssist/obj/iPhone/Debug/ION.DevAssist.exe
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/ION.DevAssist/obj/iPhone/Debug/ION.DevAssist.pdb

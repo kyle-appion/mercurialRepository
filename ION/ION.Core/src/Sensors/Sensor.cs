@@ -193,10 +193,11 @@
 					throw new Exception("Attempted to set measurement, but the sensor unit " + unit + " is incompatible with " + value.unit + ".");
 				}
 				_measurement = value;
+				Log.D(this, this.name + " Sensor event listeners " + this.onSensorEvent.GetInvocationList().AsString());
 				NotifyOfEvent(SensorEvent.EType.Invalidated);
 			}
 		}
-		Scalar _measurement;
+		Scalar _measurement; 
 		/// <summary>
 		/// The maxumimum measurement that the sensor can accurately measure.
 		/// </summary>
@@ -410,11 +411,11 @@
 			}	else {
 				if (sensorProperty is SecondarySensorProperty) {
 					sensorProperties.Insert(0, sensorProperty);
-					NotifyOfEvent(new SensorEvent(SensorEvent.EType.LinkedSensorAdded, this, 0));
+					NotifyOfEvent(new SensorEvent(SensorEvent.EType.SensorPropertyAdded, this, 0));
 					return true;
 				}	else {
 					sensorProperties.Add(sensorProperty);
-					NotifyOfEvent(SensorEvent.EType.LinkedSensorAdded);
+					NotifyOfEvent(SensorEvent.EType.SensorPropertyAdded);
 					return true;
 				}
 			}
@@ -577,6 +578,7 @@
 		/// </summary>
 		public void NotifyInvalidated()
 		{
+      NotifyOfEvent(new SensorEvent(SensorEvent.EType.Invalidated, this));
 		}
 
 		/// <summary>
@@ -586,7 +588,8 @@
 		{
 			if (onSensorEvent != null)
 			{
-				onSensorEvent(sensorEvent);
+        //TODO maybe need to do this in a better way 
+        AppState.context.PostToMain(() => onSensorEvent(sensorEvent));				
 			}
 		}
 
@@ -597,7 +600,8 @@
 		{
 			if (onSensorEvent != null)
 			{
-				onSensorEvent(new SensorEvent(type, this));
+				//TODO maybe need to do this in a better way 
+				AppState.context.PostToMain(() => onSensorEvent(new SensorEvent(type, this)));
 			}
 		}
 

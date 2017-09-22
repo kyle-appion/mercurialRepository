@@ -133,8 +133,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
   			new CGPoint(tempIncrease, .6 * sViewHeight)
   		  });
   	  }
-			//var pressLower = ptChart.GetPressure(new Scalar(tempLookup, tempCount), pressureSensor.isRelative).ConvertTo(lookup).amount;
-			var pressLower = ion.fluidManager.lastUsedFluid.GetPressureFromSaturatedTemperature(pressureSensor.fluidState,new Scalar(tempLookup,tempCount)).ConvertTo(lookup).amount;
+			var pressLower = ion.fluidManager.lastUsedFluid.GetPressureFromSaturatedTemperature(pressureSensor.fluidState,new Scalar(tempLookup,tempCount), ion.locationManager.lastKnownLocation.altitude).ConvertTo(lookup).amount;
   	  tempIncrease += tempTicks;
   	  tempCount++;
 
@@ -163,72 +162,71 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 	  }
 	  
 	  for (; pressCount < maxPressure.amount; pressCount++) {
-				//var pressTemperature = ptChart.GetTemperature(new Scalar(lookup, pressCount), pressureSensor.isRelative).ConvertTo(tempLookup).amount;
-		var pressTemperature = ion.fluidManager.lastUsedFluid.GetSaturatedTemperature (pressureSensor.fluidState,new Scalar (lookup,pressCount)).ConvertTo(tempLookup).amount;
-		var tempDifference = pressTemperature - minTemperature.amount;
-		var tempOffset = tempDifference * tempTicks + startGap;
-		
-		if (pressCount < firstMeasurements) {
-			if (pressCount % firstMod == 0) {
-				pressurePath.AddLines (new CGPoint[] { 
-					new CGPoint (tempOffset, .5 * sViewHeight),
+  		var pressTemperature = ion.fluidManager.lastUsedFluid.GetSaturatedTemperature (pressureSensor.fluidState, new Scalar(lookup, pressCount), ion.locationManager.lastKnownLocation.altitude).ConvertTo(tempLookup).amount;
+  		var tempDifference = pressTemperature - minTemperature.amount;
+  		var tempOffset = tempDifference * tempTicks + startGap;
+  		
+  		if (pressCount < firstMeasurements) {
+  			if (pressCount % firstMod == 0) {
+  				pressurePath.AddLines (new CGPoint[] { 
+  					new CGPoint (tempOffset, .5 * sViewHeight),
 
-					new CGPoint (tempOffset, .25 * sViewHeight)
-				});
-				DrawPressureNumber (pressCount, tempOffset);
-			} else {
-				pressurePath.AddLines (new CGPoint[] { 
-					new CGPoint (tempOffset, .5 * sViewHeight),
+  					new CGPoint (tempOffset, .25 * sViewHeight)
+  				});
+  				DrawPressureNumber (pressCount, tempOffset);
+  			} else {
+  				pressurePath.AddLines (new CGPoint[] { 
+  					new CGPoint (tempOffset, .5 * sViewHeight),
 
-					new CGPoint (tempOffset, .4 * sViewHeight)
-				});
-			}
-		} else if (pressCount < secondMeasurements) {
-			if (pressCount % secondMod == 0) {
-				pressurePath.AddLines (new CGPoint[] { 
-					new CGPoint (tempOffset, .5 * sViewHeight),
+  					new CGPoint (tempOffset, .4 * sViewHeight)
+  				});
+  			}
+  		} else if (pressCount < secondMeasurements) {
+  			if (pressCount % secondMod == 0) {
+  				pressurePath.AddLines (new CGPoint[] { 
+  					new CGPoint (tempOffset, .5 * sViewHeight),
 
-					new CGPoint (tempOffset, .25 * sViewHeight)
-				});
-				DrawPressureNumber (pressCount, tempOffset);
-			} else if (pressCount % secondMod == 0) {
-				pressurePath.AddLines (new CGPoint[] { 
-					new CGPoint (tempOffset, .5 * sViewHeight),
+  					new CGPoint (tempOffset, .25 * sViewHeight)
+  				});
+  				DrawPressureNumber (pressCount, tempOffset);
+  			} else if (pressCount % secondMod == 0) {
+  				pressurePath.AddLines (new CGPoint[] { 
+  					new CGPoint (tempOffset, .5 * sViewHeight),
 
-					new CGPoint (tempOffset, .4 * sViewHeight)
-				});
-			}
-		} else if (pressCount < middleMeasurements) {
-			if (pressCount % thirdMod == 0) {
-				pressurePath.AddLines (new CGPoint[] { 
-					new CGPoint (tempOffset, .5 * sViewHeight),
+  					new CGPoint (tempOffset, .4 * sViewHeight)
+  				});
+  			}
+  		} else if (pressCount < middleMeasurements) {
+  			if (pressCount % thirdMod == 0) {
+  				pressurePath.AddLines (new CGPoint[] { 
+  					new CGPoint (tempOffset, .5 * sViewHeight),
 
-					new CGPoint (tempOffset, .25 * sViewHeight)
-				});
-				DrawPressureNumber (pressCount, tempOffset);
-			} else if (pressCount % secondMod == 0) {
-				pressurePath.AddLines (new CGPoint[] { 
-					new CGPoint (tempOffset, .5 * sViewHeight),
+  					new CGPoint (tempOffset, .25 * sViewHeight)
+  				});
+  				DrawPressureNumber (pressCount, tempOffset);
+  			} else if (pressCount % secondMod == 0) {
+  				pressurePath.AddLines (new CGPoint[] { 
+  					new CGPoint (tempOffset, .5 * sViewHeight),
 
-					new CGPoint (tempOffset, .4 * sViewHeight)
-				});
-			}
-		} else {
-			if (pressCount % fourthMod == 0) {
-				pressurePath.AddLines (new CGPoint[] { 
-					new CGPoint (tempOffset, .5 * sViewHeight),
+  					new CGPoint (tempOffset, .4 * sViewHeight)
+  				});
+  			}
+  		} else {
+  			if (pressCount % fourthMod == 0) {
+  				pressurePath.AddLines (new CGPoint[] { 
+  					new CGPoint (tempOffset, .5 * sViewHeight),
 
-					new CGPoint (tempOffset, .25 * sViewHeight)
-				});
-				DrawPressureNumber (pressCount, tempOffset);
-			} else if (pressCount % thirdMod == 0) {
-				pressurePath.AddLines (new CGPoint[] { 
-					new CGPoint (tempOffset, .5 * sViewHeight),
+  					new CGPoint (tempOffset, .25 * sViewHeight)
+  				});
+  				DrawPressureNumber (pressCount, tempOffset);
+  			} else if (pressCount % thirdMod == 0) {
+  				pressurePath.AddLines (new CGPoint[] { 
+  					new CGPoint (tempOffset, .5 * sViewHeight),
 
-					new CGPoint (tempOffset, .4 * sViewHeight)
-				});
-			}
-		}		
+  					new CGPoint (tempOffset, .4 * sViewHeight)
+  				});
+  			}
+  		}		
 	  }
 
 	  UIColor.Red.SetStroke ();

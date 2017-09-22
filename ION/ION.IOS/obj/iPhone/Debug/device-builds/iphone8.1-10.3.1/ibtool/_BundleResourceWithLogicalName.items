@@ -1,0 +1,371 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/EditJobViewController.nib">
+      <LogicalName>EditJobViewController.nib</LogicalName>
+      <Optimize>false</Optimize>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/IONNavigationCell.nib">
+      <LogicalName>IONNavigationCell.nib</LogicalName>
+      <Optimize>false</Optimize>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/IONRemoteBatteryCell.nib">
+      <LogicalName>IONRemoteBatteryCell.nib</LogicalName>
+      <Optimize>false</Optimize>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/IONRemoteMemoryCell.nib">
+      <LogicalName>IONRemoteMemoryCell.nib</LogicalName>
+      <Optimize>false</Optimize>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/IONRemoteStatusCell.nib">
+      <LogicalName>IONRemoteStatusCell.nib</LogicalName>
+      <Optimize>false</Optimize>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/IONRemoteWirelessCell.nib">
+      <LogicalName>IONRemoteWirelessCell.nib</LogicalName>
+      <Optimize>false</Optimize>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/LaunchScreen.nib">
+      <LogicalName>LaunchScreen.nib</LogicalName>
+      <Optimize>false</Optimize>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/120-view-121.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/120-view-121.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/5Nl-yb-5V7-view-aLU-Oo-rnM.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/5Nl-yb-5V7-view-aLU-Oo-rnM.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/6Yb-s4-FoO-view-kIQ-De-rH5.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/6Yb-s4-FoO-view-kIQ-De-rH5.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/6ew-8q-ez8-view-7yb-Uv-elA.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/6ew-8q-ez8-view-7yb-Uv-elA.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/7g1-bt-MpZ-view-dw2-1I-qWW.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/7g1-bt-MpZ-view-dw2-1I-qWW.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/8cZ-kE-zOc-view-ElL-rF-6TW.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/8cZ-kE-zOc-view-ElL-rF-6TW.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/CqR-Ki-5UV-view-Prb-Tf-FUi.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/CqR-Ki-5UV-view-Prb-Tf-FUi.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/DDD-FA-f6n-view-ZPS-VV-gT7.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/DDD-FA-f6n-view-ZPS-VV-gT7.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/Hcx-DQ-B19-view-iPe-hs-2qd.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/Hcx-DQ-B19-view-iPe-hs-2qd.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/Info.plist">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/Info.plist</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/PN1-hr-eQh-view-ri8-jb-tu7.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/PN1-hr-eQh-view-ri8-jb-tu7.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/QyQ-61-UNr-view-kKQ-eL-woE.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/QyQ-61-UNr-view-kKQ-eL-woE.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/Rec-Wo-f1p-view-BNg-Wd-to3.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/Rec-Wo-f1p-view-BNg-Wd-to3.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/T2i-iW-76h-view-6yl-Fl-eZG.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/T2i-iW-76h-view-6yl-Fl-eZG.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/UCs-3e-vfW-view-vsI-gm-rJD.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/UCs-3e-vfW-view-vsI-gm-rJD.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/Ur0-K8-IZK-view-gTq-rU-TEa.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/Ur0-K8-IZK-view-gTq-rU-TEa.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/WqJ-ZL-O6F-view-ey4-Qn-R9Z.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/WqJ-ZL-O6F-view-ey4-Qn-R9Z.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/ZcY-qs-vm2-view-daE-Yf-zdZ.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/ZcY-qs-vm2-view-daE-Yf-zdZ.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/cnw-Ld-A3k-view-IZt-JO-Ivq.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/cnw-Ld-A3k-view-IZt-JO-Ivq.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/dT7-6a-9Ie-view-vIT-A4-9Eh.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/dT7-6a-9Ie-view-vIT-A4-9Eh.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/eil-MW-etN-view-BzL-ar-BRM.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/eil-MW-etN-view-BzL-ar-BRM.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/eyC-y0-Ar6-view-ela-qi-8Ji.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/eyC-y0-Ar6-view-ela-qi-8Ji.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/hwQ-s0-rYi-view-a8F-Vc-A59.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/hwQ-s0-rYi-view-a8F-Vc-A59.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/lOZ-Rh-A7q-view-YS0-7c-0OW.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/lOZ-Rh-A7q-view-YS0-7c-0OW.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/root.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/root.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/tpx-xV-Cmd-view-Wma-TQ-4Yf.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/tpx-xV-Cmd-view-Wma-TQ-4Yf.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/uUC-qc-IgD-view-8Fd-hL-pr4.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/uUC-qc-IgD-view-8Fd-hL-pr4.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/vTG-vN-wAp-view-WMV-s2-TNk.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/vTG-vN-wAp-view-WMV-s2-TNk.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerAccessManager.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerAccessManager.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerAcessManager.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerAcessManager.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerAnalyzer.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerAnalyzer.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerCloudCodes.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerCloudCodes.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerCloudSessions.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerCloudSessions.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerDeviceGrid.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerDeviceGrid.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerDeviceManager.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerDeviceManager.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerEditJob.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerEditJob.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerFileBrowser.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerFileBrowser.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerFluidManager.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerFluidManager.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerGraphing.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerGraphing.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerHelp.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerHelp.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerJobManager.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerJobManager.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerLogging.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerLogging.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerPTChart.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerPTChart.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerRSSFeed.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerRSSFeed.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerRemoteAccess.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerRemoteAccess.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerRemoteDeviceManager.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerRemoteDeviceManager.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerRemoteViewing.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerRemoteViewing.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerRoCSettings.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerRoCSettings.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerScreenshotReport.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerScreenshotReport.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerSensorAlarms.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerSensorAlarms.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerSuperheatSubcool.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerSuperheatSubcool.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerWalkthroughMenu.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerWalkthroughMenu.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerWalkthroughScreenshot.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerWalkthroughScreenshot.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/viewControllerWorkbench.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/viewControllerWorkbench.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc/zUa-eb-86K-view-HNM-Zr-Z1C.nib">
+      <InterfaceDefinition>src/Storyboard/Storyboard.storyboard</InterfaceDefinition>
+      <LogicalName>Storyboard.storyboardc/zUa-eb-86K-view-HNM-Zr-Z1C.nib</LogicalName>
+      <Optimize>false</Optimize>
+      <OriginalItemSpec>obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/Storyboard.storyboardc</OriginalItemSpec>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/View.nib">
+      <LogicalName>View.nib</LogicalName>
+      <Optimize>false</Optimize>
+    </_BundleResourceWithLogicalName>
+    <_BundleResourceWithLogicalName Include="obj/iPhone/Debug/device-builds/iphone8.1-10.3.1/ibtool/WalkthroughScreenshotViewController.nib">
+      <LogicalName>WalkthroughScreenshotViewController.nib</LogicalName>
+      <Optimize>false</Optimize>
+    </_BundleResourceWithLogicalName>
+  </ItemGroup>
+</Project>

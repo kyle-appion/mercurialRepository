@@ -83,11 +83,13 @@ namespace ION.IOS.ViewController.Workbench {
     			  toggleLabel.Frame = new CGRect(.75 * tView.Bounds.Width, .5 * tView.Bounds.Height, .2 * tView.Bounds.Width, .15 * tView.Bounds.Height);
             toggleLabel.BackgroundColor = UIColor.Red;
     				toggleLabel.Text = "S/C";
+            targetSensor.fluidState = Fluid.EState.Bubble;
         } else {
   			  toggleLabel.Frame = new CGRect(.55 * tView.Bounds.Width, .5 * tView.Bounds.Height, .2 * tView.Bounds.Width, .15 * tView.Bounds.Height);
   			  toggleLabel.BackgroundColor = UIColor.Blue;
   			  toggleLabel.Text = "S/H";
-		    } 
+			    targetSensor.fluidState = Fluid.EState.Dew;
+		  } 
       });
 
       keyboardTap = new UITapGestureRecognizer((obj) => {

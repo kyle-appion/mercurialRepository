@@ -1,0 +1,17 @@
+﻿<Properties StartupConfiguration="{BA1758E1-2E02-40C0-BE41-5AFB1F0271C5}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="ION.IOS/src/ViewController/SuperheatSubcool/SuperheatSubcoolViewController.cs">
+    <Files>
+      <File FileName="ION.IOS/src/ViewController/Workbench/WorkbenchViewController.cs" Line="276" Column="38" />
+      <File FileName="ION.IOS/src/ViewController/Workbench/WorkbenchTableSource.cs" Line="212" Column="42" />
+      <File FileName="ION.IOS/src/ViewController/Workbench/FluidSubviewCell.cs" Line="167" Column="29" />
+      <File FileName="ION.IOS/src/ViewController/SuperheatSubcool/SuperheatSubcoolViewController.cs" Line="369" Column="51" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.ION.IOS PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.bcb063443ba854e8e4d79988718eb0adb4ee5a7b" />
+</Properties>

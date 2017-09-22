@@ -40,13 +40,15 @@ namespace ION.IOS.ViewController.Workbench {
 
       set {
         if (__record != null) {
-          __record.sensorProperty.onSensorPropertyChanged -= OnSensorPropertyChanged;
+					__record.sensorProperty.onSensorPropertyChanged -= OnSensorPropertyChanged;
+					__record.sensor.onSensorEvent -= OnSensorChanged;
         }
 
         __record = value;
 
         if (__record != null) {
-          __record.sensorProperty.onSensorPropertyChanged += OnSensorPropertyChanged;
+					__record.sensorProperty.onSensorPropertyChanged += OnSensorPropertyChanged;
+					__record.sensor.onSensorEvent += OnSensorChanged;
           OnSensorPropertyChanged(__record.sensorProperty);
         }
       }
@@ -58,6 +60,11 @@ namespace ION.IOS.ViewController.Workbench {
     public void UpdateTo(FluidRecord record) {
       this.record = record;
     }
+
+		private void OnSensorChanged(SensorEvent sensorEvent)
+		{
+			HandleSuperheatSubcoolSensorPropertyChanged(record.sensorProperty as SuperheatSubcoolSensorProperty);
+		}
 
     private void OnSensorPropertyChanged(ISensorProperty sensorProperty) {
       if (sensorProperty is SuperheatSubcoolSensorProperty) {

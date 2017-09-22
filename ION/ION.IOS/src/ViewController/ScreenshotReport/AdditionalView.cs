@@ -35,15 +35,14 @@ namespace ION.IOS.ViewController.ScreenshotReport {
 			else if(parentView.Bounds.Height < 800){      
 				detailsScroll.ContentSize = new CGSize(detailsView.Bounds.Width, detailsView.Bounds.Height * 1.4);
 			}
-			
-			titleField = new FloatLabeledTextField(new CGRect(.1 * detailsView.Bounds.Width,10, .8 * detailsView.Bounds.Width,45)){
+
+      titleField = new FloatLabeledTextField(new CGRect(.1 * detailsView.Bounds.Width, 10, .8 * detailsView.Bounds.Width, 45))
+      {
         Placeholder = "Report Title",
-        FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
-        FloatingLabelTextColor = UIColor.Gray,
-        FloatingLabelActiveTextColor = UIColor.Blue,
         TextAlignment = UITextAlignment.Left,
         AutocorrectionType = UITextAutocorrectionType.No,
         AutocapitalizationType = UITextAutocapitalizationType.None,
+        Font = UIFont.FromName("DroidSans-Bold", 22),
       };
       titleField.Layer.BorderWidth = 1f;
       titleField.Layer.CornerRadius = 5f;
@@ -71,13 +70,11 @@ namespace ION.IOS.ViewController.ScreenshotReport {
 			
 			addressField1 = new FloatLabeledTextField(new CGRect(.1 * detailsView.Bounds.Width, 160, .8 * detailsView.Bounds.Width, 45)){
         Placeholder = Strings.Report.ADDRESS + " 1",
-        FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
-        FloatingLabelTextColor = UIColor.Gray,
-        FloatingLabelActiveTextColor = UIColor.Blue,
         TextAlignment = UITextAlignment.Left,
         AutocorrectionType = UITextAutocorrectionType.No,
         AutocapitalizationType = UITextAutocapitalizationType.None,
-      };
+				Font = UIFont.FromName("DroidSans-Bold", 22),
+			};
       addressField1.Layer.BorderWidth = 1f;
       addressField1.Layer.CornerRadius = 5f;
       addressField1.ShouldReturn += (textField) => {
@@ -87,13 +84,11 @@ namespace ION.IOS.ViewController.ScreenshotReport {
       
 			addressField2 = new FloatLabeledTextField(new CGRect(.1 * detailsView.Bounds.Width,210, .8 * detailsView.Bounds.Width,45)){
         Placeholder = Strings.Report.ADDRESS + " 2",
-        FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
-        FloatingLabelTextColor = UIColor.Gray,
-        FloatingLabelActiveTextColor = UIColor.Blue,
         TextAlignment = UITextAlignment.Left,
         AutocorrectionType = UITextAutocorrectionType.No,
         AutocapitalizationType = UITextAutocapitalizationType.None,
-      };
+				Font = UIFont.FromName("DroidSans-Bold", 22),
+			};
       addressField2.Layer.BorderWidth = 1f;
       addressField2.Layer.CornerRadius = 5f;
       addressField2.ShouldReturn += (textField) => {
@@ -103,13 +98,11 @@ namespace ION.IOS.ViewController.ScreenshotReport {
       
 			cityField = new FloatLabeledTextField(new CGRect(.1 * detailsView.Bounds.Width,260, .8 * detailsView.Bounds.Width,45)){
         Placeholder = Strings.Report.CITY,
-        FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
-        FloatingLabelTextColor = UIColor.Gray,
-        FloatingLabelActiveTextColor = UIColor.Blue,
         TextAlignment = UITextAlignment.Left,
         AutocorrectionType = UITextAutocorrectionType.No,
         AutocapitalizationType = UITextAutocapitalizationType.None,
-      };
+				Font = UIFont.FromName("DroidSans-Bold", 22),
+			};
       cityField.Layer.BorderWidth = 1f;
       cityField.Layer.CornerRadius = 5f;
       cityField.ShouldReturn += (textField) => {
@@ -119,13 +112,11 @@ namespace ION.IOS.ViewController.ScreenshotReport {
       
 			stateField = new FloatLabeledTextField(new CGRect(.1 * detailsView.Bounds.Width,310, .8 * detailsView.Bounds.Width,45)){
         Placeholder = "State/Province/Region",
-        FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
-        FloatingLabelTextColor = UIColor.Gray,
-        FloatingLabelActiveTextColor = UIColor.Blue,
         TextAlignment = UITextAlignment.Left,
         AutocorrectionType = UITextAutocorrectionType.No,
         AutocapitalizationType = UITextAutocapitalizationType.None,
-      };
+				Font = UIFont.FromName("DroidSans-Bold", 22),
+			};
       stateField.Layer.BorderWidth = 1f;
       stateField.Layer.CornerRadius = 5f;
       stateField.ShouldReturn += (textField) => {
@@ -135,13 +126,11 @@ namespace ION.IOS.ViewController.ScreenshotReport {
       
 			zipcodeField = new FloatLabeledTextField(new CGRect(.1* detailsView.Bounds.Width,360, .8 * detailsView.Bounds.Width,45)){
         Placeholder = "ZIP/Postal Code",
-        FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
-        FloatingLabelTextColor = UIColor.Gray,
-        FloatingLabelActiveTextColor = UIColor.Blue,
         TextAlignment = UITextAlignment.Left,
         AutocorrectionType = UITextAutocorrectionType.No,
         AutocapitalizationType = UITextAutocapitalizationType.None,
-      };
+				Font = UIFont.FromName("DroidSans-Bold", 22),
+			};
       zipcodeField.Layer.BorderWidth = 1f;
       zipcodeField.Layer.CornerRadius = 5f;
       zipcodeField.ShouldReturn += (textField) => {

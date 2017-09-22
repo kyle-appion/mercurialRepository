@@ -73,7 +73,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 							ptView.resetData(sensorEvent.sensor.unit,ptView.tempLookup);
 							await Task.Delay(TimeSpan.FromMilliseconds(2));
 						}					
-						var convertedTemperature = AppState.context.fluidManager.lastUsedFluid.GetSaturatedTemperature(sensorEvent.sensor.fluidState,new Scalar(sensorEvent.sensor.unit,sensorEvent.sensor.measurement.amount)).ConvertTo(ptView.tempLookup);
+						var convertedTemperature = AppState.context.fluidManager.lastUsedFluid.GetSaturatedTemperature(sensorEvent.sensor.fluidState,new Scalar(sensorEvent.sensor.unit,sensorEvent.sensor.measurement.amount), AppState.context.locationManager.lastKnownLocation.altitude).ConvertTo(ptView.tempLookup);
 						var tempOffset = (convertedTemperature.amount - ptView.minTemperature.amount) * ptView.tempTicks;
 						ptScroller.SetContentOffset(new CGPoint(tempOffset,0),true);
 					}

@@ -1,0 +1,7 @@
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/Appion.Commons/bin/Debug/Appion.Commons.dll
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/Appion.Commons/bin/Debug/Appion.Commons.pdb
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/Appion.Commons/bin/Debug/System.Runtime.InteropServices.RuntimeInformation.dll
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/Appion.Commons/obj/Debug/Appion.Commons.csprojResolveAssemblyReference.cache
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/Appion.Commons/obj/Debug/Appion.Commons.csproj.CoreCompileInputs.cache
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/Appion.Commons/obj/Debug/Appion.Commons.dll
+/Users/kyle/Documents/code_space/ion_universe/ion_universe/mercurialRepository/ION/Appion.Commons/obj/Debug/Appion.Commons.pdb
